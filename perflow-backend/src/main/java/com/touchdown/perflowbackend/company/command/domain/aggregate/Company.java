@@ -1,38 +1,45 @@
 package com.touchdown.perflowbackend.company.command.domain.aggregate;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
+@Getter
+@Setter
 @Entity
+@Table(name = "company", schema = "perflow")
 public class Company {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long companyId;
+    @Column(name = "company_id", nullable = false)
+    private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "name", nullable = false, length = 30)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "chairman", nullable = false, length = 30)
     private String chairman;
 
-    @Column(nullable = false)
-    private LocalDate establish;
+    @Column(name = "establish", nullable = false)
+    private Instant establish;
 
-    @Column(nullable = false)
+    @Column(name = "address", nullable = false)
     private String address;
 
-    @Column(nullable = false)
+    @Column(name = "contact", nullable = false, length = 30)
     private String contact;
 
-    @Column(nullable = false)
+    @Column(name = "email", nullable = false, length = 30)
     private String email;
 
-    @Column(nullable = false)
-    private Integer annualCount;
+    @Column(name = "annual_count", nullable = false)
+    private Long annualCount;
 
-    @Column(nullable = false)
-    private LocalDateTime paymentDatetime;
+    @Column(name = "payment_datetime", nullable = false)
+    private Instant paymentDatetime;
+
 }

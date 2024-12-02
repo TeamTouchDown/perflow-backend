@@ -1,38 +1,67 @@
 package com.touchdown.perflowbackend.employee.command.domain.aggregate;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import com.touchdown.perflowbackend.department.command.domain.aggregate.Department;
+import com.touchdown.perflowbackend.job.command.domain.aggregate.Job;
+import com.touchdown.perflowbackend.position.command.domain.aggregate.Position;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.LocalDate;
 
+@Getter
+@Setter
 @Entity
+@Table(name = "employee", schema = "perflow")
 public class Employee {
-
     @Id
-    @Column(unique = true, nullable = false)
+    @Column(name = "emp_id", nullable = false, length = 30)
     private String empId;
 
-    @Column(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "position_id", nullable = false)
+    private Position position;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "job_id", nullable = false)
+    private Job job;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "dept_id", nullable = false)
+    private Department dept;
+
+    @Column(name = "name", nullable = false, length = 30)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "gender", nullable = false, length = 30)
     private String gender;
 
-    @Column(nullable = false)
+    @Column(name = "rrn", nullable = false, length = 30)
+    private String rrn;
+
+    @Column(name = "pay", nullable = false)
+    private Long pay;
+
+    @Column(name = "address", nullable = false, length = 30)
     private String address;
 
-    @Column(nullable = false)
+    @Column(name = "contact", nullable = false, length = 30)
     private String contact;
 
-    @Column(nullable = false)
+    @Column(name = "email", nullable = false, length = 30)
     private String email;
 
-    @Column(nullable = false)
-    private LocalDateTime joinDate;
+    @Column(name = "join_date", nullable = false)
+    private LocalDate joinDate;
 
-    @Column(nullable = false)
+    @Column(name = "status", nullable = false, length = 30)
     private String status;
 
+    @Column(name = "create_datetime", nullable = false)
+    private Instant createDatetime;
+
+    @Column(name = "update_datetime")
+    private Instant updateDatetime;
 
 }

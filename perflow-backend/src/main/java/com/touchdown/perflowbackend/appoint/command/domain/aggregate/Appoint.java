@@ -1,25 +1,35 @@
 package com.touchdown.perflowbackend.appoint.command.domain.aggregate;
 
+import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
+@Getter
+@Setter
 @Entity
+@Table(name = "appoint", schema = "perflow")
 public class Appoint {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long appointId;
+    @Column(name = "appointId", nullable = false)
+    private Long id;
 
-    @Column(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "emp_id", nullable = false)
+    private Employee emp;
+
+    @Column(name = "type", nullable = false, length = 30)
     private String type;
 
-    @Column(nullable = false)
+    @Column(name = "`before`", nullable = false, length = 30)
     private String before;
 
-    @Column(nullable = false)
+    @Column(name = "after", nullable = false, length = 30)
     private String after;
 
-    @Column(nullable = false)
-    private LocalDateTime appointDatetime;
+    @Column(name = "appoint_datetime", nullable = false)
+    private Instant appointDatetime;
+
 }
