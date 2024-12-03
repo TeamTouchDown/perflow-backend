@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDate;
 
 @Getter
-@RequiredArgsConstructor
 public class EmployeeRegisterDTO {
 
     private String empId;
