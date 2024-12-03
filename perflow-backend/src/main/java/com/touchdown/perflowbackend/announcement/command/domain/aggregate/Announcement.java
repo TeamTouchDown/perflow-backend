@@ -4,6 +4,7 @@ import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.department.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,4 +36,12 @@ public class Announcement extends BaseEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Builder
+    public Announcement(Long annId, Department dept, Employee emp, String title, String content) {
+        this.annId = annId;
+        this.dept = dept;
+        this.emp = emp;
+        this.title = title;
+        this.content = content;
+    }
 }
