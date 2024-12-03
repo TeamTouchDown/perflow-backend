@@ -4,10 +4,7 @@ import com.touchdown.perflowbackend.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-
-import java.time.Instant;
 
 @Getter
 @Entity
@@ -29,8 +26,7 @@ public class Job extends BaseEntity {
     @Column(name = "responsibility", nullable = false)
     private String responsibility;
 
-    @ColumnDefault("1")
     @Column(name = "is_active", nullable = false)
-    private Byte isActive;
+    private Boolean isActive;
 
 }

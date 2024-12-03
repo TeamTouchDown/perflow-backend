@@ -4,9 +4,6 @@ import com.touchdown.perflowbackend.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.time.Instant;
 
 @Getter
 @Entity
@@ -19,7 +16,7 @@ public class Department extends BaseEntity {
     private Long departmentId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "manage_dept_id", nullable = true)
+    @JoinColumn(name = "manage_dept_id")
     private Department manageDept;
 
     @Column(name = "name", nullable = false, length = 30)

@@ -4,9 +4,8 @@ import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -32,6 +31,6 @@ public class Appoint {
     private String after;
 
     @Column(name = "appoint_datetime", nullable = false)
-    private Instant appointDatetime;
+    private LocalDateTime appointDatetime;
 
 }

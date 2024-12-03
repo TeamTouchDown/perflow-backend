@@ -6,9 +6,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -27,7 +26,7 @@ public class Company {
     private String chairman;
 
     @Column(name = "establish", nullable = false)
-    private Instant establish;
+    private LocalDateTime establish;
 
     @Column(name = "address", nullable = false)
     private String address;
@@ -42,6 +41,6 @@ public class Company {
     private Long annualCount;
 
     @Column(name = "payment_datetime", nullable = false)
-    private Instant paymentDatetime;
+    private LocalDateTime paymentDatetime;
 
 }
