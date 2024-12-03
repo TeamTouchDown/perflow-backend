@@ -32,9 +32,10 @@ public class Template extends BaseEntity {
     @Column(name = "delete_datetime")
     private LocalDateTime deleteDatetime;
 
-    @ColumnDefault("'WAITING'")
+    @ColumnDefault("'ACTIVATED'")
     @Column(name = "status", nullable = false, length = 30)
-    private Status status;
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.ACTIVATED;
 
     @Builder
     public Template(Long templateId, Employee createUserId, String name, String description, LocalDateTime deleteDatetime, Status status) {

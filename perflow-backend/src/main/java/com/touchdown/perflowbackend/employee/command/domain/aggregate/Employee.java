@@ -59,6 +59,7 @@ public class Employee extends BaseEntity {
     private LocalDate joinDate;
 
     @Column(name = "status", nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
     private EmployeeStatus status;
 
     @Builder
