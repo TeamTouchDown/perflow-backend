@@ -61,7 +61,7 @@ public class Payroll extends BaseEntity {
     private Long totalAmount;
 
     @Column(name = "status", nullable = false, length = 30)
-    private PayrollStatus status = PayrollStatus.PENDING;
+    private Status status = Status.PENDING;
 
     @Column(name = "total_start_date", nullable = false)
     private LocalDate totalStartDate;

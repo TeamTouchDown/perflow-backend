@@ -45,7 +45,7 @@ public class SeverancePay extends BaseEntity {
     private LocalDate severanceDay;
 
     @Column(name = "status", nullable = false, length = 30)
-    private SeverancePayStatus status = SeverancePayStatus.PENDING;
+    private Status status = Status.PENDING;
 
     @Column(name = "payment_datetime", nullable = false)
     private LocalDateTime paymentDatetime;

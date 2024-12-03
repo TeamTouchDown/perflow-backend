@@ -1,6 +1,6 @@
 package com.touchdown.perflowbackend.payroll.command.domain.aggregate;
 
-public enum PayrollStatus {
+public enum Status {
 
     PENDING,
     CONFIRMED,
