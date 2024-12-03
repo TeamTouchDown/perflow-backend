@@ -1,16 +1,18 @@
-package com.touchdown.perflowbackend.favtemplate.command.domain.aggregate;
+package com.touchdown.perflowbackend.approve.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
-import com.touchdown.perflowbackend.teamplate.command.domain.aggregate.Template;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "fav_template", schema = "perflow")
 public class FavTemplate {
     @Id
@@ -26,6 +28,6 @@ public class FavTemplate {
     private Employee emp;
 
     @Column(name = "fav_datetime", nullable = false)
-    private Instant favDatetime;
+    private LocalDateTime favDatetime;
 
 }

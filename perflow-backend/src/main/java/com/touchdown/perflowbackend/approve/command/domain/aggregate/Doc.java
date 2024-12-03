@@ -1,29 +1,29 @@
-package com.touchdown.perflowbackend.doc.command.domain.aggregate;
+package com.touchdown.perflowbackend.approve.command.domain.aggregate;
 
+import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
-import com.touchdown.perflowbackend.teamplate.command.domain.aggregate.Template;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "doc", schema = "perflow")
-public class Doc {
+public class Doc extends BaseEntity {
     @Id
     @Column(name = "doc_id", nullable = false)
-    private Long id;
+    private Long docId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "create_user_id", nullable = false)
-    private Employee createUser;
+    private Employee createUserId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "template_id", nullable = false)
-    private Template template;
+    private Template templateId;
 
     @Column(name = "title", nullable = false, length = 50)
     private String title;
@@ -33,21 +33,15 @@ public class Doc {
     private String content;
 
     @Column(name = "status", nullable = false, length = 30)
-    private String status;
-
-    @Column(name = "create_datetime", nullable = false)
-    private Instant createDatetime;
-
-    @Column(name = "update_datetime")
-    private Instant updateDatetime;
+    private Status status;
 
     @Column(name = "delete_datetime")
-    private Instant deleteDatetime;
+    private LocalDateTime deleteDatetime;
 
     @Column(name = "collect_datetime")
-    private Instant collectDatetime;
+    private LocalDateTime collectDatetime;
 
     @Column(name = "draft_datetime")
-    private Instant draftDatetime;
+    private LocalDateTime draftDatetime;
 
 }
