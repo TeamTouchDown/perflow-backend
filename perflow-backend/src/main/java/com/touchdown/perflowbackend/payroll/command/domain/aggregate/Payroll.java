@@ -1,38 +1,40 @@
 package com.touchdown.perflowbackend.payroll.command.domain.aggregate;
 
+import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-
-import java.time.Instant;
 import java.time.LocalDate;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "payroll", schema = "perflow")
-public class Payroll {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Payroll extends BaseEntity {
+
     @Id
     @Column(name = "payroll_id", nullable = false)
-    private Long id;
+    private Long payrollId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "emp_id", nullable = false)
-    private Employee emp;
+    private Employee empId;
 
-    @Column(name = "extend_labor_allowence")
-    private Long extendLaborAllowence;
+    @Column(name = "extend_labor_allowance")
+    private Long extendLaborAllowance;
 
-    @Column(name = "night_labor_allowence")
-    private Long nightLaborAllowence;
+    @Column(name = "night_labor_allowance")
+    private Long nightLaborAllowance;
 
-    @Column(name = "holiday_labor_allowence")
-    private Long holidayLaborAllowence;
+    @Column(name = "holiday_labor_allowance")
+    private Long holidayLaborAllowance;
 
-    @Column(name = "annual_allowence")
-    private Long annualAllowence;
+    @Column(name = "annual_allowance")
+    private Long annualAllowance;
 
     @Column(name = "incentive")
     private Long incentive;
@@ -58,20 +60,13 @@ public class Payroll {
     @Column(name = "total_amount", nullable = false)
     private Long totalAmount;
 
-    @ColumnDefault("'PENDING'")
     @Column(name = "status", nullable = false, length = 30)
-    private String status;
+    private PayrollStatus status = PayrollStatus.PENDING;
 
     @Column(name = "total_start_date", nullable = false)
     private LocalDate totalStartDate;
 
     @Column(name = "total_end_date", nullable = false)
     private LocalDate totalEndDate;
-
-    @Column(name = "create_datetime", nullable = false)
-    private Instant createDatetime;
-
-    @Column(name = "update_datetime")
-    private Instant updateDatetime;
 
 }
