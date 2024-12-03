@@ -2,11 +2,11 @@ package com.touchdown.perflowbackend.menu.command.domain.aggregate;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "menu", schema = "perflow")
 public class Menu {
     @Id

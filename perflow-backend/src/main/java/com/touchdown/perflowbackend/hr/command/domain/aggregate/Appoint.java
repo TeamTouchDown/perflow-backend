@@ -1,20 +1,21 @@
-package com.touchdown.perflowbackend.appoint.command.domain.aggregate;
+package com.touchdown.perflowbackend.hr.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "appoint", schema = "perflow")
 public class Appoint {
+
     @Id
     @Column(name = "appointId", nullable = false)
-    private Long id;
+    private Long appointId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "emp_id", nullable = false)
@@ -30,6 +31,6 @@ public class Appoint {
     private String after;
 
     @Column(name = "appoint_datetime", nullable = false)
-    private Instant appointDatetime;
+    private LocalDateTime appointDatetime;
 
 }

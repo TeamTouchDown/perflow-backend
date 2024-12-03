@@ -1,20 +1,21 @@
 package com.touchdown.perflowbackend.employee.command.domain.aggregate;
 
-import com.touchdown.perflowbackend.department.command.domain.aggregate.Department;
-import com.touchdown.perflowbackend.job.command.domain.aggregate.Job;
-import com.touchdown.perflowbackend.position.command.domain.aggregate.Position;
+import com.touchdown.perflowbackend.common.BaseEntity;
+import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
+import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
+import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import java.time.Instant;
 import java.time.LocalDate;
 
 @Getter
-@Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "employee", schema = "perflow")
-public class Employee {
+public class Employee extends BaseEntity {
+
     @Id
     @Column(name = "emp_id", nullable = false, length = 30)
     private String empId;
@@ -57,11 +58,5 @@ public class Employee {
 
     @Column(name = "status", nullable = false, length = 30)
     private String status;
-
-    @Column(name = "create_datetime", nullable = false)
-    private Instant createDatetime;
-
-    @Column(name = "update_datetime")
-    private Instant updateDatetime;
 
 }

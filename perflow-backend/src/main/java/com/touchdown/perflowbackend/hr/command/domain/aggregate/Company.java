@@ -1,22 +1,23 @@
-package com.touchdown.perflowbackend.company.command.domain.aggregate;
+package com.touchdown.perflowbackend.hr.command.domain.aggregate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "company", schema = "perflow")
 public class Company {
+
     @Id
     @Column(name = "company_id", nullable = false)
-    private Long id;
+    private Long companyId;
 
     @Column(name = "name", nullable = false, length = 30)
     private String name;
@@ -25,7 +26,7 @@ public class Company {
     private String chairman;
 
     @Column(name = "establish", nullable = false)
-    private Instant establish;
+    private LocalDateTime establish;
 
     @Column(name = "address", nullable = false)
     private String address;
@@ -40,6 +41,6 @@ public class Company {
     private Long annualCount;
 
     @Column(name = "payment_datetime", nullable = false)
-    private Instant paymentDatetime;
+    private LocalDateTime paymentDatetime;
 
 }

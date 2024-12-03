@@ -1,7 +1,7 @@
 package com.touchdown.perflowbackend.approve.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
-import com.touchdown.perflowbackend.department.command.domain.aggregate.Department;
+import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;

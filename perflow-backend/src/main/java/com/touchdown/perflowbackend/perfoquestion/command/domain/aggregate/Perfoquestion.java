@@ -1,6 +1,6 @@
 package com.touchdown.perflowbackend.perfoquestion.command.domain.aggregate;
 
-import com.touchdown.perflowbackend.department.command.domain.aggregate.Department;
+import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
