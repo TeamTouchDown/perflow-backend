@@ -51,4 +51,16 @@ public class Annual {
     @Column(name = "status", nullable = false, length = 30)
     private String status;
 
+    @ColumnDefault("0")
+    @Column(name = "is_annual_retroactive", nullable = false)
+    private Boolean isAnnualRetroactive = false; // 소급 여부 (0: 일반, 1: 소급)
+
+    @Column(name = "annual_retroactive_reason", length = 255)
+    private String annualRetroactiveReason; // 소급 사유
+
+    @Column(name = "annual_retrospective_status", length = 30)
+    private String annualRetroactiveStatus; // 소급 상태 (대기, 승인, 반려)
+
+
+
 }
