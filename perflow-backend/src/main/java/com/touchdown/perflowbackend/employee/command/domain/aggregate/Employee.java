@@ -1,20 +1,22 @@
 package com.touchdown.perflowbackend.employee.command.domain.aggregate;
 
-import com.touchdown.perflowbackend.department.command.domain.aggregate.Department;
-import com.touchdown.perflowbackend.job.command.domain.aggregate.Job;
-import com.touchdown.perflowbackend.position.command.domain.aggregate.Position;
+import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
+import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
+import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
 import java.time.LocalDate;
 
 @Getter
-@Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "employee", schema = "perflow")
 public class Employee {
+
     @Id
     @Column(name = "emp_id", nullable = false, length = 30)
     private String empId;
