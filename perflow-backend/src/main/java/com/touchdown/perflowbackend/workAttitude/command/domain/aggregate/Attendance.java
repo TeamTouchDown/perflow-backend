@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class Attendance { //출퇴
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "attendance_id", nullable = false)
     private Long attendanceId;
 

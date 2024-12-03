@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 public class Annual extends BaseEntity { //연차
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "annual_id", nullable = false)
     private Long annualId;
 

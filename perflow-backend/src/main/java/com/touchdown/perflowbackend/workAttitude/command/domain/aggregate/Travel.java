@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class Travel extends BaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "travel_id", nullable = false)
     private Long travelId;
 

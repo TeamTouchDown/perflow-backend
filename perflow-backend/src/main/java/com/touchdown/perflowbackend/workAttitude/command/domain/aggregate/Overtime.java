@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class Overtime extends BaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "overtime_id", nullable = false)
     private Long overtimeId;
 
