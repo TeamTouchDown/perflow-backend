@@ -1,20 +1,23 @@
 package com.touchdown.perflowbackend.employee.command.domain.aggregate;
 
-import com.touchdown.perflowbackend.department.command.domain.aggregate.Department;
-import com.touchdown.perflowbackend.job.command.domain.aggregate.Job;
-import com.touchdown.perflowbackend.position.command.domain.aggregate.Position;
+import com.touchdown.perflowbackend.common.BaseEntity;
+import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeRegisterDTO;
+import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
+import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
+import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import java.time.Instant;
 import java.time.LocalDate;
 
 @Getter
-@Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "employee", schema = "perflow")
-public class Employee {
+public class Employee extends BaseEntity {
+
     @Id
     @Column(name = "emp_id", nullable = false, length = 30)
     private String empId;
@@ -56,12 +59,22 @@ public class Employee {
     private LocalDate joinDate;
 
     @Column(name = "status", nullable = false, length = 30)
-    private String status;
+    private EmployeeStatus status;
 
-    @Column(name = "create_datetime", nullable = false)
-    private Instant createDatetime;
-
-    @Column(name = "update_datetime")
-    private Instant updateDatetime;
-
+    @Builder
+    public Employee(EmployeeRegisterDTO registerDTO, Position position, Job job, Department department) {
+        this.empId = registerDTO.getEmpId();
+        this.position = position;
+        this.job = job;
+        this.dept = department;
+        this.name = registerDTO.getName();
+        this.gender = registerDTO.getGender();
+        this.rrn = registerDTO.getRrn();
+        this.pay = registerDTO.getPay();
+        this.address = registerDTO.getAddress();
+        this.contact = registerDTO.getContact();
+        this.email = registerDTO.getEmail();
+        this.joinDate = registerDTO.getJoinDate();
+        this.status = EmployeeStatus.ACTIVE;
+    }
 }
