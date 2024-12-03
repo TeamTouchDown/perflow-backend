@@ -5,15 +5,17 @@ import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "annual", schema = "perflow")
 public class Annual extends BaseEntity { //연차
+
     @Id
     @Column(name = "annual_id", nullable = false)
     private Long annualId;
@@ -36,14 +38,14 @@ public class Annual extends BaseEntity { //연차
     private LocalDateTime annualEnd;
 
     @Column(name = "annual_status", nullable = false, length = 30)
-    private String annualStatus;
+    private Status annualStatus;
 
     @Column(name = "annual_reject_reason")
     private String annualRejectReason;
 
     @ColumnDefault("'ACTIVE'")
     @Column(name = "status", nullable = false, length = 30)
-    private String status;
+    private Status status;
 
     @ColumnDefault("0")
     @Column(name = "is_annual_retroactive", nullable = false)

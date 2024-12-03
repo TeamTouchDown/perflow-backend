@@ -1,19 +1,18 @@
 package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 
-import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "attendance", schema = "perflow")
 public class Attendance { //출퇴
+
     @Id
     @Column(name = "attendance_id", nullable = false)
     private Long attendanceId;

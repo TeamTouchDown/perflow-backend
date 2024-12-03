@@ -5,14 +5,16 @@ import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "`vacation`", schema = "perflow")
 public class Vacation extends BaseEntity {
+
     @Id
     @Column(name = "vacation_id", nullable = false)
     private Long vacationId;
@@ -38,7 +40,7 @@ public class Vacation extends BaseEntity {
     private LocalDateTime vacationEnd;
 
     @Column(name = "vacation_status", nullable = false, length = 30)
-    private String vacationStatus;
+    private Status vacationStatus;
 
     @Column(name = "vacation_reject_reason")
     private String vacationRejectReason;

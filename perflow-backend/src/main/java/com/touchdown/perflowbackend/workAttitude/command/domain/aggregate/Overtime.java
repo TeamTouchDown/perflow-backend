@@ -5,16 +5,16 @@ import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "overtime", schema = "perflow")
 public class Overtime extends BaseEntity {
+
     @Id
     @Column(name = "overtime_id", nullable = false)
     private Long overtimeId;
@@ -40,13 +40,13 @@ public class Overtime extends BaseEntity {
     private LocalDateTime overtimeEnd;
 
     @Column(name = "overtime_status", nullable = false, length = 30)
-    private String overtimeStatus;
+    private Status overtimeStatus;
 
     @Column(name = "travel_reject_time")
     private String travelRejectTime;
 
     @Column(name = "status", nullable = false, length = 30)
-    private String status;
+    private Status status;
 
     @Column(name = "is_overtime_retroactive", nullable = false)
     private Boolean isOvertimeRetroactive = false; // 소급 여부 (0: 일반, 1: 소급)
