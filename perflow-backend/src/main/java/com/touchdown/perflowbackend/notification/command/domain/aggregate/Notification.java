@@ -1,19 +1,20 @@
 package com.touchdown.perflowbackend.notification.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.hrperfo.command.domain.aggregate.HrPerfo;
-import com.touchdown.workAttitude.command.domain.aggregate.Vacation;
-import com.touchdown.workAttitude.command.domain.aggregate.Annual;
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Vacation;
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Annual;
 import com.touchdown.perflowbackend.appoint.command.domain.aggregate.Appoint;
 import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
-import com.touchdown.workAttitude.command.domain.aggregate.Overtime;
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Overtime;
 import com.touchdown.perflowbackend.payroll.command.domain.aggregate.Payroll;
-import com.touchdown.workAttitude.command.domain.aggregate.Travel;
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Travel;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -67,6 +68,6 @@ public class Notification {
     private Byte status;
 
     @Column(name = "create_datetime", nullable = false)
-    private Instant createDatetime;
+    private LocalDateTime createDatetime;
 
 }

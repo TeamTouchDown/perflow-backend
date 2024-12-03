@@ -1,19 +1,17 @@
-package com.touchdown.workAttitude.command.domain.aggregate;
+package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
-import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "travel", schema = "perflow")
-public class Travel extends BaseEntity {
+public class Travel {
     @Id
     @Column(name = "travel_id", nullable = false)
     private Long travelId;
@@ -27,16 +25,16 @@ public class Travel extends BaseEntity {
     private ApproveSbj approveSbj;
 
     @Column(name = "enroll_travel", nullable = false)
-    private Instant enrollTravel;
+    private LocalDateTime enrollTravel;
 
     @Column(name = "travel_reason", nullable = false)
     private String travelReason;
 
     @Column(name = "travel_start", nullable = false)
-    private Instant travelStart;
+    private LocalDateTime travelStart;
 
     @Column(name = "travel_end", nullable = false)
-    private Instant travelEnd;
+    private LocalDateTime travelEnd;
 
     @Column(name = "travel_status", nullable = false, length = 30)
     private String travelStatus;
@@ -48,10 +46,10 @@ public class Travel extends BaseEntity {
     private String travelDivision;
 
     @Column(name = "create_datetime", nullable = false)
-    private Instant createDatetime;
+    private LocalDateTime createDatetime;
 
     @Column(name = "update_datetime")
-    private Instant updateDatetime;
+    private LocalDateTime updateDatetime;
 
     @Column(name = "status", nullable = false, length = 30)
     private Status status;

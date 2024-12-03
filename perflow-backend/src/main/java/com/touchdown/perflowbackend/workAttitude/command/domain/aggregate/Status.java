@@ -1,4 +1,4 @@
-package com.touchdown.workAttitude.command.domain.aggregate;
+package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 
 public enum Status {
     ACTIVATED,

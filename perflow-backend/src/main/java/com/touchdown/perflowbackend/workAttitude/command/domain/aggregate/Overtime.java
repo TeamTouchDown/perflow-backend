@@ -1,19 +1,19 @@
-package com.touchdown.workAttitude.command.domain.aggregate;
+package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
-import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "overtime", schema = "perflow")
-public class Overtime extends BaseEntity {
+public class Overtime{
     @Id
     @Column(name = "overtime_id", nullable = false)
     private Long overtimeId;
@@ -30,13 +30,13 @@ public class Overtime extends BaseEntity {
     private String overtimeType;
 
     @Column(name = "enroll_overtime", nullable = false)
-    private Instant enrollOvertime;
+    private LocalDateTime enrollOvertime;
 
     @Column(name = "overtime_start", nullable = false)
-    private Instant overtimeStart;
+    private LocalDateTime overtimeStart;
 
     @Column(name = "overtime_end", nullable = false)
-    private Instant overtimeEnd;
+    private LocalDateTime overtimeEnd;
 
     @Column(name = "overtime_status", nullable = false, length = 30)
     private String overtimeStatus;
@@ -45,10 +45,10 @@ public class Overtime extends BaseEntity {
     private String travelRejectTime;
 
     @Column(name = "create_datetime", nullable = false)
-    private Instant createDatetime;
+    private LocalDateTime createDatetime;
 
     @Column(name = "update_datetime")
-    private Instant updateDatetime;
+    private LocalDateTime updateDatetime;
 
     @Column(name = "status", nullable = false, length = 30)
     private String status;
