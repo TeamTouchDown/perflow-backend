@@ -11,7 +11,10 @@ public enum SuccessCode {
     //SUCCESS(상태코드, "성공 문구");
 
     // 200
-    SUCCESS(HttpStatus.OK, "OK");
+    SUCCESS(HttpStatus.OK, "OK"),
+
+    TEMPLATE_CREATE_SUCCESS(HttpStatus.OK, "서식 생성에 성공하였습니다");
+
 
     private final HttpStatus httpStatus;
     private final String message;

@@ -4,15 +4,14 @@ import com.touchdown.perflowbackend.department.command.domain.aggregate.Departme
 import com.touchdown.perflowbackend.job.command.domain.aggregate.Job;
 import com.touchdown.perflowbackend.position.command.domain.aggregate.Position;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 import java.time.LocalDate;
 
 @Getter
-@Setter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "employee", schema = "perflow")
 public class Employee {
     @Id

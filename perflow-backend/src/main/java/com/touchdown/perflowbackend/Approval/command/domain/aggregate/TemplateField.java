@@ -1,20 +1,22 @@
-package com.touchdown.perflowbackend.approve.command.domain.aggregate;
+package com.touchdown.perflowbackend.Approval.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "template_field", schema = "perflow")
 public class TemplateField extends BaseEntity {
     @Id
     @Column(name = "template_field_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long templateFieldId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

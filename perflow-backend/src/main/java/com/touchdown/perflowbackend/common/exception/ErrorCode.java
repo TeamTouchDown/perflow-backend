@@ -23,7 +23,9 @@ public enum ErrorCode {
     AUTHORIZATION_FAILED(HttpStatus.FORBIDDEN, "인가 실패"),
 
     // 404 에러
-    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "사원 정보를 찾을 수 없습니다.")
+    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "사원 정보를 찾을 수 없습니다."),
+
+    NOT_FOUND_TEMPLATE(HttpStatus.NOT_FOUND, "서식 정보를 찾을 수 없습니다.")
     ;
 
     private final HttpStatus httpStatus;

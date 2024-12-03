@@ -1,20 +1,21 @@
-package com.touchdown.perflowbackend.approve.command.domain.aggregate;
+package com.touchdown.perflowbackend.Approval.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "template", schema = "perflow")
 public class Template extends BaseEntity {
+
     @Id
     @Column(name = "template_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long templateId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -31,8 +32,17 @@ public class Template extends BaseEntity {
     @Column(name = "delete_datetime")
     private LocalDateTime deleteDatetime;
 
-    @ColumnDefault("'ACTIVATED'")
+    @ColumnDefault("'WAITING'")
     @Column(name = "status", nullable = false, length = 30)
     private Status status;
 
+    @Builder
+    public Template(Long templateId, Employee createUserId, String name, String description, LocalDateTime deleteDatetime, Status status) {
+        this.templateId = templateId;
+        this.createUserId = createUserId;
+        this.name = name;
+        this.description = description;
+        this.deleteDatetime = deleteDatetime;
+        this.status = status;
+    }
 }

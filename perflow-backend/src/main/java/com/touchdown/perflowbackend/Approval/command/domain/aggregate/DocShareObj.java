@@ -1,23 +1,25 @@
-package com.touchdown.perflowbackend.approve.command.domain.aggregate;
+package com.touchdown.perflowbackend.Approval.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.department.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "doc_share_obj", schema = "perflow")
 public class DocShareObj {
     @Id
     @Column(name = "doc_share_obj", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long docShareObj;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

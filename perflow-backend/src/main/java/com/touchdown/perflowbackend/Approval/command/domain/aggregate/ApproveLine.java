@@ -1,20 +1,22 @@
-package com.touchdown.perflowbackend.approve.command.domain.aggregate;
+package com.touchdown.perflowbackend.Approval.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "approve_line", schema = "perflow")
 public class ApproveLine extends BaseEntity {
     @Id
     @Column(name = "approve_line_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long approveLineId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

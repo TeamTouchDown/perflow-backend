@@ -6,6 +6,8 @@ import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Annual
 import com.touchdown.perflowbackend.appoint.command.domain.aggregate.Appoint;
 import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Overtime;
+import com.touchdown.perflowbackend.Approval.command.domain.aggregate.ApproveSbj;
+import com.touchdown.perflowbackend.overtime.command.domain.aggregate.Overtime;
 import com.touchdown.perflowbackend.payroll.command.domain.aggregate.Payroll;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Travel;
 import jakarta.persistence.*;

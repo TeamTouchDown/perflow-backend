@@ -1,22 +1,24 @@
-package com.touchdown.perflowbackend.approve.command.domain.aggregate;
+package com.touchdown.perflowbackend.Approval.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.department.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "approve_sbj", schema = "perflow")
 public class ApproveSbj extends BaseEntity {
     @Id
     @Column(name = "approve_sbj_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long approveSbjId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
