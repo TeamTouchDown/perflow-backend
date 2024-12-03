@@ -1,9 +1,8 @@
-package com.touchdown.perflowbackend.department.command.domain.aggregate;
+package com.touchdown.perflowbackend.hr.command.domain.aggregate;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.Instant;
 

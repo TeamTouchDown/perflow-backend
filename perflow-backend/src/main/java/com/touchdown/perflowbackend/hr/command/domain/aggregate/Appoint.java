@@ -1,4 +1,4 @@
-package com.touchdown.perflowbackend.appoint.command.domain.aggregate;
+package com.touchdown.perflowbackend.hr.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;

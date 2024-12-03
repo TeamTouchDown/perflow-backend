@@ -1,4 +1,4 @@
-package com.touchdown.perflowbackend.employee.command.domain.aggregate;
+package com.touchdown.perflowbackend.hr.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.department.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.job.command.domain.aggregate.Job;
@@ -6,7 +6,6 @@ import com.touchdown.perflowbackend.position.command.domain.aggregate.Position;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.Instant;
 import java.time.LocalDate;
