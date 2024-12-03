@@ -4,6 +4,7 @@ import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
@@ -21,7 +22,7 @@ public class Travel extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "emp_id", nullable = false)
-    private Employee empId;
+    private Employee employee;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "approve_sbj_id", nullable = false)
@@ -52,4 +53,13 @@ public class Travel extends BaseEntity {
     @Column(name = "status", nullable = false, length = 30)
     private Status status;
 
+    @Builder
+    public Travel(Employee empId, String travelReason, LocalDateTime travelStart, LocalDateTime travelEnd, String travelDivision, String travelStatus, LocalDateTime createdAt) {
+        this.employee = empId;
+        this.travelReason = travelReason;
+        this.travelStart = travelStart;
+        this.travelEnd = travelEnd;
+        this.travelDivision = travelDivision;
+        this.travelStatus = Status.valueOf(travelStatus);
+    }
 }
