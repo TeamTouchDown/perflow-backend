@@ -1,56 +1,53 @@
-package com.touchdown.perflowbackend.overtime.command.domain.aggregate;
+package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
+import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
-@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "overtime", schema = "perflow")
-public class Overtime {
+public class Overtime extends BaseEntity {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "overtime_id", nullable = false)
-    private Long id;
+    private Long overtimeId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "emp_id", nullable = false)
-    private Employee emp;
+    private Employee empId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "approve_sbj_id", nullable = false)
-    private ApproveSbj approveSbj;
+    private ApproveSbj approveSbjId;
 
     @Column(name = "overtime_type", nullable = false, length = 30)
     private String overtimeType;
 
     @Column(name = "enroll_overtime", nullable = false)
-    private Instant enrollOvertime;
+    private LocalDateTime enrollOvertime;
 
     @Column(name = "overtime_start", nullable = false)
-    private Instant overtimeStart;
+    private LocalDateTime overtimeStart;
 
     @Column(name = "overtime_end", nullable = false)
-    private Instant overtimeEnd;
+    private LocalDateTime overtimeEnd;
 
     @Column(name = "overtime_status", nullable = false, length = 30)
-    private String overtimeStatus;
+    private Status overtimeStatus;
 
     @Column(name = "travel_reject_time")
     private String travelRejectTime;
 
-    @Column(name = "create_datetime", nullable = false)
-    private Instant createDatetime;
-
-    @Column(name = "update_datetime")
-    private Instant updateDatetime;
-
     @Column(name = "status", nullable = false, length = 30)
-    private String status;
+    private Status status;
 
     @Column(name = "is_overtime_retroactive", nullable = false)
     private Boolean isOvertimeRetroactive = false; // 소급 여부 (0: 일반, 1: 소급)
@@ -59,6 +56,6 @@ public class Overtime {
     private String overtimeRetroactiveReason; // 소급 사유
 
     @Column(name = "overtime_retroactive_status", length = 30)
-    private String overtimeRetroactiveStatus; // 소급 상태 (대기, 승인, 반려)
+    private Status overtimeRetroactiveStatus; // 소급 상태 (대기, 승인, 반려)
 
 }

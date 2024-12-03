@@ -1,5 +1,6 @@
 package com.touchdown.perflowbackend.common;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
@@ -15,8 +16,10 @@ import java.time.LocalDateTime;
 public abstract class BaseEntity {
 
     @CreatedDate
+    @Column(name = "create_datetime", nullable = false)
     private LocalDateTime createDatetime;
 
     @LastModifiedDate
+    @Column(name = "update_datetime")
     private LocalDateTime updateDatetime;
 }
