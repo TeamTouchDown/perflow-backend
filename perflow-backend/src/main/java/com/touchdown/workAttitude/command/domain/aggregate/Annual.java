@@ -1,6 +1,7 @@
-package com.touchdown.perflowbackend.annual.command.domain.aggregate;
+package com.touchdown.workAttitude.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
+import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -13,18 +14,18 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "annual", schema = "perflow")
-public class Annual {
+public class Annual extends BaseEntity {
     @Id
     @Column(name = "annual_id", nullable = false)
-    private Long id;
+    private Long annualId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "emp_id", nullable = false)
-    private Employee emp;
+    private Employee empId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "approve_sbj_id", nullable = false)
-    private ApproveSbj approveSbj;
+    private ApproveSbj approveSbjId;
 
     @Column(name = "enroll_annual", nullable = false)
     private Instant enrollAnnual;
@@ -58,8 +59,8 @@ public class Annual {
     @Column(name = "annual_retroactive_reason", length = 255)
     private String annualRetroactiveReason; // 소급 사유
 
-    @Column(name = "annual_retrospective_status", length = 30)
-    private String annualRetroactiveStatus; // 소급 상태 (대기, 승인, 반려)
+    @Column(name = "annual_retroactive_status", length = 30)
+    private Status annualRetroactiveStatus; // 소급 상태 (대기, 승인, 반려)
 
 
 

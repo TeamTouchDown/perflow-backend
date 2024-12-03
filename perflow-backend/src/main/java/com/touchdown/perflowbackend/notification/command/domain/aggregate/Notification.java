@@ -1,13 +1,13 @@
 package com.touchdown.perflowbackend.notification.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.hrperfo.command.domain.aggregate.HrPerfo;
-import com.touchdown.perflowbackend.vacation.command.domain.aggregate.Vacation;
-import com.touchdown.perflowbackend.annual.command.domain.aggregate.Annual;
+import com.touchdown.workAttitude.command.domain.aggregate.Vacation;
+import com.touchdown.workAttitude.command.domain.aggregate.Annual;
 import com.touchdown.perflowbackend.appoint.command.domain.aggregate.Appoint;
 import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
-import com.touchdown.perflowbackend.overtime.command.domain.aggregate.Overtime;
+import com.touchdown.workAttitude.command.domain.aggregate.Overtime;
 import com.touchdown.perflowbackend.payroll.command.domain.aggregate.Payroll;
-import com.touchdown.perflowbackend.travel.command.domain.aggregate.Travel;
+import com.touchdown.workAttitude.command.domain.aggregate.Travel;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
