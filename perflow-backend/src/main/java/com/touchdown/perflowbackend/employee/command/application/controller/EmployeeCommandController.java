@@ -5,9 +5,7 @@ import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeReg
 import com.touchdown.perflowbackend.employee.command.application.service.EmployeeCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,7 +15,8 @@ public class EmployeeCommandController {
     private final EmployeeCommandService employeeCommandService;
 
     @PostMapping
-    public ResponseEntity<String> registerEmployee(EmployeeRegisterDTO employeeRegisterDTO) {
+    public ResponseEntity<String> registerEmployee(
+            @RequestBody EmployeeRegisterDTO employeeRegisterDTO) {
 
         employeeCommandService.registerEmployee(employeeRegisterDTO);
 

@@ -4,6 +4,8 @@ import com.touchdown.perflowbackend.employee.command.domain.aggregate.EmployeeSt
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
+
 @Getter
 @RequiredArgsConstructor
 public class EmployeeRegisterDTO {
@@ -14,7 +16,7 @@ public class EmployeeRegisterDTO {
 
     private Long jobId;
 
-    private Long DepartmentId;
+    private Long departmentId;
 
     private String name;
 
@@ -31,4 +33,6 @@ public class EmployeeRegisterDTO {
     private String email;
 
     private EmployeeStatus Status;
+
+    private LocalDate joinDate;
 }

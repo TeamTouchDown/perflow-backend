@@ -6,9 +6,17 @@ import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
 
+import javax.swing.text.html.parser.Entity;
+
 public class EmployeeMapper {
 
-    public Employee toEntity(EmployeeRegisterDTO registerDTO, Position position, Job job, Department department) {
-        
+    public static Employee toEntity(EmployeeRegisterDTO registerDTO, Position position, Job job, Department department) {
+
+        return Employee.builder()
+                .registerDTO(registerDTO)
+                .position(position)
+                .job(job)
+                .department(department)
+                .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.touchdown.perflowbackend.employee.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
+import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeRegisterDTO;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
@@ -58,7 +59,22 @@ public class Employee extends BaseEntity {
     private LocalDate joinDate;
 
     @Column(name = "status", nullable = false, length = 30)
-    private String status;
+    private EmployeeStatus status;
 
-
+    @Builder
+    public Employee(EmployeeRegisterDTO registerDTO, Position position, Job job, Department department) {
+        this.empId = registerDTO.getEmpId();
+        this.position = position;
+        this.job = job;
+        this.dept = department;
+        this.name = registerDTO.getName();
+        this.gender = registerDTO.getGender();
+        this.rrn = registerDTO.getRrn();
+        this.pay = registerDTO.getPay();
+        this.address = registerDTO.getAddress();
+        this.contact = registerDTO.getContact();
+        this.email = registerDTO.getEmail();
+        this.joinDate = registerDTO.getJoinDate();
+        this.status = EmployeeStatus.ACTIVE;
+    }
 }

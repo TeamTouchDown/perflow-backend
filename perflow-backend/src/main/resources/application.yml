@@ -9,3 +9,5 @@ spring:
     properties:
       hibernate:
         ddl-auto: create
+  config:
+    import: "classpath:API-KEY.yml"
