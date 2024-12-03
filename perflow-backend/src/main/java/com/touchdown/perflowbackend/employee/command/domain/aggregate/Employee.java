@@ -5,6 +5,7 @@ import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -58,5 +59,6 @@ public class Employee extends BaseEntity {
 
     @Column(name = "status", nullable = false, length = 30)
     private String status;
+
 
 }
