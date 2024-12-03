@@ -1,5 +1,6 @@
 package com.touchdown.perflowbackend.hr.command.domain.aggregate;
 
+import com.touchdown.perflowbackend.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ import java.time.Instant;
 @Entity
 @NoArgsConstructor
 @Table(name = "department", schema = "perflow")
-public class Department {
+public class Department extends BaseEntity {
 
     @Id
     @Column(name = "dept_id", nullable = false)
@@ -32,11 +33,5 @@ public class Department {
 
     @Column(name = "contact", nullable = false, length = 30)
     private String contact;
-
-    @Column(name = "create_datetime", nullable = false)
-    private Instant createDatetime;
-
-    @Column(name = "update_datetime", nullable = false)
-    private Instant updateDatetime;
 
 }
