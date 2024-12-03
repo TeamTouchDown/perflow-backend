@@ -1,6 +1,7 @@
 package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
+import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @Table(name = "annual", schema = "perflow")
-public class Annual { //연차
+public class Annual extends BaseEntity { //연차
     @Id
     @Column(name = "annual_id", nullable = false)
     private Long annualId;
@@ -39,12 +40,6 @@ public class Annual { //연차
 
     @Column(name = "annual_reject_reason")
     private String annualRejectReason;
-
-    @Column(name = "create_datetime", nullable = false)
-    private LocalDateTime createDatetime;
-
-    @Column(name = "update_datetime")
-    private LocalDateTime updateDatetime;
 
     @ColumnDefault("'ACTIVE'")
     @Column(name = "status", nullable = false, length = 30)
