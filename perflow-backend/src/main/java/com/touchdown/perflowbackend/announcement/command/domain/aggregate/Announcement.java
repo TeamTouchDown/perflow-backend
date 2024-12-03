@@ -1,28 +1,31 @@
 package com.touchdown.perflowbackend.announcement.command.domain.aggregate;
 
-import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
+import com.touchdown.perflowbackend.common.BaseEntity;
+import com.touchdown.perflowbackend.department.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import java.time.Instant;
-
-@Getter
-@Setter
 @Entity
+@Getter
+@NoArgsConstructor
 @Table(name = "announcement", schema = "perflow")
-public class Announcement {
+public class Announcement extends BaseEntity {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ann_id", nullable = false)
-    private Long id;
+    private Long annId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "dept_id", nullable = false)
+    @Column(nullable = false)
     private Department dept;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "emp_id", nullable = false)
+    @Column(nullable = false)
     private Employee emp;
 
     @Column(name = "title", nullable = false, length = 50)
@@ -31,11 +34,5 @@ public class Announcement {
     @Lob
     @Column(name = "content", nullable = false)
     private String content;
-
-    @Column(name = "create_datetime", nullable = false)
-    private Instant createDatetime;
-
-    @Column(name = "update_datetime", nullable = false)
-    private Instant updateDatetime;
 
 }
