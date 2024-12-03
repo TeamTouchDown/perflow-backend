@@ -1,7 +1,7 @@
 package com.touchdown.perflowbackend.notification.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.hrperfo.command.domain.aggregate.HrPerfo;
-import com.touchdown.perflowbackend.leave.command.domain.aggregate.Leave;
+import com.touchdown.perflowbackend.vacation.command.domain.aggregate.Vacation;
 import com.touchdown.perflowbackend.annual.command.domain.aggregate.Annual;
 import com.touchdown.perflowbackend.appoint.command.domain.aggregate.Appoint;
 import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
@@ -45,8 +45,8 @@ public class Notification {
     private Annual annual;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "leave_id")
-    private Leave leave;
+    @JoinColumn(name = "vacation_id")
+    private Vacation vacation;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "travel_id")

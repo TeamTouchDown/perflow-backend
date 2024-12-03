@@ -52,4 +52,13 @@ public class Overtime {
     @Column(name = "status", nullable = false, length = 30)
     private String status;
 
+    @Column(name = "is_overtime_retroactive", nullable = false)
+    private Boolean isOvertimeRetroactive = false; // 소급 여부 (0: 일반, 1: 소급)
+
+    @Column(name = "overtime_retroactive_reason", length = 255)
+    private String overtimeRetroactiveReason; // 소급 사유
+
+    @Column(name = "overtime_retroactive_status", length = 30)
+    private String overtimeRetroactiveStatus; // 소급 상태 (대기, 승인, 반려)
+
 }
