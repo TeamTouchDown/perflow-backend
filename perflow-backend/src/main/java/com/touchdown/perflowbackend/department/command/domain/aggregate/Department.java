@@ -16,7 +16,7 @@ public class Department {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "manage_dept_id", nullable = false)
+    @JoinColumn(name = "manage_dept_id", nullable = true)
     private Department manageDept;
 
     @Column(name = "name", nullable = false, length = 30)
