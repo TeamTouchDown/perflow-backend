@@ -5,14 +5,15 @@ import com.touchdown.perflowbackend.job.command.domain.aggregate.Job;
 import com.touchdown.perflowbackend.position.command.domain.aggregate.Position;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
 import java.time.LocalDate;
 
 @Getter
-@Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "employee", schema = "perflow")
 public class Employee {
     @Id

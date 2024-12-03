@@ -5,18 +5,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
 
 @Getter
-@Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "company", schema = "perflow")
 public class Company {
     @Id
     @Column(name = "company_id", nullable = false)
-    private Long id;
+    private Long companyId;
 
     @Column(name = "name", nullable = false, length = 30)
     private String name;
