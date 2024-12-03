@@ -1,44 +1,46 @@
-package com.touchdown.perflowbackend.travel.command.domain.aggregate;
+package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
+import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
-
-import java.time.Instant;
+import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @Getter
-@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "travel", schema = "perflow")
-public class Travel {
+public class Travel extends BaseEntity {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "travel_id", nullable = false)
-    private Long id;
+    private Long travelId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "emp_id", nullable = false)
-    private Employee emp;
+    private Employee empId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "approve_sbj_id", nullable = false)
     private ApproveSbj approveSbj;
 
     @Column(name = "enroll_travel", nullable = false)
-    private Instant enrollTravel;
+    private LocalDateTime enrollTravel;
 
-    @Column(name = "travel_reson", nullable = false)
-    private String travelReson;
+    @Column(name = "travel_reason", nullable = false)
+    private String travelReason;
 
     @Column(name = "travel_start", nullable = false)
-    private Instant travelStart;
+    private LocalDateTime travelStart;
 
     @Column(name = "travel_end", nullable = false)
-    private Instant travelEnd;
+    private LocalDateTime travelEnd;
 
     @Column(name = "travel_status", nullable = false, length = 30)
-    private String travelStatus;
+    private Status travelStatus;
 
     @Column(name = "travel_reject_reason")
     private String travelRejectReason;
@@ -46,13 +48,8 @@ public class Travel {
     @Column(name = "travel_division", nullable = false, length = 30)
     private String travelDivision;
 
-    @Column(name = "create_datetime", nullable = false)
-    private Instant createDatetime;
-
-    @Column(name = "update_datetime")
-    private Instant updateDatetime;
 
     @Column(name = "status", nullable = false, length = 30)
-    private String status;
+    private Status status;
 
 }

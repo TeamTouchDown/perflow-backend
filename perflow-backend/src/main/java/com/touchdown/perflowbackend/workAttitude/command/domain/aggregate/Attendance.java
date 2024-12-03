@@ -1,29 +1,31 @@
-package com.touchdown.perflowbackend.attendance.command.domain.aggregate;
+package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
-@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "attendance", schema = "perflow")
-public class Attendance {
+public class Attendance { //출퇴
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "attendance_id", nullable = false)
-    private Long id;
+    private Long attendanceId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "emp_id", nullable = false)
-    private Employee emp;
+    private Employee empId;
 
     @Column(name = "get_work_datetime", nullable = false)
-    private Instant getWorkDatetime;
+    private LocalDateTime getWorkDatetime;
 
     @Column(name = "get_off_datetime", nullable = false)
-    private Instant getOffDatetime;
+    private LocalDateTime getOffDatetime;
 
 }
