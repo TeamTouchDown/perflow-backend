@@ -1,4 +1,4 @@
-package com.touchdown.perflowbackend.payroll.command.domain.aggregate;
+package com.touchdown.perflowbackend.payment.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
