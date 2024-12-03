@@ -1,29 +1,29 @@
-package com.touchdown.perflowbackend.approveline.command.domain.aggregate;
+package com.touchdown.perflowbackend.approve.command.domain.aggregate;
 
-import com.touchdown.perflowbackend.doc.command.domain.aggregate.Doc;
+import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "approve_line", schema = "perflow")
-public class ApproveLine {
+public class ApproveLine extends BaseEntity {
     @Id
     @Column(name = "approve_line_id", nullable = false)
-    private Long id;
+    private Long approveLineId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "doc_id", nullable = false)
-    private Doc doc;
+    private Doc docId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "create_user_id", nullable = false)
-    private Employee createUser;
+    private Employee createUserId;
 
     @Column(name = "name", length = 30)
     private String name;
@@ -38,18 +38,12 @@ public class ApproveLine {
     private String approveType;
 
     @Column(name = "status", nullable = false, length = 30)
-    private String status;
-
-    @Column(name = "create_datetime", nullable = false)
-    private Instant createDatetime;
+    private Status status;
 
     @Column(name = "complete_datetime")
-    private Instant completeDatetime;
-
-    @Column(name = "update_datetime")
-    private Instant updateDatetime;
+    private LocalDateTime completeDatetime;
 
     @Column(name = "delete_datetime")
-    private Instant deleteDatetime;
+    private LocalDateTime deleteDatetime;
 
 }

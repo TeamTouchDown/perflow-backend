@@ -1,6 +1,6 @@
 package com.touchdown.perflowbackend.annual.command.domain.aggregate;
 
-import com.touchdown.perflowbackend.approvesbj.command.domain.aggregate.ApproveSbj;
+import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
