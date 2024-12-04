@@ -17,7 +17,7 @@ public class JwtTokenProvider {
     private final long accessTokenValidity;
 
     public JwtTokenProvider(@Value("${token.secret}") String secret,
-                         @Value("${token.access_token_expiration_time}") long accessTokenValidity) {
+                            @Value("${token.access_token_expiration_time}") long accessTokenValidity) {
 
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
         this.accessTokenValidity = accessTokenValidity;

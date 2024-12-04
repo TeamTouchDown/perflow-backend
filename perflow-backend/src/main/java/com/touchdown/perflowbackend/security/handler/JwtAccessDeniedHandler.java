@@ -9,7 +9,6 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 
 import java.io.IOException;
 
-
 /* 인가 실패 시 응답 설정 */
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 

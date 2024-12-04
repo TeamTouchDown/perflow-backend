@@ -48,7 +48,7 @@ public class JwtUtil {
 
         return false;
     }
-    
+
     /* 넘어온 AccessToken으로 인증 객체 추출 */
     public Authentication getAuthentication(String token) {
 

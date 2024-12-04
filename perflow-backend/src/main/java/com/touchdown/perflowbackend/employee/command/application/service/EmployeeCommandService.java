@@ -4,6 +4,7 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeLoginRequestDTO;
 import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeLoginResponseDTO;
+import com.touchdown.perflowbackend.employee.command.application.dto.EmployeePwdRegisterDTO;
 import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeRegisterDTO;
 import com.touchdown.perflowbackend.employee.command.application.mapper.EmployeeMapper;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
@@ -18,16 +19,19 @@ import com.touchdown.perflowbackend.hr.command.domain.repository.PositionCommand
 import com.touchdown.perflowbackend.security.util.CustomEmployDetail;
 import com.touchdown.perflowbackend.security.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class EmployeeCommandService {
 
@@ -38,6 +42,8 @@ public class EmployeeCommandService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public void registerEmployee(EmployeeRegisterDTO employeeRegisterDTO) {
@@ -53,7 +59,7 @@ public class EmployeeCommandService {
                 () -> new CustomException(ErrorCode.NOT_FOUND_JOB)
         );
 
-        Employee newEmployee = EmployeeMapper.toEntity(employeeRegisterDTO, position,job, department);
+        Employee newEmployee = EmployeeMapper.toEntity(employeeRegisterDTO, position, job, department);
 
         employeeCommandRepository.save(newEmployee);
 
@@ -70,16 +76,33 @@ public class EmployeeCommandService {
                 )
         );
 
-        CustomEmployDetail customEmployDetail = (CustomEmployDetail) authentication.getDetails();
+        CustomEmployDetail customEmployDetail = (CustomEmployDetail) authentication.getPrincipal();
 
         String empId = customEmployDetail.getUsername();
         EmployeeStatus status = customEmployDetail.getStatus();
 
-        Map<String, Object> claims = Map.of("empId", empId);
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("empId", empId);
         claims.put("status", status.name());
 
-        String accessToken = jwtTokenProvider.createAccessToken(authentication.getName(), claims);
+        String accessToken = jwtTokenProvider.createAccessToken(customEmployDetail.getUsername(), claims);
 
         return new EmployeeLoginResponseDTO(empId, accessToken);
+    }
+
+    @Transactional
+    public void registerEmployeePassword(EmployeePwdRegisterDTO employeePwdRegisterDTO) {
+
+        Employee employee = employeeCommandRepository.findById(employeePwdRegisterDTO.getEmpId()).orElseThrow(
+
+                () -> new CustomException(ErrorCode.NOT_FOUND_EMP)
+        );
+
+        log.info(employee.toString());
+        String pwd = passwordEncoder.encode(employeePwdRegisterDTO.getPassword());
+
+        employee.registerPassword(pwd);
+
+        employeeCommandRepository.save(employee);
     }
 }

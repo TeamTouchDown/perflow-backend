@@ -9,11 +9,13 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
 @Getter
 @Entity
+@ToString
 @NoArgsConstructor
 @Table(name = "employee", schema = "perflow")
 public class Employee extends BaseEntity {
@@ -80,5 +82,9 @@ public class Employee extends BaseEntity {
         this.email = registerDTO.getEmail();
         this.joinDate = registerDTO.getJoinDate();
         this.status = EmployeeStatus.ACTIVE;
+    }
+
+    public void registerPassword(String password) {
+        this.password = password;
     }
 }

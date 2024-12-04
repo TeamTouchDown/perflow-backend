@@ -3,6 +3,7 @@ package com.touchdown.perflowbackend.employee.command.application.controller;
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeLoginRequestDTO;
 import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeLoginResponseDTO;
+import com.touchdown.perflowbackend.employee.command.application.dto.EmployeePwdRegisterDTO;
 import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeRegisterDTO;
 import com.touchdown.perflowbackend.employee.command.application.service.EmployeeCommandService;
 import lombok.RequiredArgsConstructor;
@@ -37,5 +38,13 @@ public class EmployeeCommandController {
         headers.add("Authorization", "Bearer " + responseDTO.getAccessToken());
 
         return ResponseEntity.ok().headers(headers).body(responseDTO);
+    }
+
+    @PutMapping("/pwd")
+    public ResponseEntity<String> registerEmployeePassword(@RequestBody EmployeePwdRegisterDTO employeePwdRegisterDTO) {
+
+        employeeCommandService.registerEmployeePassword(employeePwdRegisterDTO);
+
+        return ResponseEntity.ok(SuccessCode.SUCCESS.getMessage());
     }
 }

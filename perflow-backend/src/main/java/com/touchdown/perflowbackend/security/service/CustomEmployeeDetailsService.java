@@ -6,12 +6,14 @@ import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
 import com.touchdown.perflowbackend.security.util.CustomEmployDetail;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class CustomEmployeeDetailsService implements UserDetailsService {
 
@@ -23,7 +25,7 @@ public class CustomEmployeeDetailsService implements UserDetailsService {
         Employee employee = employeeCommandRepository.findById(empId).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_EMP)
         );
-
+        log.info(employee.toString());
         return new CustomEmployDetail(employee);
     }
 }
