@@ -2,6 +2,7 @@ package com.touchdown.perflowbackend.security.util;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,8 @@ public class JwtTokenProvider {
     public JwtTokenProvider(@Value("${token.secret}") String secret,
                             @Value("${token.access_token_expiration_time}") long accessTokenValidity) {
 
-        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
         this.accessTokenValidity = accessTokenValidity;
     }
 

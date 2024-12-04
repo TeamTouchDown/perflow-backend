@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -20,6 +21,7 @@ public class CustomEmployeeDetailsService implements UserDetailsService {
     private final EmployeeCommandRepository employeeCommandRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String empId) throws UsernameNotFoundException {
 
         Employee employee = employeeCommandRepository.findById(empId).orElseThrow(

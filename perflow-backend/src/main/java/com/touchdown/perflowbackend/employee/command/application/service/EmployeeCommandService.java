@@ -66,6 +66,7 @@ public class EmployeeCommandService {
     }
 
 
+    @Transactional
     public EmployeeLoginResponseDTO loginRequestEmployee(EmployeeLoginRequestDTO employeeLoginRequestDTO) {
 
         // 1. AuthenticationManager를 통해 인증 수행
