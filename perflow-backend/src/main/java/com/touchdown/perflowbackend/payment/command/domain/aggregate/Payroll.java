@@ -21,7 +21,7 @@ public class Payroll extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "emp_id", nullable = false)
-    private Employee empId;
+    private Employee emp;
 
     @Column(name = "extend_labor_allowance")
     private Long extendLaborAllowance;
@@ -69,4 +69,24 @@ public class Payroll extends BaseEntity {
     @Column(name = "total_end_date", nullable = false)
     private LocalDate totalEndDate;
 
+    public Payroll(Employee emp, Long extendLaborAllowance, Long nightLaborAllowance, Long holidayLaborAllowance,
+                   Long annualAllowance, Long incentive, Long nationalPension, Long healthInsurance, Long hireInsurance,
+                   Long longTermCareInsurance, Long incomeTax, Long localIncomeTax, Long totalAmount, Status status) {
+
+        this.emp = emp;
+        this.extendLaborAllowance = extendLaborAllowance;
+        this.nightLaborAllowance = nightLaborAllowance;
+        this.holidayLaborAllowance = holidayLaborAllowance;
+        this.annualAllowance = annualAllowance;
+        this.incentive = incentive;
+        this.nationalPension = nationalPension;
+        this.healthInsurance = healthInsurance;
+        this.hireInsurance = hireInsurance;
+        this.longTermCareInsurance = longTermCareInsurance;
+        this.incomeTax = incomeTax;
+        this.localIncomeTax = localIncomeTax;
+        this.totalAmount = totalAmount;
+        this.status = status;
+
+    }
 }
