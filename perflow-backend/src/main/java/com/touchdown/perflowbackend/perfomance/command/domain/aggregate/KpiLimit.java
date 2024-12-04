@@ -11,37 +11,31 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
-@Table(name = "weight", schema = "perflow")
-public class Weight extends BaseEntity {
+@Table(name = "kpi_limit", schema = "perflow")
+public class KpiLimit extends BaseEntity {
 
     @Id
-    @Column(name = "weight_id", nullable = false)
+    @Column(name = "kpi_limit_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long weightId;
+    private Long kpiLimitId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "dept_id", nullable = false)
-    private Department dept;
+    private Department department;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "emp_id", nullable = false)
     private Employee emp;
 
-    @Column(name = "personal_weight", nullable = false)
-    private Long personalWeight;
+    @Column(name = "personal_kpi_min", nullable = false)
+    private Long personalKpiMin;
 
-    @Column(name = "team_weight", nullable = false)
-    private Long teamWeight;
+    @Column(name = "personal_kpi_max", nullable = false)
+    private Long personalKpiMax;
 
-    @Column(name = "col_weight", nullable = false)
-    private Long colWeight;
+    @Column(name = "team_kpi_min", nullable = false)
+    private Long teamKpiMin;
 
-    @Column(name = "downward_weight", nullable = false)
-    private Long downwardWeight;
-
-    @Column(name = "attendance_weight", nullable = false)
-    private Long attendanceWeight;
-
-    @Column(name = "update_reason", nullable = false)
-    private String updateReason;
+    @Column(name = "team_kpi_max", nullable = false)
+    private Long teamKpiMax;
 }

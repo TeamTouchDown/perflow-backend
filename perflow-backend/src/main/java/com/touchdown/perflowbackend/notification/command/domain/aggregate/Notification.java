@@ -2,13 +2,14 @@ package com.touchdown.perflowbackend.notification.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Appoint;
-import com.touchdown.perflowbackend.payroll.command.domain.aggregate.Payroll;
+import com.touchdown.perflowbackend.payment.command.domain.aggregate.Payroll;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.HrPerfo;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Annual;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Overtime;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Travel;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Vacation;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "notification", schema = "perflow")
 public class Notification {

@@ -25,14 +25,63 @@ public class AnnouncementCommandService {
     @Transactional
     public void createAnnouncement(AnnouncementRequestDTO announcementRequestDTO) {
 
-        Department foundDepartment = departmentCommandRepository.findById(announcementRequestDTO.getDeptId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT));
+        Department foundDepartment = findDepartmentByDeptId(announcementRequestDTO.getDeptId());
 
-        Employee foundEmployee = employeeCommandRepository.findById(announcementRequestDTO.getEmpId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP));
+        Employee foundEmployee = findEmployeeByEmpId(announcementRequestDTO.getEmpId());
 
         Announcement newAnnouncement = AnnouncementMapper.toEntity(announcementRequestDTO, foundDepartment, foundEmployee);
 
         announcementCommandRepository.save(newAnnouncement);
+    }
+
+    @Transactional
+    public void updateAnnouncement(Long annId, AnnouncementRequestDTO announcementRequestDTO) {
+
+        Announcement foundAnnouncement = findAnnouncementByAnnId(annId);
+
+        findDepartmentByDeptId(announcementRequestDTO.getDeptId());
+
+        findEmployeeByEmpId(announcementRequestDTO.getEmpId());
+
+        if (isSameWriter(foundAnnouncement.getEmp().getEmpId(), announcementRequestDTO.getEmpId())) {
+            throw new CustomException(ErrorCode.NOT_MATCH_WRITER);
+        }
+
+        foundAnnouncement.updateAnnouncement(announcementRequestDTO);
+    }
+
+    @Transactional
+    public void deleteAnnouncement(Long annId, String empId) {
+
+        Announcement foundAnnouncement = findAnnouncementByAnnId(annId);
+
+        if (isSameWriter(foundAnnouncement.getEmp().getEmpId(), empId)) {
+            throw new CustomException(ErrorCode.NOT_MATCH_WRITER);
+        }
+
+        announcementCommandRepository.deleteById(annId);
+    }
+
+    private boolean isSameWriter(String empId, String requestEmpId) {
+
+        return !empId.equals(requestEmpId);
+    }
+
+    private Announcement findAnnouncementByAnnId(Long annId) {
+
+        return announcementCommandRepository.findById(annId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ANNOUNCEMENT));
+    }
+
+    private Department findDepartmentByDeptId(Long deptId) {
+
+        return departmentCommandRepository.findById(deptId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT));
+    }
+
+    private Employee findEmployeeByEmpId(String empId) {
+
+        return employeeCommandRepository.findById(empId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP));
     }
 }
