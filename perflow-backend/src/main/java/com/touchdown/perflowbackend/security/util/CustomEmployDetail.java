@@ -1,6 +1,7 @@
 package com.touchdown.perflowbackend.security.util;
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.employee.command.domain.aggregate.EmployeeStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -29,6 +30,10 @@ public class CustomEmployDetail implements UserDetails {
     @Override
     public String getUsername() {
         return employee.getEmpId();
+    }
+
+    public EmployeeStatus getStatus() {
+        return employee.getStatus();
     }
 
     @Override

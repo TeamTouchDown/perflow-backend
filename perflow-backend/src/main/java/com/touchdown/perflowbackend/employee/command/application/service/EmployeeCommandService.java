@@ -2,9 +2,12 @@ package com.touchdown.perflowbackend.employee.command.application.service;
 
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
+import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeLoginRequestDTO;
+import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeLoginResponseDTO;
 import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeRegisterDTO;
 import com.touchdown.perflowbackend.employee.command.application.mapper.EmployeeMapper;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.employee.command.domain.aggregate.EmployeeStatus;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
@@ -13,10 +16,16 @@ import com.touchdown.perflowbackend.hr.command.domain.repository.DepartmentComma
 import com.touchdown.perflowbackend.hr.command.domain.repository.JobCommandRepository;
 import com.touchdown.perflowbackend.hr.command.domain.repository.PositionCommandRepository;
 import com.touchdown.perflowbackend.security.util.CustomEmployDetail;
+import com.touchdown.perflowbackend.security.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +35,9 @@ public class EmployeeCommandService {
     private final PositionCommandRepository positionCommandRepository;
     private final JobCommandRepository jobCommandRepository;
     private final DepartmentCommandRepository departmentCommandRepository;
+
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     public void registerEmployee(EmployeeRegisterDTO employeeRegisterDTO) {
@@ -47,4 +59,27 @@ public class EmployeeCommandService {
 
     }
 
+
+    public EmployeeLoginResponseDTO loginRequestEmployee(EmployeeLoginRequestDTO employeeLoginRequestDTO) {
+
+        // 1. AuthenticationManager를 통해 인증 수행
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        employeeLoginRequestDTO.getEmpId(),
+                        employeeLoginRequestDTO.getPassword()
+                )
+        );
+
+        CustomEmployDetail customEmployDetail = (CustomEmployDetail) authentication.getDetails();
+
+        String empId = customEmployDetail.getUsername();
+        EmployeeStatus status = customEmployDetail.getStatus();
+
+        Map<String, Object> claims = Map.of("empId", empId);
+        claims.put("status", status.name());
+
+        String accessToken = jwtTokenProvider.createAccessToken(authentication.getName(), claims);
+
+        return new EmployeeLoginResponseDTO(empId, accessToken);
+    }
 }

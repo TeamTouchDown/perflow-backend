@@ -11,3 +11,7 @@ spring:
         ddl-auto: create
   config:
     import: "classpath:API-KEY.yml"
+token:
+  secret: ${token.secret}
+  access_token_expiration_time: ${token.access_token_expiration_time}
+  refresh_token_expiration_time: ${token.refresh_token_expiration_time}
