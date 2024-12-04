@@ -1,4 +1,4 @@
-package com.touchdown.perflowbackend.payroll.command.domain.aggregate;
+package com.touchdown.perflowbackend.payment.command.domain.aggregate;
 
 public enum Status {
 
