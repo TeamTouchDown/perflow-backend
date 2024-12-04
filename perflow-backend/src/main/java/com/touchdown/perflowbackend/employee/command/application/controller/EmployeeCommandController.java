@@ -19,12 +19,12 @@ public class EmployeeCommandController {
     private final EmployeeCommandService employeeCommandService;
 
     @PostMapping
-    public ResponseEntity<String> registerEmployee(
+    public ResponseEntity<SuccessCode> registerEmployee(
             @RequestBody EmployeeRegisterDTO employeeRegisterDTO) {
 
         employeeCommandService.registerEmployee(employeeRegisterDTO);
 
-        return ResponseEntity.ok(SuccessCode.SUCCESS.getMessage());
+        return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
 
     @GetMapping("/login")
@@ -41,10 +41,10 @@ public class EmployeeCommandController {
     }
 
     @PutMapping("/pwd")
-    public ResponseEntity<String> registerEmployeePassword(@RequestBody EmployeePwdRegisterDTO employeePwdRegisterDTO) {
+    public ResponseEntity<SuccessCode> registerEmployeePassword(@RequestBody EmployeePwdRegisterDTO employeePwdRegisterDTO) {
 
         employeeCommandService.registerEmployeePassword(employeePwdRegisterDTO);
 
-        return ResponseEntity.ok(SuccessCode.SUCCESS.getMessage());
+        return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
 }

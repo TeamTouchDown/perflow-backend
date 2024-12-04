@@ -95,9 +95,13 @@ public class EmployeeCommandService {
     public void registerEmployeePassword(EmployeePwdRegisterDTO employeePwdRegisterDTO) {
 
         Employee employee = employeeCommandRepository.findById(employeePwdRegisterDTO.getEmpId()).orElseThrow(
-
                 () -> new CustomException(ErrorCode.NOT_FOUND_EMP)
         );
+
+        /* 이미 초기 비밀번호 등록이 완료된 사원이라면 등록 불가. */
+        if(!employee.getPassword().isEmpty()){
+            throw new CustomException(ErrorCode.ALREADY_REGISTERED_PASSWORD);
+        }
 
         log.info(employee.toString());
         String pwd = passwordEncoder.encode(employeePwdRegisterDTO.getPassword());
