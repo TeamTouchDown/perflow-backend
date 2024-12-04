@@ -1,6 +1,6 @@
 package com.touchdown.perflowbackend.workAttitude.command.mapper;
 
-import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
+import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeTravelRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
