@@ -56,12 +56,18 @@ public class Travel extends BaseEntity {
     private Status status;
 
     @Builder
-    public Travel(Employee empId, String travelReason, LocalDateTime travelStart, LocalDateTime travelEnd, String travelDivision, String travelStatus, LocalDateTime createdAt) {
+    public Travel(Employee empId, ApproveSbj approveSbj, LocalDateTime enrollTravel,
+                  String travelReason, LocalDateTime travelStart, LocalDateTime travelEnd,
+                  Status travelStatus, String travelRejectReason, String travelDivision, Status status) {
         this.employee = empId;
+        this.approveSbj = approveSbj;
+        this.enrollTravel = enrollTravel;
         this.travelReason = travelReason;
         this.travelStart = travelStart;
         this.travelEnd = travelEnd;
+        this.travelStatus = travelStatus;
+        this.travelRejectReason = travelRejectReason;
         this.travelDivision = travelDivision;
-        this.travelStatus = Status.valueOf(travelStatus);
+        this.status = status;
     }
 }
