@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "ai_perfo_summary", schema = "perflow")
 public class AiPerfoSummary extends BaseEntity {
+
     @Id
     @Column(name = "ai_summary_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +22,7 @@ public class AiPerfoSummary extends BaseEntity {
     private Employee emp;
 
     @Column(name = "perfo_type", nullable = false, length = 30)
-    private String perfoType;
+    private PerfoType perfoType;
 
     @Column(name = "ai_summary", nullable = false)
     private String aiSummary;

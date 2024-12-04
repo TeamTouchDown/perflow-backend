@@ -12,6 +12,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Entity
 @Table(name = "kpi", schema = "perflow")
 public class Kpi extends BaseEntity {
+
     @Id
     @Column(name = "kpi_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +39,7 @@ public class Kpi extends BaseEntity {
     private String status;
 
     @Column(name = "personal_type", nullable = false, length = 30)
-    private String personalType;
+    private PersonalType personalType;
 
     @Column(name = "goal_detail", nullable = false)
     private String goalDetail;

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "hr_perfo", schema = "perflow")
 public class HrPerfo extends BaseEntity {
+
     @Id
     @Column(name = "hr_perfo_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +22,7 @@ public class HrPerfo extends BaseEntity {
     private Employee emp;
 
     @Column(name = "grade", nullable = false, length = 30)
-    private String grade;
+    private Grade grade;
 
     @Column(name = "score", nullable = false)
     private Long score;

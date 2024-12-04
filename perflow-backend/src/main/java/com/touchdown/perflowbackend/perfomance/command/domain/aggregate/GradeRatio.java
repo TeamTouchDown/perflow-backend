@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "grade_ratio", schema = "perflow")
 public class GradeRatio extends BaseEntity {
+
     @Id
     @Column(name = "grade_ratio_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

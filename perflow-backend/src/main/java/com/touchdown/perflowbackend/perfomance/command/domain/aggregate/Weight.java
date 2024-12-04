@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "weight", schema = "perflow")
 public class Weight extends BaseEntity {
+
     @Id
     @Column(name = "weight_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

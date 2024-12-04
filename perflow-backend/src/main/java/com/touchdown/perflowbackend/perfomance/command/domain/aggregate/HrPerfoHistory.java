@@ -11,8 +11,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "hr_perfo_history", schema = "perflow")
 public class HrPerfoHistory extends BaseEntity {
+
     @Id
     @Column(name = "hr_perfo_history_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hrPerfoHistoryId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -23,8 +25,8 @@ public class HrPerfoHistory extends BaseEntity {
     @JoinColumn(name = "emp_id", nullable = false)
     private Employee emp;
 
-    @Column(name = "adjustment_dehree", nullable = false)
-    private Long adjustmentDehree;
+    @Column(name = "adjustment_degree", nullable = false)
+    private Long adjustmentDegree;
 
     @Column(name = "adjustment_score", nullable = false)
     private Long adjustmentScore;

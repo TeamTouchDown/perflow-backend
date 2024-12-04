@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "kpi_progress_status", schema = "perflow")
 public class KpiProgressStatus extends BaseEntity {
+
     @Id
     @Column(name = "kpi_progress_pass_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
