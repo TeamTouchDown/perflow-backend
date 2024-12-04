@@ -4,12 +4,14 @@ import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "travel", schema = "perflow")
 public class Travel extends BaseEntity {
@@ -21,7 +23,7 @@ public class Travel extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "emp_id", nullable = false)
-    private Employee empId;
+    private Employee employee;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "approve_sbj_id", nullable = false)
@@ -50,6 +52,22 @@ public class Travel extends BaseEntity {
 
 
     @Column(name = "status", nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
+    @Builder
+    public Travel(Employee empId, ApproveSbj approveSbj, LocalDateTime enrollTravel,
+                  String travelReason, LocalDateTime travelStart, LocalDateTime travelEnd,
+                  Status travelStatus, String travelRejectReason, String travelDivision, Status status) {
+        this.employee = empId;
+        this.approveSbj = approveSbj;
+        this.enrollTravel = enrollTravel;
+        this.travelReason = travelReason;
+        this.travelStart = travelStart;
+        this.travelEnd = travelEnd;
+        this.travelStatus = travelStatus;
+        this.travelRejectReason = travelRejectReason;
+        this.travelDivision = travelDivision;
+        this.status = status;
+    }
 }

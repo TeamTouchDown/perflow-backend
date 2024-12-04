@@ -4,7 +4,6 @@ spring:
     url: jdbc:mariadb://localhost:${db.port}/${db.name}
     username: ${db.user}
     password: ${db.password}
-
   jpa:
     properties:
       hibernate:
