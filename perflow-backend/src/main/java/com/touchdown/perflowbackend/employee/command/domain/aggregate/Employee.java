@@ -34,6 +34,9 @@ public class Employee extends BaseEntity {
     @JoinColumn(name = "dept_id", nullable = false)
     private Department dept;
 
+    @Column(name = "password", nullable = false, length = 255)
+    private String password;
+
     @Column(name = "name", nullable = false, length = 30)
     private String name;
 
@@ -59,6 +62,7 @@ public class Employee extends BaseEntity {
     private LocalDate joinDate;
 
     @Column(name = "status", nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
     private EmployeeStatus status;
 
     @Builder
