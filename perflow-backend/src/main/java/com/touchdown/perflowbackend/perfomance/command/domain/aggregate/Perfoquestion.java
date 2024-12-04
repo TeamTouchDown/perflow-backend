@@ -28,5 +28,6 @@ public class Perfoquestion extends BaseEntity {
     private String questionContent;
 
     @Column(name = "perfo_type", nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
     private PerfoType perfoType;
 }

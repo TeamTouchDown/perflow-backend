@@ -22,6 +22,7 @@ public class HrPerfo extends BaseEntity {
     private Employee emp;
 
     @Column(name = "grade", nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
     private Grade grade;
 
     @Column(name = "score", nullable = false)

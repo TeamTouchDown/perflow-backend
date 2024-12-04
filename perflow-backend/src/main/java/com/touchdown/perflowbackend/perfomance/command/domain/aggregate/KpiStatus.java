@@ -26,6 +26,7 @@ public class KpiStatus extends BaseEntity {
     private Employee emp;
 
     @Column(name = "pass_status", nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
     private PassStatus passStatus;
 
     @Column(name = "pass_reason", nullable = false)

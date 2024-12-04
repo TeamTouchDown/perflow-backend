@@ -29,6 +29,7 @@ public class HrPerfoInquiry extends BaseEntity {
     private String reason;
 
     @Column(name = "status", nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
     private PassStatus status;
 
     @Column(name = "pass_reason", nullable = false)

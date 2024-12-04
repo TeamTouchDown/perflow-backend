@@ -22,6 +22,7 @@ public class AiPerfoSummary extends BaseEntity {
     private Employee emp;
 
     @Column(name = "perfo_type", nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
     private PerfoType perfoType;
 
     @Column(name = "ai_summary", nullable = false)
