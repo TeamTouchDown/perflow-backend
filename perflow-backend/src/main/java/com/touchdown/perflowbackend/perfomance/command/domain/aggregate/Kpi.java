@@ -36,7 +36,8 @@ public class Kpi extends BaseEntity {
     private Double currentValue;
 
     @Column(name = "status", nullable = false, length = 30)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private KpiCurrentStatus status;
 
     @Column(name = "personal_type", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)

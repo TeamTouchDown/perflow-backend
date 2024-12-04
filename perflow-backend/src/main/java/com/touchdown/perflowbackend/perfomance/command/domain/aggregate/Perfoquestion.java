@@ -22,6 +22,7 @@ public class Perfoquestion extends BaseEntity {
     private Department dept;
 
     @Column(name = "question_type", nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
     private QuestionType questionType;
 
     @Column(name = "question_content", nullable = false)
