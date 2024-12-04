@@ -29,29 +29,45 @@ import java.util.stream.IntStream;
 @Service
 @RequiredArgsConstructor
 public class TemplateCommandService {
-
     private final TemplateCommandRepository templateCommandRepository;
     private final EmployeeCommandRepository employeeCommandRepository;
     private final TemplateFieldCommandRepository templateFieldCommandRepository;
-    private final FieldTypeCommandRepository fieldTypeCommandRepository;
     private final JpaFieldTypeCommandRepository jpaFieldTypeCommandRepository;
 
     @Transactional
     public TemplateCreateResponseDTO createNewTemplate(TemplateCreateRequestDTO request, String empId) {
 
-        // 사원 조회
-        Employee createEmp = employeeCommandRepository.findById(empId)
+        Employee createEmp = findEmployeeById(empId);
+
+        Template savedTemplate = saveTemplate(createEmp, request);
+
+        validateFieldData(request);
+
+        List<FieldType> fieldTypes = fetchFieldTypes(request.getFieldTypes());
+
+        List<TemplateField> fields = createTemplateFields(savedTemplate, fieldTypes, request);
+
+        saveTemplateFields(fields);
+
+        return new TemplateCreateResponseDTO(savedTemplate.getTemplateId());
+    }
+
+    // 사원 조회
+    private Employee findEmployeeById(String empId) {
+        return employeeCommandRepository.findById(empId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP));
+    }
 
-        log.info("사번 조회 성공 - 사번: {}", createEmp.getEmpId());
-
-        // 서식 엔터티 생성, 저장
+    // 서식 엔터티 생성, 저장
+    private Template saveTemplate(Employee createEmp, TemplateCreateRequestDTO request) {
         Template newTemplate = TemplateMapper.templateToEntity(createEmp, request);
         Template savedTemplate = templateCommandRepository.save(newTemplate);
-
         log.info("서식 생성 성공 - TemplateId: {}", savedTemplate.getTemplateId());
+        return savedTemplate;
+    }
 
-        // 필드 데이터 유효성 검사
+    // 필드 데이터 유효성 검사
+    private void validateFieldData(TemplateCreateRequestDTO request) {
         List<Long> fieldTypeIds = request.getFieldTypes();
         List<String> detailsList = request.getDetailsList();
         List<Boolean> isRepeatedList = request.getIsRepeatedList();
@@ -61,43 +77,46 @@ public class TemplateCommandService {
             log.info("필드 데이터의 크기가 일치하지 않음");
             throw new CustomException(ErrorCode.INVALID_FIELD_DATA);
         }
+    }
 
-
-        // 필요한 모든 필드 타입 한 번에 가져오기
+    // 필요한 모든 필드 타입 한 번에 가져오기
+    private List<FieldType> fetchFieldTypes(List<Long> fieldTypeIds) {
         List<FieldType> fieldTypes = jpaFieldTypeCommandRepository.findAllById(fieldTypeIds);
         if (fieldTypes.size() != fieldTypeIds.stream().distinct().count()) {
             throw new CustomException(ErrorCode.NOT_FOUND_FIELD_TYPE);
         }
+        return fieldTypes;
+    }
 
-        // 필드 타입을 Map 으로 변환
+    // TemplateField 엔터티 생성
+    private List<TemplateField> createTemplateFields(Template template, List<FieldType> fieldTypes, TemplateCreateRequestDTO request) {
+        List<Long> fieldTypeIds = request.getFieldTypes();
+        List<String> detailsList = request.getDetailsList();
+        List<Boolean> isRepeatedList = request.getIsRepeatedList();
+
         Map<Long, FieldType> fieldTypeMap = fieldTypes.stream()
                 .collect(Collectors.toMap(FieldType::getFieldTypeId, ft -> ft));
 
-        // TemplateField 엔터티 생성
-        List<TemplateField> fields = IntStream.range(0, fieldTypeIds.size())
+        return IntStream.range(0, fieldTypeIds.size())
                 .mapToObj(i -> {
-                    // 요청된 ID에 맞는 FieldType 가져오기
                     FieldType fieldType = fieldTypeMap.get(fieldTypeIds.get(i));
                     if (fieldType == null) {
                         throw new CustomException(ErrorCode.NOT_FOUND_FIELD_TYPE);
                     }
-
-                    // TemplateField 엔터티 생성
                     return TemplateFieldMapper.templateFieldToEntity(
-                            savedTemplate,
+                            template,
                             fieldType,
-                            detailsList.get(i),  // 해당 순서의 details
+                            detailsList.get(i),
                             isRepeatedList.get(i),
-                            (long) i + 1         // 필드 순서
+                            (long) i + 1
                     );
                 })
                 .toList();
+    }
 
-        // 필드 저장
+    // 필드 저장
+    private void saveTemplateFields(List<TemplateField> fields) {
         templateFieldCommandRepository.saveAll(fields);
         log.info("서식 필드 저장 성공: 필드 수 {}", fields.size());
-
-
-        return new TemplateCreateResponseDTO(savedTemplate.getTemplateId());
     }
 }
