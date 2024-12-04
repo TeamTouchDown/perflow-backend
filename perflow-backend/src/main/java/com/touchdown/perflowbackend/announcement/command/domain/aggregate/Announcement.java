@@ -1,5 +1,6 @@
 package com.touchdown.perflowbackend.announcement.command.domain.aggregate;
 
+import com.touchdown.perflowbackend.announcement.command.application.dto.AnnouncementRequestDTO;
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
@@ -42,5 +43,10 @@ public class Announcement extends BaseEntity {
         this.emp = emp;
         this.title = title;
         this.content = content;
+    }
+
+    public void updateAnnouncement(AnnouncementRequestDTO announcementRequestDTO) {
+        this.title = announcementRequestDTO.getTitle();
+        this.content = announcementRequestDTO.getContent();
     }
 }
