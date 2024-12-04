@@ -4,6 +4,8 @@ public enum Status {
     ACTIVATED,
     DELETED,
     UPDATED,
-    COLLECTED,  // 회수
+    CONFIRMED,
+    REJECTED,
+    PENDING,
 }
 

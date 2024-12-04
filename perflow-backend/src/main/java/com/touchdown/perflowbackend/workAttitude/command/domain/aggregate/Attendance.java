@@ -2,13 +2,14 @@ package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "attendance", schema = "perflow")
 public class Attendance { //출퇴

@@ -1,9 +1,10 @@
 package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 
-import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.common.BaseEntity;
+import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -11,7 +12,7 @@ import org.hibernate.annotations.ColumnDefault;
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "annual", schema = "perflow")
 public class Annual extends BaseEntity { //연차
