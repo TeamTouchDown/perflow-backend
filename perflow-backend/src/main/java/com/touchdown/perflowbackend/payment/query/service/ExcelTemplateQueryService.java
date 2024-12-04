@@ -33,16 +33,17 @@ public class ExcelTemplateQueryService {
         header.createCell(7).setCellValue("야간근무수당");
         header.createCell(8).setCellValue("휴일근무수당");
         header.createCell(9).setCellValue("연차수당");
-        header.createCell(10).setCellValue("지급내역합계");
-        header.createCell(11).setCellValue("국민연금");
-        header.createCell(12).setCellValue("건강보험");
-        header.createCell(13).setCellValue("고용보험");
-        header.createCell(14).setCellValue("장기요양보험");
-        header.createCell(15).setCellValue("소득세");
-        header.createCell(16).setCellValue("지방소득세");
-        header.createCell(17).setCellValue("공제내역합계");
-        header.createCell(18).setCellValue("총합계");
-        header.createCell(19).setCellValue("지급상태");
+        header.createCell(10).setCellValue("성과급");
+        header.createCell(11).setCellValue("지급내역합계");
+        header.createCell(12).setCellValue("국민연금");
+        header.createCell(13).setCellValue("건강보험");
+        header.createCell(14).setCellValue("고용보험");
+        header.createCell(15).setCellValue("장기요양보험");
+        header.createCell(16).setCellValue("소득세");
+        header.createCell(17).setCellValue("지방소득세");
+        header.createCell(18).setCellValue("공제내역합계");
+        header.createCell(19).setCellValue("총합계");
+        header.createCell(20).setCellValue("지급상태");
 
         // 사원 정보 가져오기
         List<Employee> employees = employeeCommandRepository.findAll();
@@ -62,16 +63,17 @@ public class ExcelTemplateQueryService {
             row.createCell(7).setCellValue(0); // 야간근무수당
             row.createCell(8).setCellValue(0); // 휴일근무수당
             row.createCell(9).setCellValue(0); // 연차수당
-            row.createCell(10).setCellValue(0); // 지급 내역 합계
-            row.createCell(11).setCellValue(0); // 국민연금
-            row.createCell(12).setCellValue(0); // 건강보험
-            row.createCell(13).setCellValue(0); // 고용보험
-            row.createCell(14).setCellValue(0); // 장기요양보험
-            row.createCell(15).setCellValue(0); // 소득세
-            row.createCell(16).setCellValue(0); // 지방소득세
-            row.createCell(17).setCellValue(0); // 공제 내역 합계
-            row.createCell(18).setCellValue(0); // 총합계
-            row.createCell(19).setCellValue("PENDING"); // 지급 상태(대기)
+            row.createCell(10).setCellValue(0); // 성과급
+            row.createCell(11).setCellValue(0); // 지급 내역 합계
+            row.createCell(12).setCellValue(0); // 국민연금
+            row.createCell(13).setCellValue(0); // 건강보험
+            row.createCell(14).setCellValue(0); // 고용보험
+            row.createCell(15).setCellValue(0); // 장기요양보험
+            row.createCell(16).setCellValue(0); // 소득세
+            row.createCell(17).setCellValue(0); // 지방소득세
+            row.createCell(18).setCellValue(0); // 공제 내역 합계
+            row.createCell(19).setCellValue(0); // 총합계
+            row.createCell(20).setCellValue("PENDING"); // 지급 상태(대기)
 
         }
 
