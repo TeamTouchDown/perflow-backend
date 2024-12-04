@@ -14,8 +14,10 @@ public enum SuccessCode {
     SUCCESS(HttpStatus.OK, "OK"),
 
     // 201
-    WORK_ATTITUDE_TRAVEL_SUCCESS(HttpStatus.CREATED, "출장 요청 등록이 완료 되었습니다.");
-    ;
+    WORK_ATTITUDE_TRAVEL_SUCCESS(HttpStatus.CREATED, "출장 요청 등록이 완료 되었습니다."),
+
+    TEMPLATE_CREATE_SUCCESS(HttpStatus.OK, "서식 생성에 성공하였습니다");
+
 
     private final HttpStatus httpStatus;
     private final String message;

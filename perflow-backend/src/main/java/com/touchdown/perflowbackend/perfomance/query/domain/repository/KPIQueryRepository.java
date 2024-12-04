@@ -15,5 +15,5 @@ public interface KPIQueryRepository extends JpaRepository<Kpi, Long> {
             "FROM Kpi r WHERE r.kpiId = :kpiId AND (r.status = com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiCurrentStatus.WAIT OR r.status = com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiCurrentStatus.APPROVAL) ")
     List<KPIDetailResponseDTO> findKPIsByKpiId(Long kpiId);
 
-    @Query("SELECT new com.touchdown.perflowbackend.")
+//    @Query("SELECT new com.touchdown.perflowbackend.")
 }

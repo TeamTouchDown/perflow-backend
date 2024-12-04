@@ -1,6 +1,6 @@
 package com.touchdown.perflowbackend.notification.command.domain.aggregate;
 
-import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
+import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Appoint;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.Payroll;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.HrPerfo;

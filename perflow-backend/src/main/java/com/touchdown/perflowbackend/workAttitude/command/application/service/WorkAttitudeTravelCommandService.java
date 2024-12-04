@@ -1,7 +1,7 @@
 package com.touchdown.perflowbackend.workAttitude.command.application.service;
 
-import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
-import com.touchdown.perflowbackend.approve.command.domain.repository.ApproveCommandRepository;
+import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
+import com.touchdown.perflowbackend.approval.command.domain.repository.ApproveCommandRepository;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
