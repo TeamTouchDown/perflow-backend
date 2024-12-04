@@ -4,5 +4,5 @@ import com.touchdown.perflowbackend.announcement.command.domain.aggregate.Announ
 import com.touchdown.perflowbackend.announcement.command.domain.repository.AnnouncementCommandRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface JpaAnnouncementRepository extends JpaRepository<Long, Announcement>, AnnouncementCommandRepository {
+public interface JpaAnnouncementRepository extends JpaRepository<Announcement, Long>, AnnouncementCommandRepository {
 }

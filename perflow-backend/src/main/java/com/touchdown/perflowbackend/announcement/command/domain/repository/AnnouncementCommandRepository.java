@@ -4,5 +4,5 @@ import com.touchdown.perflowbackend.announcement.command.domain.aggregate.Announ
 
 public interface AnnouncementCommandRepository {
 
-    void save(Announcement announcement);
+    Announcement save(Announcement announcement);
 }
