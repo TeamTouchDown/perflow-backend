@@ -33,6 +33,7 @@ public class TemplateCommandService {
     private final TemplateCommandRepository templateCommandRepository;
     private final EmployeeCommandRepository employeeCommandRepository;
     private final TemplateFieldCommandRepository templateFieldCommandRepository;
+    private final FieldTypeCommandRepository fieldTypeCommandRepository;
     private final JpaFieldTypeCommandRepository jpaFieldTypeCommandRepository;
 
     @Transactional
@@ -53,22 +54,18 @@ public class TemplateCommandService {
         // 필드 데이터 유효성 검사
         List<Long> fieldTypeIds = request.getFieldTypes();
         List<String> detailsList = request.getDetailsList();
+        List<Boolean> isRepeatedList = request.getIsRepeatedList();
 
-        if (fieldTypeIds == null || detailsList == null || fieldTypeIds.size() != detailsList.size()) {
-            log.info("사용자가 선택한 필드가 없거나, 필드 타입이 없거나, 필드와 필드타입(json)의 개수가 일치하지 않음");
+        if (fieldTypeIds == null || detailsList == null || isRepeatedList == null ||
+                fieldTypeIds.size() != detailsList.size() || fieldTypeIds.size() != isRepeatedList.size()) {
+            log.info("필드 데이터의 크기가 일치하지 않음");
             throw new CustomException(ErrorCode.INVALID_FIELD_DATA);
         }
 
+
         // 필요한 모든 필드 타입 한 번에 가져오기
         List<FieldType> fieldTypes = jpaFieldTypeCommandRepository.findAllById(fieldTypeIds);
-        if (fieldTypes.size() != fieldTypeIds.size()) {
-
-            log.info("필드타입 id의 개수가 안 맞음");
-            log.info("fieldTypeIds: {}", fieldTypeIds);
-            log.info("fieldTypes: {}", fieldTypes);
-            fieldTypes.forEach(fieldType -> log.info("FieldType: id={}, type={}",
-                    fieldType.getFieldTypeId(),
-                    fieldType.getType()));
+        if (fieldTypes.size() != fieldTypeIds.stream().distinct().count()) {
             throw new CustomException(ErrorCode.NOT_FOUND_FIELD_TYPE);
         }
 
@@ -90,6 +87,7 @@ public class TemplateCommandService {
                             savedTemplate,
                             fieldType,
                             detailsList.get(i),  // 해당 순서의 details
+                            isRepeatedList.get(i),
                             (long) i + 1         // 필드 순서
                     );
                 })

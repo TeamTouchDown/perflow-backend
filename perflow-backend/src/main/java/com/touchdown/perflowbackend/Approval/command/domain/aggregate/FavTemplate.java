@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "fav_template", schema = "perflow")
 public class FavTemplate {
+
     @Id
     @Column(name = "fav_template_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

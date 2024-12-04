@@ -11,6 +11,7 @@ public class TemplateFieldMapper {
             Template template,
             FieldType fieldType,
             String details,
+            Boolean isRepeated,
             Long fieldOrder
     ) {
 
@@ -18,6 +19,7 @@ public class TemplateFieldMapper {
                 .templateId(template)
                 .fieldTypeId(fieldType)
                 .details(details)
+                .isRepeated(isRepeated)
                 .fieldOrder(fieldOrder)
                 .status(Status.ACTIVATED)
                 .build();

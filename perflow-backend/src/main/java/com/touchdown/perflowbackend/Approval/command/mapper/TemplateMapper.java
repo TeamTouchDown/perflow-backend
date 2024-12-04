@@ -16,6 +16,5 @@ public class TemplateMapper {
                 .status(Status.ACTIVATED)
                 .build();
     }
-
-
+    
 }

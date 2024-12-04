@@ -36,6 +36,9 @@ public class TemplateField extends BaseEntity {
     @Column(name = "details", nullable = false)
     private String details = "{}";
 
+    @Column(name = "is_repeated", nullable = false)
+    private Boolean isRepeated = false;
+
     @Column(name = "delete_datetime")
     private LocalDateTime deleteDatetime;
 
@@ -45,11 +48,12 @@ public class TemplateField extends BaseEntity {
     private Status status = Status.ACTIVATED;
 
     @Builder
-    public TemplateField(Long templateFieldId, Template templateId, FieldType fieldTypeId, String details, Long fieldOrder, LocalDateTime deleteDatetime, Status status) {
+    public TemplateField(Long templateFieldId, Template templateId, FieldType fieldTypeId, String details, Boolean isRepeated, Long fieldOrder, LocalDateTime deleteDatetime, Status status) {
         this.templateFieldId = templateFieldId;
         this.templateId = templateId;
         this.fieldTypeId = fieldTypeId;
         this.details = details;
+        this.isRepeated = isRepeated;
         this.fieldOrder = fieldOrder;
         this.deleteDatetime = deleteDatetime;
         this.status = status;

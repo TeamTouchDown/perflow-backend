@@ -23,5 +23,4 @@ public class FieldType {
     @Column(name = "details", nullable = false)
     private String details;
 
-
 }

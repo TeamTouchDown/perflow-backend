@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "approve_line", schema = "perflow")
 public class ApproveLine extends BaseEntity {
+
     @Id
     @Column(name = "approve_line_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

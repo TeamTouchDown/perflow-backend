@@ -1,6 +1,5 @@
 package com.touchdown.perflowbackend.Approval.command.application.dto;
 
-import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

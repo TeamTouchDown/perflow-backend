@@ -21,7 +21,6 @@ public class TemplateCommandController {
     @PostMapping("/templates")
     public ResponseEntity<TemplateCreateResponseDTO> createTemplate(
             @RequestBody TemplateCreateRequestDTO request
-//            @RequestHeader("empId") String empId
     ) {
 
         // todo: 사원 기능 생기면 수정

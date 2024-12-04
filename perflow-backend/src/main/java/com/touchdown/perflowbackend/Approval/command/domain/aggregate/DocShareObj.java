@@ -1,7 +1,7 @@
 package com.touchdown.perflowbackend.Approval.command.domain.aggregate;
 
-import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "doc_share_obj", schema = "perflow")
 public class DocShareObj {
+
     @Id
     @Column(name = "doc_share_obj", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)

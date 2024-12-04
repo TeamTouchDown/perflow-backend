@@ -1,6 +1,7 @@
 package com.touchdown.perflowbackend.Approval.command.domain.aggregate;
 
 public enum Status {
+
     ACTIVATED,
     DELETED,
     UPDATED,

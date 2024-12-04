@@ -17,5 +17,6 @@ public class TemplateCreateRequestDTO {
 
     private final List<String> detailsList; // 각 필드의 JSON details들
 
+    private List<Boolean> isRepeatedList;   // 각 필드의 반복 가능 여부 리스트
 
 }
