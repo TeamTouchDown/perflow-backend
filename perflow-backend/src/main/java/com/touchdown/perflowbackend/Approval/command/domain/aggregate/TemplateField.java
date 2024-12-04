@@ -25,18 +25,16 @@ public class TemplateField extends BaseEntity {
     @JoinColumn(name = "template_id", nullable = false)
     private Template templateId;
 
-    @Column(name = "name", nullable = false, length = 30)
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "field_type_id", nullable = false)
+    private FieldType fieldTypeId;
 
-    @Column(name = "type", nullable = false, length = 30)
-    private String type;
+    @Lob
+    @Column(name = "field_order", nullable = false)
+    private Long fieldOrder;
 
-    @ColumnDefault("0")
-    @Column(name = "is_req", nullable = false)
-    private Boolean isReq;
-
-    @Column(name = "default_value", length = 30)
-    private String defaultValue;
+    @Column(name = "details", nullable = false)
+    private String details = "{}";
 
     @Column(name = "delete_datetime")
     private LocalDateTime deleteDatetime;
@@ -47,13 +45,12 @@ public class TemplateField extends BaseEntity {
     private Status status = Status.ACTIVATED;
 
     @Builder
-    public TemplateField(Long templateFieldId, Template templateId, String name, String type, Boolean isReq, String defaultValue, LocalDateTime deleteDatetime, Status status) {
+    public TemplateField(Long templateFieldId, Template templateId, FieldType fieldTypeId, String details, Long fieldOrder, LocalDateTime deleteDatetime, Status status) {
         this.templateFieldId = templateFieldId;
         this.templateId = templateId;
-        this.name = name;
-        this.type = type;
-        this.isReq = isReq;
-        this.defaultValue = defaultValue;
+        this.fieldTypeId = fieldTypeId;
+        this.details = details;
+        this.fieldOrder = fieldOrder;
         this.deleteDatetime = deleteDatetime;
         this.status = status;
     }
