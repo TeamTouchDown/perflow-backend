@@ -14,7 +14,7 @@ public enum SuccessCode {
     SUCCESS(HttpStatus.OK, "OK"),
 
     // 201
-    WAT_SUCCESS(HttpStatus.CREATED, "출장 요청 등록이 완료 되었습니다.");
+    WORK_ATTITUDE_TRAVEL_SUCCESS(HttpStatus.CREATED, "출장 요청 등록이 완료 되었습니다.");
     ;
 
     private final HttpStatus httpStatus;
