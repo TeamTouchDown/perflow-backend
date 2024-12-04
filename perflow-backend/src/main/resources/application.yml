@@ -11,3 +11,7 @@ spring:
         ddl-auto: create
   config:
     import: "classpath:API-KEY.yml"
+
+springdoc:
+  swagger-ui:
+    path: /

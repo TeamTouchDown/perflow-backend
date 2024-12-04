@@ -1,21 +1,25 @@
 package com.touchdown.perflowbackend.announcement.command.domain.aggregate;
 
-import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
+import com.touchdown.perflowbackend.announcement.command.application.dto.AnnouncementRequestDTO;
+import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-import java.time.Instant;
-
-@Getter
-@Setter
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "announcement", schema = "perflow")
-public class Announcement {
+public class Announcement extends BaseEntity {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ann_id", nullable = false)
-    private Long id;
+    private Long annId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "dept_id", nullable = false)
@@ -32,10 +36,17 @@ public class Announcement {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "create_datetime", nullable = false)
-    private Instant createDatetime;
+    @Builder
+    public Announcement(Long annId, Department dept, Employee emp, String title, String content) {
+        this.annId = annId;
+        this.dept = dept;
+        this.emp = emp;
+        this.title = title;
+        this.content = content;
+    }
 
-    @Column(name = "update_datetime", nullable = false)
-    private Instant updateDatetime;
-
+    public void updateAnnouncement(AnnouncementRequestDTO announcementRequestDTO) {
+        this.title = announcementRequestDTO.getTitle();
+        this.content = announcementRequestDTO.getContent();
+    }
 }
