@@ -1,4 +1,4 @@
-package com.touchdown.perflowbackend.payroll.command.domain.aggregate;
+package com.touchdown.perflowbackend.payment.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
@@ -6,11 +6,9 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import java.time.LocalDate;
 
 @Getter
-@Setter
 @Entity
 @Table(name = "payroll", schema = "perflow")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -18,6 +16,7 @@ public class Payroll extends BaseEntity {
 
     @Id
     @Column(name = "payroll_id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long payrollId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -60,6 +59,7 @@ public class Payroll extends BaseEntity {
     @Column(name = "total_amount", nullable = false)
     private Long totalAmount;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
     private Status status = Status.PENDING;
 
