@@ -1,21 +1,23 @@
-package com.touchdown.perflowbackend.weight.command.domain.aggregate;
+package com.touchdown.perflowbackend.perfomance.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
 
+@NoArgsConstructor
 @Getter
-@Setter
 @Entity
 @Table(name = "weight", schema = "perflow")
 public class Weight {
     @Id
     @Column(name = "weight_id", nullable = false)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long weightId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "dept_id", nullable = false)

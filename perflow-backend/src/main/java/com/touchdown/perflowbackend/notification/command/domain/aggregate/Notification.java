@@ -1,6 +1,6 @@
 package com.touchdown.perflowbackend.notification.command.domain.aggregate;
 
-import com.touchdown.perflowbackend.hrperfo.command.domain.aggregate.HrPerfo;
+import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.HrPerfo;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Vacation;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Annual;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Appoint;

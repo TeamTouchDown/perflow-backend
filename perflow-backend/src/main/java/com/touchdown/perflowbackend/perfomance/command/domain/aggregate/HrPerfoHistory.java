@@ -1,21 +1,21 @@
-package com.touchdown.perflowbackend.hrperfoinquiry.command.domain.aggregate;
+package com.touchdown.perflowbackend.perfomance.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
-import com.touchdown.perflowbackend.hrperfo.command.domain.aggregate.HrPerfo;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
 
+@NoArgsConstructor
 @Getter
-@Setter
 @Entity
-@Table(name = "hr_perfo_inquiry", schema = "perflow")
-public class HrPerfoInquiry {
+@Table(name = "hr_perfo_history", schema = "perflow")
+public class HrPerfoHistory {
     @Id
-    @Column(name = "hr_perfo_inquiry_id", nullable = false)
-    private Long id;
+    @Column(name = "hr_perfo_history_id", nullable = false)
+    private Long hrPerfoHistoryId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "hr_perfo_id", nullable = false)
@@ -25,14 +25,14 @@ public class HrPerfoInquiry {
     @JoinColumn(name = "emp_id", nullable = false)
     private Employee emp;
 
-    @Column(name = "reason", nullable = false)
-    private String reason;
+    @Column(name = "adjustment_dehree", nullable = false)
+    private Long adjustmentDehree;
 
-    @Column(name = "status", nullable = false, length = 30)
-    private String status;
+    @Column(name = "adjustment_score", nullable = false)
+    private Long adjustmentScore;
 
-    @Column(name = "pass_reason", nullable = false)
-    private String passReason;
+    @Column(name = "adjustment_reason", nullable = false)
+    private String adjustmentReason;
 
     @Column(name = "create_datetime", nullable = false)
     private Instant createDatetime;

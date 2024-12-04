@@ -1,21 +1,22 @@
-package com.touchdown.perflowbackend.kpistatus.command.domain.aggregate;
+package com.touchdown.perflowbackend.perfomance.command.domain.aggregate;
 
-import com.touchdown.perflowbackend.kpi.command.domain.aggregate.Kpi;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
 
+@NoArgsConstructor
 @Getter
-@Setter
 @Entity
 @Table(name = "kpi_status", schema = "perflow")
 public class KpiStatus {
     @Id
     @Column(name = "kpi_pass_id", nullable = false)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long kpiPassId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "kpi_id", nullable = false)
