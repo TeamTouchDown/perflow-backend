@@ -21,4 +21,23 @@ public class AnnouncementCommandController {
 
         return ResponseEntity.ok(SuccessCode.SUCCESS.getMessage());
     }
+
+    @PutMapping("/{annId}")
+    public ResponseEntity<String> updateAnnouncement(
+            @PathVariable Long annId,
+            @RequestBody AnnouncementRequestDTO announcementRequestDTO) {
+
+        announcementCommandService.updateAnnouncement(annId, announcementRequestDTO);
+
+        return ResponseEntity.ok(SuccessCode.SUCCESS.getMessage());
+    }
+
+    @DeleteMapping("/{annId}")
+    public ResponseEntity<String> deleteAnnouncement(@PathVariable Long annId, @RequestBody String empId) {
+
+        // empId는 토큰에서 추출하는 로직으로 변경 예정
+        announcementCommandService.deleteAnnouncement(annId, empId);
+
+        return ResponseEntity.ok(SuccessCode.SUCCESS.getMessage());
+    }
 }
