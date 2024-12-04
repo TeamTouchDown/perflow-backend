@@ -1,18 +1,16 @@
 package com.touchdown.perflowbackend.perfomance.command.domain.aggregate;
 
+import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.time.Instant;
 
 @NoArgsConstructor
 @Getter
 @Entity
 @Table(name = "hr_perfo_inquiry", schema = "perflow")
-public class HrPerfoInquiry {
+public class HrPerfoInquiry extends BaseEntity {
     @Id
     @Column(name = "hr_perfo_inquiry_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,11 +32,4 @@ public class HrPerfoInquiry {
 
     @Column(name = "pass_reason", nullable = false)
     private String passReason;
-
-    @Column(name = "create_datetime", nullable = false)
-    private Instant createDatetime;
-
-    @Column(name = "update_datetime")
-    private Instant updateDatetime;
-
 }

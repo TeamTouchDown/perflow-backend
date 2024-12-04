@@ -1,18 +1,16 @@
 package com.touchdown.perflowbackend.perfomance.command.domain.aggregate;
 
+import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.time.Instant;
 
 @NoArgsConstructor
 @Getter
 @Entity
 @Table(name = "kpi_status", schema = "perflow")
-public class KpiStatus {
+public class KpiStatus extends BaseEntity {
     @Id
     @Column(name = "kpi_pass_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,11 +29,4 @@ public class KpiStatus {
 
     @Column(name = "pass_reason", nullable = false)
     private String passReason;
-
-    @Column(name = "create_datetime", nullable = false)
-    private Instant createDatetime;
-
-    @Column(name = "update_datetime")
-    private Instant updateDatetime;
-
 }
