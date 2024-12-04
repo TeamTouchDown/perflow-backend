@@ -1,28 +1,33 @@
 package com.touchdown.perflowbackend.notification.command.domain.aggregate;
 
-import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.HrPerfo;
-import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Vacation;
-import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Annual;
-import com.touchdown.perflowbackend.hr.command.domain.aggregate.Appoint;
 import com.touchdown.perflowbackend.approve.command.domain.aggregate.ApproveSbj;
-import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Overtime;
+import com.touchdown.perflowbackend.hr.command.domain.aggregate.Appoint;
 import com.touchdown.perflowbackend.payroll.command.domain.aggregate.Payroll;
+import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.HrPerfo;
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Annual;
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Overtime;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Travel;
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Vacation;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
 @Entity
+@Getter
+@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "notification", schema = "perflow")
 public class Notification {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "noti_id", nullable = false)
-    private Long id;
+    private Long notiId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approve_sbj_id")
@@ -64,9 +69,10 @@ public class Notification {
 
     @ColumnDefault("0")
     @Column(name = "status", nullable = false)
-    private Byte status;
+    private Boolean status = false;
 
     @Column(name = "create_datetime", nullable = false)
+    @CreatedDate
     private LocalDateTime createDatetime;
 
 }
