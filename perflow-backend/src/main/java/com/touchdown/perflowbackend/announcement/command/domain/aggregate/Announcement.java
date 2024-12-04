@@ -21,12 +21,10 @@ public class Announcement extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "dept_id", nullable = false)
-    @Column(nullable = false)
     private Department dept;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "emp_id", nullable = false)
-    @Column(nullable = false)
     private Employee emp;
 
     @Column(name = "title", nullable = false, length = 50)
