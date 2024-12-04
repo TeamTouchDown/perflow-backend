@@ -7,7 +7,7 @@ public class AnnouncementRequestDTO {
 
     private Long deptId;
 
-    private Long empId;
+    private String empId;
 
     private String title;
 
