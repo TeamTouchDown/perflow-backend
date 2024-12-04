@@ -12,6 +12,7 @@ public class CustomEmployDetail implements UserDetails {
     Employee employee;
 
     public CustomEmployDetail(Employee employee) {
+
         this.employee = employee;
     }
 

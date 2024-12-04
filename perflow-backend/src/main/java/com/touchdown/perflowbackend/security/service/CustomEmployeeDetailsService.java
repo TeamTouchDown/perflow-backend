@@ -6,6 +6,7 @@ import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
 import com.touchdown.perflowbackend.security.util.CustomEmployDetail;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class CustomEmployeeDetailsService implements UserDetailsService {
     private final EmployeeCommandRepository employeeCommandRepository;
 
     @Override
-    public CustomEmployDetail loadUserByUsername(String empId) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String empId) throws UsernameNotFoundException {
 
         Employee employee = employeeCommandRepository.findById(empId).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_EMP)

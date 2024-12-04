@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -52,13 +53,14 @@ public class JwtUtil {
     public Authentication getAuthentication(String token) {
 
         /* 토큰을 들고 왔던 들고 오지 않았던(로그인 시) 동일하게 security가 관리 할 UserDetails 타입을 정의 */
-        CustomEmployDetail empDetails = employeeDetailsService.loadUserByUsername(getUserId(token));
+        UserDetails empDetails = employeeDetailsService.loadUserByUsername(getUserId(token));
 
         return new UsernamePasswordAuthenticationToken(empDetails, "", empDetails.getAuthorities());
     }
 
     /* Token에서 Claims 추출 */
     public Claims parseClaims(String token) {
+
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
