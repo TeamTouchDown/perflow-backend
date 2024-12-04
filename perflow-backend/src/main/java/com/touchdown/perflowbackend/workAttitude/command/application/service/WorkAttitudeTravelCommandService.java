@@ -31,4 +31,15 @@ public class WorkAttitudeTravelCommandService {
         // Travel 엔터티 저장
         workAttitudeTravelCommandRepository.save(travel);
     }
+
+    public WorkAttitudeTravelRequestDTO getTravelById(Long travelId) {
+        return null;
+    }
+
+    public void updateTravel(Long travelId, WorkAttitudeTravelRequestDTO workAttitudeTravelRequestDTO) {
+    }
+
+    public void deleteTravel(Long travelId) {
+
+    }
 }
