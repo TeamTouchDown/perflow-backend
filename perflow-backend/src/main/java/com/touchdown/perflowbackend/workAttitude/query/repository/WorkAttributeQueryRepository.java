@@ -1,2 +1,4 @@
-package com.touchdown.perflowbackend.workAttitude.query.repository;public interface WorkAttributeQueryRepository {
+package com.touchdown.perflowbackend.workAttitude.query.repository;
+
+public interface WorkAttributeQueryRepository {
 }

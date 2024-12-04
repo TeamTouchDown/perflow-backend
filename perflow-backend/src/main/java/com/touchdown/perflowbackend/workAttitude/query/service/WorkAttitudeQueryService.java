@@ -1,4 +1,4 @@
-package com.touchdown.perflowbackend.workAttitude.query.application.service;
+package com.touchdown.perflowbackend.workAttitude.query.service;
 
 public class WorkAttitudeQueryService {
 }

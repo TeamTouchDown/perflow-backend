@@ -1,4 +1,4 @@
-package com.touchdown.perflowbackend.workAttitude.query.application.controller;
+package com.touchdown.perflowbackend.workAttitude.query.controller;
 
 public class WorkAttitudeQueryController {
 }

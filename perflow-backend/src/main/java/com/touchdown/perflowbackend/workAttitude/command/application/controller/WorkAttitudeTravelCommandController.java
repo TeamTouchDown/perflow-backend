@@ -9,36 +9,37 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/")
+@RequestMapping("/api/v1")
 public class WorkAttitudeTravelCommandController {
 
     private final WorkAttitudeTravelCommandService workAttitudeTravelCommandService;
 
     //출장 등록(사원)
-    @PostMapping("/emp/travel")
+    @PostMapping("/emp/travels")
     public ResponseEntity<SuccessCode>requestTravel(@RequestBody WorkAttitudeTravelRequestDTO workAttitudeTravelRequestDTO){
         workAttitudeTravelCommandService.createTravel(workAttitudeTravelRequestDTO);
-        return ResponseEntity.ok(SuccessCode.WAT_SUCCESS) ;
+        return ResponseEntity.ok(SuccessCode.WORK_ATTITUDE_TRAVEL_SUCCESS) ;
     }
+
     //출장 조회(사원)
-    @GetMapping("/emp/travel/{travel_id}")
-    public ResponseEntity<WorkAttitudeTravelRequestDTO> getTravel(@PathVariable Long travel_id) {
-        WorkAttitudeTravelRequestDTO dto = workAttitudeTravelCommandService.getTravelById(travel_id);
+    @GetMapping("/emp/travel/{travelId}")
+    public ResponseEntity<WorkAttitudeTravelRequestDTO> getTravel(@PathVariable(name = "travelId") Long travelId) {
+        WorkAttitudeTravelRequestDTO dto = workAttitudeTravelCommandService.getTravelById(travelId);
         return ResponseEntity.ok(dto);
     }
 
     // 3. 출장 수정 (사원)
-    @PutMapping("/emp/travel/{travel_id}")
+    @PutMapping("/emp/travel/{travelId}")
     public ResponseEntity<SuccessCode> updateTravel(
-            @PathVariable Long travel_id,
+            @PathVariable Long travelId,
             @RequestBody WorkAttitudeTravelRequestDTO workAttitudeTravelRequestDTO) {
-        workAttitudeTravelCommandService.updateTravel(travel_id, workAttitudeTravelRequestDTO);
+        workAttitudeTravelCommandService.updateTravel(travelId, workAttitudeTravelRequestDTO);
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
     // 4. 출장 삭제 (사원)
-    @DeleteMapping("/emp/travel/{travel_id}")
-    public ResponseEntity<SuccessCode> deleteTravel(@PathVariable Long travel_id) {
-        workAttitudeTravelCommandService.deleteTravel(travel_id);
+    @DeleteMapping("/emp/travel/{travelId}")
+    public ResponseEntity<SuccessCode> deleteTravel(@PathVariable(name="travelId") Long travelId) {
+        workAttitudeTravelCommandService.deleteTravel(travelId);
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
     //------ 팀장 부분 ------
