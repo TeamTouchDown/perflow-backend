@@ -1,5 +1,6 @@
 package com.touchdown.perflowbackend.approval.query.dto;
 
+import com.touchdown.perflowbackend.approval.command.domain.aggregate.Status;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,4 +23,6 @@ public class TemplateListResponseDTO {
     private final LocalDateTime updateDatetime;
 
     private final String empName;
+
+    private final Status status;
 }

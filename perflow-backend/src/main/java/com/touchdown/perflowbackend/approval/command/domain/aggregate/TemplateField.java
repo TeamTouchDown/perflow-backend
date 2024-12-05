@@ -23,11 +23,11 @@ public class TemplateField extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "template_id", nullable = false)
-    private Template templateId;
+    private Template template;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "field_type_id", nullable = false)
-    private FieldType fieldTypeId;
+    private FieldType fieldType;
 
     @Lob
     @Column(name = "field_order", nullable = false)
@@ -48,10 +48,10 @@ public class TemplateField extends BaseEntity {
     private Status status = Status.ACTIVATED;
 
     @Builder
-    public TemplateField(Long templateFieldId, Template templateId, FieldType fieldTypeId, String details, Boolean isRepeated, Long fieldOrder, LocalDateTime deleteDatetime, Status status) {
+    public TemplateField(Long templateFieldId, Template templateId, FieldType fieldType, String details, Boolean isRepeated, Long fieldOrder, LocalDateTime deleteDatetime, Status status) {
         this.templateFieldId = templateFieldId;
-        this.templateId = templateId;
-        this.fieldTypeId = fieldTypeId;
+        this.template = templateId;
+        this.fieldType = fieldType;
         this.details = details;
         this.isRepeated = isRepeated;
         this.fieldOrder = fieldOrder;

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Entity
@@ -40,6 +41,9 @@ public class Template extends BaseEntity {
     @Column(name = "status", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVATED;
+
+    @OneToMany(mappedBy = "template", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TemplateField> fields;
 
     @Builder
     public Template(Long templateId, Employee createUser, String name, String description, LocalDateTime deleteDatetime, Status status) {
