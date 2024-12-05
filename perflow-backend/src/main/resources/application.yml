@@ -9,8 +9,16 @@ spring:
     properties:
       hibernate:
         ddl-auto: create
+
   config:
     import: "classpath:API-KEY.yml"
+
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 1000
+
 token:
   secret: ${token.secret}
   access_token_expiration_time: ${token.access_token_expiration_time}

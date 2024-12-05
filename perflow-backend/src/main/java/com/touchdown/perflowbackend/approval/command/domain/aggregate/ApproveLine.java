@@ -26,7 +26,7 @@ public class ApproveLine extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "create_user_id", nullable = false)
-    private Employee createUserId;
+    private Employee createUser;
 
     @Column(name = "name", length = 30)
     private String name;
