@@ -1,7 +1,7 @@
-package com.touchdown.perflowbackend.perfomance.query.application.controller;
+package com.touchdown.perflowbackend.perfomance.query.controller;
 
-import com.touchdown.perflowbackend.perfomance.query.application.dto.KPIListResponseDTO;
-import com.touchdown.perflowbackend.perfomance.query.application.service.PersonalKPIQueryService;
+import com.touchdown.perflowbackend.perfomance.query.dto.KPIListResponseDTO;
+import com.touchdown.perflowbackend.perfomance.query.service.PersonalKPIQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,16 +10,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/perfomances/kpi")
+@RequestMapping("/api/v1/perfomances/kpi/")
 @RequiredArgsConstructor
-public class PerfomanceKPIController {
+public class PerfomanceKPIQueryController {
 
     private final PersonalKPIQueryService personalKPIQueryService;
 
     // 개인 KPI 리스트 조회
-    @GetMapping("/personal/{userId}")
+    @GetMapping("/personal/{empId}")
     public ResponseEntity<KPIListResponseDTO> getPersonalKPIs(
-            @PathVariable(name = "userId") String empId
+            @PathVariable(name = "empId") String empId
     ) {
 
         // 유저 사번 이용하여 개인 KPI 목록 및 제한 호출

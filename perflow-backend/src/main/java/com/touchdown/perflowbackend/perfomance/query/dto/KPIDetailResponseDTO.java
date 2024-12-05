@@ -1,4 +1,4 @@
-package com.touchdown.perflowbackend.perfomance.query.application.dto;
+package com.touchdown.perflowbackend.perfomance.query.dto;
 
 import lombok.Builder;
 import lombok.Getter;
