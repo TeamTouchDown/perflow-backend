@@ -18,6 +18,7 @@ public class WorkAttitudeTravelQueryService {
 
     @Transactional
     public WorkAttitudeTravelResponseDTO getTravelById(Long travelId) {
+
         Travel travel = workAttributeTravelQueryRepository.findById(travelId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_TRAVEL));
         return WorkAttitudeTravelMapper.toResponseDTO(travel);
