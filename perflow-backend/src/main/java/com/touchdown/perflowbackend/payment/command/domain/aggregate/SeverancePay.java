@@ -23,7 +23,7 @@ public class SeverancePay extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "emp_id", nullable = false)
-    private Employee empId;
+    private Employee emp;
 
     @Column(name = "severance_pay", nullable = false)
     private Long severancePay;
