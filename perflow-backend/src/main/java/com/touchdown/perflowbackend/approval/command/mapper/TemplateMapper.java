@@ -3,7 +3,7 @@ package com.touchdown.perflowbackend.approval.command.mapper;
 import com.touchdown.perflowbackend.approval.command.application.dto.TemplateCreateRequestDTO;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.Template;
-import com.touchdown.perflowbackend.approval.query.dto.TemplateResponseDTO;
+import com.touchdown.perflowbackend.approval.query.dto.TemplateListResponseDTO;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 
 public class TemplateMapper {
@@ -18,8 +18,8 @@ public class TemplateMapper {
                 .build();
     }
 
-    public static TemplateResponseDTO toTemplateResponseDTO(Template template) {
-        return TemplateResponseDTO.builder()
+    public static TemplateListResponseDTO toTemplateResponseDTO(Template template) {
+        return TemplateListResponseDTO.builder()
                 .templateId(template.getTemplateId())
                 .templateName(template.getName())
                 .description(template.getDescription())

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @RequiredArgsConstructor
 @Builder
-public class TemplateResponseDTO {
+public class TemplateListResponseDTO {
 
     private final Long templateId;
 

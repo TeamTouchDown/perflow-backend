@@ -1,7 +1,7 @@
 package com.touchdown.perflowbackend.approval.query.service;
 
 import com.touchdown.perflowbackend.approval.command.mapper.TemplateMapper;
-import com.touchdown.perflowbackend.approval.query.dto.TemplateResponseDTO;
+import com.touchdown.perflowbackend.approval.query.dto.TemplateListResponseDTO;
 import com.touchdown.perflowbackend.approval.query.repository.TemplateQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ public class TemplateQueryService {
     private final TemplateQueryRepository templateQueryRepository;
 
     @Transactional
-    public Page<TemplateResponseDTO> getTemplates(Pageable pageable) {
+    public Page<TemplateListResponseDTO> getTemplates(Pageable pageable) {
 
         return templateQueryRepository.findAll(pageable)
                 .map(TemplateMapper::toTemplateResponseDTO);
