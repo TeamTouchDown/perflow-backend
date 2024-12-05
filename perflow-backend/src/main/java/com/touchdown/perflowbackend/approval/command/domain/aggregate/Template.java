@@ -24,7 +24,7 @@ public class Template extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "create_user_id", nullable = false)
-    private Employee createUserId;
+    private Employee createUser;
 
     @Column(name = "name", nullable = false, length = 30)
     private String name;
@@ -42,9 +42,9 @@ public class Template extends BaseEntity {
     private Status status = Status.ACTIVATED;
 
     @Builder
-    public Template(Long templateId, Employee createUserId, String name, String description, LocalDateTime deleteDatetime, Status status) {
+    public Template(Long templateId, Employee createUser, String name, String description, LocalDateTime deleteDatetime, Status status) {
         this.templateId = templateId;
-        this.createUserId = createUserId;
+        this.createUser = createUser;
         this.name = name;
         this.description = description;
         this.deleteDatetime = deleteDatetime;

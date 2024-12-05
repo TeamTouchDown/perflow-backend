@@ -22,7 +22,7 @@ public class Doc extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "create_user_id", nullable = false)
-    private Employee createUserId;
+    private Employee createUser;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "template_id", nullable = false)
