@@ -1,7 +1,7 @@
 package com.touchdown.perflowbackend.file.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.announcement.command.domain.aggregate.Announcement;
-import com.touchdown.perflowbackend.approve.command.domain.aggregate.Doc;
+import com.touchdown.perflowbackend.approval.command.domain.aggregate.Doc;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
