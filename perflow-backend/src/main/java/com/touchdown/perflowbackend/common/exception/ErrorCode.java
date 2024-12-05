@@ -37,7 +37,8 @@ public enum ErrorCode {
     NOT_FOUND_APPROVE_SBJ(HttpStatus.NOT_FOUND, "결재 주체 정보를 찾을 수 없습니다."),
     INVALID_APPROVE_SBJ_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 결재 주체 ID입니다."),
 
-    NOT_FOUND_ANNOUNCEMENT(HttpStatus.NOT_FOUND, "해당 공지사항을 찾을 수 없습니다.");
+    NOT_FOUND_ANNOUNCEMENT(HttpStatus.NOT_FOUND, "해당 공지사항을 찾을 수 없습니다."),
+    NOT_FOUND_TRAVEL(HttpStatus.NOT_FOUND, "해당 내역을 찾을 수 없습니다.");
 
 
     private final HttpStatus httpStatus;
