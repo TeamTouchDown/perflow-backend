@@ -71,7 +71,7 @@ public class Payroll extends BaseEntity {
 
     public Payroll(Employee emp, Long extendLaborAllowance, Long nightLaborAllowance, Long holidayLaborAllowance,
                    Long annualAllowance, Long incentive, Long nationalPension, Long healthInsurance, Long hireInsurance,
-                   Long longTermCareInsurance, Long incomeTax, Long localIncomeTax, Long totalAmount, Status status) {
+                   Long longTermCareInsurance, Long incomeTax, Long localIncomeTax, Long totalAmount) {
 
         this.emp = emp;
         this.extendLaborAllowance = extendLaborAllowance;
@@ -86,7 +86,29 @@ public class Payroll extends BaseEntity {
         this.incomeTax = incomeTax;
         this.localIncomeTax = localIncomeTax;
         this.totalAmount = totalAmount;
-        this.status = status;
+
+    }
+
+    public void updatePayroll(Employee emp, Long extendLaborAllowance, Long nightLaborAllowance,
+                                      Long holidayLaborAllowance, Long annualAllowance, Long incentive,
+                                      Long nationalPension, Long healthInsurance, Long hireInsurance,
+                                      Long longTermCareInsurance, Long incomeTax, Long localIncomeTax,
+                                      Long totalAmount) {
+
+            this.emp = emp;
+            this.extendLaborAllowance = extendLaborAllowance;
+            this.nightLaborAllowance = nightLaborAllowance;
+            this.holidayLaborAllowance = holidayLaborAllowance;
+            this.annualAllowance = annualAllowance;
+            this.incentive = incentive;
+            this.nationalPension = nationalPension;
+            this.healthInsurance = healthInsurance;
+            this.hireInsurance = hireInsurance;
+            this.longTermCareInsurance = longTermCareInsurance;
+            this.incomeTax = incomeTax;
+            this.localIncomeTax = localIncomeTax;
+            this.totalAmount = totalAmount;
+            this.status = Status.UPDATED;
 
     }
 }
