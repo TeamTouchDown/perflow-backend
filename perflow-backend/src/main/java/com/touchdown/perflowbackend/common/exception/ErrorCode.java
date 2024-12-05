@@ -25,6 +25,7 @@ public enum ErrorCode {
     // 403 에러
     AUTHORIZATION_FAILED(HttpStatus.FORBIDDEN, "인가 실패"),
     NOT_MATCH_WRITER(HttpStatus.FORBIDDEN, "작성자가 일치하지 않습니다."),
+    NOT_MATCH_DEPARTMENT(HttpStatus.FORBIDDEN, "부서가 일치하지 않습니다."),
 
     // 404 에러
     NOT_FOUND_EMP(HttpStatus.NOT_FOUND, "사원 정보를 찾을 수 없습니다."),
