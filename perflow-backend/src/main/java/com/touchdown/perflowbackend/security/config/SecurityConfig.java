@@ -29,8 +29,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(authz ->
-                        authz.requestMatchers(new AntPathRequestMatcher("/api/v1/**")).permitAll()
+                .authorizeHttpRequests(authorize ->
+                        authorize.requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**", "/api/v1/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 /* session 로그인 방식을 사용하지 않음 (JWT Token 방식을 사용할 예정) */
