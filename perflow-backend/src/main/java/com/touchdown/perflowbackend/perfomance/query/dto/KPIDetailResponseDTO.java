@@ -1,4 +1,4 @@
-package com.touchdown.perflowbackend.perfomance.query.application.dto;
+package com.touchdown.perflowbackend.perfomance.query.dto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class KPIDetailResponseDTO {
+
     private final String empId;
     private final String goal;
     private final Long goalValue;
@@ -14,6 +15,7 @@ public class KPIDetailResponseDTO {
     private final Double currentValue;
 
     public KPIDetailResponseDTO(String empId, String goal, Long goalValue, String goalValueUnit, String goalDetail, double currentValue) {
+
         this.empId = empId;
         this.goal = goal;
         this.goalValue = goalValue;
