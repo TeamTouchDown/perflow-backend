@@ -9,8 +9,9 @@ import org.springframework.data.redis.core.RedisHash;
 public class BlackAccessToken {
 
     @Id
-    private String accessToken;
     private String empId;
+    private String accessToken;
+
 
     public BlackAccessToken(String accessToken, String empId) {
         this.accessToken = accessToken;

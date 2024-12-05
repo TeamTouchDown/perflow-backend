@@ -5,14 +5,17 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EmployeeLoginResponseDTO {
+public class TokenResponseDTO {
 
     private String empId;
 
     private String accessToken;
 
-    public EmployeeLoginResponseDTO(String empId, String accessToken) {
+    private String refreshToken;
+
+    public TokenResponseDTO(String empId, String accessToken, String refreshToken) {
         this.empId = empId;
         this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 }

@@ -9,8 +9,8 @@ import org.springframework.data.redis.core.RedisHash;
 public class WhiteRefreshToken {
 
     @Id
-    private String refreshToken;
     private String empId;
+    private String refreshToken;
 
     public WhiteRefreshToken(String refreshToken, String empId) {
         this.refreshToken = refreshToken;
