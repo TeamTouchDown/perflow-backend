@@ -15,7 +15,6 @@ import java.time.LocalDate;
 
 @Getter
 @Entity
-@ToString
 @NoArgsConstructor
 @Table(name = "employee", schema = "perflow")
 public class Employee extends BaseEntity {

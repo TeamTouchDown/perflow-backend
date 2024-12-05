@@ -28,7 +28,7 @@ public class EmployeeCommandController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<?> loginRequestEmployee(@RequestBody EmployeeLoginRequestDTO employeeLoginRequestDTO) {
+    public ResponseEntity<SuccessCode> loginRequestEmployee(@RequestBody EmployeeLoginRequestDTO employeeLoginRequestDTO) {
 
         EmployeeLoginResponseDTO responseDTO = employeeCommandService.loginRequestEmployee(employeeLoginRequestDTO);
 

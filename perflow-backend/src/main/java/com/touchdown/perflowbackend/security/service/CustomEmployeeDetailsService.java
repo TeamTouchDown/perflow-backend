@@ -27,7 +27,6 @@ public class CustomEmployeeDetailsService implements UserDetailsService {
         Employee employee = employeeCommandRepository.findById(empId).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_EMP)
         );
-        log.info(employee.toString());
         return new CustomEmployDetail(employee);
     }
 }

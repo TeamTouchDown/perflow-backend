@@ -1,6 +1,8 @@
 package com.touchdown.perflowbackend.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.touchdown.perflowbackend.common.exception.CustomException;
+import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,6 +20,6 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
         /* 리소스에 접근 권한이 없는데 접근하여 인가 되지 않은 경우 => 403 오류 */
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(new ObjectMapper().writeValueAsString(new ExceptionResponse(403, "인가 실패/권한 없음")));
+        response.getWriter().write(new ObjectMapper().writeValueAsString(new CustomException(ErrorCode.AUTHORIZATION_FAILED)));
     }
 }

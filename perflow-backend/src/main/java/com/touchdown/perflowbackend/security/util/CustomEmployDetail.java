@@ -10,7 +10,7 @@ import java.util.List;
 
 public class CustomEmployDetail implements UserDetails {
 
-    Employee employee;
+    private final Employee employee;
 
     public CustomEmployDetail(Employee employee) {
 

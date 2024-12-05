@@ -1,6 +1,8 @@
 package com.touchdown.perflowbackend.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.touchdown.perflowbackend.common.exception.CustomException;
+import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,6 +21,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         /* 유효한 자격 증명(token)을 제공하지 않고 접근하려는 상황 => 401 오류 */
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(new ObjectMapper().writeValueAsString(new ExceptionResponse(401, "인증 실패")));
+        response.getWriter().write(new ObjectMapper().writeValueAsString(new CustomException(ErrorCode.AUTHENTICATION_FAILED)));
     }
 }
