@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
@@ -33,6 +34,9 @@ public class Employee extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "dept_id", nullable = false)
     private Department dept;
+
+    @Column(name = "password", nullable = false, length = 255)
+    private String password;
 
     @Column(name = "name", nullable = false, length = 30)
     private String name;
@@ -77,5 +81,9 @@ public class Employee extends BaseEntity {
         this.email = registerDTO.getEmail();
         this.joinDate = registerDTO.getJoinDate();
         this.status = EmployeeStatus.ACTIVE;
+    }
+
+    public void registerPassword(String password) {
+        this.password = password;
     }
 }
