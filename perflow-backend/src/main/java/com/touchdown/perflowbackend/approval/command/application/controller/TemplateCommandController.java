@@ -5,10 +5,7 @@ import com.touchdown.perflowbackend.approval.command.application.dto.TemplateCre
 import com.touchdown.perflowbackend.approval.command.application.service.TemplateCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,7 +14,6 @@ public class TemplateCommandController {
 
     private final TemplateCommandService templateCommandService;
 
-    // 서식 생성(1) : 서식명, 서식 내용
     @PostMapping("/templates")
     public ResponseEntity<TemplateCreateResponseDTO> createTemplate(
             @RequestBody TemplateCreateRequestDTO request
@@ -32,6 +28,5 @@ public class TemplateCommandController {
                 new TemplateCreateResponseDTO(response.getTemplateId())
         );
     }
-
 
 }

@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,5 +24,8 @@ public class FieldType {
     @Lob
     @Column(name = "details", nullable = false)
     private String details;
+
+    @OneToMany(mappedBy = "fieldType", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<TemplateField> templateFields;
 
 }
