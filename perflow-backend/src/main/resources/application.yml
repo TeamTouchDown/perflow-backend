@@ -9,8 +9,15 @@ spring:
     properties:
       hibernate:
         ddl-auto: create
+
   config:
     import: "classpath:API-KEY.yml"
+
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 1000
 
 springdoc:
   swagger-ui:
