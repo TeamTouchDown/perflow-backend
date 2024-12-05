@@ -4,6 +4,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import java.util.Date;
 import java.util.Map;
 
 @Component
+@Slf4j
 public class JwtTokenProvider {
 
     private final Key key;
@@ -28,6 +30,7 @@ public class JwtTokenProvider {
     // Access Token 생성 메서드
     public String createAccessToken(String subject, Map<String, Object> claims) {
 
+        log.info("accessToken 생성!");
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims)
@@ -42,6 +45,7 @@ public class JwtTokenProvider {
     public String createRefreshToken(String subject, Map<String, Object> claims) {
 
         Date now = new Date();
+        log.info("refreshToken 생성!");
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject) // 사용자 식별자
