@@ -3,6 +3,7 @@ package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeTravelRequestDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -69,5 +70,15 @@ public class Travel extends BaseEntity {
         this.travelRejectReason = travelRejectReason;
         this.travelDivision = travelDivision;
         this.status = status;
+    }
+
+    public void updateTravel(WorkAttitudeTravelRequestDTO workAttitudeTravelRequestDTO) {
+        this.travelReason = workAttitudeTravelRequestDTO.getTravelReason();
+        this.travelStart = workAttitudeTravelRequestDTO.getTravelStart();
+        this.travelEnd = workAttitudeTravelRequestDTO.getTravelEnd();
+        this.travelDivision = workAttitudeTravelRequestDTO.getTravelDivision();
+        this.travelStatus = Status.valueOf(workAttitudeTravelRequestDTO.getTravelStatus());
+        this.travelRejectReason = workAttitudeTravelRequestDTO.getTravelRejectReason();
+        this.status = Status.valueOf(workAttitudeTravelRequestDTO.getStatus());
     }
 }

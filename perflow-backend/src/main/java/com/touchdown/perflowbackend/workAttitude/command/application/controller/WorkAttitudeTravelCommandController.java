@@ -21,13 +21,6 @@ public class WorkAttitudeTravelCommandController {
         return ResponseEntity.ok(SuccessCode.WORK_ATTITUDE_TRAVEL_SUCCESS) ;
     }
 
-    //출장 조회(사원)
-    @GetMapping("/emp/travel/{travelId}")
-    public ResponseEntity<WorkAttitudeTravelRequestDTO> getTravel(@PathVariable(name = "travelId") Long travelId) {
-        WorkAttitudeTravelRequestDTO dto = workAttitudeTravelCommandService.getTravelById(travelId);
-        return ResponseEntity.ok(dto);
-    }
-
     // 3. 출장 수정 (사원)
     @PutMapping("/emp/travel/{travelId}")
     public ResponseEntity<SuccessCode> updateTravel(
