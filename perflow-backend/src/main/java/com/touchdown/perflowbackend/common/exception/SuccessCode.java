@@ -13,11 +13,14 @@ public enum SuccessCode {
     // 200
     SUCCESS(HttpStatus.OK, "OK"),
 
+    // 200 - 인사정보 관련 성공
+    LOGIN_SUCCESS(HttpStatus.OK, "로그인 성공"),
+    PASSWORD_REGISTER_SUCCESS(HttpStatus.OK, "초기 비밀번호 등록 성공"),
+
     // 201
     WORK_ATTITUDE_TRAVEL_SUCCESS(HttpStatus.CREATED, "출장 요청 등록이 완료 되었습니다."),
 
     TEMPLATE_CREATE_SUCCESS(HttpStatus.OK, "서식 생성에 성공하였습니다");
-
 
     private final HttpStatus httpStatus;
     private final String message;

@@ -4,12 +4,17 @@ spring:
     url: jdbc:mariadb://localhost:${db.port}/${db.name}
     username: ${db.user}
     password: ${db.password}
+
   jpa:
     properties:
       hibernate:
         ddl-auto: create
   config:
     import: "classpath:API-KEY.yml"
+token:
+  secret: ${token.secret}
+  access_token_expiration_time: ${token.access_token_expiration_time}
+  refresh_token_expiration_time: ${token.refresh_token_expiration_time}
 
 springdoc:
   swagger-ui:
