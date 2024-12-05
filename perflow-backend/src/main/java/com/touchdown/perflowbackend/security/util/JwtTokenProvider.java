@@ -37,4 +37,17 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.HS512) // 서명 알고리즘
                 .compact();
     }
+
+    // Refresh Token 생성 메서드
+    public String createRefreshToken(String subject, Map<String, Object> claims) {
+
+        Date now = new Date();
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject) // 사용자 식별자
+                .setIssuedAt(now) // 발급 시간
+                .setExpiration(new Date(now.getTime() + accessTokenValidity)) // 만료 시간
+                .signWith(key, SignatureAlgorithm.HS512) // 서명 알고리즘
+                .compact();
+    }
 }
