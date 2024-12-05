@@ -29,6 +29,10 @@ public class AnnouncementCommandService {
 
         Employee foundEmployee = findEmployeeByEmpId(announcementRequestDTO.getEmpId());
 
+        if (!isSameDept(foundDepartment, foundEmployee)) {
+            throw new CustomException(ErrorCode.NOT_MATCH_DEPARTMENT);
+        }
+
         Announcement newAnnouncement = AnnouncementMapper.toEntity(announcementRequestDTO, foundDepartment, foundEmployee);
 
         announcementCommandRepository.save(newAnnouncement);
@@ -83,5 +87,9 @@ public class AnnouncementCommandService {
 
         return employeeCommandRepository.findById(empId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP));
+    }
+
+    private boolean isSameDept(Department foundDepartment, Employee foundEmployee) {
+        return foundDepartment.getName().equals(foundEmployee.getDept().getName());
     }
 }
