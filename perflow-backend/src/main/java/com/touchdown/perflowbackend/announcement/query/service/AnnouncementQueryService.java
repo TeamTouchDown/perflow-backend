@@ -31,4 +31,16 @@ public class AnnouncementQueryService {
                 .map(AnnouncementMapper::toDTO)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ANNOUNCEMENT));
     }
+
+    @Transactional(readOnly = true)
+    public Page<AnnouncementResponseDTO> searchAnnouncementsByTitle(String title, Pageable pageable) {
+        return announcementQueryRepository.findByTitleContainingIgnoreCase(title, pageable)
+                .map(AnnouncementMapper::toDTO);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<AnnouncementResponseDTO> searchAnnouncementsByEmpName(String empName, Pageable pageable) {
+        return announcementQueryRepository.findByEmpName(empName, pageable)
+                .map(AnnouncementMapper::toDTO);
+    }
 }
