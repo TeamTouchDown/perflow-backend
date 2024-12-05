@@ -37,7 +37,7 @@ public class EmployeeCommandController {
 
         headers.add("Authorization", "Bearer " + responseDTO.getAccessToken());
 
-        return ResponseEntity.ok().headers(headers).body(responseDTO);
+        return ResponseEntity.ok().headers(headers).body(SuccessCode.LOGIN_SUCCESS);
     }
 
     @PutMapping("/pwd")
