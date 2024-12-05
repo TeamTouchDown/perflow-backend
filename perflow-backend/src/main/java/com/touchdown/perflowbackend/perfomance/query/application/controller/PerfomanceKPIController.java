@@ -19,11 +19,11 @@ public class PerfomanceKPIController {
     // 개인 KPI 리스트 조회
     @GetMapping("/personal/{userId}")
     public ResponseEntity<KPIListResponseDTO> getPersonalKPIs(
-            @PathVariable(name = "userId") String userId
+            @PathVariable(name = "userId") String empId
     ) {
 
         // 유저 사번 이용하여 개인 KPI 목록 및 제한 호출
-        KPIListResponseDTO response = personalKPIQueryService.getPersonalKPIs(userId);
+        KPIListResponseDTO response = personalKPIQueryService.getPersonalKPIs(empId);
 
         return ResponseEntity.ok(response);
     }
