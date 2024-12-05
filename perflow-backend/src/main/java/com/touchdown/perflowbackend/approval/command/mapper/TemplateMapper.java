@@ -4,10 +4,7 @@ import com.touchdown.perflowbackend.approval.command.application.dto.TemplateCre
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.Template;
 import com.touchdown.perflowbackend.approval.query.dto.TemplateResponseDTO;
-import com.touchdown.perflowbackend.approval.query.dto.TemplateListResponseDTO;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
-
-import java.util.List;
 
 public class TemplateMapper {
 
@@ -32,13 +29,4 @@ public class TemplateMapper {
                 .build();
     }
 
-    public static TemplateListResponseDTO toTemplateListResponseDTO(
-            List<TemplateResponseDTO> templates, int currentPage, int totalPages
-    ) {
-        return TemplateListResponseDTO.builder()
-                .templates(templates) // DTO 리스트
-                .currentPage(currentPage) // 현재 페이지 번호
-                .totalPages(totalPages) // 총 페이지 수
-                .build();
-    }
 }

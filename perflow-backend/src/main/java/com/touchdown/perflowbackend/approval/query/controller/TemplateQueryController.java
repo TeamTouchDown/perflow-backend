@@ -1,6 +1,6 @@
 package com.touchdown.perflowbackend.approval.query.controller;
 
-import com.touchdown.perflowbackend.approval.query.dto.TemplateListResponseDTO;
+import com.touchdown.perflowbackend.approval.query.dto.TemplateResponseDTO;
 import com.touchdown.perflowbackend.approval.query.service.TemplateQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,8 +18,7 @@ public class TemplateQueryController {
     private final TemplateQueryService templateQueryService;
 
     @GetMapping("/templates")
-    public ResponseEntity<Page<TemplateListResponseDTO>> showTemplates(Pageable pageable) {
-
+    public ResponseEntity<Page<TemplateResponseDTO>> showTemplates(Pageable pageable) {
 
         return ResponseEntity.ok(templateQueryService.getTemplates(pageable));
 
