@@ -1,6 +1,7 @@
 package com.touchdown.perflowbackend.security.util;
 
-import com.touchdown.perflowbackend.employee.command.application.service.EmployeeCommandService;
+import com.touchdown.perflowbackend.common.exception.CustomException;
+import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.security.service.CustomEmployeeDetailsService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -21,10 +22,7 @@ public class JwtUtil {
     private final Key key;
     private final CustomEmployeeDetailsService employeeDetailsService;
 
-    public JwtUtil(
-            @Value("${token.secret}") String secretKey,
-            CustomEmployeeDetailsService employeeCommandService
-    ) {
+    public JwtUtil(@Value("${token.secret}") String secretKey, CustomEmployeeDetailsService employeeCommandService) {
         this.employeeDetailsService = employeeCommandService;
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
@@ -40,6 +38,7 @@ public class JwtUtil {
             log.info("Invalid JWT Token {}", e);
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT Token {}", e);
+            throw new CustomException(ErrorCode.NOT_VALID_ACCESS_TOKEN);
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT Token {}", e);
         } catch (IllegalArgumentException e) {
