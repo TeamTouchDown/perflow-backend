@@ -81,7 +81,7 @@ public class TemplateCommandService {
         List<FieldType> fieldTypes = fieldTypeCommandRepository.findAllByFieldTypeIdIn(request.getFieldTypes());
 
         if (fieldTypes.size() != request.getFieldTypes().stream().distinct().count()) {
-            throw new CustomException(ErrorCode.NOT_FOUND_FIELD_TYPE);
+            throw new CustomException(ErrorCode.MISMATCH_FIELD_TYPE_DATA_SIZE);
         }
 
         // FieldType id 기준으로 FieldType 매핑
@@ -101,14 +101,16 @@ public class TemplateCommandService {
                 .toList();
     }
 
+    // TODO: 유효성 검사 더 자세하게 할 필요가 있을 듯
     private void validateUpdateFieldData(TemplateUpdateRequestDTO request) {
 
         if (request.getFieldTypes() == null || request.getFieldTypes().isEmpty()) {
-            throw new CustomException(ErrorCode.EMPTY_FIELD_DATA);
+            throw new CustomException(ErrorCode.EMPTY_FIELD_TYPE_DATA);
         }
 
+        // fieldsTypes 와 detailsList 비교
         if(request.getFieldTypes().size() != request.getDetailsList().size()) {
-            throw new CustomException(ErrorCode.MISMATCH_FIELD_DATA_SIZE);
+            throw new CustomException(ErrorCode.MISMATCH_FIELD_TYPE_DATA_SIZE);
         }
 
     }

@@ -16,8 +16,8 @@ public enum ErrorCode {
     // 400 에러
     NOT_MATCH_FILE_EXTENSION(HttpStatus.BAD_REQUEST, "허용되지 않은 확장자입니다."),
     INVALID_FIELD_DATA(HttpStatus.BAD_REQUEST, "잘못된 필드 데이터입니다."),
-    EMPTY_FIELD_DATA(HttpStatus.BAD_REQUEST, "빈 필드 데이터입니다."),
-    MISMATCH_FIELD_DATA_SIZE(HttpStatus.BAD_REQUEST, "필드 데이터의 크기가 맞지 않습니다."),
+    EMPTY_FIELD_TYPE_DATA(HttpStatus.BAD_REQUEST, "빈 필드 타입 데이터입니다."),
+    MISMATCH_FIELD_TYPE_DATA_SIZE(HttpStatus.BAD_REQUEST, "필드 타입 데이터의 크기가 맞지 않습니다."),
     ALREADY_REGISTERED_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호 등록 이력이 존재합니다."),
     EXCEL_TEMPLATE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "엑셀 템플릿 업로드 중 오류가 발생했습니다"),
 

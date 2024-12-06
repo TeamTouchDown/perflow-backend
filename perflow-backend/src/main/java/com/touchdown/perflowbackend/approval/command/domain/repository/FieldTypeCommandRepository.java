@@ -7,4 +7,5 @@ import java.util.List;
 public interface FieldTypeCommandRepository {
 
     List<FieldType> findAllByFieldTypeIdIn(List<Long> fieldTypes);
+
 }
