@@ -1,5 +1,7 @@
 package com.touchdown.perflowbackend.security.util;
 
+import com.touchdown.perflowbackend.common.exception.CustomException;
+import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,7 +16,7 @@ public class EmployeeUtil {
 
         if (authentication.getPrincipal() == null || authentication.getName() == null ||
                 !(authentication instanceof UsernamePasswordAuthenticationToken)) {
-            throw new RuntimeException("Security Context 에 인증 정보가 없음");
+            throw new CustomException(ErrorCode.SECURITY_CONTEXT_NOT_FOUND);
         }
 
         return (CustomEmployDetail) authentication.getPrincipal();

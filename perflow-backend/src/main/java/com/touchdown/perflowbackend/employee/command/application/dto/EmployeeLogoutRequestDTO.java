@@ -10,5 +10,6 @@ import lombok.Setter;
 public class EmployeeLogoutRequestDTO {
 
     private String empId;
+
     private String accessToken;
 }

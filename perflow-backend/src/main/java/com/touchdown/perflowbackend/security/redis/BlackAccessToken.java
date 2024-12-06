@@ -10,10 +10,12 @@ public class BlackAccessToken {
 
     @Id
     private String empId;
+
     private String accessToken;
 
 
     public BlackAccessToken(String accessToken, String empId) {
+
         this.accessToken = accessToken;
         this.empId = empId;
     }

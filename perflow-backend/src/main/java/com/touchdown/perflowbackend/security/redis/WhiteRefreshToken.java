@@ -13,6 +13,7 @@ public class WhiteRefreshToken {
     private String refreshToken;
 
     public WhiteRefreshToken(String refreshToken, String empId) {
+
         this.refreshToken = refreshToken;
         this.empId = empId;
     }

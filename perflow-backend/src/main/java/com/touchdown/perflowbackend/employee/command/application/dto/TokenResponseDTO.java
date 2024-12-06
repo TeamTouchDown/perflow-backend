@@ -14,6 +14,7 @@ public class TokenResponseDTO {
     private String refreshToken;
 
     public TokenResponseDTO(String empId, String accessToken, String refreshToken) {
+
         this.empId = empId;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;

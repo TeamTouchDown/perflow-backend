@@ -1,5 +1,7 @@
 package com.touchdown.perflowbackend.employee.command.application.controller;
 
+import com.touchdown.perflowbackend.common.exception.CustomException;
+import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import com.touchdown.perflowbackend.employee.command.application.dto.*;
 import com.touchdown.perflowbackend.employee.command.application.service.EmployeeCommandService;
@@ -18,6 +20,9 @@ import org.springframework.web.bind.annotation.*;
 public class EmployeeCommandController {
 
     private final EmployeeCommandService employeeCommandService;
+    private static final String ACCESS_TOKEN_HEADER = "Authorization";
+    private static final String REFRESH_TOKEN_HEADER = "refreshToken";
+    private static final String BEARER_PREFIX = "Bearer ";
 
     @PostMapping
     public ResponseEntity<SuccessCode> registerEmployee(
@@ -36,8 +41,8 @@ public class EmployeeCommandController {
         // 헤더 생성
         HttpHeaders headers = new HttpHeaders();
 
-        headers.add("Authorization", "Bearer " + responseDTO.getAccessToken());
-        headers.add("refreshToken", "Bearer " + responseDTO.getRefreshToken());
+        headers.add(ACCESS_TOKEN_HEADER, BEARER_PREFIX + responseDTO.getAccessToken());
+        headers.add(REFRESH_TOKEN_HEADER, BEARER_PREFIX + responseDTO.getRefreshToken());
 
         return ResponseEntity.ok().headers(headers).body(SuccessCode.LOGIN_SUCCESS);
     }
@@ -48,8 +53,8 @@ public class EmployeeCommandController {
         String empId = EmployeeUtil.getEmpId();
         String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (accessToken == null || !accessToken.startsWith("Bearer ")) {
-            throw new IllegalArgumentException("Invalid or missing Authorization header");
+        if (accessToken == null || !accessToken.startsWith(BEARER_PREFIX)) {
+            throw new CustomException(ErrorCode.MISSING_AUTHORIZATION_HEADER);
         }
 
         // Remove "Bearer " prefix
@@ -79,8 +84,8 @@ public class EmployeeCommandController {
         // 헤더 생성
         HttpHeaders headers = new HttpHeaders();
 
-        headers.add("Authorization", "Bearer " + tokenResponseDTO.getAccessToken());
-        headers.add("refreshToken", "Bearer " + tokenResponseDTO.getRefreshToken());
+        headers.add(ACCESS_TOKEN_HEADER, BEARER_PREFIX + tokenResponseDTO.getAccessToken());
+        headers.add(REFRESH_TOKEN_HEADER, BEARER_PREFIX + tokenResponseDTO.getRefreshToken());
 
         return ResponseEntity.ok().headers(headers).body(SuccessCode.TOKEN_REISSUE_SUCCESS);
     }
