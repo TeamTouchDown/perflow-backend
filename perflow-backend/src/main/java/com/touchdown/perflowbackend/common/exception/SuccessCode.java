@@ -16,6 +16,7 @@ public enum SuccessCode {
     // 200 - 인사정보 관련 성공
     LOGIN_SUCCESS(HttpStatus.OK, "로그인 성공"),
     PASSWORD_REGISTER_SUCCESS(HttpStatus.OK, "초기 비밀번호 등록 성공"),
+    TOKEN_REISSUE_SUCCESS(HttpStatus.OK, "AccessToken 재발급 성공!"),
 
     // 201
     WORK_ATTITUDE_TRAVEL_SUCCESS(HttpStatus.CREATED, "출장 요청 등록이 완료 되었습니다."),

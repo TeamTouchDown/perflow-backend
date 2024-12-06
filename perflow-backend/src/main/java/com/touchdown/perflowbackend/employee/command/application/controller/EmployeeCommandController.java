@@ -7,10 +7,12 @@ import com.touchdown.perflowbackend.employee.command.application.dto.EmployeePwd
 import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeRegisterDTO;
 import com.touchdown.perflowbackend.employee.command.application.service.EmployeeCommandService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/hr/employees")
@@ -49,11 +51,19 @@ public class EmployeeCommandController {
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity<String> validRefreshToken(
+    @PostMapping("/reissue")
+    public ResponseEntity<SuccessCode> validRefreshToken(
             @RequestHeader(name = "refreshToken") String refreshToken
     ) {
 
-        TokenResponseDTO tokenResponseDTO = employeeCommandService.validRefreshToken(refreshToken);
+        TokenResponseDTO tokenResponseDTO = employeeCommandService.reissueToken(refreshToken);
+
+        // 헤더 생성
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.add("Authorization", "Bearer " + tokenResponseDTO.getAccessToken());
+        headers.add("refreshToken", "Bearer " + tokenResponseDTO.getRefreshToken());
+
+        return ResponseEntity.ok().headers(headers).body(SuccessCode.TOKEN_REISSUE_SUCCESS);
     }
 }

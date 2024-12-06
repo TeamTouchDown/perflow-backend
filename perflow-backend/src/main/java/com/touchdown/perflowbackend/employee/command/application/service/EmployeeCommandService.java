@@ -16,10 +16,7 @@ import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
 import com.touchdown.perflowbackend.hr.command.domain.repository.DepartmentCommandRepository;
 import com.touchdown.perflowbackend.hr.command.domain.repository.JobCommandRepository;
 import com.touchdown.perflowbackend.hr.command.domain.repository.PositionCommandRepository;
-import com.touchdown.perflowbackend.security.filter.JwtFilter;
-import com.touchdown.perflowbackend.security.redis.BlackAccessToken;
 import com.touchdown.perflowbackend.security.redis.WhiteRefreshToken;
-import com.touchdown.perflowbackend.security.repository.BlackAccessTokenRepository;
 import com.touchdown.perflowbackend.security.repository.WhiteRefreshTokenRepository;
 import com.touchdown.perflowbackend.security.util.CustomEmployDetail;
 import com.touchdown.perflowbackend.security.util.JwtTokenProvider;
@@ -115,7 +112,6 @@ public class EmployeeCommandService {
             throw new CustomException(ErrorCode.ALREADY_REGISTERED_PASSWORD);
         }
 
-        log.info(employee.toString());
         String pwd = passwordEncoder.encode(employeePwdRegisterDTO.getPassword());
 
         employee.registerPassword(pwd);
@@ -123,18 +119,15 @@ public class EmployeeCommandService {
         employeeCommandRepository.save(employee);
     }
 
-    public TokenResponseDTO validRefreshToken(String refreshToken) {
+    public TokenResponseDTO reissueToken(String refreshToken) {
 
-        /* token의 기본 유효성 확인 */
-        if(!jwtUtil.validateToken(refreshToken)) { // refreshToken이 유효하지 않을 경우.
-            throw new CustomException(ErrorCode.AUTHORIZATION_FAILED);
-        }
+        String token = refreshToken.substring(7);
 
-        String empId = jwtUtil.getUserId(refreshToken);
-        Map<String, Object> claims = jwtUtil.parseClaims(refreshToken);
+        String empId = jwtUtil.getUserId(token);
+        Map<String, Object> claims = jwtUtil.parseClaims(token);
 
         /* whiteList 에 포함된 refreshToken 인지 확인 */
-        whiteRefreshTokenRepository.findById(refreshToken).orElseThrow(
+        whiteRefreshTokenRepository.findById(token).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_VALID_REFRESH_TOKEN)
         );
 
@@ -142,7 +135,7 @@ public class EmployeeCommandService {
         String newRefreshToken = jwtTokenProvider.createRefreshToken(empId, claims);
 
         /* refreshToken 화이트 리스트로 redis에 저장 */
-        whiteRefreshTokenRepository.save(new WhiteRefreshToken(refreshToken, empId));
+        whiteRefreshTokenRepository.save(new WhiteRefreshToken(newRefreshToken, empId));
 
         return new TokenResponseDTO(empId, newAccessToken, newRefreshToken);
     }
