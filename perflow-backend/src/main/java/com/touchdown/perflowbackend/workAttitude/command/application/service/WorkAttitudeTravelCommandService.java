@@ -6,6 +6,7 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
+import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeTravelCommandForTeamLeaderRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeTravelRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Travel;
@@ -69,5 +70,19 @@ public class WorkAttitudeTravelCommandService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_TRAVEL));
     }
 
+    public void updateTravelStatus(Long travelId, WorkAttitudeTravelCommandForTeamLeaderRequestDTO requestDTO) {
+        Travel travel = findById(travelId);
+
+        // 승인 또는 반려 상태 업데이트
+        if ("REJECTED".equals(requestDTO.getTravelStatus())) {
+            travel.updateTravelStatus(Status.REJECTED, requestDTO.getRejectReason());
+        } else if ("CONFIRMED".equals(requestDTO.getTravelStatus())) {
+            travel.updateTravelStatus(Status.CONFIRMED, null); // 승인 시 반려 사유 초기화
+        } else {
+            throw new CustomException(ErrorCode.INVALID_STATUS);
+        }
+
+        workAttitudeTravelCommandRepository.save(travel);
+    }
 }
 
