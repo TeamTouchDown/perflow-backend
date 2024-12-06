@@ -12,6 +12,10 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버에러 발생"),
 
     // 토큰 관련 에러
+    NOT_VALID_REFRESH_TOKEN(HttpStatus.FORBIDDEN, "유효하지 않은 refresh token입니다."),
+    NOT_VALID_ACCESS_TOKEN(HttpStatus.FORBIDDEN, "유효하지 않은 access token입니다."),
+    SECURITY_CONTEXT_NOT_FOUND(HttpStatus.UNAUTHORIZED, "Security Context에 인증 정보가 없습니다."),
+    MISSING_AUTHORIZATION_HEADER(HttpStatus.BAD_REQUEST, "Authorization 헤더가 누락되었습니다."),
 
     // 400 에러
     NOT_MATCH_FILE_EXTENSION(HttpStatus.BAD_REQUEST, "허용되지 않은 확장자입니다."),
@@ -38,6 +42,7 @@ public enum ErrorCode {
     NOT_FOUND_TEMPLATE(HttpStatus.NOT_FOUND, "서식 정보를 찾을 수 없습니다."),
     NOT_FOUND_FIELD_TYPE(HttpStatus.NOT_FOUND, "필드 타입 정보를 찾을 수 없습니다."),
     NOT_FOUND_DEPARTMENT(HttpStatus.NOT_FOUND, "부서 정보를 찾을 수 없습니다."),
+    NOT_FOUND_KPI(HttpStatus.NOT_FOUND,"KPI 정보를 찾을 수 없습니다."),
 
     NOT_FOUND_APPROVE_SBJ(HttpStatus.NOT_FOUND, "결재 주체 정보를 찾을 수 없습니다."),
     INVALID_APPROVE_SBJ_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 결재 주체 ID입니다."),

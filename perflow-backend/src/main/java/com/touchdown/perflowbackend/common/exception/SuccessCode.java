@@ -15,7 +15,9 @@ public enum SuccessCode {
 
     // 200 - 인사정보 관련 성공
     LOGIN_SUCCESS(HttpStatus.OK, "로그인 성공"),
+    LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃 성공"),
     PASSWORD_REGISTER_SUCCESS(HttpStatus.OK, "초기 비밀번호 등록 성공"),
+    TOKEN_REISSUE_SUCCESS(HttpStatus.OK, "AccessToken 재발급 성공!"),
 
     // 200 - 급여대장 관련 성공
     EXCEL_TEMPLATE_UPLOAD_SUCCESS(HttpStatus.OK, "엑셀 템플릿을 성공적으로 업로드 하였습니다."),
@@ -25,6 +27,19 @@ public enum SuccessCode {
     TEMPLATE_CREATE_SUCCESS(HttpStatus.OK, "서식 생성에 성공하였습니다"),
     TEMPLATE_UPDATE_SUCCESS(HttpStatus.OK, "서식 수정에 성공하였습니다."),
     TEMPLATE_DELETE_SUCCESS(HttpStatus.OK, "서식 삭제에 성공하였습니다."),
+
+    // 200 - 인사 평가 관련 성공
+
+    // 개인 KPI
+    KPI_PERSONAL_UPLOAD_SUCCESS(HttpStatus.OK, "개인 KPI를 성공적으로 등록하였습니다."),
+    KPI_PERSONAL_UPDATE_SUCCESS(HttpStatus.OK, "개인 KPI를 성공적으로 수정하였습니다."),
+    KPI_PERSONAL_DELETE_SUCCESS(HttpStatus.OK, "개인 KPI를 성공적으로 삭제하였습니다."),
+
+    // 팀 KPI
+
+    KPI_TEAM_UPLOAD_SUCCESS(HttpStatus.OK, "팀 KPI를 성공적으로 등록하였습니다."),
+    KPI_TEAM_UPDATE_SUCCESS(HttpStatus.OK, "팀 KPI를 성공적으로 수정하였습니다."),
+    KPI_TEAM_DELETE_SUCCESS(HttpStatus.OK, "팀 KPI를 성공적으로 삭제하였습니다."),
 
     // 201
     WORK_ATTITUDE_TRAVEL_SUCCESS(HttpStatus.CREATED, "출장 요청 등록이 완료 되었습니다."),

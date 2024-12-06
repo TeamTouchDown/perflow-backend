@@ -1,9 +1,12 @@
 package com.touchdown.perflowbackend.perfomance.command.domain.aggregate;
 
+import com.touchdown.perflowbackend.announcement.command.application.dto.AnnouncementRequestDTO;
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.perfomance.command.application.dto.KPIDetailRequestDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -46,4 +49,25 @@ public class Kpi extends BaseEntity {
 
     @Column(name = "goal_detail", nullable = false)
     private String goalDetail;
+
+    @Builder
+    public Kpi(Employee emp, String goal, Long goalValue, String goalValueUnit, Double currentValue, KpiCurrentStatus status, PersonalType personalType, String goalDetail ){
+        this.emp = emp;
+        this.goal = goal;
+        this.goalValue = goalValue;
+        this.goalValueUnit = goalValueUnit;
+        this.currentValue = currentValue;
+        this.status = status;
+        this.personalType = personalType;
+        this.goalDetail = goalDetail;
+    }
+
+    // kpi 수정
+    public void updateKpi(KPIDetailRequestDTO kpiDetailRequestDTO) {
+
+        this.goal = kpiDetailRequestDTO.getGoal();
+        this.goalValue = kpiDetailRequestDTO.getGoalValue();
+        this.goalValueUnit = kpiDetailRequestDTO.getGoalValueUnit();
+        this.goalDetail = kpiDetailRequestDTO.getGoalDetail();
+    }
 }
