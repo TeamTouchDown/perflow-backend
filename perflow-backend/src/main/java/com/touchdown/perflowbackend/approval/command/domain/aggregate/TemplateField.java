@@ -58,4 +58,10 @@ public class TemplateField extends BaseEntity {
         this.deleteDatetime = deleteDatetime;
         this.status = status;
     }
+
+    public void updateField(TemplateField updatedField) {
+        this.fieldOrder = updatedField.fieldOrder;
+        this.details = updatedField.details;
+        this.isRepeated = updatedField.isRepeated;
+    }
 }

@@ -2,19 +2,22 @@ package com.touchdown.perflowbackend.approval.command.application.controller;
 
 import com.touchdown.perflowbackend.approval.command.application.dto.TemplateCreateRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.TemplateCreateResponseDTO;
+import com.touchdown.perflowbackend.approval.command.application.dto.TemplateUpdateRequestDTO;
+import com.touchdown.perflowbackend.approval.command.application.dto.TemplateUpdateResponseDTO;
 import com.touchdown.perflowbackend.approval.command.application.service.TemplateCommandService;
+import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/approval")
+@RequestMapping("/api/v1/approval/templates")
 public class TemplateCommandController {
 
     private final TemplateCommandService templateCommandService;
 
-    @PostMapping("/templates")
+    @PostMapping
     public ResponseEntity<TemplateCreateResponseDTO> createTemplate(
             @RequestBody TemplateCreateRequestDTO request
     ) {
@@ -27,6 +30,17 @@ public class TemplateCommandController {
         return ResponseEntity.ok(
                 new TemplateCreateResponseDTO(response.getTemplateId())
         );
+    }
+
+    @PutMapping
+    public ResponseEntity<SuccessCode> updateTemplate(
+            @RequestBody TemplateUpdateRequestDTO request,
+            @PathVariable Long templateId
+    ) {
+
+        templateCommandService.modifyTemplate(request, templateId);
+
+        return ResponseEntity.ok(SuccessCode.TEMPLATE_UPDATE_SUCCESS);
     }
 
 }
