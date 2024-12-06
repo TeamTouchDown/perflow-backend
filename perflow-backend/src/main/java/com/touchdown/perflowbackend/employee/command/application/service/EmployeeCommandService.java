@@ -2,10 +2,7 @@ package com.touchdown.perflowbackend.employee.command.application.service;
 
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
-import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeLoginRequestDTO;
-import com.touchdown.perflowbackend.employee.command.application.dto.TokenResponseDTO;
-import com.touchdown.perflowbackend.employee.command.application.dto.EmployeePwdRegisterDTO;
-import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeRegisterDTO;
+import com.touchdown.perflowbackend.employee.command.application.dto.*;
 import com.touchdown.perflowbackend.employee.command.application.mapper.EmployeeMapper;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.EmployeeStatus;
@@ -16,13 +13,16 @@ import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
 import com.touchdown.perflowbackend.hr.command.domain.repository.DepartmentCommandRepository;
 import com.touchdown.perflowbackend.hr.command.domain.repository.JobCommandRepository;
 import com.touchdown.perflowbackend.hr.command.domain.repository.PositionCommandRepository;
+import com.touchdown.perflowbackend.security.redis.BlackAccessToken;
 import com.touchdown.perflowbackend.security.redis.WhiteRefreshToken;
+import com.touchdown.perflowbackend.security.repository.BlackAccessTokenRepository;
 import com.touchdown.perflowbackend.security.repository.WhiteRefreshTokenRepository;
 import com.touchdown.perflowbackend.security.util.CustomEmployDetail;
 import com.touchdown.perflowbackend.security.util.JwtTokenProvider;
 import com.touchdown.perflowbackend.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -43,6 +43,7 @@ public class EmployeeCommandService {
     private final JobCommandRepository jobCommandRepository;
     private final DepartmentCommandRepository departmentCommandRepository;
     private final WhiteRefreshTokenRepository whiteRefreshTokenRepository;
+    private final BlackAccessTokenRepository blackAccessTokenRepository;
 
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
@@ -138,5 +139,15 @@ public class EmployeeCommandService {
         whiteRefreshTokenRepository.save(new WhiteRefreshToken(newRefreshToken, empId));
 
         return new TokenResponseDTO(empId, newAccessToken, newRefreshToken);
+    }
+
+    public void logoutRequestEmployee(EmployeeLogoutRequestDTO logoutRequestDTO) {
+
+        /* whiteList에서 사용자의 최신 RefreshToken을 삭제 */
+        whiteRefreshTokenRepository.deleteById(logoutRequestDTO.getEmpId());
+
+        /* blackList에 사용자의 최신 accessToken을 등록 */
+        blackAccessTokenRepository.save(new BlackAccessToken(logoutRequestDTO.getAccessToken(), logoutRequestDTO.getEmpId()));
+
     }
 }

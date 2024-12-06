@@ -25,7 +25,7 @@ public class JwtTokenProvider {
                             ) long accessTokenValidity,
                             @Value("${token.refresh_token_expiration_time}"
                             ) long refreshTokenValidity
-                            ) {
+    ) {
 
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);

@@ -1,11 +1,10 @@
 package com.touchdown.perflowbackend.employee.command.application.controller;
 
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
-import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeLoginRequestDTO;
-import com.touchdown.perflowbackend.employee.command.application.dto.TokenResponseDTO;
-import com.touchdown.perflowbackend.employee.command.application.dto.EmployeePwdRegisterDTO;
-import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeRegisterDTO;
+import com.touchdown.perflowbackend.employee.command.application.dto.*;
 import com.touchdown.perflowbackend.employee.command.application.service.EmployeeCommandService;
+import com.touchdown.perflowbackend.security.util.EmployeeUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -41,6 +40,25 @@ public class EmployeeCommandController {
         headers.add("refreshToken", "Bearer " + responseDTO.getRefreshToken());
 
         return ResponseEntity.ok().headers(headers).body(SuccessCode.LOGIN_SUCCESS);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<SuccessCode> logoutRequestEmployee(HttpServletRequest request) {
+
+        String empId = EmployeeUtil.getEmpId();
+        String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        if (accessToken == null || !accessToken.startsWith("Bearer ")) {
+            throw new IllegalArgumentException("Invalid or missing Authorization header");
+        }
+
+        // Remove "Bearer " prefix
+        accessToken = accessToken.substring(7);
+
+        log.info(empId + " " + accessToken);
+        employeeCommandService.logoutRequestEmployee(new EmployeeLogoutRequestDTO(empId, accessToken));
+
+        return ResponseEntity.ok(SuccessCode.LOGOUT_SUCCESS);
     }
 
     @PutMapping("/pwd")
