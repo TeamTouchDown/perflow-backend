@@ -7,6 +7,7 @@ import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeTravelRequestDTO;
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Travel;
 import com.touchdown.perflowbackend.workAttitude.command.domain.repository.WorkAttitudeTravelCommandRepository;
 import com.touchdown.perflowbackend.workAttitude.command.mapper.WorkAttitudeTravelMapper;
@@ -37,13 +38,20 @@ public class WorkAttitudeTravelCommandService {
     public void updateTravel(Long travelId, WorkAttitudeTravelRequestDTO workAttitudeTravelRequestDTO) {
         Travel travel = findById(travelId);
 
-        travel.updateTravel(workAttitudeTravelRequestDTO);
+        travel.updateTravel(
+                workAttitudeTravelRequestDTO.getTravelReason(),
+                workAttitudeTravelRequestDTO.getTravelStart(),
+                workAttitudeTravelRequestDTO.getTravelEnd(),
+                workAttitudeTravelRequestDTO.getTravelDivision()
+                );
         workAttitudeTravelCommandRepository.save(travel);
     }
 
     @Transactional
     public void deleteTravel(Long travelId) {
-        workAttitudeTravelCommandRepository.deleteById(travelId);
+        Travel travel = findById(travelId);
+        travel.deleteTravel();
+        workAttitudeTravelCommandRepository.save(travel);
     }
 
     private Employee findEmployeeByEmpId(String empId) {
