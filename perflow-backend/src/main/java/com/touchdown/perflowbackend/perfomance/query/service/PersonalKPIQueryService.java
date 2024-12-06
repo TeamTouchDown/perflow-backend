@@ -30,10 +30,10 @@ public class PersonalKPIQueryService {
         Employee emp = findEmployeeByEmpId(empId);
 
         // 해당 유저의 개인 KPI 가져오기
-        List<KPIDetailResponseDTO> lists = kpiQueryRepository.findPersonalKPIsByUserId(empId);
+        List<KPIDetailResponseDTO> lists = kpiQueryRepository.findPersonalKPIsByEmpId(empId);
 
         // 해당 유저의 부서의 KPI 제한치 가져오기
-        KPILimitResponseDTO limit = kpiQueryRepository.findPersonalKPILimitByUserId(empId)
+        KPILimitResponseDTO limit = kpiQueryRepository.findPersonalKPILimitByEmpId(empId)
                 .orElse(new KPILimitResponseDTO(2L, 5L)); // 기본값 설정
 
 
