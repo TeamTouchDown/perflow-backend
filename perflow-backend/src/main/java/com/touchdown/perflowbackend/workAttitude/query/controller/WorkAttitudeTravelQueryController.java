@@ -2,6 +2,7 @@ package com.touchdown.perflowbackend.workAttitude.query.controller;
 
 import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeTravelResponseDTO;
 import com.touchdown.perflowbackend.workAttitude.query.service.WorkAttitudeTravelQueryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "WorkAttribute-Controller", description = "출장 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")

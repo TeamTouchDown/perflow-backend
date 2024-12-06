@@ -3,10 +3,11 @@ package com.touchdown.perflowbackend.workAttitude.command.application.controller
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeTravelRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.application.service.WorkAttitudeTravelCommandService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+@Tag(name = "WorkAttribute-Controller", description = "출장 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
