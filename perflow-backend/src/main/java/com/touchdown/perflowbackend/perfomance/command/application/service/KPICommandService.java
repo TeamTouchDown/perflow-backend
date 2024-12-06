@@ -48,7 +48,6 @@ public class KPICommandService {
 
         // 반영된 KPI 저장하기
         kpiCommandRepository.save(kpi);
-
     }
 
     // 개인 KPI 삭제
@@ -65,7 +64,50 @@ public class KPICommandService {
 
         // KPI 삭제하기
         kpiCommandRepository.deleteById(kpiId);
+    }
 
+    // 팀 KPI 생성
+    @Transactional
+    public void createTeamKpi(KPIDetailRequestDTO kpiRequestDTO, String empId) {
+
+        // empId를 통해 사원 정보 가져오기
+        Employee emp = findEmployeeByEmpId(empId);
+
+        // 받아온 내용과 사원 정보를 신규 팀 KPI에 입력하기
+        Kpi kpi = PerformanceMapper.kpiDTOtoEntity(kpiRequestDTO, emp, PersonalType.TEAM);
+
+        // 완성된 KPI DB에 저장하기
+        kpiCommandRepository.save(kpi);
+    }
+
+    // 팀 KPI 수정
+    @Transactional
+    public void updateTeamKpi(KPIDetailRequestDTO kpiRequestDTO, Long kpiId) {
+
+        // 받아온 KPI id를 통해 기존 KPI 정보 받아오기
+        Kpi kpi = findKpiByKpiId(kpiId);
+
+        // 기존 KPI 정보에 받아온 수정사항 반영하기/
+        kpi.updateKpi(kpiRequestDTO);
+
+        // 반영된 KPI 저장하기
+        kpiCommandRepository.save(kpi);
+    }
+
+    // 팀 KPI 삭제
+    @Transactional
+    public void deleteTeamKpi(Long kpiId, String empId){
+
+        // 받아온 KPI id를 통해 기존 KPI 정보 받아오기
+        Kpi kpi = findKpiByKpiId(kpiId);
+
+        // 받아온 현재 유저 아이디와 작성자 아이디가 일치하는지 확인하기
+        if (isSameWriter(kpi.getEmp().getEmpId() ,empId)) {
+            throw new CustomException(ErrorCode.NOT_MATCH_WRITER);
+        }
+
+        // KPI 삭제하기
+        kpiCommandRepository.deleteById(kpiId);
     }
 
     // KPI 작성자와 현재 유저가 일치하는지 확인
