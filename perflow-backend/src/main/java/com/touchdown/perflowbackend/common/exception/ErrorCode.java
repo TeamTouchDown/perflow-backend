@@ -16,6 +16,8 @@ public enum ErrorCode {
     // 400 에러
     NOT_MATCH_FILE_EXTENSION(HttpStatus.BAD_REQUEST, "허용되지 않은 확장자입니다."),
     INVALID_FIELD_DATA(HttpStatus.BAD_REQUEST, "잘못된 필드 데이터입니다."),
+    EMPTY_FIELD_DATA(HttpStatus.BAD_REQUEST, "빈 필드 데이터입니다."),
+    MISMATCH_FIELD_DATA_SIZE(HttpStatus.BAD_REQUEST, "필드 데이터의 크기가 맞지 않습니다."),
     ALREADY_REGISTERED_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호 등록 이력이 존재합니다."),
     EXCEL_TEMPLATE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "엑셀 템플릿 업로드 중 오류가 발생했습니다"),
 
@@ -33,7 +35,7 @@ public enum ErrorCode {
     NOT_FOUND_POSITION(HttpStatus.NOT_FOUND, "직위 정보를 찾을 수 없습니다."),
     NOT_FOUND_JOB(HttpStatus.NOT_FOUND, "직책 정보를 찾을 수 없습니다."),
     NOT_FOUND_TEMPLATE(HttpStatus.NOT_FOUND, "서식 정보를 찾을 수 없습니다."),
-    NOT_FOUND_FIELD_TYPE(HttpStatus.NOT_FOUND, "필드 유형 정보를 찾을 수 없습니다."),
+    NOT_FOUND_FIELD_TYPE(HttpStatus.NOT_FOUND, "필드 타입 정보를 찾을 수 없습니다."),
     NOT_FOUND_DEPARTMENT(HttpStatus.NOT_FOUND, "부서 정보를 찾을 수 없습니다."),
 
     NOT_FOUND_APPROVE_SBJ(HttpStatus.NOT_FOUND, "결재 주체 정보를 찾을 수 없습니다."),

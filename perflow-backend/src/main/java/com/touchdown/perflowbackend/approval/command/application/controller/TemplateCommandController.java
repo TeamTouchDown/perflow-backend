@@ -3,7 +3,6 @@ package com.touchdown.perflowbackend.approval.command.application.controller;
 import com.touchdown.perflowbackend.approval.command.application.dto.TemplateCreateRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.TemplateCreateResponseDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.TemplateUpdateRequestDTO;
-import com.touchdown.perflowbackend.approval.command.application.dto.TemplateUpdateResponseDTO;
 import com.touchdown.perflowbackend.approval.command.application.service.TemplateCommandService;
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +26,10 @@ public class TemplateCommandController {
 
         TemplateCreateResponseDTO response = templateCommandService.createNewTemplate(request, empId);
 
-        return ResponseEntity.ok(
-                new TemplateCreateResponseDTO(response.getTemplateId())
-        );
+        return ResponseEntity.ok(response);
     }
 
-    @PutMapping
+    @PutMapping("/{templateId}")
     public ResponseEntity<SuccessCode> updateTemplate(
             @RequestBody TemplateUpdateRequestDTO request,
             @PathVariable Long templateId

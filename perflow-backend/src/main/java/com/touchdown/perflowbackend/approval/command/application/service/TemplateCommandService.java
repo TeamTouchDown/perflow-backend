@@ -3,10 +3,11 @@ package com.touchdown.perflowbackend.approval.command.application.service;
 import com.touchdown.perflowbackend.approval.command.application.dto.TemplateCreateRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.TemplateCreateResponseDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.TemplateUpdateRequestDTO;
-import com.touchdown.perflowbackend.approval.command.application.dto.TemplateUpdateResponseDTO;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.FieldType;
+import com.touchdown.perflowbackend.approval.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.Template;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.TemplateField;
+import com.touchdown.perflowbackend.approval.command.domain.repository.FieldTypeCommandRepository;
 import com.touchdown.perflowbackend.approval.command.domain.repository.TemplateCommandRepository;
 import com.touchdown.perflowbackend.approval.command.domain.repository.TemplateFieldCommandRepository;
 import com.touchdown.perflowbackend.approval.command.infrastructure.repository.JpaFieldTypeCommandRepository;
@@ -14,7 +15,6 @@ import com.touchdown.perflowbackend.approval.command.mapper.TemplateFieldMapper;
 import com.touchdown.perflowbackend.approval.command.mapper.TemplateMapper;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
-import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +36,7 @@ public class TemplateCommandService {
     private final EmployeeCommandRepository employeeCommandRepository;
     private final TemplateFieldCommandRepository templateFieldCommandRepository;
     private final JpaFieldTypeCommandRepository jpaFieldTypeCommandRepository;
+    private final FieldTypeCommandRepository fieldTypeCommandRepository;
 
     @Transactional
     public TemplateCreateResponseDTO createNewTemplate(TemplateCreateRequestDTO request, String empId) {
@@ -58,27 +59,57 @@ public class TemplateCommandService {
     @Transactional
     public void modifyTemplate(TemplateUpdateRequestDTO request, Long templateId) {
 
-        // 업데이트 할 서식 조회
-        Template updatedTemplate = findTemplateById(templateId);
 
-        // 서식 수정
-        updateTemplate()
+        Template template = findTemplateById(templateId);
 
-        // 서식 필드 수정
-        updateTemplateFields(updatedTemplate, request);
+        validateUpdateFieldData(request);
 
-        // 서식 저장
-        templateCommandRepository.save(updatedTemplate);
+        template.updateTemplate(request.getName(), request.getDescription());
+
+        List<TemplateField> updatedFields = mapToTemplateFields(template, request);
+
+        List<TemplateField> savedFields = templateFieldCommandRepository.saveAll(updatedFields);
+
+        template.updateFields(savedFields);
+
+        templateCommandRepository.save(template);
     }
 
-    // 서식 필드 수정
-    private void updateTemplateFields(Template updatedTemplate, TemplateUpdateRequestDTO request) {
+    // request 데이터를 TemplateField 리스트로 변환
+    private List<TemplateField> mapToTemplateFields(Template template, TemplateUpdateRequestDTO request) {
 
-        // 기존 필드 조회
+        List<FieldType> fieldTypes = fieldTypeCommandRepository.findAllByFieldTypeIdIn(request.getFieldTypes());
 
-        // 요청된 필드 타입과 매핑 정보 조회
+        if (fieldTypes.size() != request.getFieldTypes().stream().distinct().count()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_FIELD_TYPE);
+        }
 
-        .
+        // FieldType id 기준으로 FieldType 매핑
+        Map<Long, FieldType> fieldTypeMap = fieldTypes.stream()
+                .collect(Collectors.toMap(FieldType::getFieldTypeId, ft -> ft));
+
+        // 요청 데이터를 기반으로 TemplateField 리스트 생성
+        return IntStream.range(0, request.getFieldTypes().size())
+                .mapToObj(i -> TemplateField.builder()
+                        .template(template)
+                        .fieldType(fieldTypeMap.get(request.getFieldTypes().get(i)))
+                        .details(request.getDetailsList().get(i))
+                        .isRepeated(request.getIsRepeatedList().get(i))
+                        .fieldOrder((long) i + 1)
+                        .status(Status.ACTIVATED)
+                        .build())
+                .toList();
+    }
+
+    private void validateUpdateFieldData(TemplateUpdateRequestDTO request) {
+
+        if (request.getFieldTypes() == null || request.getFieldTypes().isEmpty()) {
+            throw new CustomException(ErrorCode.EMPTY_FIELD_DATA);
+        }
+
+        if(request.getFieldTypes().size() != request.getDetailsList().size()) {
+            throw new CustomException(ErrorCode.MISMATCH_FIELD_DATA_SIZE);
+        }
 
     }
 
