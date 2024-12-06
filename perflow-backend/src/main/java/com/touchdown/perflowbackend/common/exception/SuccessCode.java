@@ -23,6 +23,11 @@ public enum SuccessCode {
     EXCEL_TEMPLATE_UPLOAD_SUCCESS(HttpStatus.OK, "엑셀 템플릿을 성공적으로 업로드 하였습니다."),
     PAYROLL_UPLOAD_SUCCESS(HttpStatus.OK, "급여대장을 성공적으로 업로드 하였습니다."),
 
+    // 200 결재 관련 성공
+    TEMPLATE_CREATE_SUCCESS(HttpStatus.OK, "서식 생성에 성공하였습니다"),
+    TEMPLATE_UPDATE_SUCCESS(HttpStatus.OK, "서식 수정에 성공하였습니다."),
+    TEMPLATE_DELETE_SUCCESS(HttpStatus.OK, "서식 삭제에 성공하였습니다."),
+
     // 200 - 인사 평가 관련 성공
 
     // 개인 KPI
@@ -39,7 +44,8 @@ public enum SuccessCode {
     // 201
     WORK_ATTITUDE_TRAVEL_SUCCESS(HttpStatus.CREATED, "출장 요청 등록이 완료 되었습니다."),
 
-    TEMPLATE_CREATE_SUCCESS(HttpStatus.OK, "서식 생성에 성공하였습니다");
+
+    ;
 
     private final HttpStatus httpStatus;
     private final String message;
