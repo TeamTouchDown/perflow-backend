@@ -16,7 +16,7 @@ public class TemplateFieldMapper {
     ) {
 
         return TemplateField.builder()
-                .templateId(template)
+                .template(template)
                 .fieldType(fieldType)
                 .details(details)
                 .isRepeated(isRepeated)

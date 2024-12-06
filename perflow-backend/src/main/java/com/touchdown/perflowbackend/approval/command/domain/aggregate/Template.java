@@ -11,6 +11,8 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Getter
 @Entity
@@ -34,9 +36,6 @@ public class Template extends BaseEntity {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "delete_datetime")
-    private LocalDateTime deleteDatetime;
-
     @ColumnDefault("'ACTIVATED'")
     @Column(name = "status", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
@@ -46,12 +45,56 @@ public class Template extends BaseEntity {
     private List<TemplateField> fields;
 
     @Builder
-    public Template(Long templateId, Employee createUser, String name, String description, LocalDateTime deleteDatetime, Status status) {
+    public Template(Long templateId, Employee createUser, String name, String description, Status status) {
         this.templateId = templateId;
         this.createUser = createUser;
         this.name = name;
         this.description = description;
-        this.deleteDatetime = deleteDatetime;
         this.status = status;
     }
+
+    public void updateTemplate(String name, String description) {
+        if (name != null) {
+            this.name = name;
+        }
+        if (description != null) {
+            this.description = description;
+        }
+    }
+
+    public void updateFields(List<TemplateField> updatedFields) {
+
+        // 기존의 필드 Map 생성
+        Map<Long, TemplateField> existingFieldsMap = this.fields.stream()
+                .collect(Collectors.toMap(TemplateField::getTemplateFieldId, fields -> fields));
+
+        // 새 필드 저장, 기존 필드 업데이트
+        for (TemplateField newField : updatedFields) {
+            if (existingFieldsMap.containsKey(newField.getTemplateFieldId())) {
+
+                // 기존 필드가 요청에 포함된 경우 : 수정
+                existingFieldsMap.get(newField.getTemplateFieldId()).updateField(newField);
+            } else {
+                // 요청에 없는 기존 필드 : 추가
+                this.fields.add(newField);
+            }
+        }
+
+        // 삭제되지 않은 필드 유지
+        this.fields.removeIf(field -> updatedFields.stream()
+                .noneMatch(updateField -> updateField.getTemplateFieldId().equals(field.getTemplateFieldId())));
+    }
+
+    public void deleteTemplate() {
+
+        this.status = Status.DELETED;
+
+        if (fields != null) {
+            for(TemplateField field : fields) {
+                field.deleteField();
+
+            }
+        }
+    }
+
 }
