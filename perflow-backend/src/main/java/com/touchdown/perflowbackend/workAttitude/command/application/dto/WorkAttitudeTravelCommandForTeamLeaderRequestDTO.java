@@ -5,6 +5,8 @@ import lombok.Data;
 
 @Data
 public class WorkAttitudeTravelCommandForTeamLeaderRequestDTO {
+
+
     private String travelStatus;
 
     @Nullable
