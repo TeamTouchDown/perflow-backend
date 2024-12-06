@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Tag(name = "WorkAttribute-Controller", description = "출장 관련 API")
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +24,13 @@ public class WorkAttitudeTravelQueryController {
     @GetMapping("/emp/travel/{travelId}")
     public ResponseEntity<WorkAttitudeTravelResponseDTO> getTravel(@PathVariable(name = "travelId") Long travelId) {
         WorkAttitudeTravelResponseDTO dto = workAttitudeTravelQueryService.getTravelById(travelId);
+        return ResponseEntity.ok(dto);
+    }
+
+
+    @GetMapping ("/leader/travel")
+    public ResponseEntity<List<WorkAttitudeTravelResponseDTO>>getAllTravelsForLeader(){
+        List<WorkAttitudeTravelResponseDTO>dto = workAttitudeTravelQueryService.getAllTravelsForLeader();
         return ResponseEntity.ok(dto);
     }
 
