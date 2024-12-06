@@ -75,6 +75,27 @@ public class TemplateCommandService {
         templateCommandRepository.save(template);
     }
 
+    @Transactional
+    public void removeTemplate(Long templateId) {
+
+        Template template = findTemplateById(templateId);
+
+        checkAlreadyDeletedTemplate(template);
+
+        template.deleteTemplate();
+
+        templateCommandRepository.save(template);
+
+    }
+
+    private void checkAlreadyDeletedTemplate(Template template) {
+
+        if(template.getStatus() == Status.DELETED) {
+            throw new CustomException(ErrorCode.ALREADY_DELETED_TEMPLATE);
+        }
+    }
+
+
     // request 데이터를 TemplateField 리스트로 변환
     private List<TemplateField> mapToTemplateFields(Template template, TemplateUpdateRequestDTO request) {
 
@@ -194,6 +215,5 @@ public class TemplateCommandService {
         return templateCommandRepository.findById(templateId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_TEMPLATE));
     }
-
 
 }

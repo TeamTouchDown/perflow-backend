@@ -40,4 +40,11 @@ public class TemplateCommandController {
         return ResponseEntity.ok(SuccessCode.TEMPLATE_UPDATE_SUCCESS);
     }
 
+    @DeleteMapping("/{templateId}")
+    public ResponseEntity<SuccessCode> deleteTemplate(@PathVariable Long templateId) {
+
+        templateCommandService.removeTemplate(templateId);
+
+        return ResponseEntity.ok(SuccessCode.TEMPLATE_DELETE_SUCCESS);
+    }
 }

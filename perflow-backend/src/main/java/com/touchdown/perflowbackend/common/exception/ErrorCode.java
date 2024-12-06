@@ -20,6 +20,7 @@ public enum ErrorCode {
     MISMATCH_FIELD_TYPE_DATA_SIZE(HttpStatus.BAD_REQUEST, "필드 타입 데이터의 크기가 맞지 않습니다."),
     ALREADY_REGISTERED_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호 등록 이력이 존재합니다."),
     EXCEL_TEMPLATE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "엑셀 템플릿 업로드 중 오류가 발생했습니다"),
+    ALREADY_DELETED_TEMPLATE(HttpStatus.BAD_REQUEST, "이미 삭제된 서식입니다."),
 
     // 401 에러
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "인증 실패"),

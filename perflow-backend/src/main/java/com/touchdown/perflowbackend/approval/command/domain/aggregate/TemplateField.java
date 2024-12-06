@@ -49,6 +49,7 @@ public class TemplateField extends BaseEntity {
 
     @Builder
     public TemplateField(Long templateFieldId, Template template, FieldType fieldType, String details, Boolean isRepeated, Long fieldOrder, LocalDateTime deleteDatetime, Status status) {
+
         this.templateFieldId = templateFieldId;
         this.template = template;
         this.fieldType = fieldType;
@@ -61,8 +62,16 @@ public class TemplateField extends BaseEntity {
 
 
     public void updateField(TemplateField updatedField) {
+
         this.fieldOrder = updatedField.fieldOrder;
         this.details = updatedField.details;
         this.isRepeated = updatedField.isRepeated;
     }
+
+    public void deleteField() {
+
+        this.status = Status.DELETED;
+        this.deleteDatetime = LocalDateTime.now();
+    }
+
 }

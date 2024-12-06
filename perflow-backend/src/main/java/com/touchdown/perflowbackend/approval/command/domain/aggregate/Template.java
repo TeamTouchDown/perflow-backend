@@ -68,7 +68,7 @@ public class Template extends BaseEntity {
 
     public void updateFields(List<TemplateField> updatedFields) {
 
-        // 기존 필드 Map 생성
+        // 기존의 필드 Map 생성
         Map<Long, TemplateField> existingFieldsMap = this.fields.stream()
                 .collect(Collectors.toMap(TemplateField::getTemplateFieldId, fields -> fields));
 
@@ -87,6 +87,19 @@ public class Template extends BaseEntity {
         // 삭제되지 않은 필드 유지
         this.fields.removeIf(field -> updatedFields.stream()
                 .noneMatch(updateField -> updateField.getTemplateFieldId().equals(field.getTemplateFieldId())));
+    }
+
+    public void deleteTemplate() {
+
+        this.status = Status.DELETED;
+        this.deleteDatetime = LocalDateTime.now();
+
+        if (fields != null) {
+            for(TemplateField field : fields) {
+                field.deleteField();
+
+            }
+        }
     }
 
 }
