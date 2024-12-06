@@ -22,7 +22,7 @@ public class WorkAttitudeTravelCommandService {
     private final WorkAttitudeTravelCommandRepository workAttitudeTravelCommandRepository;
     private final EmployeeCommandRepository employeeCommandRepository; // string 값
     private final ApproveCommandRepository approveCommandRepository;
-    private final WorkAttributeTravelQueryRepository workAttributeTravelQueryRepository;
+
 
     @Transactional
     public void createTravel(WorkAttitudeTravelRequestDTO workAttitudeTravelRequestDTO) {
@@ -35,7 +35,7 @@ public class WorkAttitudeTravelCommandService {
 
     @Transactional
     public void updateTravel(Long travelId, WorkAttitudeTravelRequestDTO workAttitudeTravelRequestDTO) {
-        Travel travel = findTravelById(travelId);
+        Travel travel = findById(travelId);
 
         travel.updateTravel(workAttitudeTravelRequestDTO);
         workAttitudeTravelCommandRepository.save(travel);
@@ -56,9 +56,10 @@ public class WorkAttitudeTravelCommandService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APPROVE_SBJ));
     }
 
-    private Travel findTravelById(Long travelId) {
-        return workAttributeTravelQueryRepository.findById(travelId)
+    private Travel findById(Long travelId) {
+        return workAttitudeTravelCommandRepository.findById(travelId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_TRAVEL));
     }
+
 }
 

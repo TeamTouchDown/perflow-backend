@@ -21,5 +21,8 @@ public interface WorkAttributeTravelQueryRepository extends JpaRepository<Travel
     // ID로 Travel 조회
     Optional<Travel> findById(Long id);
 
+    Optional<Travel> findByTravelId(Long travelId);
+
+
 
 }
