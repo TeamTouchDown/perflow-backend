@@ -1,6 +1,7 @@
 package com.touchdown.perflowbackend.workAttitude.command.application.controller;
 
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
+import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeTravelCommandForTeamLeaderRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeTravelRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.application.service.WorkAttitudeTravelCommandService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,6 +38,26 @@ public class WorkAttitudeTravelCommandController {
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
     //------ 팀장 부분 ------
+    // 팀장: 출장 상태 변경 (승인/반려)
+    @PutMapping("/leader/travel/{travelId}")
+    public ResponseEntity<SuccessCode> updateTravelStatus(
+            @PathVariable Long travelId,
+            @RequestBody WorkAttitudeTravelCommandForTeamLeaderRequestDTO requestDTO) {
+        workAttitudeTravelCommandService.updateTravelStatus(travelId, requestDTO);
+        return ResponseEntity.ok(SuccessCode.SUCCESS);
+    }
+
+    // 팀장: 출장 삭제
+    @DeleteMapping("/leader/travel/{travelId}")
+    public ResponseEntity<SuccessCode> deleteEmployeeTravel(@PathVariable Long travelId) {
+        workAttitudeTravelCommandService.deleteTravel(travelId);
+        return ResponseEntity.ok(SuccessCode.SUCCESS);
+    }
+
+
+
+
+
 
 
 
