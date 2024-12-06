@@ -4,6 +4,7 @@ import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,4 +33,14 @@ public class Perfo extends BaseEntity {
 
     @Column(name = "answer", nullable = false)
     private String answer;
+
+    @Builder
+    public Perfo(Perfoquestion perfoQuestion, Employee perfoEmp, Employee perfoedEmp, String answer) {
+
+        this.perfoQuestion = perfoQuestion;
+        this.perfoEmp = perfoEmp;
+        this.perfoedEmp = perfoedEmp;
+        this.answer = answer;
+    }
+
 }

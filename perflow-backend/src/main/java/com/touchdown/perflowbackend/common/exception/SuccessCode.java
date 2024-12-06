@@ -29,10 +29,14 @@ public enum SuccessCode {
     KPI_PERSONAL_DELETE_SUCCESS(HttpStatus.OK, "개인 KPI를 성공적으로 삭제하였습니다."),
 
     // 팀 KPI
-
     KPI_TEAM_UPLOAD_SUCCESS(HttpStatus.OK, "팀 KPI를 성공적으로 등록하였습니다."),
     KPI_TEAM_UPDATE_SUCCESS(HttpStatus.OK, "팀 KPI를 성공적으로 수정하였습니다."),
     KPI_TEAM_DELETE_SUCCESS(HttpStatus.OK, "팀 KPI를 성공적으로 삭제하였습니다."),
+
+    // 동료 평가
+    EVALUTION_COL_UPLOAD_SUCCESS(HttpStatus.OK, "동료 평가가 성공적으로 작성되었습니다."),
+    EVALUTION_COL_UPDATE_SUCCESS(HttpStatus.OK, "동료 평가가 성공적으로 수정되었습니다."),
+
 
     // 201
     WORK_ATTITUDE_TRAVEL_SUCCESS(HttpStatus.CREATED, "출장 요청 등록이 완료 되었습니다."),
