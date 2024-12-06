@@ -1,5 +1,9 @@
 package com.touchdown.perflowbackend.perfomance.query.service;
 
+import com.touchdown.perflowbackend.common.exception.CustomException;
+import com.touchdown.perflowbackend.common.exception.ErrorCode;
+import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
 import com.touchdown.perflowbackend.perfomance.query.dto.KPIDetailResponseDTO;
 import com.touchdown.perflowbackend.perfomance.query.dto.KPILimitResponseDTO;
 import com.touchdown.perflowbackend.perfomance.query.dto.KPIListResponseDTO;
@@ -16,10 +20,14 @@ import java.util.List;
 public class PersonalKPIQueryService {
 
     private final KPIQueryRepository kpiQueryRepository;
+    private final EmployeeCommandRepository employeeCommandRepository;
 
     // 개인 KPI 리스트 조회
     @Transactional(readOnly = true)
     public KPIListResponseDTO getPersonalKPIs(String empId) {
+
+        // 유저가 존재하는지 체크하기
+        Employee emp = findEmployeeByEmpId(empId);
 
         // 해당 유저의 개인 KPI 가져오기
         List<KPIDetailResponseDTO> lists = kpiQueryRepository.findPersonalKPIsByUserId(empId);
@@ -31,5 +39,10 @@ public class PersonalKPIQueryService {
 
         // 가져온 개인 KPI를 리스트에 넣어 처리하기
         return kpiListToDTO(lists,limit);
+    }
+
+    private Employee findEmployeeByEmpId(String empId) {
+        return employeeCommandRepository.findById(empId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP));
     }
 }

@@ -21,6 +21,13 @@ public enum SuccessCode {
     EXCEL_TEMPLATE_UPLOAD_SUCCESS(HttpStatus.OK, "엑셀 템플릿을 성공적으로 업로드 하였습니다."),
     PAYROLL_UPLOAD_SUCCESS(HttpStatus.OK, "급여대장을 성공적으로 업로드 하였습니다."),
 
+    // 200 - 인사 평가 관련 성공
+
+    // 개인 KPI
+    KPI_PERSONAL_UPLOAD_SUCCESS(HttpStatus.OK, "개인 KPI를 성공적으로 등록하였습니다."),
+    KPI_PERSONAL_UPDATE_SUCCESS(HttpStatus.OK, "개인 KPI를 성공적으로 수정하였습니다."),
+    KPI_PERSONAL_DELETE_SUCCESS(HttpStatus.OK, "개인 KPI를 성공적으로 삭제하였습니다."),
+
     // 201
     WORK_ATTITUDE_TRAVEL_SUCCESS(HttpStatus.CREATED, "출장 요청 등록이 완료 되었습니다."),
 

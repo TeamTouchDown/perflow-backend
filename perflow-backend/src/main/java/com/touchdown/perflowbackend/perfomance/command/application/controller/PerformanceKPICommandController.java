@@ -1,12 +1,10 @@
 package com.touchdown.perflowbackend.perfomance.command.application.controller;
 
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
-import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.perfomance.command.application.dto.KPIDetailRequestDTO;
 import com.touchdown.perflowbackend.perfomance.command.application.service.KPICommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,7 +22,7 @@ public class PerformanceKPICommandController {
 
         kpiCommandService.createPersonalKpi(kpiDetailRequestDTO, empId);
 
-        return ResponseEntity.ok(SuccessCode.SUCCESS);
+        return ResponseEntity.ok(SuccessCode.KPI_PERSONAL_UPLOAD_SUCCESS);
     }
 
     // 개인 KPI 입력 받아 수정
@@ -34,18 +32,17 @@ public class PerformanceKPICommandController {
             @RequestBody KPIDetailRequestDTO kpiDetailRequestDTO) {
         kpiCommandService.updatePersonalKpi(kpiDetailRequestDTO, kpiId);
 
-        return ResponseEntity.ok(SuccessCode.SUCCESS);
+        return ResponseEntity.ok(SuccessCode.KPI_PERSONAL_UPDATE_SUCCESS);
     }
 
     // 개인 KPI 입력 받아 삭제
-    @DeleteMapping("/personal/{kpiId}")
+    @DeleteMapping("/personal/{kpiId}/{empId}")
     public ResponseEntity<SuccessCode> deletePersonalKPI(
             @PathVariable("kpiId") Long kpiId,
-            @RequestBody String empId ) {
+            @PathVariable("empId") String empId ) {
 
         kpiCommandService.deletePersonalKpi(kpiId, empId);
 
-        return ResponseEntity.ok(SuccessCode.SUCCESS);
+        return ResponseEntity.ok(SuccessCode.KPI_PERSONAL_DELETE_SUCCESS);
     }
-
 }
