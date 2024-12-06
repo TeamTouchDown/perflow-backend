@@ -17,7 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PersonalKPIQueryService {
+public class KPIQueryService {
 
     private final KPIQueryRepository kpiQueryRepository;
     private final EmployeeCommandRepository employeeCommandRepository;
@@ -38,6 +38,25 @@ public class PersonalKPIQueryService {
 
 
         // 가져온 개인 KPI를 리스트에 넣어 처리하기
+        return kpiListToDTO(lists,limit);
+    }
+
+    // 팀 KPI 리스트 조회
+    @Transactional(readOnly = true)
+    public KPIListResponseDTO getTeamKPIs(String empId) {
+
+        // 유저가 존재하는지 체크하기
+        Employee emp = findEmployeeByEmpId(empId);
+
+        // 해당 유저의 팀 KPI 가져오기
+        List<KPIDetailResponseDTO> lists = kpiQueryRepository.findTeamKPIsByEmpId(empId);
+
+        // 해당 유저의 부서의 KPI 제한치 가져오기
+        KPILimitResponseDTO limit = kpiQueryRepository.findTeamKPILimitByEmpId(empId)
+                .orElse(new KPILimitResponseDTO(2L, 5L)); // 기본값 설정
+
+
+        // 가져온 팀 KPI를 리스트에 넣어 처리하기
         return kpiListToDTO(lists,limit);
     }
 
