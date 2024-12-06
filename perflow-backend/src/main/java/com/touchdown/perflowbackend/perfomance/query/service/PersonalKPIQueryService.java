@@ -22,7 +22,7 @@ public class PersonalKPIQueryService {
     public KPIListResponseDTO getPersonalKPIs(String empId) {
 
         // 해당 유저의 개인 KPI 가져오기
-        List<KPIDetailResponseDTO> lists = kpiQueryRepository.findPersonalKPIsByuserId(empId);
+        List<KPIDetailResponseDTO> lists = kpiQueryRepository.findPersonalKPIsByUserId(empId);
 
         // 해당 유저의 부서의 KPI 제한치 가져오기
         KPILimitResponseDTO limit = kpiQueryRepository.findPersonalKPILimitByUserId(empId)
