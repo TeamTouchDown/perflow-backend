@@ -3,6 +3,7 @@ package com.touchdown.perflowbackend.approval.command.application.service;
 import com.touchdown.perflowbackend.approval.command.application.dto.TemplateCreateRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.TemplateCreateResponseDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.TemplateUpdateRequestDTO;
+import com.touchdown.perflowbackend.approval.command.application.dto.TemplatesDeleteRequestDTO;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.FieldType;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.Template;
@@ -11,6 +12,7 @@ import com.touchdown.perflowbackend.approval.command.domain.repository.FieldType
 import com.touchdown.perflowbackend.approval.command.domain.repository.TemplateCommandRepository;
 import com.touchdown.perflowbackend.approval.command.domain.repository.TemplateFieldCommandRepository;
 import com.touchdown.perflowbackend.approval.command.infrastructure.repository.JpaFieldTypeCommandRepository;
+import com.touchdown.perflowbackend.approval.command.infrastructure.repository.JpaTemplateCommandRepository;
 import com.touchdown.perflowbackend.approval.command.mapper.TemplateFieldMapper;
 import com.touchdown.perflowbackend.approval.command.mapper.TemplateMapper;
 import com.touchdown.perflowbackend.common.exception.CustomException;
@@ -37,6 +39,7 @@ public class TemplateCommandService {
     private final TemplateFieldCommandRepository templateFieldCommandRepository;
     private final JpaFieldTypeCommandRepository jpaFieldTypeCommandRepository;
     private final FieldTypeCommandRepository fieldTypeCommandRepository;
+    private final JpaTemplateCommandRepository jpaTemplateCommandRepository;
 
     @Transactional
     public TemplateCreateResponseDTO createNewTemplate(TemplateCreateRequestDTO request, String empId) {
@@ -86,6 +89,37 @@ public class TemplateCommandService {
 
         templateCommandRepository.save(template);
 
+    }
+
+    @Transactional
+    public void removeTemplates(TemplatesDeleteRequestDTO request) {
+
+        List<Long> templateIds = request.getTemplateIds();
+
+        List<Template> templates = findTemplatesById(templateIds);
+
+        checkAlreadyDeletedTemplates(templates);
+
+        softDeleteTemplatesAndFields(templates);
+
+        jpaTemplateCommandRepository.saveAll(templates);
+
+    }
+
+    private void softDeleteTemplatesAndFields(List<Template> templates) {
+
+        for(Template template : templates) {
+            template.deleteTemplate();
+        }
+    }
+
+    private void checkAlreadyDeletedTemplates(List<Template> templates) {
+
+        for(Template template : templates) {
+            if (template.getStatus() == Status.DELETED) {
+                throw new CustomException(ErrorCode.ALREADY_DELETED_TEMPLATE);
+            }
+        }
     }
 
     private void checkAlreadyDeletedTemplate(Template template) {
@@ -214,6 +248,11 @@ public class TemplateCommandService {
 
         return templateCommandRepository.findById(templateId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_TEMPLATE));
+    }
+
+    private List<Template> findTemplatesById(List<Long> templateIds) {
+
+        return templateCommandRepository.findAllByTemplateIdIn(templateIds);
     }
 
 }

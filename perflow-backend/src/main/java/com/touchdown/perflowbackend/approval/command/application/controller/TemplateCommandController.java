@@ -3,6 +3,7 @@ package com.touchdown.perflowbackend.approval.command.application.controller;
 import com.touchdown.perflowbackend.approval.command.application.dto.TemplateCreateRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.TemplateCreateResponseDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.TemplateUpdateRequestDTO;
+import com.touchdown.perflowbackend.approval.command.application.dto.TemplatesDeleteRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.service.TemplateCommandService;
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,14 @@ public class TemplateCommandController {
     public ResponseEntity<SuccessCode> deleteTemplate(@PathVariable Long templateId) {
 
         templateCommandService.removeTemplate(templateId);
+
+        return ResponseEntity.ok(SuccessCode.TEMPLATE_DELETE_SUCCESS);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<SuccessCode> deleteTemplates(@RequestBody TemplatesDeleteRequestDTO request) {
+
+        templateCommandService.removeTemplates(request);
 
         return ResponseEntity.ok(SuccessCode.TEMPLATE_DELETE_SUCCESS);
     }
