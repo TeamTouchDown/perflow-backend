@@ -36,9 +36,6 @@ public class Template extends BaseEntity {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "delete_datetime")
-    private LocalDateTime deleteDatetime;
-
     @ColumnDefault("'ACTIVATED'")
     @Column(name = "status", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
@@ -48,12 +45,11 @@ public class Template extends BaseEntity {
     private List<TemplateField> fields;
 
     @Builder
-    public Template(Long templateId, Employee createUser, String name, String description, LocalDateTime deleteDatetime, Status status) {
+    public Template(Long templateId, Employee createUser, String name, String description, Status status) {
         this.templateId = templateId;
         this.createUser = createUser;
         this.name = name;
         this.description = description;
-        this.deleteDatetime = deleteDatetime;
         this.status = status;
     }
 
@@ -92,7 +88,6 @@ public class Template extends BaseEntity {
     public void deleteTemplate() {
 
         this.status = Status.DELETED;
-        this.deleteDatetime = LocalDateTime.now();
 
         if (fields != null) {
             for(TemplateField field : fields) {

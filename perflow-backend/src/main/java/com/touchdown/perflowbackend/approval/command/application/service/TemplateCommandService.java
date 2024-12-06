@@ -62,7 +62,6 @@ public class TemplateCommandService {
     @Transactional
     public void modifyTemplate(TemplateUpdateRequestDTO request, Long templateId) {
 
-
         Template template = findTemplateById(templateId);
 
         validateUpdateFieldData(request);

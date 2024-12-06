@@ -39,16 +39,13 @@ public class TemplateField extends BaseEntity {
     @Column(name = "is_repeated", nullable = false)
     private Boolean isRepeated = false;
 
-    @Column(name = "delete_datetime")
-    private LocalDateTime deleteDatetime;
-
     @ColumnDefault("'ACTIVATED'")   // todo: builder.default가 아니면 기본값 지정이 안 될 수도 있다고?
     @Column(name = "status", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVATED;
 
     @Builder
-    public TemplateField(Long templateFieldId, Template template, FieldType fieldType, String details, Boolean isRepeated, Long fieldOrder, LocalDateTime deleteDatetime, Status status) {
+    public TemplateField(Long templateFieldId, Template template, FieldType fieldType, String details, Boolean isRepeated, Long fieldOrder, Status status) {
 
         this.templateFieldId = templateFieldId;
         this.template = template;
@@ -56,7 +53,6 @@ public class TemplateField extends BaseEntity {
         this.details = details;
         this.isRepeated = isRepeated;
         this.fieldOrder = fieldOrder;
-        this.deleteDatetime = deleteDatetime;
         this.status = status;
     }
 
@@ -71,7 +67,6 @@ public class TemplateField extends BaseEntity {
     public void deleteField() {
 
         this.status = Status.DELETED;
-        this.deleteDatetime = LocalDateTime.now();
     }
 
 }
