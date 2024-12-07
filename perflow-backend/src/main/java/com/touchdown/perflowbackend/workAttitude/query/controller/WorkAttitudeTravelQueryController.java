@@ -21,14 +21,14 @@ public class WorkAttitudeTravelQueryController {
     private final WorkAttitudeTravelQueryService workAttitudeTravelQueryService;
 
     //출장 조회(사원)
-    @GetMapping("/emp/travel/{travelId}")
-    public ResponseEntity<WorkAttitudeTravelResponseDTO> getTravel(@PathVariable(name = "travelId") Long travelId) {
-        WorkAttitudeTravelResponseDTO dto = workAttitudeTravelQueryService.getTravelById(travelId);
+    @GetMapping("/emp/travels")
+    public ResponseEntity<List<WorkAttitudeTravelResponseDTO>> getTravelsForEmployee() {
+        List<WorkAttitudeTravelResponseDTO>dto = workAttitudeTravelQueryService.getTravelsForEmployee();
         return ResponseEntity.ok(dto);
     }
 
 
-    @GetMapping ("/leader/travel")
+    @GetMapping ("/leader/travels")
     public ResponseEntity<List<WorkAttitudeTravelResponseDTO>>getAllTravelsForLeader(){
         List<WorkAttitudeTravelResponseDTO>dto = workAttitudeTravelQueryService.getAllTravelsForLeader();
         return ResponseEntity.ok(dto);

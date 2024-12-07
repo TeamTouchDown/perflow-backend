@@ -2,6 +2,8 @@ package com.touchdown.perflowbackend.workAttitude.query.service;
 
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
+import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Travel;
 import com.touchdown.perflowbackend.workAttitude.command.mapper.WorkAttitudeTravelMapper;
@@ -20,11 +22,12 @@ public class WorkAttitudeTravelQueryService {
     private final WorkAttributeTravelQueryRepository workAttributeTravelQueryRepository;
 
     @Transactional
-    public WorkAttitudeTravelResponseDTO getTravelById(Long travelId) {
-
-        Travel travel = workAttributeTravelQueryRepository.findById(travelId, Status.DELETED)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_TRAVEL));
-        return WorkAttitudeTravelMapper.toResponseDTO(travel);
+    public List<WorkAttitudeTravelResponseDTO> getTravelsForEmployee(){
+        String empId = EmployeeUtil.getEmpId();
+        List<Travel> travels = workAttributeTravelQueryRepository.findAllByEmployeeAndNotDeleted(empId);
+        return travels.stream()
+                .map(WorkAttitudeTravelMapper::toResponseDTO)
+                .toList();
     }
 
     @Transactional

@@ -6,6 +6,7 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
+import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeTravelCommandForTeamLeaderRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeTravelRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
@@ -28,7 +29,8 @@ public class WorkAttitudeTravelCommandService {
 
     @Transactional
     public void createTravel(WorkAttitudeTravelRequestDTO workAttitudeTravelRequestDTO) {
-        Employee employee = findEmployeeByEmpId(workAttitudeTravelRequestDTO.getEmpId());
+        String empId = EmployeeUtil.getEmpId();
+        Employee employee = findEmployeeByEmpId(empId);
         ApproveSbj approveSbj = findApproveSbjById(workAttitudeTravelRequestDTO.getApproveSbjId());
 
         Travel travel = WorkAttitudeTravelMapper.toEntity(workAttitudeTravelRequestDTO, employee, approveSbj);
@@ -37,7 +39,13 @@ public class WorkAttitudeTravelCommandService {
 
     @Transactional
     public void updateTravel(Long travelId, WorkAttitudeTravelRequestDTO workAttitudeTravelRequestDTO) {
+        String empId = EmployeeUtil.getEmpId();
         Travel travel = findById(travelId);
+
+        // 본인이 작성한 출장인지 확인
+        if (!travel.getEmployee().getEmpId().equals(empId)) {
+            throw new CustomException(ErrorCode.NOT_MATCH_WRITER); // 작성자 불일치 에러
+        }
 
         travel.updateTravel(
                 workAttitudeTravelRequestDTO.getTravelReason(),
@@ -50,7 +58,13 @@ public class WorkAttitudeTravelCommandService {
 
     @Transactional
     public void deleteTravel(Long travelId) {
+        String empId = EmployeeUtil.getEmpId();
         Travel travel = findById(travelId);
+
+        // 본인이 작성한 출장인지 확인
+        if (!travel.getEmployee().getEmpId().equals(empId)) {
+            throw new CustomException(ErrorCode.NOT_MATCH_WRITER); // 작성자 불일치 에러
+        }
         travel.deleteTravel();
         workAttitudeTravelCommandRepository.save(travel);
     }
