@@ -2,6 +2,7 @@ package com.touchdown.perflowbackend.hr.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,4 +39,22 @@ public class Department extends BaseEntity {
     @Column(name = "contact", nullable = false, length = 30)
     private String contact;
 
+    @Builder
+    public Department(Long departmentId, String name, String responsibility, String pic, String contact, Department manageDept) {
+        this.departmentId = departmentId;
+        this.name = name;
+        this.responsibility = responsibility;
+        this.pic = pic;
+        this.contact = contact;
+        this.manageDept = manageDept;
+    }
+
+    public void addSubDepartment(Department subDepartment) {
+        subDepartments.add(subDepartment);
+        subDepartment.setManageDept(this);
+    }
+
+    private void setManageDept(Department manageDept) {
+        this.manageDept = manageDept;
+    }
 }
