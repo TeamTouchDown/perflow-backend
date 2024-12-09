@@ -23,11 +23,5 @@ public abstract class BaseEntity {
     @LastModifiedDate
     @Column(name = "update_datetime")
     private LocalDateTime updateDatetime;
-
-    @PrePersist
-    protected void onCreate() {
-        if (this.createDatetime == null) {
-            this.createDatetime = LocalDateTime.now();
-        }
-    }
+    
 }
