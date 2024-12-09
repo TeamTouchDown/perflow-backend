@@ -1,6 +1,5 @@
 package com.touchdown.perflowbackend.perfomance.command.domain.repository;
 
-import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.Kpi;
 
 import java.util.Optional;
