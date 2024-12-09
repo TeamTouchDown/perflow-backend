@@ -1,6 +1,5 @@
 package com.touchdown.perflowbackend.hr.query.service;
 
-import com.touchdown.perflowbackend.hr.command.Mapper.HrMapper;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.query.dto.DepartmentQueryResponseDTO;
 import com.touchdown.perflowbackend.hr.query.repository.DepartmentQueryRepository;
@@ -9,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,43 +59,4 @@ public class HrQueryService {
         return new DepartmentQueryResponseDTO(department.getDepartmentId(), department.getName(), subDepartments);
     }
 
-
-    @Transactional(readOnly = true)
-    public List<DepartmentQueryResponseDTO> searchDepartmentsByName(String name) {
-
-        if(name == null || name.isEmpty()) {
-            log.info("검색 사용 안 한 상태 -> 전체 조직도 보여주기");
-            return readAllDepartments();
-        }
-
-        List<Department> departments = findDepartmentByName(name);
-
-        return departments.stream()
-                .map(this::buildTopDeptTree)
-                .collect(Collectors.toList());
-    }
-
-    // 검색한 부서의 최상위 부서 탐색
-    private DepartmentQueryResponseDTO buildTopDeptTree(Department department) {
-
-        Department topDept = findTopLevelDepartment(department);
-
-        return buildDepartmentTree(topDept, findAllDepartments());
-    }
-
-    // 최상위 부서 탐색
-    private Department findTopLevelDepartment(Department department) {
-
-        if(department.getManageDept() == null) {
-            return department;
-        }
-
-        return findTopLevelDepartment(department.getManageDept());
-    }
-
-    private List<Department> findDepartmentByName(String name) {
-
-        return departmentQueryRepository.findByNameContaining(name)
-                .orElse(Collections.emptyList());
-    }
 }

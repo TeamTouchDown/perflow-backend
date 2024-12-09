@@ -25,10 +25,4 @@ public class HrQueryController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/departments/search")
-    public ResponseEntity<List<DepartmentQueryResponseDTO>> searchDepartments(@RequestParam(name = "name", required = false) String name) {
-
-        List<DepartmentQueryResponseDTO> response = hrQueryService.searchDepartmentsByName(name);
-        return ResponseEntity.ok(response);
-    }
 }

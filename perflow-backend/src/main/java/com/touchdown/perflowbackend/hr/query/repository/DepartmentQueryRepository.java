@@ -13,7 +13,7 @@ public interface DepartmentQueryRepository extends JpaRepository<Department, Lon
     @Query("SELECT d FROM Department d")
     Optional<List<Department>> findAllDepts();
 
-    Optional<List<Department>> findByNameContaining(String name);
+    List<Department> findByNameContaining(String name);
 
     @Query("SELECT d FROM Department d WHERE d.manageDept.departmentId = :manageDeptId")
     List<Department> findByManageDeptId(@Param("manageDeptId") Long manageDeptId);
