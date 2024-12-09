@@ -31,7 +31,7 @@ public class EmployeeCommandController {
 
         employeeCommandService.registerEmployee(employeeRegisterDTO);
 
-        return ResponseEntity.ok(SuccessCode.SUCCESS);
+        return ResponseEntity.ok(SuccessCode.EMP_REGISTER_SUCCESS);
     }
 
     @PostMapping("/list")
@@ -41,7 +41,7 @@ public class EmployeeCommandController {
 
         employeeCommandService.registerEmployeeList(empCSV);
 
-        return ResponseEntity.ok(SuccessCode.SUCCESS);
+        return ResponseEntity.ok(SuccessCode.EMP_CSV_REGISTER_SUCCESS);
     }
 
     @PostMapping("/login")
