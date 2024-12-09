@@ -26,7 +26,7 @@ public class Doc extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "template_id", nullable = false)
-    private Template templateId;
+    private Template template;
 
     @Column(name = "title", nullable = false, length = 50)
     private String title;
@@ -35,11 +35,9 @@ public class Doc extends BaseEntity {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
     private Status status;
-
-    @Column(name = "delete_datetime")
-    private LocalDateTime deleteDatetime;
 
     @Column(name = "collect_datetime")
     private LocalDateTime collectDatetime;

@@ -24,33 +24,28 @@ public class ApproveSbj extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "approve_line_id", nullable = false)
-    private ApproveLine approveLineId;
+    private ApproveLine approveLine;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sbj_user_id")
-    private Employee sbjUserId;
+    private Employee sbjUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dept_id")
-    private Department deptId;
+    private Department dept;
 
+    // 부서 결재 시 담당자(수신함에서 접수 선택 시 담당자로 지정됨)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "sbj_department_pic", nullable = false)
     private Employee sbjDepartmentPic;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "sbj_type", nullable = false, length = 30)
-    private String sbjType;
+    private SbjType sbjType;
 
-    @Column(name = "seq_approve_order")
-    private Long seqApproveOrder;
-
-    @ColumnDefault("0")
+    @ColumnDefault("false")
     @Column(name = "is_pll", nullable = false)
     private Boolean isPll;
-
-    @ColumnDefault("0")
-    @Column(name = "is_auto", nullable = false)
-    private Boolean isAuto;
 
     @Column(name = "status", nullable = false, length = 30)
     private Status status;

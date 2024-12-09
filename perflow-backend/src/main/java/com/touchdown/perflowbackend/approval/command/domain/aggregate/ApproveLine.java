@@ -22,7 +22,7 @@ public class ApproveLine extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "doc_id", nullable = false)
-    private Doc docId;
+    private Doc doc;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "create_user_id", nullable = false)
@@ -37,16 +37,14 @@ public class ApproveLine extends BaseEntity {
     @Column(name = "pll_group_id")
     private Long pllGroupId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "approve_type", nullable = false, length = 30)
-    private String approveType;
+    private ApproveType approveType;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
     private Status status;
 
     @Column(name = "complete_datetime")
     private LocalDateTime completeDatetime;
-
-    @Column(name = "delete_datetime")
-    private LocalDateTime deleteDatetime;
-
 }
