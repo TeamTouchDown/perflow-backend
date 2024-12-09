@@ -5,4 +5,5 @@ import com.touchdown.perflowbackend.approval.command.domain.repository.DocComman
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface JpaDocCommandRepository extends JpaRepository<Doc, Long>, DocCommandRepository {
+
 }

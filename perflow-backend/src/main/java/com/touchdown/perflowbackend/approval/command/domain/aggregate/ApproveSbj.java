@@ -5,6 +5,7 @@ import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -53,4 +54,10 @@ public class ApproveSbj extends BaseEntity {
     @Column(name = "complete_datetime")
     private LocalDateTime completeDatetime;
 
+    @Builder
+    public ApproveSbj(ApproveLine approveLine, Employee sbjUser) {
+
+        this.approveLine = approveLine;
+        this.sbjUser = sbjUser;
+    }
 }

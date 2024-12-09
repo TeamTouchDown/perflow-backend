@@ -4,10 +4,13 @@ import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -28,6 +31,13 @@ public class ApproveLine extends BaseEntity {
     @JoinColumn(name = "create_user_id", nullable = false)
     private Employee createUser;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
+    @OneToMany(mappedBy = "approveLine", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ApproveSbj> approveSubjects = new ArrayList<>();
+
     @Column(name = "name", length = 30)
     private String name;
 
@@ -47,4 +57,13 @@ public class ApproveLine extends BaseEntity {
 
     @Column(name = "complete_datetime")
     private LocalDateTime completeDatetime;
+
+    @Builder
+    public ApproveLine(Doc doc, ApproveType approveType, Integer approveLineOrder, Long pllGroupId) {
+
+        this.doc = doc;
+        this.approveType = approveType;
+        this.approveLineOrder = approveLineOrder;
+        this.pllGroupId = pllGroupId;
+    }
 }

@@ -1,10 +1,13 @@
 package com.touchdown.perflowbackend.approval.command.application.controller;
 
+import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRequestDTO;
+import com.touchdown.perflowbackend.approval.command.application.service.DocCommandService;
 import com.touchdown.perflowbackend.approval.command.domain.repository.DocCommandRepository;
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,6 +16,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/approval/docs")
 public class DocCommandController {
 
-    private final DocCommandRepository docCommandRepository;
+    private final DocCommandService docCommandService;
 
+    @PostMapping
+    public ResponseEntity<SuccessCode> createDoc(
+            @RequestBody DocCreateRequestDTO request
+    ) {
+
+        // todo: 현재 로그인 한 사용자 나중에 넣기
+        String createUserId = "23-MK004";
+
+        docCommandService.createNewDoc(request, createUserId);
+
+        return ResponseEntity.ok(SuccessCode.DOC_CREATE_SUCCESS);
+    }
 }

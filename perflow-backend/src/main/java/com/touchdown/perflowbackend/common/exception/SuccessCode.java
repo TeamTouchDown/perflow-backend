@@ -24,11 +24,11 @@ public enum SuccessCode {
     PAYROLL_UPLOAD_SUCCESS(HttpStatus.OK, "급여대장을 성공적으로 업로드 하였습니다."),
 
     // 200 결재 관련 성공
-    TEMPLATE_CREATE_SUCCESS(HttpStatus.OK, "서식 생성에 성공하였습니다"),
+    TEMPLATE_CREATE_SUCCESS(HttpStatus.CREATED, "서식 생성에 성공하였습니다"),
     TEMPLATE_UPDATE_SUCCESS(HttpStatus.OK, "서식 수정에 성공하였습니다."),
     TEMPLATE_DELETE_SUCCESS(HttpStatus.OK, "서식 삭제에 성공하였습니다."),
-    DOC_CREATE_SUCCESS(HttpStatus.OK, "문서 생성에 성공하였습니다."),
-    MY_APPROVE_LINE_CREATE_SUCCESS(HttpStatus.OK, "나의 결재선 생성에 성공하였습니다."),
+    DOC_CREATE_SUCCESS(HttpStatus.CREATED, "문서 생성에 성공하였습니다."),
+    MY_APPROVE_LINE_CREATE_SUCCESS(HttpStatus.CREATED, "나의 결재선 생성에 성공하였습니다."),
 
     // 200 - 인사 평가 관련 성공
 
