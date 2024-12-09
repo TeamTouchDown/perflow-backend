@@ -72,13 +72,24 @@ public class Travel extends BaseEntity {
         this.status = status;
     }
 
-    public void updateTravel(WorkAttitudeTravelRequestDTO workAttitudeTravelRequestDTO) {
-        this.travelReason = workAttitudeTravelRequestDTO.getTravelReason();
-        this.travelStart = workAttitudeTravelRequestDTO.getTravelStart();
-        this.travelEnd = workAttitudeTravelRequestDTO.getTravelEnd();
-        this.travelDivision = workAttitudeTravelRequestDTO.getTravelDivision();
-        this.travelStatus = Status.valueOf(workAttitudeTravelRequestDTO.getTravelStatus());
-        this.travelRejectReason = workAttitudeTravelRequestDTO.getTravelRejectReason();
-        this.status = Status.valueOf(workAttitudeTravelRequestDTO.getStatus());
+
+    public void updateTravel(String travelReason, LocalDateTime travelStart, LocalDateTime travelEnd, String travelDivision) {
+        if (travelReason != null) this.travelReason = travelReason;
+        if (travelStart != null) this.travelStart = travelStart;
+        if (travelEnd != null) this.travelEnd = travelEnd;
+        if (travelDivision != null) this.travelDivision = travelDivision;
+    }
+
+    public void updateTravelStatus(Status travelStatus, String travelRejectReason) {
+        this.travelStatus = travelStatus;
+        if (travelStatus == Status.REJECTED) {
+            this.travelRejectReason = travelRejectReason;
+        } else {
+            this.travelRejectReason = null; // 승인일 경우 반려 사유를 초기화
+        }
+    }
+
+    public void deleteTravel() {
+        this.status = Status.DELETED;
     }
 }

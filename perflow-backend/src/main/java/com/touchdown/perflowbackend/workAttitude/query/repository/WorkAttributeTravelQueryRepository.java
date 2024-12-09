@@ -11,15 +11,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WorkAttributeTravelQueryRepository extends JpaRepository<Travel, Long> {
-    // 특정 상태의 Travel 조회
-    List<Travel> findAllByTravelStatus(Status travelStatus);
 
-    // 특정 사원의 Travel 조회 (명시적 쿼리 작성) 굳이긴 한데...가 아닌가? 일단 지피티는 써주는게 조금 에러가 없다고 하던데
+    // 직원용: 삭제되지 않은 내역 조회
+    @Query("SELECT t FROM Travel t WHERE t.employee.empId = :empId AND t.status != 'DELETED'")
+    List<Travel> findAllByEmployeeAndNotDeleted(@Param("empId") String empId);
+
+    // 팀장용: 모든 상태의 내역 조회
     @Query("SELECT t FROM Travel t WHERE t.employee = :employee")
-    List<Travel> findAllByEmployee(@Param("employee") Employee employee);
+    List<Travel> findAllByEmployee(@Param("empId") String empId);
 
-    // ID로 Travel 조회
-    Optional<Travel> findById(Long id);
-
-
+    @Query("SELECT t FROM Travel t WHERE t.employee = :travelId AND t.status != :status")
+    Optional<Object> findById(Long travelId, Status status);
 }

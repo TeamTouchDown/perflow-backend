@@ -24,6 +24,7 @@ public class TemplateMapper {
     }
 
     public static TemplateListResponseDTO toTemplateResponseDTO(Template template) {
+
         return TemplateListResponseDTO.builder()
                 .templateId(template.getTemplateId())
                 .templateName(template.getName())
@@ -36,6 +37,7 @@ public class TemplateMapper {
     }
 
     public static TemplateDetailResponseDTO toTemplateDetailResponseDTO(Template template) {
+
         return TemplateDetailResponseDTO.builder()
                 .templateId(template.getTemplateId())
                 .templateName(template.getName())
@@ -51,6 +53,7 @@ public class TemplateMapper {
     }
 
     public static TemplateFieldResponseDTO toTemplateFieldResponseDTO(TemplateField field) {
+
         return TemplateFieldResponseDTO.builder()
                 .templateFieldId(field.getTemplateFieldId())
                 .details(field.getDetails())
