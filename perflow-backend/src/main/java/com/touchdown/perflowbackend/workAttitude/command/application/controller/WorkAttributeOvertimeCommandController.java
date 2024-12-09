@@ -5,6 +5,7 @@ import com.touchdown.perflowbackend.workAttitude.command.application.service.Wor
 
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttributeOvertimeForEmployeeRequestDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class WorkAttributeOvertimeCommandController {
 
     // 직원: 초과근무 등록
     @PostMapping("/emp/overtimes")
-    public ResponseEntity<SuccessCode> createOvertime(@RequestBody WorkAttributeOvertimeForEmployeeRequestDTO workAttributeOvertimeForEmployeeRequestDTO) {
+    public ResponseEntity<SuccessCode> createOvertime(@Valid @RequestBody WorkAttributeOvertimeForEmployeeRequestDTO workAttributeOvertimeForEmployeeRequestDTO) {
         workAttributeOvertimeCommandService.createOvertime(workAttributeOvertimeForEmployeeRequestDTO);
         return ResponseEntity.ok(SuccessCode.WORK_ATTRIBUTE_OVERTIME_SUCCESS);
     }
