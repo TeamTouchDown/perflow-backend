@@ -1,5 +1,6 @@
 package com.touchdown.perflowbackend.workAttitude.command.application.dto;
 
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 

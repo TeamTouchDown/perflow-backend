@@ -42,6 +42,7 @@ public class Travel extends BaseEntity {
     @Column(name = "travel_end", nullable = false)
     private LocalDateTime travelEnd;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "travel_status", nullable = false, length = 30)
     private Status travelStatus;
 

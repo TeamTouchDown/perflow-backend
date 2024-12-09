@@ -10,8 +10,8 @@ public class WorkAttributeOvertimeMapper {
 
     public static Overtime toEntity(WorkAttributeOvertimeForEmployeeRequestDTO requestDTO, Employee employee, ApproveSbj approveSbj){
         return Overtime.builder()
-                .empId(null)//.empId(employee)
-                .approveSbjId(null)//.approveSbjId(approveSbj) // ApproveSbj 객체 설정 (@ManyToOne 관계)
+                .empId(employee)//.empId(employee)
+                .approveSbjId(approveSbj)//.approveSbjId(approveSbj) // ApproveSbj 객체 설정 (@ManyToOne 관계)
                 .overtimeType(requestDTO.getOvertimeType()) // 초과 근무 타입
                 .enrollOvertime(requestDTO.getEnrollOvertime()) // 신청 일자
                 .overtimeStart(requestDTO.getOvertimeStart()) // 초과 근무 시작 시간
