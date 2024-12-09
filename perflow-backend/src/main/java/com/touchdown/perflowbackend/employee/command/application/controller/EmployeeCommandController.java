@@ -71,7 +71,6 @@ public class EmployeeCommandController {
         // Remove "Bearer " prefix
         accessToken = accessToken.substring(7);
 
-        log.info(empId + " " + accessToken);
         employeeCommandService.logoutRequestEmployee(new EmployeeLogoutRequestDTO(empId, accessToken));
 
         return ResponseEntity.ok(SuccessCode.LOGOUT_SUCCESS);

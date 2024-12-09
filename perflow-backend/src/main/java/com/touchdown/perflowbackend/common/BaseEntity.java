@@ -3,6 +3,7 @@ package com.touchdown.perflowbackend.common;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -22,4 +23,11 @@ public abstract class BaseEntity {
     @LastModifiedDate
     @Column(name = "update_datetime")
     private LocalDateTime updateDatetime;
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.createDatetime == null) {
+            this.createDatetime = LocalDateTime.now();
+        }
+    }
 }
