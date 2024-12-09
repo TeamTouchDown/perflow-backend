@@ -41,8 +41,14 @@ public enum SuccessCode {
     KPI_TEAM_UPDATE_SUCCESS(HttpStatus.OK, "팀 KPI를 성공적으로 수정하였습니다."),
     KPI_TEAM_DELETE_SUCCESS(HttpStatus.OK, "팀 KPI를 성공적으로 삭제하였습니다."),
 
-    // 201
+    // 출장
     WORK_ATTITUDE_TRAVEL_SUCCESS(HttpStatus.CREATED, "출장 요청 등록이 완료 되었습니다."),
+
+    //초과근무
+    WORK_ATTRIBUTE_OVERTIME_SUCCESS(HttpStatus.OK, "초과근무 등록이 완료 되었습니다."),
+    WORK_ATTRIBUTE_OVERTIME_UPDATE_SUCCESS(HttpStatus.OK, "초과근무 수정이 완료 되었습니다."),
+    WORK_ATTRIBUTE_OVERTIME_DELETE_SUCCESS(HttpStatus.OK, "초과근무 삭제가 완료 되었습니다."),
+    WORK_ATTRIBUTE_OVERTIME_DELETE_FOR_LEADER_SUCCESS(HttpStatus.OK, "상태 변경이 완료 되었습니다."),
 
 
     ;
