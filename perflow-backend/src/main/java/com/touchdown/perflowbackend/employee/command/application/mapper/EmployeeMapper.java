@@ -14,8 +14,6 @@ public class EmployeeMapper {
 
     public static Employee toEntity(EmployeeRegisterDTO registerDTO, Position position, Job job, Department department) {
 
-        log.info(registerDTO.toString());
-
         return Employee.builder()
                 .registerDTO(registerDTO)
                 .position(position)
