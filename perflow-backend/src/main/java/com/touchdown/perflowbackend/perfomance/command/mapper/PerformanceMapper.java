@@ -1,20 +1,26 @@
 package com.touchdown.perflowbackend.perfomance.command.mapper;
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.perfomance.command.application.dto.EvalutionListDTO;
 import com.touchdown.perflowbackend.perfomance.command.application.dto.KPIDetailRequestDTO;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.Kpi;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiCurrentStatus;
+import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.Perfo;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.PersonalType;
+import com.touchdown.perflowbackend.perfomance.command.domain.repository.PerfoCommandRepository;
+import com.touchdown.perflowbackend.perfomance.command.domain.repository.PerfoQuestionCommandRepository;
 import com.touchdown.perflowbackend.perfomance.query.dto.KPIDetailResponseDTO;
 import com.touchdown.perflowbackend.perfomance.query.dto.KPILimitResponseDTO;
 import com.touchdown.perflowbackend.perfomance.query.dto.KPIListResponseDTO;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PerformanceMapper {
 
     // 개인 kpi 리스트 및 제한 DTO 빌더
     public static KPIListResponseDTO kpiListToDTO(List<KPIDetailResponseDTO> lists, KPILimitResponseDTO limit){
+
 
         return KPIListResponseDTO.builder()
                 .kpiLists(lists)    // 개인 kpi 목록
@@ -38,4 +44,17 @@ public class PerformanceMapper {
                 .goalDetail(kpiDetailRequestDTO.getGoalDetail())            // 받아온 목표 상세 설정
                 .build();
     }
+
+    public static List<Perfo> evaluationAnswertoPerfo(EvalutionListDTO evalutionListDTO, Employee perfoEmp, Employee perfoedEmp, PerfoQuestionCommandRepository perfoQuestionCommandRepository) {
+
+        return evalutionListDTO.getAnswers().stream()
+                .map(answer -> Perfo.builder()
+                        .perfoQuestion(perfoQuestionCommandRepository.findByperfoQuestionId(answer.getQuestionId()))
+                        .perfoEmp(perfoEmp)
+                        .perfoedEmp(perfoedEmp)
+                        .answer(answer.getAnswer())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
 }
