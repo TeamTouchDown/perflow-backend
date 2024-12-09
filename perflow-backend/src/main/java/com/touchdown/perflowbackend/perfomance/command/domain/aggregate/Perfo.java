@@ -2,11 +2,13 @@ package com.touchdown.perflowbackend.perfomance.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.perfomance.command.application.dto.EvalutionDetailDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.commons.math3.fitting.leastsquares.LeastSquaresProblem;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -41,6 +43,10 @@ public class Perfo extends BaseEntity {
         this.perfoEmp = perfoEmp;
         this.perfoedEmp = perfoedEmp;
         this.answer = answer;
+    }
+
+    public void updatePerfo(EvalutionDetailDTO evalutionDetailDTO) {
+        this.answer = evalutionDetailDTO.getAnswer();
     }
 
 }

@@ -1,7 +1,6 @@
 package com.touchdown.perflowbackend.perfomance.command.application.controller;
 
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
-import com.touchdown.perflowbackend.perfomance.command.application.dto.EvalutionDetailDTO;
 import com.touchdown.perflowbackend.perfomance.command.application.dto.EvalutionListDTO;
 import com.touchdown.perflowbackend.perfomance.command.application.service.EvalutionCommandService;
 import lombok.RequiredArgsConstructor;
