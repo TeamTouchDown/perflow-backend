@@ -55,12 +55,12 @@ public class EmailService {
                     </head>
                     <body>
                         <div class="email-container">
-                            <div class="header">Welcome to Our Company</div>
+                            <div class="header">Perflow에서 전송된 초대 메세지입니다.</div>
                             <div class="content">
                                 <p>Dear %s,</p>
-                                <p>We are excited to invite you to our platform. Please click the link below to set up your initial password and complete your onboarding process:</p>
-                                <a href="%s" class="button">Set Your Password</a>
-                                <p>If you have any questions, feel free to contact us.</p>
+                                <p>서비스 사용을 위해 초기 비밀번호를 입력해주세요.</p>
+                                <a href="%s" class="button">비밀번호 등록</a>
+                                <p>문의 사항이 있으시다면 아래로 연락주시길 바랍니다.</p>
                             </div>
                             <div class="footer">
                                 © Our Company. All rights reserved.
