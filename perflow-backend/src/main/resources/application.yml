@@ -5,6 +5,19 @@ spring:
     username: ${db.user}
     password: ${db.password}
 
+  mail:
+    host: smtp.gmail.com
+    port: ${spring.mail.port}
+    username: ${spring.mail.username}
+    password: ${spring.mail.password}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+            required: true
+          auth: true
+
   redis:
     data:
       host: localhost # Redis 서버 호스트
