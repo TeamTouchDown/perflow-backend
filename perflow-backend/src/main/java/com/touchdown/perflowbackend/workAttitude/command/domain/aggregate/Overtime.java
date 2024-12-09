@@ -43,6 +43,7 @@ public class Overtime extends BaseEntity {
     private LocalDateTime overtimeEnd;
 
     @Column(name = "overtime_status", nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
     private Status overtimeStatus;
 
     @Column(name = "travel_reject_time")
@@ -58,6 +59,7 @@ public class Overtime extends BaseEntity {
     private String overtimeRetroactiveReason; // 소급 사유
 
     @Column(name = "overtime_retroactive_status", length = 30)
+    @Enumerated(EnumType.STRING)
     private Status overtimeRetroactiveStatus; // 소급 상태 (대기, 승인, 반려)
 
     @Builder

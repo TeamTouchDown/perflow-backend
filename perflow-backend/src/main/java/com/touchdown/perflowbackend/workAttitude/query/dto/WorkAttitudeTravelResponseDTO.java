@@ -1,5 +1,6 @@
 package com.touchdown.perflowbackend.workAttitude.query.dto;
 
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
 import jakarta.annotation.Nullable;
 import lombok.Builder;
 import lombok.Data;
@@ -34,7 +35,7 @@ public class WorkAttitudeTravelResponseDTO {
     @Nullable
     private LocalDateTime updateDatetime; // 수정 일시
 
-    private String status;
+    private Status status;
 
 
 
