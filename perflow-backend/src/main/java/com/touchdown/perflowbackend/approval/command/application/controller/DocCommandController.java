@@ -15,11 +15,4 @@ public class DocCommandController {
 
     private final DocCommandRepository docCommandRepository;
 
-    @PostMapping
-    public ResponseEntity<SuccessCode> createDoc() {
-
-        docCommandRepository.createNewDoc
-
-        return ResponseEntity.ok(SuccessCode.DOC_CREATE_SUCCESS);
-    }
 }
