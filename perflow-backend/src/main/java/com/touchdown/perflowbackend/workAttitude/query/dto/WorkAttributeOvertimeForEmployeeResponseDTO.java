@@ -3,7 +3,6 @@ package com.touchdown.perflowbackend.workAttitude.query.dto;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -50,6 +49,8 @@ public class WorkAttributeOvertimeForEmployeeResponseDTO {
 
     @Nullable
     private LocalDateTime updateDatetime;
+
+
 
 
 

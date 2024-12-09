@@ -27,4 +27,8 @@ public class WorkAttributeOvertimeForEmployeeRequestDTO {
 
     private String overtimeRetroactiveReason;
 
+    @NotNull
+    private LocalDateTime enrollOvertime;
+
+
 }

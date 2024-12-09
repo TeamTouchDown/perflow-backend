@@ -5,6 +5,7 @@ import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -59,4 +60,22 @@ public class Overtime extends BaseEntity {
     @Column(name = "overtime_retroactive_status", length = 30)
     private Status overtimeRetroactiveStatus; // 소급 상태 (대기, 승인, 반려)
 
+    @Builder
+    public Overtime(Employee empId, ApproveSbj approveSbjId, String overtimeType, LocalDateTime enrollOvertime,
+                    LocalDateTime overtimeStart, LocalDateTime overtimeEnd, Status overtimeStatus,
+                    String travelRejectTime, Boolean isOvertimeRetroactive, String overtimeRetroactiveReason,
+                    Status overtimeRetroactiveStatus, Status status) {
+        this.empId = empId;
+        this.approveSbjId = approveSbjId;
+        this.overtimeType = overtimeType;
+        this.enrollOvertime = enrollOvertime;
+        this.overtimeStart = overtimeStart;
+        this.overtimeEnd = overtimeEnd;
+        this.overtimeStatus = overtimeStatus;
+        this.travelRejectTime = travelRejectTime;
+        this.isOvertimeRetroactive = isOvertimeRetroactive;
+        this.overtimeRetroactiveReason = overtimeRetroactiveReason;
+        this.overtimeRetroactiveStatus = overtimeRetroactiveStatus;
+        this.status = status;
+    }
 }

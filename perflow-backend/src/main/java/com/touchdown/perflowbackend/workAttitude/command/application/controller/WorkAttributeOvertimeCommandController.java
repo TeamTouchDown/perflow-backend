@@ -40,7 +40,7 @@ public class WorkAttributeOvertimeCommandController {
     }
 
     // 팀장: 초과근무 상태 변경 (승인/반려)
-    @PutMapping("/leader/overtimes/{overtimeId}/status")
+    @PutMapping("/leader/overtimes/status/{overtimeId}")
     public ResponseEntity<SuccessCode> updateOvertimeStatus(@PathVariable Long overtimeId,
                                                             @RequestBody WorkAttributeOvertimeForEmployeeRequestDTO workAttributeOvertimeForEmployeeRequestDTO) {
         workAttributeOvertimeCommandService.updateOvertimeStatus(overtimeId, workAttributeOvertimeForEmployeeRequestDTO);
