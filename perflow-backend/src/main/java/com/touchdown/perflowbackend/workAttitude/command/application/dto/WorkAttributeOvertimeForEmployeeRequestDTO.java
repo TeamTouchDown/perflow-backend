@@ -1,5 +1,6 @@
 package com.touchdown.perflowbackend.workAttitude.command.application.dto;
 
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.OvertimeType;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -16,7 +17,7 @@ public class WorkAttributeOvertimeForEmployeeRequestDTO {
     private Long approveSbjId;
 
     @NotNull
-    private String overtimeType;
+    private OvertimeType overtimeType;
 
     @NotNull
     private LocalDateTime overtimeStart;
@@ -31,5 +32,6 @@ public class WorkAttributeOvertimeForEmployeeRequestDTO {
     @NotNull
     private LocalDateTime enrollOvertime;
 
+    private Status overtimeStatus;
 
 }
