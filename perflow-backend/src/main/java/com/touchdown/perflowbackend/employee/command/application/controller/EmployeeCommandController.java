@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -30,7 +31,17 @@ public class EmployeeCommandController {
 
         employeeCommandService.registerEmployee(employeeRegisterDTO);
 
-        return ResponseEntity.ok(SuccessCode.SUCCESS);
+        return ResponseEntity.ok(SuccessCode.EMP_REGISTER_SUCCESS);
+    }
+
+    @PostMapping("/list")
+    public ResponseEntity<SuccessCode> registerEmployeeList(
+            @RequestPart(value = "empCSV", required = false) MultipartFile empCSV
+    ) {
+
+        employeeCommandService.registerEmployeeList(empCSV);
+
+        return ResponseEntity.ok(SuccessCode.EMP_CSV_REGISTER_SUCCESS);
     }
 
     @PostMapping("/login")
@@ -60,7 +71,6 @@ public class EmployeeCommandController {
         // Remove "Bearer " prefix
         accessToken = accessToken.substring(7);
 
-        log.info(empId + " " + accessToken);
         employeeCommandService.logoutRequestEmployee(new EmployeeLogoutRequestDTO(empId, accessToken));
 
         return ResponseEntity.ok(SuccessCode.LOGOUT_SUCCESS);
@@ -89,4 +99,5 @@ public class EmployeeCommandController {
 
         return ResponseEntity.ok().headers(headers).body(SuccessCode.TOKEN_REISSUE_SUCCESS);
     }
+
 }

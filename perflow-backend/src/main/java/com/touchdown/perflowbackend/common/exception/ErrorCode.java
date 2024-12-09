@@ -10,6 +10,8 @@ public enum ErrorCode {
 
     // 500 에러
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버에러 발생"),
+    SEND_EMAIL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "이메일 전송에 실패 했습니다."),
+    FAIL_READ_FILE(HttpStatus.INTERNAL_SERVER_ERROR, "파일 읽기에 실패 했습니다."),
 
     // 토큰 관련 에러
     NOT_VALID_REFRESH_TOKEN(HttpStatus.FORBIDDEN, "유효하지 않은 refresh token입니다."),
@@ -25,6 +27,7 @@ public enum ErrorCode {
     ALREADY_REGISTERED_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호 등록 이력이 존재합니다."),
     EXCEL_TEMPLATE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "엑셀 템플릿 업로드 중 오류가 발생했습니다"),
     ALREADY_DELETED_TEMPLATE(HttpStatus.BAD_REQUEST, "이미 삭제된 서식입니다."),
+    NOT_MATCHED_CSV(HttpStatus.BAD_REQUEST, "CSV파일 로드에 실패했습니다."),
 
     // 401 에러
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "인증 실패"),

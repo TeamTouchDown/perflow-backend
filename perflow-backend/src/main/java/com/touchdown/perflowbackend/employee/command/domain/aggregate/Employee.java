@@ -10,12 +10,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
 @NoArgsConstructor
+@ToString
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "employee", schema = "perflow")
 public class Employee extends BaseEntity {
 
@@ -35,7 +42,7 @@ public class Employee extends BaseEntity {
     @JoinColumn(name = "dept_id", nullable = false)
     private Department dept;
 
-    @Column(name = "password", nullable = false, length = 255)
+    @Column(name = "password", nullable = true, length = 255)
     private String password;
 
     @Column(name = "name", nullable = false, length = 30)

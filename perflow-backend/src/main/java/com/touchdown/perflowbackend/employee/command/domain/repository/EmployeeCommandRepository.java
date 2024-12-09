@@ -13,4 +13,5 @@ public interface EmployeeCommandRepository {
     Optional<Employee> findById(String empId);
 
     List<Employee> findAll(); // 사원 목록 조회
+
 }

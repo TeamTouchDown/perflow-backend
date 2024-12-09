@@ -1,5 +1,7 @@
 package com.touchdown.perflowbackend.employee.command.application.service;
 
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.application.dto.*;
@@ -20,8 +22,11 @@ import com.touchdown.perflowbackend.security.repository.WhiteRefreshTokenReposit
 import com.touchdown.perflowbackend.security.util.CustomEmployDetail;
 import com.touchdown.perflowbackend.security.util.JwtTokenProvider;
 import com.touchdown.perflowbackend.security.util.JwtUtil;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.FileNameUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,8 +34,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -46,42 +57,56 @@ public class EmployeeCommandService {
     private final BlackAccessTokenRepository blackAccessTokenRepository;
 
     private final AuthenticationManager authenticationManager;
+    private final EntityManager entityManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtUtil jwtUtil;
+
+    private final EmailService emailService;
 
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public void registerEmployee(EmployeeRegisterDTO employeeRegisterDTO) {
 
-        Department department = departmentCommandRepository.findById(employeeRegisterDTO.getDepartmentId()).orElseThrow(
-                () -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT)
-        );
-
-        Position position = positionCommandRepository.findById(employeeRegisterDTO.getPositionId()).orElseThrow(
-                () -> new CustomException(ErrorCode.NOT_FOUND_POSITION)
-        );
-        Job job = jobCommandRepository.findById(employeeRegisterDTO.getJobId()).orElseThrow(
-                () -> new CustomException(ErrorCode.NOT_FOUND_JOB)
-        );
+        Department department = departmentCommandRepository.findById(employeeRegisterDTO.getDepartmentId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT));
+        Position position = positionCommandRepository.findById(employeeRegisterDTO.getPositionId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_POSITION));
+        Job job = jobCommandRepository.findById(employeeRegisterDTO.getJobId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_JOB));
 
         Employee newEmployee = EmployeeMapper.toEntity(employeeRegisterDTO, position, job, department);
 
+        entityManager.persist(newEmployee);
         employeeCommandRepository.save(newEmployee);
+        entityManager.flush();
 
+        sendInvitationEmail(newEmployee);
     }
 
+    @Transactional
+    public void registerEmployeeList(MultipartFile empCSV) {
+
+        String originalFilename = empCSV.getOriginalFilename();
+        String extension = FileNameUtils.getExtension(originalFilename);
+
+        if (!isCSV(extension)) {
+            throw new CustomException(ErrorCode.NOT_MATCHED_CSV);
+        } else {
+            List<Employee> empList = getEmpList(empCSV);
+
+            for (Employee emp : empList) {
+                entityManager.persist(emp);
+                employeeCommandRepository.save(emp);
+                entityManager.flush();
+
+                sendInvitationEmail(emp);
+            }
+        }
+    }
 
     @Transactional
     public TokenResponseDTO loginRequestEmployee(EmployeeLoginRequestDTO employeeLoginRequestDTO) {
 
         // 1. AuthenticationManager를 통해 인증 수행
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        employeeLoginRequestDTO.getEmpId(),
-                        employeeLoginRequestDTO.getPassword()
-                )
-        );
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(employeeLoginRequestDTO.getEmpId(), employeeLoginRequestDTO.getPassword()));
 
         CustomEmployDetail customEmployDetail = (CustomEmployDetail) authentication.getPrincipal();
 
@@ -104,9 +129,7 @@ public class EmployeeCommandService {
     @Transactional
     public void registerEmployeePassword(EmployeePwdRegisterDTO employeePwdRegisterDTO) {
 
-        Employee employee = employeeCommandRepository.findById(employeePwdRegisterDTO.getEmpId()).orElseThrow(
-                () -> new CustomException(ErrorCode.NOT_FOUND_EMP)
-        );
+        Employee employee = employeeCommandRepository.findById(employeePwdRegisterDTO.getEmpId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP));
 
         /* 이미 초기 비밀번호 등록이 완료된 사원이라면 등록 불가. */
         if (!employee.getPassword().isEmpty()) {
@@ -128,9 +151,7 @@ public class EmployeeCommandService {
         Map<String, Object> claims = jwtUtil.parseClaims(token);
 
         /* whiteList 에 포함된 refreshToken 인지 확인 */
-        whiteRefreshTokenRepository.findById(token).orElseThrow(
-                () -> new CustomException(ErrorCode.NOT_VALID_REFRESH_TOKEN)
-        );
+        whiteRefreshTokenRepository.findById(token).orElseThrow(() -> new CustomException(ErrorCode.NOT_VALID_REFRESH_TOKEN));
 
         String newAccessToken = jwtTokenProvider.createAccessToken(empId, claims);
         String newRefreshToken = jwtTokenProvider.createRefreshToken(empId, claims);
@@ -149,5 +170,74 @@ public class EmployeeCommandService {
         /* blackList에 사용자의 최신 accessToken을 등록 */
         blackAccessTokenRepository.save(new BlackAccessToken(logoutRequestDTO.getAccessToken(), logoutRequestDTO.getEmpId()));
 
+    }
+
+    private boolean isCSV(String extension) {
+
+        return extension.equals("csv") || extension.equals("CSV");
+    }
+
+    // csv에서 추출한 데이터로 Employee 엔터티 리스트 생성하여 반환하는 메소드
+    private List<Employee> getEmpList(MultipartFile empCSV) {
+
+        List<Employee> empList = new ArrayList<>();
+
+        try {
+            CSVReader csvReader = new CSVReader(new InputStreamReader(empCSV.getInputStream()));
+
+            List<String[]> rowList = csvReader.readAll();
+
+            for (int i = 1; i < rowList.size(); i++) {
+
+                String[] row = rowList.get(i);
+
+                EmployeeRegisterDTO employeeRegisterDTO = getEmployeeRegisterDTO(row);
+
+                Department department = departmentCommandRepository.findById(employeeRegisterDTO.getDepartmentId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT));
+
+                Position position = positionCommandRepository.findById(employeeRegisterDTO.getPositionId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_POSITION));
+                Job job = jobCommandRepository.findById(employeeRegisterDTO.getJobId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_JOB));
+
+                Employee newEmployee = EmployeeMapper.toEntity(employeeRegisterDTO, position, job, department);
+
+                empList.add(newEmployee);
+            }
+        } catch (IOException e) {
+            throw new CustomException(ErrorCode.FAIL_READ_FILE);
+        } catch (CsvException e) {
+            throw new CustomException(ErrorCode.NOT_MATCHED_CSV);
+        }
+        return empList;
+    }
+
+    // 사원 등록 DTO 생성 함수
+    public EmployeeRegisterDTO getEmployeeRegisterDTO(String[] row) {
+
+        return EmployeeRegisterDTO.builder()
+                .empId(row[0])
+                .positionId(Long.valueOf(row[1]))
+                .jobId(Long.valueOf(row[2]))
+                .departmentId(Long.valueOf(row[3]))
+                .name(row[4])
+                .gender(row[5])
+                .rrn(row[6])
+                .pay(Long.valueOf(row[7]))
+                .address(row[8])
+                .contact(row[9])
+                .email(row[10])
+                .joinDate(LocalDate.parse(row[11]))
+                .Status(EmployeeStatus.valueOf(row[12]))
+                .build();
+    }
+
+    public void sendInvitationEmail(Employee newEmployee) {
+
+        Map<String, Object> claims = new HashMap<>();
+
+        claims.put("empId", newEmployee.getEmpId());
+
+        String emailToken = jwtTokenProvider.createEmailToken(newEmployee.getEmpId(), claims);
+
+        emailService.sendStyledEmail(newEmployee.getEmail(), newEmployee.getName(), emailToken);
     }
 }
