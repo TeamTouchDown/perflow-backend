@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -29,6 +30,16 @@ public class EmployeeCommandController {
             @RequestBody EmployeeRegisterDTO employeeRegisterDTO) {
 
         employeeCommandService.registerEmployee(employeeRegisterDTO);
+
+        return ResponseEntity.ok(SuccessCode.SUCCESS);
+    }
+
+    @PostMapping("/list")
+    public ResponseEntity<SuccessCode> registerEmployeeList(
+            @RequestPart(value = "empCSV", required = false) MultipartFile empCSV
+    ) {
+
+        employeeCommandService.registerEmployeeList(empCSV);
 
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }

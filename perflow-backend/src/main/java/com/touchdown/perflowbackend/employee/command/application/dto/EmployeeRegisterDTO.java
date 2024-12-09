@@ -1,12 +1,16 @@
 package com.touchdown.perflowbackend.employee.command.application.dto;
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.EmployeeStatus;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Getter
+@Setter
+@Builder
 public class EmployeeRegisterDTO {
 
     private String empId;

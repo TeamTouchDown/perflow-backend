@@ -1,5 +1,7 @@
 package com.touchdown.perflowbackend.employee.command.application.service;
 
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.application.dto.*;
@@ -22,6 +24,7 @@ import com.touchdown.perflowbackend.security.util.JwtTokenProvider;
 import com.touchdown.perflowbackend.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.compress.utils.FileNameUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,8 +32,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -71,6 +80,24 @@ public class EmployeeCommandService {
 
     }
 
+    @Transactional
+    public void registerEmployeeList(MultipartFile empCSV) {
+
+        String originalFilename = empCSV.getOriginalFilename();
+        String extension = FileNameUtils.getExtension(originalFilename);
+
+        log.info(originalFilename + " " + extension);
+
+        if(!isCSV(extension)) {
+            throw new CustomException(ErrorCode.NOT_MATCHED_CSV);
+        } else {
+            List<Employee> empList = getEmpList(empCSV);
+
+            for (Employee emp : empList) {
+                employeeCommandRepository.save(emp);
+            }
+        }
+    }
 
     @Transactional
     public TokenResponseDTO loginRequestEmployee(EmployeeLoginRequestDTO employeeLoginRequestDTO) {
@@ -149,5 +176,69 @@ public class EmployeeCommandService {
         /* blackList에 사용자의 최신 accessToken을 등록 */
         blackAccessTokenRepository.save(new BlackAccessToken(logoutRequestDTO.getAccessToken(), logoutRequestDTO.getEmpId()));
 
+    }
+
+    private boolean isCSV(String extension) {
+
+        return extension.equals("csv") || extension.equals("CSV");
+    }
+
+    // csv에서 추출한 데이터로 Employee 엔터티 리스트 생성하여 반환하는 메소드
+    private List<Employee> getEmpList(MultipartFile empCSV) {
+
+        List<Employee> empList = new ArrayList<>();
+
+        try {
+            CSVReader csvReader = new CSVReader(new InputStreamReader(empCSV.getInputStream()));
+
+            List<String[]> rowList = csvReader.readAll();
+
+            for (int i = 1; i < rowList.size(); i++) {
+
+                String[] row = rowList.get(i);
+
+                EmployeeRegisterDTO employeeRegisterDTO = getEmployeeRegisterDTO(row);
+
+                Department department = departmentCommandRepository.findById(employeeRegisterDTO.getDepartmentId()).orElseThrow(
+                        () -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT)
+                );
+
+                Position position = positionCommandRepository.findById(employeeRegisterDTO.getPositionId()).orElseThrow(
+                        () -> new CustomException(ErrorCode.NOT_FOUND_POSITION)
+                );
+                Job job = jobCommandRepository.findById(employeeRegisterDTO.getJobId()).orElseThrow(
+                        () -> new CustomException(ErrorCode.NOT_FOUND_JOB)
+                );
+
+                Employee newEmployee = EmployeeMapper.toEntity(employeeRegisterDTO, position, job, department);
+
+                empList.add(newEmployee);
+            }
+        } catch (IOException e) {
+            throw new CustomException(ErrorCode.FAIL_READ_FILE);
+        } catch (CsvException e) {
+            throw new CustomException(ErrorCode.NOT_MATCHED_CSV);
+        }
+        return empList;
+    }
+
+    // 사원 등록 DTO 생성 함수
+    public EmployeeRegisterDTO getEmployeeRegisterDTO(String[] row) {
+
+        return EmployeeRegisterDTO.builder()
+                .empId(row[0])
+                .positionId(Long.valueOf(row[1]))
+                .jobId(Long.valueOf(row[2]))
+                .departmentId(Long.valueOf(row[3]))
+                .name(row[4])
+                .gender(row[5])
+                .rrn(row[6])
+                .pay(Long.valueOf(row[7]))
+                .address(row[8])
+                .contact(row[9])
+                .email(row[10])
+                .joinDate(LocalDate.parse(row[11]))
+                .Status(EmployeeStatus.valueOf(row[12]))
+                .build();
     }
 }
