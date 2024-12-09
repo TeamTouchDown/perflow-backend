@@ -24,7 +24,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomEmployeeDetailsService employeeDetailsService;
     private final JwtUtil jwtUtil;
 
     @Bean
