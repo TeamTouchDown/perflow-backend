@@ -15,13 +15,11 @@ public class EmployeeQueryController {
 
     private final EmployeeQueryService employeeQueryService;
 
-
     // 검색한 부서에 속한 회원 조회
     @GetMapping
-    public ResponseEntity<List<EmployeeQueryResponseDTO>> readEmployees(@RequestParam Long departmentId) {
+    public ResponseEntity<List<EmployeeQueryResponseDTO>> readEmployees(@RequestParam(name = "departmentId") Long departmentId) {
 
         return ResponseEntity.ok(employeeQueryService.readAllEmployees(departmentId));
     }
-
 
 }
