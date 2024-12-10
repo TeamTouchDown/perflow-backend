@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/hr/perfomances/col/perfo/question")
+@RequestMapping("/api/v1/hr/perfomances/downward/perfo/question")
 @RequiredArgsConstructor
-public class PerfomanceEvaluationCollagueQuestionQueryController {
+public class PerfomanceEvaluationDownwardQuestionQueryController {
 
     private final EvaQueryService evaQueryService;
 

@@ -61,7 +61,7 @@ public class EvaQueryService {
 
     // 평가 문제 리스트 조회
     @Transactional(readOnly = true)
-    public List<EvaQuestionDetailResponseDTO> getEvaColQuestionList(String empId, EvaQuestionRequestDTO evaQuestionRequestDTO){
+    public List<EvaQuestionDetailResponseDTO> getEvaQuestionList(String empId, EvaQuestionRequestDTO evaQuestionRequestDTO){
 
         // 유저가 존재하는지 체크하기
         Employee emp = findEmployeeByEmpId(empId);
