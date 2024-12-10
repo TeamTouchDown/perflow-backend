@@ -1,6 +1,7 @@
 package com.touchdown.perflowbackend.hr.command.application.controller;
 
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
+import com.touchdown.perflowbackend.hr.command.application.dto.CompanyAnnualCountUpdateDTO;
 import com.touchdown.perflowbackend.hr.command.application.dto.CompanyRegisterRequestDTO;
 import com.touchdown.perflowbackend.hr.command.application.dto.CompanyUpdateRequestDTO;
 import com.touchdown.perflowbackend.hr.command.application.service.CompanyCommandService;
@@ -32,4 +33,15 @@ public class CompanyCommandController {
 
         return ResponseEntity.ok(SuccessCode.COMPANY_UPDATE_SUCCESS);
     }
+
+    // 연차 개수 수정
+    @PutMapping("/annualCount")
+    public ResponseEntity<SuccessCode> updateCompanyAnnualCount(
+            @RequestBody CompanyAnnualCountUpdateDTO companyAnnualCountUpdateDTO
+    ) {
+        companyCommandService.updateAnnualCount(companyAnnualCountUpdateDTO);
+
+        return ResponseEntity.ok(SuccessCode.COMPANY_UPDATE_SUCCESS);
+    }
+    
 }

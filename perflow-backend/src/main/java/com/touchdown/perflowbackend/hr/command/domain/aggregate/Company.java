@@ -1,5 +1,6 @@
 package com.touchdown.perflowbackend.hr.command.domain.aggregate;
 
+import com.touchdown.perflowbackend.hr.command.application.dto.CompanyAnnualCountUpdateDTO;
 import com.touchdown.perflowbackend.hr.command.application.dto.CompanyRegisterRequestDTO;
 import com.touchdown.perflowbackend.hr.command.application.dto.CompanyUpdateRequestDTO;
 import jakarta.persistence.*;
@@ -65,5 +66,10 @@ public class Company {
         this.address = companyUpdateRequestDTO.getAddress();
         this.contact = companyUpdateRequestDTO.getContact();
         this.email = companyUpdateRequestDTO.getEmail();
+    }
+
+    public void updateAnnualCount (CompanyAnnualCountUpdateDTO companyAnnualCountUpdateDTO) {
+
+        this.annualCount = companyAnnualCountUpdateDTO.getCompanyAnnualCount();
     }
 }
