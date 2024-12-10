@@ -9,44 +9,44 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/hr/perfomances/col/perfo/question")
+@RequestMapping("/api/v1/hr/perfomances/downward/perfo/question")
 @RequiredArgsConstructor
-public class PerfomanceEvaluationColleagueQuestionCommandController {
+public class PerfomanceEvaluationDownwardQuestionCommandController {
 
     private final EvalutionCommandService evalutionCommandService;
 
-    // 동료 평가 문항 생성
+    // 하향 평가 문항 생성
     @PostMapping("/{empId}")
-    public ResponseEntity<SuccessCode> createColQuestion(
+    public ResponseEntity<SuccessCode> createDownQuestion(
             @PathVariable("empId") String empId,
             @RequestBody CreateQuestionRequestDTO createQuestionRequestDTO ) {
 
         evalutionCommandService.createQuestion(empId, createQuestionRequestDTO);
 
-        return ResponseEntity.ok(SuccessCode.EVALUTION_COL_QUESTION_UPLOAD_SUCCESS);
+        return ResponseEntity.ok(SuccessCode.EVALUTION_DOWN_QUESTION_UPLOAD_SUCCESS);
 
     }
 
-    // 동료 평가 문항 수정
+    // 하향 평가 문항 수정
     @PutMapping("/{empId}/{perfoQuestionId}")
-    public ResponseEntity<SuccessCode> updateColQuestion(
+    public ResponseEntity<SuccessCode> updateDownQuestion(
             @PathVariable("empId") String empId,
             @PathVariable("perfoQuestionId") Long perfoQuestionId,
             @RequestBody UpdateQuestionRequestDTO updateQuestionRequestDTO) {
 
         evalutionCommandService.updateQuestion(empId, perfoQuestionId, updateQuestionRequestDTO);
 
-        return ResponseEntity.ok(SuccessCode.EVALUTION_COL_QUESTION_UPDATE_SUCCESS);
+        return ResponseEntity.ok(SuccessCode.EVALUTION_DOWN_QUESTION_UPDATE_SUCCESS);
     }
 
-    // 동료 평가 문항 삭제
+    // 하향 평가 문항 삭제
     @DeleteMapping("/{empId}/{perfoQuestionId}")
-    public ResponseEntity<SuccessCode> deleteColQuestion(
+    public ResponseEntity<SuccessCode> deleteDownQuestion(
             @PathVariable("empId") String empId,
             @PathVariable("perfoQuestionId") Long perfoQuestionId) {
 
         evalutionCommandService.deleteQuestion(empId, perfoQuestionId);
 
-        return ResponseEntity.ok(SuccessCode.EVALUTION_COL_QUESTION_DELETE_SUCCESS);
+        return ResponseEntity.ok(SuccessCode.EVALUTION_DOWN_QUESTION_DELETE_SUCCESS);
     }
 }
