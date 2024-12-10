@@ -6,8 +6,12 @@ import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.repository.DepartmentCommandRepository;
+import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.PerfoType;
+import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.QuestionType;
 import com.touchdown.perflowbackend.perfomance.query.dto.EvaAnswerResponseDTO;
 import com.touchdown.perflowbackend.perfomance.query.dto.EvaDetailResponseDTO;
+import com.touchdown.perflowbackend.perfomance.query.dto.EvaQuestionDetailResponseDTO;
+import com.touchdown.perflowbackend.perfomance.query.dto.EvaQuestionRequestDTO;
 import com.touchdown.perflowbackend.perfomance.query.repository.EvaQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,7 +42,9 @@ public class EvaQueryService {
 
         return evaList;
     }
-    
+
+    // 동료 평가 정답 조회
+    @Transactional(readOnly = true)
     public List<EvaAnswerResponseDTO> getEvaColAnswer(String perfoempId, String perfoedempId) {
 
         // 유저가 존재하는지 체크하기
@@ -51,6 +57,24 @@ public class EvaQueryService {
         List<EvaAnswerResponseDTO> evaAnswerList = evaQueryRepository.findAnswerByEmpIds(perfoempId, perfoedempId, java.time.Year.now().getValue());
 
         return evaAnswerList;
+    }
+
+    // 평가 문제 리스트 조회
+    @Transactional(readOnly = true)
+    public List<EvaQuestionDetailResponseDTO> getEvaColQuestionList(String empId, EvaQuestionRequestDTO evaQuestionRequestDTO){
+
+        // 유저가 존재하는지 체크하기
+        Employee emp = findEmployeeByEmpId(empId);
+
+        // 조건에 맞춰 문항 불러오기
+        List<EvaQuestionDetailResponseDTO> evaQuestionList = evaQueryRepository
+                .findQuestionBydept(evaQuestionRequestDTO.getDeptId(),
+                        PerfoType.valueOf(evaQuestionRequestDTO.getPerfoType()),
+                        QuestionType.valueOf(evaQuestionRequestDTO.getQuestionType()),
+                        java.time.Year.now().getValue()
+                );
+
+        return evaQuestionList;
     }
 
     private Employee findEmployeeByEmpId(String empId) {
