@@ -31,9 +31,9 @@ public class ApproveLine extends BaseEntity {
     @JoinColumn(name = "create_user_id", nullable = false)
     private Employee createUser;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "employee_id")
+//    private Employee employee;
 
     @OneToMany(mappedBy = "approveLine", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ApproveSbj> approveSubjects = new ArrayList<>();
@@ -53,17 +53,18 @@ public class ApproveLine extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
-    private Status status;
+    private Status status = Status.PENDING;
 
     @Column(name = "complete_datetime")
     private LocalDateTime completeDatetime;
 
     @Builder
-    public ApproveLine(Doc doc, ApproveType approveType, Integer approveLineOrder, Long pllGroupId) {
+    public ApproveLine(Doc doc, ApproveType approveType, Integer approveLineOrder, Long pllGroupId, Employee createUser) {
 
         this.doc = doc;
         this.approveType = approveType;
         this.approveLineOrder = approveLineOrder;
         this.pllGroupId = pllGroupId;
+        this.createUser = createUser;
     }
 }

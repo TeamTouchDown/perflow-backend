@@ -36,8 +36,8 @@ public class ApproveSbj extends BaseEntity {
     private Department dept;
 
     // 부서 결재 시 담당자(수신함에서 접수 선택 시 담당자로 지정됨)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "sbj_department_pic", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sbj_department_pic")
     private Employee sbjDepartmentPic;
 
     @Enumerated(EnumType.STRING)
@@ -48,16 +48,20 @@ public class ApproveSbj extends BaseEntity {
     @Column(name = "is_pll", nullable = false)
     private Boolean isPll;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
-    private Status status;
+    private Status status = Status.ACTIVATED;
 
     @Column(name = "complete_datetime")
     private LocalDateTime completeDatetime;
 
     @Builder
-    public ApproveSbj(ApproveLine approveLine, Employee sbjUser) {
+    public ApproveSbj(ApproveLine approveLine, Employee sbjUser, SbjType sbjType, Department dept, Boolean isPll) {
 
         this.approveLine = approveLine;
         this.sbjUser = sbjUser;
+        this.sbjType = sbjType;
+        this.dept = dept;
+        this.isPll = isPll;
     }
 }

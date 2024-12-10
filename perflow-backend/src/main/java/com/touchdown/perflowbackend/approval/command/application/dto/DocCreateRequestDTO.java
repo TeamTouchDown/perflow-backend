@@ -1,7 +1,7 @@
 package com.touchdown.perflowbackend.approval.command.application.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.util.List;
 
