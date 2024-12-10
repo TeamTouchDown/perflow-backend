@@ -2,6 +2,7 @@ package com.touchdown.perflowbackend.approval.command.application.service;
 
 import com.touchdown.perflowbackend.approval.command.application.dto.ApproveLineDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRequestDTO;
+import com.touchdown.perflowbackend.approval.command.application.dto.MyApproveLineCreateRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.ShareDTO;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.approval.command.domain.repository.ApproveLineCommandRepository;
@@ -49,6 +50,31 @@ public class DocCommandService {
         createShare(request, doc, createUser);
 
         docCommandRepository.save(doc);
+    }
+
+    @Transactional
+    public void createNewMyApproveLine(MyApproveLineCreateRequestDTO request, String createUserId) {
+
+        Employee createUser = findEmployeeById(createUserId);
+
+        for(ApproveLineDTO lineDTO : request.getApproveLines()) {
+
+            ApproveLine approveLine = ApproveLine.builder()
+                    .doc(null)
+                    .createUser(createUser)
+                    .approveTemplateType(MY_APPROVE_LINE)
+                    .name(request.getName())
+                    .description(request.getDescription())
+                    .approveType(lineDTO.getApproveType())
+                    .approveLineOrder(lineDTO.getApproveLineOrder())
+                    .pllGroupId(lineDTO.getPllGroupId())
+                    .build();
+
+            addApproveSbjs(lineDTO, approveLine);
+
+            approveLineCommandRepository.save(approveLine);
+        }
+
     }
 
     private void createShare(DocCreateRequestDTO request, Doc doc, Employee createUser) {
@@ -106,6 +132,7 @@ public class DocCommandService {
 
         return ApproveLine.builder()
                 .doc(doc)
+                .approveTemplateType(lineDTO.getApproveTemplateTypes())
                 .approveType(lineDTO.getApproveType())
                 .approveLineOrder(lineDTO.getApproveLineOrder())
                 .pllGroupId(lineDTO.getPllGroupId())
@@ -124,6 +151,7 @@ public class DocCommandService {
 
         ApproveLine approveLine = ApproveLine.builder()
                 .doc(doc)
+                .approveTemplateType(lineDTO.getApproveTemplateTypes())
                 .createUser(createUser)
                 .approveType(lineDTO.getApproveType())
                 .approveLineOrder(lineDTO.getApproveLineOrder())

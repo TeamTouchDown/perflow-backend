@@ -23,8 +23,8 @@ public class ApproveLine extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long approveLineId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "doc_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "doc_id")
     private Doc doc;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -62,9 +62,12 @@ public class ApproveLine extends BaseEntity {
     private LocalDateTime completeDatetime;
 
     @Builder
-    public ApproveLine(Doc doc, ApproveType approveType, Integer approveLineOrder, Long pllGroupId, Employee createUser) {
+    public ApproveLine(Doc doc, ApproveTemplateType approveTemplateType, String name, String description, ApproveType approveType, Integer approveLineOrder, Long pllGroupId, Employee createUser) {
 
         this.doc = doc;
+        this.approveTemplateType = approveTemplateType;
+        this.name = name;
+        this.description = description;
         this.approveType = approveType;
         this.approveLineOrder = approveLineOrder;
         this.pllGroupId = pllGroupId;
