@@ -1,9 +1,8 @@
 package com.touchdown.perflowbackend.hr.command.domain.aggregate;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.touchdown.perflowbackend.hr.command.application.dto.CompanyRegisterRequestDTO;
+import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,6 +15,7 @@ import java.time.LocalDateTime;
 public class Company {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "company_id", nullable = false)
     private Long companyId;
 
@@ -42,5 +42,18 @@ public class Company {
 
     @Column(name = "payment_datetime", nullable = false)
     private LocalDateTime paymentDatetime;
+
+    @Builder
+    public Company(CompanyRegisterRequestDTO requestDTO) {
+
+        this.name = requestDTO.getName();
+        this.chairman = requestDTO.getChairman();
+        this.establish = requestDTO.getEstablish();
+        this.address = requestDTO.getAddress();
+        this.contact = requestDTO.getContact();
+        this.email = requestDTO.getEmail();
+        this.annualCount = requestDTO.getAnnualCount();
+        this.paymentDatetime = requestDTO.getPaymentDatetime();
+    }
 
 }

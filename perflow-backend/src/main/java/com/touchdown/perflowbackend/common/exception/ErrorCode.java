@@ -25,6 +25,7 @@ public enum ErrorCode {
     EMPTY_FIELD_TYPE_DATA(HttpStatus.BAD_REQUEST, "빈 필드 타입 데이터입니다."),
     MISMATCH_FIELD_TYPE_DATA_SIZE(HttpStatus.BAD_REQUEST, "필드 타입 데이터의 크기가 맞지 않습니다."),
     ALREADY_REGISTERED_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호 등록 이력이 존재합니다."),
+    ALREADY_REGISTER_COMPANY(HttpStatus.BAD_REQUEST, "회사 데이터는 이미 등록 되어있습니다. 2개 이상의 데이터는 등록 할 수 없습니다."),
     EXCEL_TEMPLATE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "엑셀 템플릿 업로드 중 오류가 발생했습니다"),
     ALREADY_DELETED_TEMPLATE(HttpStatus.BAD_REQUEST, "이미 삭제된 서식입니다."),
     NOT_MATCHED_CSV(HttpStatus.BAD_REQUEST, "CSV파일 로드에 실패했습니다."),
@@ -56,9 +57,7 @@ public enum ErrorCode {
     NOT_FOUND_TRAVEL(HttpStatus.NOT_FOUND, "출장 내역을 찾을 수 없습니다."),
     INVALID_STATUS(HttpStatus.BAD_REQUEST,"승인 반려에 따른 APPROVED, REJECTED 둘중에 하나로 입력 바랍니다." ),
     NOT_FOUND_OVERTIME(HttpStatus.NOT_FOUND, "초과 근무 정보를 찾을 수 없습니다."),
-    INVALID_OVERTIME_STATUS(HttpStatus.BAD_REQUEST, "유효하지 않은 초과 근무 상태입니다. (APPROVED 또는 REJECTED만 작성하세요)")
-    ;
-
+    INVALID_OVERTIME_STATUS(HttpStatus.BAD_REQUEST, "유효하지 않은 초과 근무 상태입니다. (APPROVED 또는 REJECTED만 작성하세요)");
 
     private final HttpStatus httpStatus;
     private final String message;
