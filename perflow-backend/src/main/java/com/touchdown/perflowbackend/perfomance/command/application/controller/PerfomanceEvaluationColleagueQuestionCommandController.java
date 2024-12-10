@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/hr/perfomances/col/perfo/question/")
+@RequestMapping("/api/v1/hr/perfomances/col/perfo/question")
 @RequiredArgsConstructor
 public class PerfomanceEvaluationColleagueQuestionCommandController {
 
