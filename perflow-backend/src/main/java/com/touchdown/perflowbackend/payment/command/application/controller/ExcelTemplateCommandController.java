@@ -5,6 +5,7 @@ import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import com.touchdown.perflowbackend.payment.command.application.service.ExcelTemplateCommandService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/api/v1/hr")
 public class ExcelTemplateCommandController {
 
@@ -33,6 +35,7 @@ public class ExcelTemplateCommandController {
             return ResponseEntity.ok(SuccessCode.EXCEL_TEMPLATE_UPLOAD_SUCCESS.getMessage());
 
         } catch (Exception e) {
+            log.error("Excel upload error", e); // 예외 로그 추가
             throw new CustomException(ErrorCode.EXCEL_TEMPLATE_UPLOAD_ERROR);
         }
     }
