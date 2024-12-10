@@ -173,4 +173,12 @@ public class PayrollQueryService {
 
     }
 
+    @Transactional(readOnly = true)
+    public PayrollDetailResponseDTO getPayroll(Long payrollId) {
+
+        List<PayrollDTO> payroll = payrollQueryRepository.findByPayrollId(payrollId);
+
+        return new PayrollDetailResponseDTO(payroll);
+
+    }
 }

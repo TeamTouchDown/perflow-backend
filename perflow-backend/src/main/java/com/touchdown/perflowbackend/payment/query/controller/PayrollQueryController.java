@@ -63,4 +63,13 @@ public class PayrollQueryController {
         return ResponseEntity.ok(response);
 
     }
+
+    @GetMapping("/payrolls/{payrollId}")
+    public ResponseEntity<PayrollDetailResponseDTO> getPayroll(@PathVariable Long payrollId) {
+
+        PayrollDetailResponseDTO response = payrollQueryService.getPayroll(payrollId);
+
+        return ResponseEntity.ok(response);
+
+    }
 }
