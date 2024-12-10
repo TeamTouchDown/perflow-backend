@@ -4,6 +4,7 @@ import com.touchdown.perflowbackend.approval.command.application.dto.ApproveLine
 import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.ShareDTO;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
+import com.touchdown.perflowbackend.approval.command.domain.repository.ApproveLineCommandRepository;
 import com.touchdown.perflowbackend.approval.command.domain.repository.DocCommandRepository;
 import com.touchdown.perflowbackend.approval.command.domain.repository.TemplateCommandRepository;
 import com.touchdown.perflowbackend.approval.command.mapper.DocMapper;
@@ -18,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveTemplateType.*;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -27,6 +30,7 @@ public class DocCommandService {
     private final TemplateCommandRepository templateCommandRepository;
     private final DocCommandRepository docCommandRepository;
     private final DepartmentCommandRepository departmentCommandRepository;
+    private final ApproveLineCommandRepository approveLineCommandRepository;
 
     @Transactional
     public void createNewDoc(DocCreateRequestDTO request, String createUserId) {
@@ -82,9 +86,31 @@ public class DocCommandService {
     private void createApproveLines(DocCreateRequestDTO request, Doc doc, Employee createUser) {
 
         for (ApproveLineDTO lineDTO : request.getApproveLines()) {
-            ApproveLine approveLine = createApproveLine(lineDTO, doc, createUser);
+            ApproveLine approveLine;
+
+            if (lineDTO.getApproveTemplateTypes() == MY_APPROVE_LINE) {
+                // 나의 결재선에서 불러온 경우
+                approveLine = loadMyApproveLine(lineDTO, doc, createUser);
+            } else if (lineDTO.getApproveTemplateTypes() == MANUAL) {
+                // 직접 생성한 경우
+                approveLine = createApproveLine(lineDTO, doc, createUser);
+            } else {
+                throw new CustomException(ErrorCode.INVALID_APPROVE_TEMPLATE_TYPE);
+            }
             doc.getApproveLines().add(approveLine);
         }
+    }
+
+    // todo: 나의 결재선 불러오기 수정 필요!!
+    private ApproveLine loadMyApproveLine(ApproveLineDTO lineDTO, Doc doc, Employee createUser) {
+
+        return ApproveLine.builder()
+                .doc(doc)
+                .approveType(lineDTO.getApproveType())
+                .approveLineOrder(lineDTO.getApproveLineOrder())
+                .pllGroupId(lineDTO.getPllGroupId())
+                .createUser(createUser)
+                .build();
     }
 
     // 문서 객체 생성

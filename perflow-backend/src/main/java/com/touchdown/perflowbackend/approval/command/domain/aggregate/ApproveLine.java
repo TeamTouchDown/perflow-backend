@@ -31,15 +31,18 @@ public class ApproveLine extends BaseEntity {
     @JoinColumn(name = "create_user_id", nullable = false)
     private Employee createUser;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "employee_id")
-//    private Employee employee;
-
     @OneToMany(mappedBy = "approveLine", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ApproveSbj> approveSubjects = new ArrayList<>();
 
     @Column(name = "name", length = 30)
     private String name;
+
+    @Column(name = "description")
+    private String description;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "approve_template_type", nullable = false, length = 30)
+    private ApproveTemplateType approveTemplateType;
 
     @Column(name = "approve_line_order", nullable = false)
     private Integer approveLineOrder;

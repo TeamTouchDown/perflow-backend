@@ -1,6 +1,7 @@
 package com.touchdown.perflowbackend.approval.command.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveTemplateType;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,4 +26,7 @@ public class ApproveLineDTO {
 
     @JsonProperty("employees")
     private final List<String> Employees;
+
+    @JsonProperty("approveTemplateType")
+    private final ApproveTemplateType approveTemplateTypes;
 }
