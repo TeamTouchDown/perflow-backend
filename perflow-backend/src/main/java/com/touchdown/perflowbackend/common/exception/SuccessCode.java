@@ -21,6 +21,11 @@ public enum SuccessCode {
     PASSWORD_REGISTER_SUCCESS(HttpStatus.OK, "초기 비밀번호 등록 성공"),
     TOKEN_REISSUE_SUCCESS(HttpStatus.OK, "AccessToken 재발급 성공!"),
 
+    // 200 - 회사 관련 성공
+    COMPANY_REGISTER_SUCCESS(HttpStatus.OK, "회사 정보 등록 성공"),
+    COMPANY_UPDATE_SUCCESS(HttpStatus.OK, "회사 정보 수정 성공"),
+    COMPANY_DELETE_SUCCESS(HttpStatus.OK, "회사 정보 삭제 성공"),
+
     // 200 - 급여대장 관련 성공
     EXCEL_TEMPLATE_UPLOAD_SUCCESS(HttpStatus.OK, "엑셀 템플릿을 성공적으로 업로드 하였습니다."),
     PAYROLL_UPLOAD_SUCCESS(HttpStatus.OK, "급여대장을 성공적으로 업로드 하였습니다."),

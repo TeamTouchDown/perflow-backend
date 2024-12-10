@@ -2,15 +2,13 @@ package com.touchdown.perflowbackend.hr.command.application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @AllArgsConstructor
-public class CompanyRegisterRequestDTO {
+// 급여지급일, 연차 지급 개수 수정은 다른 api로 분리 예정
+public class CompanyUpdateRequestDTO {
 
     private String name;
 
@@ -23,8 +21,4 @@ public class CompanyRegisterRequestDTO {
     private String contact;
 
     private String email;
-
-    private Long annualCount; // 연자 지급 개수
-
-    private LocalDateTime paymentDatetime; // 급여 지급일
 }
