@@ -12,6 +12,9 @@ import java.util.List;
 @AllArgsConstructor
 public class ApproveLineDTO {
 
+    @JsonProperty("approveLineId")
+    private Long approveLineId; // 나의 결재선 id
+
     @JsonProperty("approveType")
     private final ApproveType approveType;
 

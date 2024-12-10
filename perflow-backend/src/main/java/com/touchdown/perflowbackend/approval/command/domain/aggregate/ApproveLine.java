@@ -31,6 +31,9 @@ public class ApproveLine extends BaseEntity {
     @JoinColumn(name = "create_user_id", nullable = false)
     private Employee createUser;
 
+    @JoinColumn(name = "group_id")
+    private Long groupId;
+
     @OneToMany(mappedBy = "approveLine", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ApproveSbj> approveSubjects = new ArrayList<>();
 
@@ -62,11 +65,12 @@ public class ApproveLine extends BaseEntity {
     private LocalDateTime completeDatetime;
 
     @Builder
-    public ApproveLine(Doc doc, ApproveTemplateType approveTemplateType, String name, String description, ApproveType approveType, Integer approveLineOrder, Long pllGroupId, Employee createUser) {
+    public ApproveLine(Doc doc, ApproveTemplateType approveTemplateType, Long groupId, String name, String description, ApproveType approveType, Integer approveLineOrder, Long pllGroupId, Employee createUser) {
 
         this.doc = doc;
         this.approveTemplateType = approveTemplateType;
         this.name = name;
+        this.groupId = groupId;
         this.description = description;
         this.approveType = approveType;
         this.approveLineOrder = approveLineOrder;

@@ -20,6 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.UUID;
+
 import static com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveTemplateType.*;
 
 @Slf4j
@@ -57,10 +60,13 @@ public class DocCommandService {
 
         Employee createUser = findEmployeeById(createUserId);
 
+        Long groupId = generateGroupId();
+        
         for(ApproveLineDTO lineDTO : request.getApproveLines()) {
 
             ApproveLine approveLine = ApproveLine.builder()
                     .doc(null)
+                    .groupId(groupId)
                     .createUser(createUser)
                     .approveTemplateType(MY_APPROVE_LINE)
                     .name(request.getName())
@@ -74,7 +80,11 @@ public class DocCommandService {
 
             approveLineCommandRepository.save(approveLine);
         }
+    }
 
+    private Long generateGroupId() {
+
+        return Math.abs(UUID.randomUUID().getMostSignificantBits());
     }
 
     private void createShare(DocCreateRequestDTO request, Doc doc, Employee createUser) {
@@ -127,17 +137,49 @@ public class DocCommandService {
         }
     }
 
-    // todo: 나의 결재선 불러오기 수정 필요!!
     private ApproveLine loadMyApproveLine(ApproveLineDTO lineDTO, Doc doc, Employee createUser) {
 
-        return ApproveLine.builder()
-                .doc(doc)
-                .approveTemplateType(lineDTO.getApproveTemplateTypes())
-                .approveType(lineDTO.getApproveType())
-                .approveLineOrder(lineDTO.getApproveLineOrder())
-                .pllGroupId(lineDTO.getPllGroupId())
-                .createUser(createUser)
-                .build();
+        // 나의 결재선 불러오기
+        Long groupId = lineDTO.getApproveLineId();
+        List<ApproveLine> myApproveLines = approveLineCommandRepository.findByGroupId(groupId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MY_APPROVE_LINE));
+
+        ApproveLine copiedApproveLine = null;
+
+        for (ApproveLine myApproveLine : myApproveLines) {
+            ApproveLine newApproveLine = ApproveLine.builder()
+                    .doc(doc) // 새로운 문서에 연결
+                    .groupId(doc.getDocId()) // 새로운 문서 ID로 그룹화
+                    .createUser(createUser)
+                    .approveTemplateType(MY_APPROVE_LINE)
+                    .name(myApproveLine.getName())
+                    .description(myApproveLine.getDescription())
+                    .approveType(myApproveLine.getApproveType())
+                    .approveLineOrder(myApproveLine.getApproveLineOrder())
+                    .pllGroupId(myApproveLine.getPllGroupId())
+                    .build();
+
+            // 기존 결재 주체 복사
+            for (ApproveSbj myApproveSbj : myApproveLine.getApproveSubjects()) {
+                ApproveSbj newApproveSbj = ApproveSbj.builder()
+                        .approveLine(newApproveLine)
+                        .sbjType(myApproveSbj.getSbjType())
+                        .sbjUser(myApproveSbj.getSbjUser())
+                        .dept(myApproveSbj.getDept())
+                        .isPll(myApproveSbj.getIsPll())
+                        .build();
+
+                newApproveLine.getApproveSubjects().add(newApproveSbj);
+            }
+
+            if (copiedApproveLine == null) {
+                copiedApproveLine = newApproveLine; // 복사한 첫 번째 결재선을 반환
+            }
+
+            doc.getApproveLines().add(newApproveLine);
+        }
+
+        return copiedApproveLine; // 첫 번째 결재선 반환
     }
 
     // 문서 객체 생성
@@ -151,6 +193,7 @@ public class DocCommandService {
 
         ApproveLine approveLine = ApproveLine.builder()
                 .doc(doc)
+                .groupId(doc.getDocId())    // 문서 id 를 groupId로
                 .approveTemplateType(lineDTO.getApproveTemplateTypes())
                 .createUser(createUser)
                 .approveType(lineDTO.getApproveType())
