@@ -10,15 +10,12 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
-import com.touchdown.perflowbackend.employee.query.repository.EmployeeQueryRepository;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.repository.DepartmentCommandRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -38,20 +35,31 @@ public class DocCommandService {
         Template template = findTemplateById(request.getTemplateId());
 
         // 문서 생성
-        Doc doc = DocMapper.toEntity(request, createUser, template);
+        Doc doc = createDoc(request, createUser, template);
 
         // 결재선 생성
-        for (ApproveLineDTO lineDTO : request.getApproveLines()) {
-            ApproveLine approveLine = createApproveLine(lineDTO, doc, createUser);
-            doc.getApproveLines().add(approveLine);
-        }
+        createApproveLines(request, doc, createUser);
 
         docCommandRepository.save(doc);
     }
 
+    private void createApproveLines(DocCreateRequestDTO request, Doc doc, Employee createUser) {
+
+        for (ApproveLineDTO lineDTO : request.getApproveLines()) {
+            ApproveLine approveLine = createApproveLine(lineDTO, doc, createUser);
+            doc.getApproveLines().add(approveLine);
+        }
+    }
+
+    // 문서 객체 생성
+    private Doc createDoc(DocCreateRequestDTO request, Employee createUser, Template template) {
+
+        return DocMapper.toEntity(request, createUser, template);
+    }
+
+    // 결재선 추가
     private ApproveLine createApproveLine(ApproveLineDTO lineDTO, Doc doc, Employee createUser) {
 
-        // 결재선 생성
         ApproveLine approveLine = ApproveLine.builder()
                 .doc(doc)
                 .createUser(createUser)
@@ -60,34 +68,38 @@ public class DocCommandService {
                 .pllGroupId(lineDTO.getPllGroupId())
                 .build();
 
-        // 결재 주체 생성 : 사원
-        for (String empId : lineDTO.getEmployees()) {
-            Employee employee = findEmployeeById(empId);
-            ApproveSbj approveSbj = ApproveSbj.builder()
-                    .approveLine(approveLine)
-                    .sbjType(SbjType.Employee)
-                    .sbjUser(employee)
-                    .isPll(isParallel(lineDTO))
-                    .dept(null)
-                    .build();
-
-            approveLine.getApproveSubjects().add(approveSbj);
-        }
-
-        // 결재 주체 생성 : 부서
-        for (Long deptId : lineDTO.getDepartments()) {
-            Department department = findDepartmentByID(deptId);
-            ApproveSbj approveSbj = ApproveSbj.builder()
-                    .approveLine(approveLine)
-                    .sbjType(SbjType.Department)
-                    .sbjUser(null)
-                    .isPll(isParallel(lineDTO))
-                    .dept(department)
-                    .build();
-            approveLine.getApproveSubjects().add(approveSbj);
-        }
+        addApproveSbjs(lineDTO, approveLine);
 
         return approveLine;
+    }
+
+    // 결재 주체 추가
+    private void addApproveSbjs(ApproveLineDTO lineDTO, ApproveLine approveLine) {
+
+        // 결재 주체가 사원인 경우
+        for (String empId : lineDTO.getEmployees()) {
+            Employee employee = findEmployeeById(empId);
+            ApproveSbj approveSbj = createApproveSbj(approveLine, SbjType.EMPLOYEE, employee, null, isParallel(lineDTO));
+            approveLine.getApproveSubjects().add(approveSbj);
+        }
+
+        // 결재 주체가 부서인 경우
+        for (Long deptId : lineDTO.getDepartments()) {
+            Department department = findDepartmentByID(deptId);
+            ApproveSbj approveSbj = createApproveSbj(approveLine, SbjType.DEPARTMENT, null, department, isParallel(lineDTO));
+            approveLine.getApproveSubjects().add(approveSbj);
+        }
+    }
+
+    private ApproveSbj createApproveSbj(ApproveLine approveLine, SbjType sbjType, Employee sbjUser, Department dept, boolean isParallel) {
+
+        return ApproveSbj.builder()
+                .approveLine(approveLine)
+                .sbjType(sbjType)
+                .sbjUser(sbjUser)
+                .dept(dept)
+                .isPll(isParallel)
+                .build();
     }
 
     // 결재방식이 병렬/병렬합의인지 확인
@@ -113,7 +125,4 @@ public class DocCommandService {
         return departmentCommandRepository.findById(deptId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT));
     }
-
-
-
 }
