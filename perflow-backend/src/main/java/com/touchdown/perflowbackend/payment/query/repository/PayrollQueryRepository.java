@@ -1,9 +1,12 @@
 package com.touchdown.perflowbackend.payment.query.repository;
 
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.Payroll;
+import com.touchdown.perflowbackend.payment.query.dto.PayrollChartDTO;
 import com.touchdown.perflowbackend.payment.query.dto.PayrollDTO;
+import com.touchdown.perflowbackend.payment.query.dto.PayrollResponseDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,5 +28,22 @@ public interface PayrollQueryRepository extends JpaRepository<Payroll, Long> {
             "JOIN Employee e ON pd.emp.empId = e.empId " +
             "WHERE e.status <> 'RESIGNED' AND p.payrollId = :payrollId")
     List<PayrollDTO> findByPayrollId(Long payrollId);
+
+    // 가장 최근 급여 대장을 조회하는 메서드
+    @Query("SELECT new com.touchdown.perflowbackend.payment.query.dto.PayrollChartDTO(p.payrollId, p.createDatetime) FROM Payroll p WHERE p.payrollId = (SELECT MAX(payrollId) FROM Payroll)")
+    PayrollChartDTO findLatestPayroll();
+
+
+    // 특정 월을 기준으로 3년간 급여 데이터 조회
+    @Query("SELECT p FROM Payroll p WHERE EXTRACT(MONTH FROM p.createDatetime) = :month AND EXTRACT(YEAR FROM p.createDatetime) BETWEEN :startYear AND :endYear")
+    List<PayrollChartDTO> findPayrollsByMonthAndYears(@Param("month") int month, @Param("startYear") int startYear, @Param("endYear") int endYear);
+
+    // 월 범위와 연도를 기준으로 급여 데이터를 조회 (3개월 데이터)
+    @Query("SELECT p FROM Payroll p WHERE MONTH(p.createDatetime) BETWEEN :startMonth AND :latestMonth AND YEAR(p.createDatetime) = :year")
+    List<PayrollChartDTO> findPayrollsByMonths(@Param("startMonth") int startMonth, @Param("latestMonth") int latestMonth, @Param("year") int year);
+
+    // 연도 범위에 해당하는 급여 데이터를 조회 (3년 데이터)
+    @Query("SELECT p FROM Payroll p WHERE YEAR(p.createDatetime) BETWEEN :startYear AND :latestYear")
+    List<PayrollChartDTO> findPayrollsByYears(@Param("startYear") int startYear, @Param("latestYear") int latestYear);
 
 }

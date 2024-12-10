@@ -5,10 +5,7 @@ import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.Payroll;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.PayrollDetail;
-import com.touchdown.perflowbackend.payment.query.dto.PayrollDTO;
-import com.touchdown.perflowbackend.payment.query.dto.PayrollDetailResponseDTO;
-import com.touchdown.perflowbackend.payment.query.dto.PayrollListResponseDTO;
-import com.touchdown.perflowbackend.payment.query.dto.PayrollResponseDTO;
+import com.touchdown.perflowbackend.payment.query.dto.*;
 import com.touchdown.perflowbackend.payment.query.repository.PayrollQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
@@ -156,7 +153,7 @@ public class PayrollQueryService {
                     return PayrollResponseDTO.builder()
                             .payrollId(payroll.getPayrollId())
                             .name(payroll.getName())
-                            .createDateTime(LocalDate.from(payroll.getCreateDatetime()))
+                            .createDatetime(LocalDate.from(payroll.getCreateDatetime()))
                             .totalEmp(totalEmp)
                             .totalPay(totalPay)
                             .build();
@@ -179,6 +176,74 @@ public class PayrollQueryService {
         List<PayrollDTO> payroll = payrollQueryRepository.findByPayrollId(payrollId);
 
         return new PayrollDetailResponseDTO(payroll);
+
+    }
+
+    // 가장 최근 급여의 월을 기준으로 3년간 데이터를 조회하는 메서드
+    @Transactional(readOnly = true)
+    public List<PayrollChartDTO> getPayrollsByMonthAndThreeYears() {
+        // 가장 최근 급여 데이터 조회
+        PayrollChartDTO latestPayroll = payrollQueryRepository.findLatestPayroll();
+
+        if (latestPayroll == null) {
+
+            throw new CustomException(ErrorCode.NOT_FOUND_PAYROLL);
+
+        }
+
+        // 최근 급여 대장의 월과 연도를 기준으로 3년간 급여 데이터 조회
+        int latestMonth = latestPayroll.getCreateDatetime().getMonthValue();
+        int latestYear = latestPayroll.getCreateDatetime().getYear();
+        int startYear = latestYear - 2;  // 3년 범위
+
+        // 3년간 급여 데이터 조회
+        return payrollQueryRepository.findPayrollsByMonthAndYears(latestMonth, startYear, latestYear);
+
+    }
+
+    // 가장 최근 급여의 월을 기준으로 3개월간 데이터를 조회하는 메서드
+    @Transactional(readOnly = true)
+    public List<PayrollChartDTO> getLastThreeMonthsPayrolls() {
+        // 가장 최근 급여 데이터 조회
+        PayrollChartDTO latestPayroll = payrollQueryRepository.findLatestPayroll();
+
+        if (latestPayroll == null) {
+
+            throw new CustomException(ErrorCode.NOT_FOUND_PAYROLL);
+
+        }
+
+        int latestMonth = latestPayroll.getCreateDatetime().getMonthValue();
+        int latestYear = latestPayroll.getCreateDatetime().getYear();
+        int startMonth = latestMonth - 2;  // 3개월 범위 (현재 월에서 2개월 전까지)
+
+        if (startMonth <= 0) {
+
+            startMonth += 12; // 12월에서 1월로 넘어갈 경우 처리
+            latestYear -= 1;  // 작년으로 변경
+
+        }
+
+        // 3개월간 급여 데이터 조회
+        return payrollQueryRepository.findPayrollsByMonths(startMonth, latestMonth, latestYear);
+
+    }
+
+    // 3년간 급여 데이터 조회
+    @Transactional(readOnly = true)
+    public List<PayrollChartDTO> getLastThreeYearsPayrolls() {
+        // 가장 최근 급여 데이터 조회
+        PayrollChartDTO latestPayroll = payrollQueryRepository.findLatestPayroll();
+
+        if (latestPayroll == null) {
+            throw new CustomException(ErrorCode.NOT_FOUND_PAYROLL);
+        }
+
+        int latestYear = latestPayroll.getCreateDatetime().getYear();
+        int startYear = latestYear - 2; // 3년 범위
+
+        // 3년간 급여 데이터 조회
+        return payrollQueryRepository.findPayrollsByYears(startYear, latestYear);
 
     }
 }
