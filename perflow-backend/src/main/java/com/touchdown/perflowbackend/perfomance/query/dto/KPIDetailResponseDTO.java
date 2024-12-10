@@ -8,10 +8,15 @@ import lombok.Getter;
 public class KPIDetailResponseDTO {
 
     private final String empId;
+
     private final String goal;
+
     private final Long goalValue;
+
     private final String goalValueUnit;
+
     private final String goalDetail;
+
     private final Double currentValue;
 
     public KPIDetailResponseDTO(String empId, String goal, Long goalValue, String goalValueUnit, String goalDetail, double currentValue) {

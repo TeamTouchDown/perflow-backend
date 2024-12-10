@@ -10,6 +10,8 @@ import lombok.Getter;
 public class EvaQuestionRequestDTO {
 
     private final Long deptId;
+
     private final String questionType;
+
     private final String perfoType;
 }

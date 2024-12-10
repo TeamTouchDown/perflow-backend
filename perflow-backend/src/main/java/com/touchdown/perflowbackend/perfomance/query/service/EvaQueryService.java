@@ -38,7 +38,7 @@ public class EvaQueryService {
         Department dep = findDepartmentByDeptId(emp.getDept().getDepartmentId());
 
         // 현재 유저의 동료 리스트 저장
-        List<EvaDetailResponseDTO> evaList = evaQueryRepository.findEmployeeDetailsWithExistence(dep.getDepartmentId(), empId, java.time.Year.now().getValue()) ;
+        List<EvaDetailResponseDTO> evaList = evaQueryRepository.findEmployeeDetailsWithExistence(dep.getDepartmentId(), empId, java.time.Year.now().getValue(),PerfoType.valueOf("COL")) ;
 
         return evaList;
     }
@@ -54,7 +54,7 @@ public class EvaQueryService {
         Employee perfoedemp = findEmployeeByEmpId(perfoedempId);
 
         // 현재 지정된 동료 평가의 답변 불러오기
-        List<EvaAnswerResponseDTO> evaAnswerList = evaQueryRepository.findAnswerByEmpIds(perfoempId, perfoedempId, java.time.Year.now().getValue());
+        List<EvaAnswerResponseDTO> evaAnswerList = evaQueryRepository.findAnswerByEmpIds(perfoempId, perfoedempId, java.time.Year.now().getValue(), PerfoType.valueOf("COL"));
 
         return evaAnswerList;
     }
@@ -77,11 +77,45 @@ public class EvaQueryService {
         return evaQuestionList;
     }
 
+    // 하향 평가 리스트 조회
+    @Transactional(readOnly = true)
+    public List<EvaDetailResponseDTO> getEvaDownList(String empId) {
+
+        // 유저가 존재하는지 체크하기
+        Employee emp = findEmployeeByEmpId(empId);
+
+        // 현재 유저의 부서 체크하기
+        Department dep = findDepartmentByDeptId(emp.getDept().getDepartmentId());
+
+        // 현재 유저의 하위 직원 리스트 저장
+        List<EvaDetailResponseDTO> evaList = evaQueryRepository.findEmployeeDetailsWithExistence(dep.getDepartmentId(), empId, java.time.Year.now().getValue(), PerfoType.valueOf("DOWN")) ;
+
+        return evaList;
+    }
+
+    // 하향 평가 정답 조회
+    @Transactional(readOnly = true)
+    public List<EvaAnswerResponseDTO> getEvaDownAnswer(String perfoempId, String perfoedempId) {
+
+        // 유저가 존재하는지 체크하기
+        Employee perfoemp = findEmployeeByEmpId(perfoempId);
+
+        // 유저가 존재하는지 체크하기
+        Employee perfoedemp = findEmployeeByEmpId(perfoedempId);
+
+        // 현재 지정된 하향 평가의 답변 불러오기
+        List<EvaAnswerResponseDTO> evaAnswerList = evaQueryRepository.findAnswerByEmpIds(perfoempId, perfoedempId, java.time.Year.now().getValue(),PerfoType.valueOf("DOWN"));
+
+        return evaAnswerList;
+    }
+
+    // 사번으로 사원 정보 찾기
     private Employee findEmployeeByEmpId(String empId) {
         return employeeCommandRepository.findById(empId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP));
     }
 
+    // 부서번호로 부서 정보 찾기
     private Department findDepartmentByDeptId(Long deptId) {
         return departmentCommandRepository.findById(deptId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT));
