@@ -105,4 +105,20 @@ public class Overtime extends BaseEntity {
     public void deleteOvertime() {
         this.status = Status.DELETED;
     }
+
+    public void updateRetroactiveStatus(
+            Status overtimeRetroactiveStatus,
+            String overtimeRetroactiveReason){
+        this.overtimeRetroactiveStatus = overtimeRetroactiveStatus;
+        if (overtimeRetroactiveStatus == Status.REJECTED){
+            this.overtimeRetroactiveReason = overtimeRetroactiveReason;
+        }else {
+            this.overtimeRetroactiveReason = null;
+        }
+    }
+
+    public void setOvertimeRetroactive(Boolean isOvertimeRetroactive) {
+        this.isOvertimeRetroactive = isOvertimeRetroactive;
+    }
+
 }

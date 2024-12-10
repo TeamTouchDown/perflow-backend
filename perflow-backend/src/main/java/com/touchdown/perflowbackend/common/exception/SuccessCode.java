@@ -56,6 +56,9 @@ public enum SuccessCode {
     WORK_ATTRIBUTE_OVERTIME_UPDATE_SUCCESS(HttpStatus.OK, "초과근무 수정이 완료 되었습니다."),
     WORK_ATTRIBUTE_OVERTIME_DELETE_SUCCESS(HttpStatus.OK, "초과근무 삭제가 완료 되었습니다."),
     WORK_ATTRIBUTE_OVERTIME_DELETE_FOR_LEADER_SUCCESS(HttpStatus.OK, "상태 변경이 완료 되었습니다."),
+    WORK_ATTRIBUTE_OVERTIME_RETROACTIVE_SUCCESS(HttpStatus.OK, "소급 신청이 완료되었습니다."),
+    WORK_ATTRIBUTE_OVERTIME_RETROACTIVE_DECISION_SUCCESS(HttpStatus.OK, "소급 승인/반려 처리가 완료되었습니다."),
+
 
 
     ;
