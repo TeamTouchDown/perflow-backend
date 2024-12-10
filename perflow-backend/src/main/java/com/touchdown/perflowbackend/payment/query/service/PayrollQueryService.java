@@ -5,18 +5,26 @@ import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.Payroll;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.PayrollDetail;
+import com.touchdown.perflowbackend.payment.query.dto.PayrollDTO;
+import com.touchdown.perflowbackend.payment.query.dto.PayrollDetailResponseDTO;
+import com.touchdown.perflowbackend.payment.query.dto.PayrollListResponseDTO;
+import com.touchdown.perflowbackend.payment.query.dto.PayrollResponseDTO;
 import com.touchdown.perflowbackend.payment.query.repository.PayrollQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +37,7 @@ public class PayrollQueryService {
     public byte[] generatePayroll(Long payrollId) throws IOException {
 
         // 데이터베이스에서 급여 데이터를 조회
-        Payroll payroll = payrollQueryRepository.findByPayrollId(payrollId)
+        Payroll payroll = payrollQueryRepository.findByPayrollsId(payrollId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PAYROLL));
 
         // 엑셀 워크북 생성
@@ -129,4 +137,40 @@ public class PayrollQueryService {
         row.createCell(20).setCellValue(payrollDetail.getStatus().name()); // 지급 상태
 
     }
+
+    @Transactional(readOnly = true)
+    public PayrollListResponseDTO getPayrolls(Pageable pageable) {
+
+        Page<Payroll> page = payrollQueryRepository.findAll(pageable);
+
+        List<PayrollResponseDTO> payrolls = page.getContent().stream()
+                .map(payroll -> {
+                    // 총 사원 수 (payrollDetailList의 크기)
+                    long totalEmp = payroll.getPayrollDetailList().size();
+
+                    // 총 지급 금액 (payrollDetailList의 totalAmount 합산)
+                    long totalPay = payroll.getPayrollDetailList().stream()
+                            .mapToLong(PayrollDetail::getTotalAmount) // PayrollDetail의 totalAmount 값을 합산
+                            .sum();
+
+                    return PayrollResponseDTO.builder()
+                            .payrollId(payroll.getPayrollId())
+                            .name(payroll.getName())
+                            .createDateTime(LocalDate.from(payroll.getCreateDatetime()))
+                            .totalEmp(totalEmp)
+                            .totalPay(totalPay)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return PayrollListResponseDTO.builder()
+                .payrolls(payrolls)
+                .totalPages(page.getTotalPages())
+                .totalItems((int) page.getTotalElements())
+                .currentPage(page.getNumber() + 1)
+                .pageSize(page.getSize())
+                .build();
+
+    }
+
 }

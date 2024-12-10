@@ -2,15 +2,16 @@ package com.touchdown.perflowbackend.payment.query.controller;
 
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
+import com.touchdown.perflowbackend.payment.query.dto.PayrollDetailResponseDTO;
+import com.touchdown.perflowbackend.payment.query.dto.PayrollListResponseDTO;
 import com.touchdown.perflowbackend.payment.query.service.PayrollQueryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -22,7 +23,7 @@ public class PayrollQueryController {
 
     private final PayrollQueryService payrollQueryService;
 
-    @GetMapping("/payrolls/{payrollId}")
+    @GetMapping("/payrolls/{payrollId}/download")
     public ResponseEntity<byte[]> downloadPayroll(@PathVariable long payrollId) {
 
         try {
@@ -47,5 +48,19 @@ public class PayrollQueryController {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
 
         }
+    }
+
+    @GetMapping("/payrolls")
+    public ResponseEntity<PayrollListResponseDTO> getPayrolls(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "12") int size
+    ) {
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        PayrollListResponseDTO response = payrollQueryService.getPayrolls(pageable);
+
+        return ResponseEntity.ok(response);
+
     }
 }
