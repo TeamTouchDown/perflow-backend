@@ -3,7 +3,7 @@ package com.touchdown.perflowbackend.hr.command.application.controller;
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import com.touchdown.perflowbackend.hr.command.application.dto.CompanyAnnualCountUpdateDTO;
 import com.touchdown.perflowbackend.hr.command.application.dto.CompanyPaymentDatetimeUpdateDTO;
-import com.touchdown.perflowbackend.hr.command.application.dto.CompanyRegisterRequestDTO;
+import com.touchdown.perflowbackend.hr.command.application.dto.CompanyCreateRequestDTO;
 import com.touchdown.perflowbackend.hr.command.application.dto.CompanyUpdateRequestDTO;
 import com.touchdown.perflowbackend.hr.command.application.service.CompanyCommandService;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +19,9 @@ public class CompanyCommandController {
 
     @PostMapping
     public ResponseEntity<SuccessCode> registerCompany(
-            @RequestBody CompanyRegisterRequestDTO companyRegisterRequestDTO
+            @RequestBody CompanyCreateRequestDTO companyCreateRequestDTO
     ) {
-        companyCommandService.registerCompany(companyRegisterRequestDTO);
+        companyCommandService.registerCompany(companyCreateRequestDTO);
 
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
@@ -45,6 +45,7 @@ public class CompanyCommandController {
         return ResponseEntity.ok(SuccessCode.COMPANY_UPDATE_SUCCESS);
     }
 
+    // 급여 지급일 수정
     @PutMapping("/paymentDatetime")
     public ResponseEntity<SuccessCode> updateCompanyPaymentDatetime(
             @RequestBody CompanyPaymentDatetimeUpdateDTO companyPaymentDatetimeUpdateDTO
