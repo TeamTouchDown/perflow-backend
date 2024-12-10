@@ -1,13 +1,11 @@
 package com.touchdown.perflowbackend.perfomance.command.mapper;
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
+import com.touchdown.perflowbackend.perfomance.command.application.dto.CreateQuestionRequestDTO;
 import com.touchdown.perflowbackend.perfomance.command.application.dto.EvalutionListDTO;
 import com.touchdown.perflowbackend.perfomance.command.application.dto.KPIDetailRequestDTO;
-import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.Kpi;
-import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiCurrentStatus;
-import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.Perfo;
-import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.PersonalType;
-import com.touchdown.perflowbackend.perfomance.command.domain.repository.PerfoCommandRepository;
+import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.perfomance.command.domain.repository.PerfoQuestionCommandRepository;
 import com.touchdown.perflowbackend.perfomance.query.dto.KPIDetailResponseDTO;
 import com.touchdown.perflowbackend.perfomance.query.dto.KPILimitResponseDTO;
@@ -19,7 +17,7 @@ import java.util.stream.Collectors;
 public class PerformanceMapper {
 
     // 개인 kpi 리스트 및 제한 DTO 빌더
-    public static KPIListResponseDTO kpiListToDTO(List<KPIDetailResponseDTO> lists, KPILimitResponseDTO limit){
+    public static KPIListResponseDTO kpiListToDTO(List<KPIDetailResponseDTO> lists, KPILimitResponseDTO limit) {
 
 
         return KPIListResponseDTO.builder()
@@ -31,7 +29,7 @@ public class PerformanceMapper {
     }
 
     // 개인 kpi 저장용 엔터티 빌더
-    public static Kpi kpiDTOtoEntity(KPIDetailRequestDTO kpiDetailRequestDTO, Employee emp, PersonalType personalType){
+    public static Kpi kpiDTOtoEntity(KPIDetailRequestDTO kpiDetailRequestDTO, Employee emp, PersonalType personalType) {
 
         return Kpi.builder()
                 .emp(emp)                                                   // 사원 정보
@@ -45,6 +43,7 @@ public class PerformanceMapper {
                 .build();
     }
 
+    // 평가 문제 정답 생성
     public static List<Perfo> evaluationAnswertoPerfo(EvalutionListDTO evalutionListDTO, Employee perfoEmp, Employee perfoedEmp, PerfoQuestionCommandRepository perfoQuestionCommandRepository) {
 
         return evalutionListDTO.getAnswers().stream()
@@ -57,4 +56,15 @@ public class PerformanceMapper {
                 .collect(Collectors.toList());
     }
 
+    // 평가 문제 생성
+    public static Perfoquestion createQuestionRequestDTO(Employee emp, CreateQuestionRequestDTO createQuestionRequestDTO, Department department) {
+
+        return Perfoquestion.builder()
+                .dept(department)
+                .emp(emp)
+                .questionType(QuestionType.valueOf(createQuestionRequestDTO.getQuestionType()))
+                .questionContent(createQuestionRequestDTO.getQuestionContent())
+                .perfoType(PerfoType.valueOf(createQuestionRequestDTO.getPerfoType()))
+                .build();
+    }
 }

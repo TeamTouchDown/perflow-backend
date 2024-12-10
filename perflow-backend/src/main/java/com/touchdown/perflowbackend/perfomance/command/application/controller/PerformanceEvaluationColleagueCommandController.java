@@ -25,4 +25,14 @@ public class PerformanceEvaluationColleagueCommandController {
         return ResponseEntity.ok(SuccessCode.EVALUTION_COL_UPLOAD_SUCCESS);
     }
 
+    // 동료 평가 수정
+    @PutMapping("/{empId}")
+    public ResponseEntity<SuccessCode> updateColPerfo(
+            @PathVariable("empId") String empId,
+            @RequestBody EvalutionListDTO evalutionListDTO ) {
+
+        evalutionCommandService.updatePerfo(evalutionListDTO, empId);
+
+        return ResponseEntity.ok(SuccessCode.EVALUTION_COL_UPDATE_SUCCESS);
+    }
 }
