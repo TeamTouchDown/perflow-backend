@@ -1,17 +1,20 @@
 package com.touchdown.perflowbackend.hr.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.hr.command.application.dto.CompanyAnnualCountUpdateDTO;
+import com.touchdown.perflowbackend.hr.command.application.dto.CompanyPaymentDatetimeUpdateDTO;
 import com.touchdown.perflowbackend.hr.command.application.dto.CompanyRegisterRequestDTO;
 import com.touchdown.perflowbackend.hr.command.application.dto.CompanyUpdateRequestDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
+@ToString
 @NoArgsConstructor
 @Table(name = "company", schema = "perflow")
 public class Company {
@@ -40,10 +43,10 @@ public class Company {
     private String email;
 
     @Column(name = "annual_count", nullable = false)
-    private Long annualCount;
+    private Integer annualCount;
 
     @Column(name = "payment_datetime", nullable = false)
-    private LocalDateTime paymentDatetime;
+    private Integer paymentDatetime;
 
     @Builder
     public Company(CompanyRegisterRequestDTO requestDTO) {
@@ -71,5 +74,10 @@ public class Company {
     public void updateAnnualCount (CompanyAnnualCountUpdateDTO companyAnnualCountUpdateDTO) {
 
         this.annualCount = companyAnnualCountUpdateDTO.getCompanyAnnualCount();
+    }
+
+    public void updatePaymentDatetime(CompanyPaymentDatetimeUpdateDTO companyPaymentDatetimeUpdateDTO) {
+
+        this.paymentDatetime = companyPaymentDatetimeUpdateDTO.getDate();
     }
 }

@@ -24,7 +24,7 @@ public class CompanyRegisterRequestDTO {
 
     private String email;
 
-    private Long annualCount; // 연자 지급 개수
+    private Integer annualCount; // 연자 지급 개수
 
-    private LocalDateTime paymentDatetime; // 급여 지급일
+    private Integer paymentDatetime; // 급여 지급일
 }

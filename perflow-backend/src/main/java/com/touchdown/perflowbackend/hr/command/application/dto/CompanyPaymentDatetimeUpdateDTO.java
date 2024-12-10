@@ -1,15 +1,15 @@
 package com.touchdown.perflowbackend.hr.command.application.dto;
 
-import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
-@Getter
-@AllArgsConstructor
-public class CompanyAnnualCountUpdateDTO {
+import java.time.LocalDateTime;
 
-    @Min(12L)
-    private final Integer companyAnnualCount;
+@Getter
+@Setter
+@AllArgsConstructor
+public class CompanyPaymentDatetimeUpdateDTO {
+
+    private final Integer date;
 }
