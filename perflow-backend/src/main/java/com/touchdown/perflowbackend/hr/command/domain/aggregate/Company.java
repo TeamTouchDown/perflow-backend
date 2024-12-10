@@ -2,7 +2,7 @@ package com.touchdown.perflowbackend.hr.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.hr.command.application.dto.CompanyAnnualCountUpdateDTO;
 import com.touchdown.perflowbackend.hr.command.application.dto.CompanyPaymentDatetimeUpdateDTO;
-import com.touchdown.perflowbackend.hr.command.application.dto.CompanyRegisterRequestDTO;
+import com.touchdown.perflowbackend.hr.command.application.dto.CompanyCreateRequestDTO;
 import com.touchdown.perflowbackend.hr.command.application.dto.CompanyUpdateRequestDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -49,7 +49,7 @@ public class Company {
     private Integer paymentDatetime;
 
     @Builder
-    public Company(CompanyRegisterRequestDTO requestDTO) {
+    public Company(CompanyCreateRequestDTO requestDTO) {
 
         this.name = requestDTO.getName();
         this.chairman = requestDTO.getChairman();
