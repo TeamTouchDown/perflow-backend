@@ -17,5 +17,5 @@ public class DocCreateRequestDTO {
 
     private final List<ApproveLineDTO> approveLines;
 
-    // todo: 나중에 공유선도 추가
+    private final List<ShareDTO> shares;
 }

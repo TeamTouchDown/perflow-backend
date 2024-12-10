@@ -1,22 +1,21 @@
 package com.touchdown.perflowbackend.approval.command.domain.aggregate;
 
+import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "doc_share_obj", schema = "perflow")
-public class DocShareObj {
+public class DocShareObj extends BaseEntity {
 
     @Id
     @Column(name = "doc_share_obj", nullable = false)
@@ -25,31 +24,35 @@ public class DocShareObj {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "doc_id", nullable = false)
-    private Doc docId;
+    private Doc doc;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "share_obj_user_id", nullable = false)
-    private Employee shareObjUserId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "share_obj_user_id")
+    private Employee shareObjUser;    // 문서 공유 대상자
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "share_obj_department_id", nullable = false)
-    private Department shareObjDepartmentId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "share_obj_department_id")
+    private Department shareObjDepartment;  // 문서 공유 대상 부서
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "share_add_user_id", nullable = false)
-    private Employee shareAddUserId;
+    private Employee shareAddUser;  // 공유 대상을 추가한 사원
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "share_obj_type", nullable = false, length = 30)
-    private String shareObjType;
+    private ObjType shareObjType;   // 공유 대상 유형(EMPLOYEE, DEPARTMENT)
 
-    @CreatedDate
-    @Column(name = "share_datetime", nullable = false)
-    private LocalDateTime shareDatetime;
-
-    @Column(name = "delete_datetime")
-    private LocalDateTime deleteDatetime;
-
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
-    private Status status;
+    private Status status = Status.ACTIVATED;
 
+    @Builder
+    public DocShareObj(Doc doc, ObjType shareObjType, Employee shareObjUser, Department shareObjDepartment, Employee shareAddUser) {
+
+        this.doc = doc;
+        this.shareObjType = shareObjType;
+        this.shareObjUser = shareObjUser;
+        this.shareObjDepartment = shareObjDepartment;
+        this.shareAddUser = shareAddUser;
+    }
 }

@@ -34,6 +34,9 @@ public class Doc extends BaseEntity {
     @OneToMany(mappedBy = "doc", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ApproveLine> approveLines = new ArrayList<>();
 
+    @OneToMany(mappedBy = "doc", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DocShareObj> shares = new ArrayList<>();
+
     @Column(name = "title", nullable = false, length = 50)
     private String title;
 

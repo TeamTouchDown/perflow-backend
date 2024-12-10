@@ -2,6 +2,7 @@ package com.touchdown.perflowbackend.approval.command.application.service;
 
 import com.touchdown.perflowbackend.approval.command.application.dto.ApproveLineDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRequestDTO;
+import com.touchdown.perflowbackend.approval.command.application.dto.ShareDTO;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.approval.command.domain.repository.DocCommandRepository;
 import com.touchdown.perflowbackend.approval.command.domain.repository.TemplateCommandRepository;
@@ -40,9 +41,44 @@ public class DocCommandService {
         // 결재선 생성
         createApproveLines(request, doc, createUser);
 
+        // 공유 설정
+        createShare(request, doc, createUser);
+
         docCommandRepository.save(doc);
     }
 
+    private void createShare(DocCreateRequestDTO request, Doc doc, Employee createUser) {
+
+        for (ShareDTO shareDTO : request.getShares()) {
+
+            // 공유 대상이 사원인 경우
+            for (String empId : shareDTO.getEmployees()) {
+                Employee shareUser = findEmployeeById(empId);
+                DocShareObj shareObj = createShareObj(doc, ObjType.EMPLOYEE, shareUser, null, createUser);
+                doc.getShares().add(shareObj);
+            }
+
+            // 공유 대상이 부서인 경우
+            for(Long deptId : shareDTO.getDepartments()) {
+                Department shareDepartment = findDepartmentByID(deptId);
+                DocShareObj shareObj = createShareObj(doc, ObjType.DEPARTMENT, null, shareDepartment, createUser);
+                doc.getShares().add(shareObj);
+            }
+        }
+    }
+
+    private DocShareObj createShareObj(Doc doc, ObjType objType, Employee shareUser, Department shareDepartment, Employee createUser) {
+
+        return DocShareObj.builder()
+                .doc(doc)
+                .shareObjType(objType)
+                .shareObjUser(shareUser)
+                .shareObjDepartment(shareDepartment)
+                .shareAddUser(createUser)
+                .build();
+    }
+
+    // 결재선 리스트 추가
     private void createApproveLines(DocCreateRequestDTO request, Doc doc, Employee createUser) {
 
         for (ApproveLineDTO lineDTO : request.getApproveLines()) {
