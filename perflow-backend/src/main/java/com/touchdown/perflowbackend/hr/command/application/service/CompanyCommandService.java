@@ -2,6 +2,7 @@ package com.touchdown.perflowbackend.hr.command.application.service;
 
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
+import com.touchdown.perflowbackend.hr.command.application.dto.CompanyAnnualCountUpdateDTO;
 import com.touchdown.perflowbackend.hr.command.application.dto.CompanyRegisterRequestDTO;
 import com.touchdown.perflowbackend.hr.command.application.dto.CompanyUpdateRequestDTO;
 import com.touchdown.perflowbackend.hr.command.application.mapper.CompanyCommandMapper;
@@ -38,6 +39,16 @@ public class CompanyCommandService {
         Company company = getCompany();
 
         company.updateCompany(companyUpdateRequestDTO);
+
+        companyCommandRepository.save(company);
+    }
+
+    @Transactional
+    public void updateAnnualCount(CompanyAnnualCountUpdateDTO companyAnnualCountUpdateDTO) {
+
+        Company company = getCompany();
+
+        company.updateAnnualCount(companyAnnualCountUpdateDTO);
 
         companyCommandRepository.save(company);
     }
