@@ -1,12 +1,13 @@
 package com.touchdown.perflowbackend.payment.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
-import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import java.time.LocalDate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -19,96 +20,22 @@ public class Payroll extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long payrollId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "emp_id", nullable = false)
-    private Employee emp;
+    @Column(name = "name", nullable = false)
+    private String name;
 
-    @Column(name = "extend_labor_allowance")
-    private Long extendLaborAllowance;
+    @OneToMany(mappedBy = "payroll", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PayrollDetail> payrollDetailList = new ArrayList<>();
 
-    @Column(name = "night_labor_allowance")
-    private Long nightLaborAllowance;
-
-    @Column(name = "holiday_labor_allowance")
-    private Long holidayLaborAllowance;
-
-    @Column(name = "annual_allowance")
-    private Long annualAllowance;
-
-    @Column(name = "incentive")
-    private Long incentive;
-
-    @Column(name = "national_pension", nullable = false)
-    private Long nationalPension;
-
-    @Column(name = "health_insurance", nullable = false)
-    private Long healthInsurance;
-
-    @Column(name = "hire_insurance", nullable = false)
-    private Long hireInsurance;
-
-    @Column(name = "long_term_care_insurance", nullable = false)
-    private Long longTermCareInsurance;
-
-    @Column(name = "income_tax", nullable = false)
-    private Long incomeTax;
-
-    @Column(name = "local_income_tax", nullable = false)
-    private Long localIncomeTax;
-
-    @Column(name = "total_amount", nullable = false)
-    private Long totalAmount;
-
-    @Enumerated(value = EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 30)
-    private Status status = Status.PENDING;
-
-    @Column(name = "total_start_date", nullable = false)
-    private LocalDate totalStartDate;
-
-    @Column(name = "total_end_date", nullable = false)
-    private LocalDate totalEndDate;
-
-    public Payroll(Employee emp, Long extendLaborAllowance, Long nightLaborAllowance, Long holidayLaborAllowance,
-                   Long annualAllowance, Long incentive, Long nationalPension, Long healthInsurance, Long hireInsurance,
-                   Long longTermCareInsurance, Long incomeTax, Long localIncomeTax, Long totalAmount) {
-
-        this.emp = emp;
-        this.extendLaborAllowance = extendLaborAllowance;
-        this.nightLaborAllowance = nightLaborAllowance;
-        this.holidayLaborAllowance = holidayLaborAllowance;
-        this.annualAllowance = annualAllowance;
-        this.incentive = incentive;
-        this.nationalPension = nationalPension;
-        this.healthInsurance = healthInsurance;
-        this.hireInsurance = hireInsurance;
-        this.longTermCareInsurance = longTermCareInsurance;
-        this.incomeTax = incomeTax;
-        this.localIncomeTax = localIncomeTax;
-        this.totalAmount = totalAmount;
-
+    // Payroll 객체 생성 시 name을 전달하는 생성자
+    public Payroll(String name) {
+        this.name = name;
     }
 
-    public void updatePayroll(Employee emp, Long extendLaborAllowance, Long nightLaborAllowance,
-                                      Long holidayLaborAllowance, Long annualAllowance, Long incentive,
-                                      Long nationalPension, Long healthInsurance, Long hireInsurance,
-                                      Long longTermCareInsurance, Long incomeTax, Long localIncomeTax,
-                                      Long totalAmount) {
+    // PayrollDetail을 추가하는 메서드
+    public void addPayrollDetail(PayrollDetail payrollDetail) {
 
-            this.emp = emp;
-            this.extendLaborAllowance = extendLaborAllowance;
-            this.nightLaborAllowance = nightLaborAllowance;
-            this.holidayLaborAllowance = holidayLaborAllowance;
-            this.annualAllowance = annualAllowance;
-            this.incentive = incentive;
-            this.nationalPension = nationalPension;
-            this.healthInsurance = healthInsurance;
-            this.hireInsurance = hireInsurance;
-            this.longTermCareInsurance = longTermCareInsurance;
-            this.incomeTax = incomeTax;
-            this.localIncomeTax = localIncomeTax;
-            this.totalAmount = totalAmount;
-            this.status = Status.UPDATED;
+        payrollDetail.assignPayroll(this); // Payroll 객체 설정
+        this.payrollDetailList.add(payrollDetail);
 
     }
 }
