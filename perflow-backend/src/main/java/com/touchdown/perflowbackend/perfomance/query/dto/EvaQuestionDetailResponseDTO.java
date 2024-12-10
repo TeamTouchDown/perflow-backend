@@ -10,5 +10,6 @@ import lombok.Getter;
 public class EvaQuestionDetailResponseDTO {
 
     private final Long questionId;
+
     private final String questionContent;
 }

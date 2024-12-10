@@ -52,6 +52,10 @@ public enum SuccessCode {
     EVALUTION_COL_QUESTION_UPDATE_SUCCESS(HttpStatus.OK, "동료 평가 문항이 성공적으로 수정되었습니다."),
     EVALUTION_COL_QUESTION_DELETE_SUCCESS(HttpStatus.OK, "동료 평가 문항이 성공적으로 삭제되었습니다."),
 
+    // 하향 평가
+    EVALUTION_DOWN_UPLOAD_SUCCESS(HttpStatus.OK, "하향 평가가 성공적으로 작성되었습니다."),
+    EVALUTION_DOWN_UPDATE_SUCCESS(HttpStatus.OK, "하향 평가가 성공적으로 수정되었습니다."),
+
     // 201
     WORK_ATTITUDE_TRAVEL_SUCCESS(HttpStatus.CREATED, "출장 요청 등록이 완료 되었습니다."),
 

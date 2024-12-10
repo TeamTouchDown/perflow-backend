@@ -27,12 +27,13 @@ public interface EvaQueryRepository extends JpaRepository<Perfo, Long> {
             "JOIN f.perfoQuestion q " +
             "JOIN Job j ON j.jobId = e.job.jobId " +
             "LEFT JOIN Perfo p2 ON p2.perfoEmp.empId = e.empId AND FUNCTION('YEAR', p2.createDatetime) = :currentYear " +
-            "WHERE e.empId != :empId AND d.departmentId = :deptId AND q.perfoType = 'COL' " +
+            "WHERE e.empId != :empId AND d.departmentId = :deptId AND q.perfoType = :perfoType " +
             "GROUP BY e.empId, e.name, d.name, p.name, j.name")
     List<EvaDetailResponseDTO> findEmployeeDetailsWithExistence(
             @Param("deptId") Long deptId,
             @Param("empId") String empId,
-            @Param("currentYear") int currentYear
+            @Param("currentYear") int currentYear,
+            @Param("perfoType") PerfoType perfoType
     );
 
     // 평가자, 피평가자 사번, 현재 년도를 이용해 동료 평가 상세 정보 조회
@@ -42,12 +43,13 @@ public interface EvaQueryRepository extends JpaRepository<Perfo, Long> {
             "FROM Perfo p " +
             "WHERE p.perfoEmp.empId = :perfoempId " +
             "AND p.perfoedEmp.empId = :perfoedempId " +
-            "AND p.perfoQuestion.perfoType = 'COL' " +
+            "AND p.perfoQuestion.perfoType = :perfoType " +
             "AND FUNCTION('YEAR', p.createDatetime) = :currentYear ")
     List<EvaAnswerResponseDTO> findAnswerByEmpIds(
             @Param("perfoempId") String perfoempId,
             @Param("perfoedempId") String perfoedempId,
-            @Param("currentYear") int currentYear
+            @Param("currentYear") int currentYear,
+            @Param("perfoType") PerfoType perfoType
     );
 
     // 부서 아이디, 문항의 타입 등을 이용해 동료 평가 문항 상세 조회

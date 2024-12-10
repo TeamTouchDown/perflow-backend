@@ -8,7 +8,10 @@ import lombok.RequiredArgsConstructor;
 public class CreateQuestionRequestDTO {
 
     private final Long deptId;
+
     private final String questionType;
+
     private final String questionContent;
+
     private final String perfoType;
 }

@@ -12,10 +12,14 @@ public class EvaDetailResponseDTO {
     // 사진 추가 작업 거쳐야함
 
     private final String empId;
-    private final String empName;
-    private final String empDeptName;
-    private final String empPositionName;
-    private final String empJobName;
-    private final Boolean existence;
 
+    private final String empName;
+
+    private final String empDeptName;
+
+    private final String empPositionName;
+
+    private final String empJobName;
+
+    private final Boolean existence;
 }

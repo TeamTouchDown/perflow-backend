@@ -8,5 +8,6 @@ import lombok.RequiredArgsConstructor;
 public class UpdateQuestionRequestDTO {
 
     private final String questionContext;
+
     private final String questionType;
 }
