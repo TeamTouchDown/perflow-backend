@@ -44,13 +44,16 @@ public class WorkAttributeOvertimeForTeamLeaderResponseDTO {
     private String rejectReason;
 
     @NotNull
-    private String approveSbjName;
+    private Long approveSbjId;
 
     @NotNull
     private LocalDateTime createDatetime;
 
     @Nullable
     private LocalDateTime updateDatetime;
+
+    @Nullable
+    private LocalDateTime enrollOvertime;
 
 
 }
