@@ -1,14 +1,17 @@
 package com.touchdown.perflowbackend.workAttitude.query.dto;
 
 
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.OvertimeType;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
 import jakarta.annotation.Nullable;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
-
+@Builder
 @Data
 public class WorkAttributeOvertimeForEmployeeResponseDTO {
 
@@ -22,7 +25,7 @@ public class WorkAttributeOvertimeForEmployeeResponseDTO {
     private String employeeName;
 
     @NotNull
-    private Status overTimeType; // 이걸 스트링으로 받아야되나 status로 처리를 해야되나 고민이네요~ 야간 연장 휴일
+    private OvertimeType overTimeType;
 
     @NotNull
     private LocalDateTime overtimeStart;
@@ -51,11 +54,7 @@ public class WorkAttributeOvertimeForEmployeeResponseDTO {
     @Nullable
     private LocalDateTime updateDatetime;
 
-
-
-
-
-
-
+    @NotNull
+    private LocalDateTime enrollOvertime;
 
 }
