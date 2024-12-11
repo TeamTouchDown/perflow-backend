@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 public class WorkAttributeOvertimeCommandController {
 
     private final WorkAttributeOvertimeCommandService workAttributeOvertimeCommandService;
-
     // 직원: 초과근무 등록
     @Operation(summary = "직원의 초과근무 등록", description = "직원이 새로운 초과근무 요청을 등록합니다.")
     @PostMapping("/emp/overtimes")
