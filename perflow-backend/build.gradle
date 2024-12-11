@@ -25,12 +25,19 @@ repositories {
 
 dependencies {
 
+    // 파일 및 디렉터리 조작, 입출력, 파일 필터링 기능 제공 라이브러리
+    implementation 'commons-io:commons-io:2.11.0'
+
+    // https://mvnrepository.com/artifact/com.opencsv/opencsv CSV 관련 라이브러리
+    implementation 'com.opencsv:opencsv:5.7.1'
+
     // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
     testImplementation 'org.springframework.security:spring-security-test'
     // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
