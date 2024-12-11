@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/hr/employees")
+@RequestMapping("/api/v1")
 public class EmployeeCommandController {
 
     private final EmployeeCommandService employeeCommandService;
@@ -25,23 +25,31 @@ public class EmployeeCommandController {
     private static final String REFRESH_TOKEN_HEADER = "refreshToken";
     private static final String BEARER_PREFIX = "Bearer ";
 
-    @PostMapping
-    public ResponseEntity<SuccessCode> registerEmployee(
-            @RequestBody EmployeeRegisterDTO employeeRegisterDTO) {
+    @PostMapping("/hr/employees")
+    public ResponseEntity<SuccessCode> createEmployee(
+            @RequestBody EmployeeCreateDTO employeeCreateDTO) {
 
-        employeeCommandService.registerEmployee(employeeRegisterDTO);
+        employeeCommandService.createEmployee(employeeCreateDTO);
 
-        return ResponseEntity.ok(SuccessCode.EMP_REGISTER_SUCCESS);
+        return ResponseEntity.ok(SuccessCode.EMP_CREATE_SUCCESS);
     }
 
-    @PostMapping("/list")
-    public ResponseEntity<SuccessCode> registerEmployeeList(
+    @PostMapping("/hr/employees/list")
+    public ResponseEntity<SuccessCode> createEmployeeList(
             @RequestPart(value = "empCSV", required = false) MultipartFile empCSV
     ) {
 
-        employeeCommandService.registerEmployeeList(empCSV);
+        employeeCommandService.createEmployeeList(empCSV);
 
-        return ResponseEntity.ok(SuccessCode.EMP_CSV_REGISTER_SUCCESS);
+        return ResponseEntity.ok(SuccessCode.EMP_CSV_CREATE_SUCCESS);
+    }
+
+    @PutMapping("/hr/employees")
+    public ResponseEntity<SuccessCode> updateEmployee() {
+
+
+
+        return ResponseEntity.ok(SuccessCode.EMP_UPDATE_SUCCESS);
     }
 
     @PostMapping("/login")
@@ -77,9 +85,9 @@ public class EmployeeCommandController {
     }
 
     @PutMapping("/pwd")
-    public ResponseEntity<SuccessCode> registerEmployeePassword(@RequestBody EmployeePwdRegisterDTO employeePwdRegisterDTO) {
+    public ResponseEntity<SuccessCode> createEmployeePassword(@RequestBody EmployeePwdCreateDTO employeePwdCreateDTO) {
 
-        employeeCommandService.registerEmployeePassword(employeePwdRegisterDTO);
+        employeeCommandService.createEmployeePassword(employeePwdCreateDTO);
 
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
