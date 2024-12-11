@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Slf4j
 @Service
@@ -27,10 +26,10 @@ public class CompanyCommandService {
     private final Long COMPANY_ID = 1L; // 회사 정보는 단 1개만 저장 될 예정
 
     @Transactional
-    public void registerCompany(CompanyCreateRequestDTO companyCreateRequestDTO) {
+    public void createCompany(CompanyCreateRequestDTO companyCreateRequestDTO) {
 
         // 이미 회사 데이터가 존재하는지 확인
-        if (isRegisteredCompany()) {
+        if (isCreatedCompany()) {
             throw new CustomException(ErrorCode.ALREADY_REGISTER_COMPANY);
         }
 
@@ -77,7 +76,7 @@ public class CompanyCommandService {
         companyCommandRepository.save(company);
     }
 
-    public boolean isRegisteredCompany() {
+    public boolean isCreatedCompany() {
         return companyCommandRepository.existsById(COMPANY_ID);
     }
 
@@ -88,7 +87,7 @@ public class CompanyCommandService {
     }
 
     // 백엔드 작업시 사용 가능한 다음 월급날 조회 메소드 (시간 필요없을것 같아서 LocalDate)
-    public LocalDate getNextPaymentDateTime() {
+    public LocalDate getNextPaymentDate() {
         Company company = getCompany();
         int year = LocalDate.now().getYear();
         int month = LocalDate.now().getMonthValue() + 1;
