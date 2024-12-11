@@ -247,4 +247,14 @@ public class PayrollQueryService {
         return payrollQueryRepository.findPayrollsByYears(startYear, latestYear);
 
     }
+
+    @Transactional(readOnly = true)
+    public PayStubDTO getPayStub(String empId) {
+
+        PayrollDTO payStub = payrollQueryRepository.findByEmpId(empId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));
+
+        return new PayStubDTO(payStub);
+
+    }
 }

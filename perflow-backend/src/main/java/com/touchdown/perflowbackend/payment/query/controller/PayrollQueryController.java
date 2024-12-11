@@ -2,11 +2,7 @@ package com.touchdown.perflowbackend.payment.query.controller;
 
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
-import com.touchdown.perflowbackend.payment.command.domain.aggregate.Payroll;
-import com.touchdown.perflowbackend.payment.query.dto.PayrollChartDTO;
-import com.touchdown.perflowbackend.payment.query.dto.PayrollDetailResponseDTO;
-import com.touchdown.perflowbackend.payment.query.dto.PayrollListResponseDTO;
-import com.touchdown.perflowbackend.payment.query.dto.PayrollResponseDTO;
+import com.touchdown.perflowbackend.payment.query.dto.*;
 import com.touchdown.perflowbackend.payment.query.service.PayrollQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -108,6 +104,15 @@ public class PayrollQueryController {
 
         List<PayrollChartDTO> payrolls = payrollQueryService.getLastThreeYearsPayrolls();
         return ResponseEntity.ok(payrolls);
+
+    }
+
+    @GetMapping("/pay-stub/{empId}")
+    public ResponseEntity<PayStubDTO> getPayStub(@PathVariable String empId) {
+
+        PayStubDTO response = payrollQueryService.getPayStub(empId);
+
+        return ResponseEntity.ok(response);
 
     }
 }
