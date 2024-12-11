@@ -45,9 +45,11 @@ public class EmployeeCommandController {
     }
 
     @PutMapping("/hr/employees")
-    public ResponseEntity<SuccessCode> updateEmployee() {
+    public ResponseEntity<SuccessCode> updateEmployee(
+            @RequestBody EmployeeUpdateRequestDTO employeeUpdateRequestDTO
+    ) {
 
-
+        employeeCommandService.updateEmployee(employeeUpdateRequestDTO);
 
         return ResponseEntity.ok(SuccessCode.EMP_UPDATE_SUCCESS);
     }

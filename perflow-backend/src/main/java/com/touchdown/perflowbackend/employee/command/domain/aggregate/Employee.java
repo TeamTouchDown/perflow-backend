@@ -2,6 +2,7 @@ package com.touchdown.perflowbackend.employee.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeCreateDTO;
+import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeUpdateRequestDTO;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
@@ -84,6 +85,18 @@ public class Employee extends BaseEntity {
         this.email = registerDTO.getEmail();
         this.joinDate = registerDTO.getJoinDate();
         this.status = EmployeeStatus.ACTIVE;
+    }
+
+    public void updateEmployee(EmployeeUpdateRequestDTO updateRequestDTO) {
+
+        this.name = updateRequestDTO.getName();
+        this.gender = updateRequestDTO.getGender();
+        this.rrn = updateRequestDTO.getRrn();
+        this.pay = updateRequestDTO.getPay();
+        this.address = updateRequestDTO.getAddress();
+        this.contact = updateRequestDTO.getContact();
+        this.email = updateRequestDTO.getEmail();
+        this.joinDate = updateRequestDTO.getJoinDate();
     }
 
     public void registerPassword(String password) {
