@@ -3,7 +3,6 @@ package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
-import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.OvertimeType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -105,4 +104,20 @@ public class Overtime extends BaseEntity {
     public void deleteOvertime() {
         this.status = Status.DELETED;
     }
+
+    public void updateRetroactiveStatus(
+            Status overtimeRetroactiveStatus,
+            String overtimeRetroactiveReason){
+        this.overtimeRetroactiveStatus = overtimeRetroactiveStatus;
+        if (overtimeRetroactiveStatus == Status.REJECTED){
+            this.overtimeRetroactiveReason = overtimeRetroactiveReason;
+        }else {
+            this.overtimeRetroactiveReason = null;
+        }
+    }
+
+    public void updateOvertimeRetroactive(Boolean isOvertimeRetroactive) {
+        this.isOvertimeRetroactive = isOvertimeRetroactive;
+    }
+
 }
