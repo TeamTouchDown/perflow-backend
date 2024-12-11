@@ -67,6 +67,16 @@ public class EmployeeCommandController {
 
     }
 
+    @PutMapping("/hr/employees/status")
+    public ResponseEntity<SuccessCode> updateEmployeeStatus(
+            @RequestBody EmployeeStatusUpdateDTO employeeStatusUpdateDTO
+    ) {
+
+        employeeCommandService.updateEmployeeStatus(employeeStatusUpdateDTO);
+
+        return ResponseEntity.ok(SuccessCode.EMP_UPDATE_SUCCESS);
+    }
+
     @PostMapping("/login")
     public ResponseEntity<SuccessCode> loginRequestEmployee(@RequestBody EmployeeLoginRequestDTO employeeLoginRequestDTO) {
 

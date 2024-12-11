@@ -121,6 +121,16 @@ public class EmployeeCommandService {
     }
 
     @Transactional
+    public void updateEmployeeStatus(EmployeeStatusUpdateDTO employeeStatusUpdateDTO) {
+
+        Employee employee = findEmpById(employeeStatusUpdateDTO.getEmpId());
+
+        employee.updateStatus(employeeStatusUpdateDTO.getStatus());
+
+        employeeCommandRepository.save(employee);
+    }
+
+    @Transactional
     public TokenResponseDTO loginRequestEmployee(EmployeeLoginRequestDTO employeeLoginRequestDTO) {
 
         // 1. AuthenticationManager를 통해 인증 수행
