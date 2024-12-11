@@ -22,7 +22,7 @@ public class EmployeeQueryService {
     private final EmployeeQueryRepository employeeQueryRepository;
 
     @Transactional(readOnly = true)
-    public List<EmployeeQueryResponseDTO> readDeptEmployees(Long departmentId) {
+    public List<EmployeeQueryResponseDTO> getDeptEmployees(Long departmentId) {
 
         List<Employee> employees = findEmployeesByDepartmentId(departmentId);
 
@@ -30,7 +30,7 @@ public class EmployeeQueryService {
     }
 
     @Transactional(readOnly = true)
-    public List<EmployeeQueryResponseDTO> readAllEmployees() {
+    public List<EmployeeQueryResponseDTO> getAllEmployees() {
 
         List<Employee> employees = findAllEmployee();
 
@@ -38,7 +38,7 @@ public class EmployeeQueryService {
     }
 
     @Transactional(readOnly = true)
-    public EmployeeDetailResponseDTO readEmployeeDetail(String empId) {
+    public EmployeeDetailResponseDTO getEmployeeDetail(String empId) {
 
         Employee employee = findById(empId);
 
