@@ -2,6 +2,7 @@ package com.touchdown.perflowbackend.employee.command.Mapper;
 
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.employee.query.dto.EmployeeDetailResponseDTO;
 import com.touchdown.perflowbackend.employee.query.dto.EmployeeQueryResponseDTO;
 
 import java.util.List;
@@ -15,6 +16,14 @@ public class EmployeeMapper {
                 .empId(employee.getEmpId())
                 .name(employee.getName())
                 .position(employee.getPosition().getName())
+                .job(employee.getJob().getName())
+                .build();
+    }
+
+    public static EmployeeDetailResponseDTO toDetailResponse(Employee employee) {
+
+        return EmployeeDetailResponseDTO.builder()
+                .emp(employee)
                 .build();
     }
 
