@@ -22,12 +22,10 @@ import com.touchdown.perflowbackend.security.repository.WhiteRefreshTokenReposit
 import com.touchdown.perflowbackend.security.util.CustomEmployDetail;
 import com.touchdown.perflowbackend.security.util.JwtTokenProvider;
 import com.touchdown.perflowbackend.security.util.JwtUtil;
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.FileNameUtils;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -66,13 +64,13 @@ public class EmployeeCommandService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void registerEmployee(EmployeeRegisterDTO employeeRegisterDTO) {
+    public void createEmployee(EmployeeCreateDTO employeeCreateDTO) {
 
-        Department department = departmentCommandRepository.findById(employeeRegisterDTO.getDepartmentId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT));
-        Position position = positionCommandRepository.findById(employeeRegisterDTO.getPositionId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_POSITION));
-        Job job = jobCommandRepository.findById(employeeRegisterDTO.getJobId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_JOB));
+        Department department = departmentCommandRepository.findById(employeeCreateDTO.getDepartmentId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT));
+        Position position = positionCommandRepository.findById(employeeCreateDTO.getPositionId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_POSITION));
+        Job job = jobCommandRepository.findById(employeeCreateDTO.getJobId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_JOB));
 
-        Employee newEmployee = EmployeeMapper.toEntity(employeeRegisterDTO, position, job, department);
+        Employee newEmployee = EmployeeMapper.toEntity(employeeCreateDTO, position, job, department);
 
         entityManager.persist(newEmployee);
         employeeCommandRepository.save(newEmployee);
@@ -82,7 +80,7 @@ public class EmployeeCommandService {
     }
 
     @Transactional
-    public void registerEmployeeList(MultipartFile empCSV) {
+    public void createEmployeeList(MultipartFile empCSV) {
 
         String originalFilename = empCSV.getOriginalFilename();
         String extension = FileNameUtils.getExtension(originalFilename);
@@ -127,16 +125,16 @@ public class EmployeeCommandService {
     }
 
     @Transactional
-    public void registerEmployeePassword(EmployeePwdRegisterDTO employeePwdRegisterDTO) {
+    public void createEmployeePassword(EmployeePwdCreateDTO employeePwdCreateDTO) {
 
-        Employee employee = employeeCommandRepository.findById(employeePwdRegisterDTO.getEmpId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP));
+        Employee employee = employeeCommandRepository.findById(employeePwdCreateDTO.getEmpId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP));
 
         /* 이미 초기 비밀번호 등록이 완료된 사원이라면 등록 불가. */
         if (!employee.getPassword().isEmpty()) {
             throw new CustomException(ErrorCode.ALREADY_REGISTERED_PASSWORD);
         }
 
-        String pwd = passwordEncoder.encode(employeePwdRegisterDTO.getPassword());
+        String pwd = passwordEncoder.encode(employeePwdCreateDTO.getPassword());
 
         employee.registerPassword(pwd);
 
@@ -191,14 +189,14 @@ public class EmployeeCommandService {
 
                 String[] row = rowList.get(i);
 
-                EmployeeRegisterDTO employeeRegisterDTO = getEmployeeRegisterDTO(row);
+                EmployeeCreateDTO employeeCreateDTO = getEmployeeCreateDTO(row);
 
-                Department department = departmentCommandRepository.findById(employeeRegisterDTO.getDepartmentId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT));
+                Department department = departmentCommandRepository.findById(employeeCreateDTO.getDepartmentId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT));
 
-                Position position = positionCommandRepository.findById(employeeRegisterDTO.getPositionId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_POSITION));
-                Job job = jobCommandRepository.findById(employeeRegisterDTO.getJobId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_JOB));
+                Position position = positionCommandRepository.findById(employeeCreateDTO.getPositionId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_POSITION));
+                Job job = jobCommandRepository.findById(employeeCreateDTO.getJobId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_JOB));
 
-                Employee newEmployee = EmployeeMapper.toEntity(employeeRegisterDTO, position, job, department);
+                Employee newEmployee = EmployeeMapper.toEntity(employeeCreateDTO, position, job, department);
 
                 empList.add(newEmployee);
             }
@@ -211,9 +209,9 @@ public class EmployeeCommandService {
     }
 
     // 사원 등록 DTO 생성 함수
-    public EmployeeRegisterDTO getEmployeeRegisterDTO(String[] row) {
+    public EmployeeCreateDTO getEmployeeCreateDTO(String[] row) {
 
-        return EmployeeRegisterDTO.builder()
+        return EmployeeCreateDTO.builder()
                 .empId(row[0])
                 .positionId(Long.valueOf(row[1]))
                 .jobId(Long.valueOf(row[2]))

@@ -1,7 +1,7 @@
 package com.touchdown.perflowbackend.employee.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
-import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeRegisterDTO;
+import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeCreateDTO;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
@@ -10,13 +10,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -74,7 +70,7 @@ public class Employee extends BaseEntity {
     private EmployeeStatus status;
 
     @Builder
-    public Employee(EmployeeRegisterDTO registerDTO, Position position, Job job, Department department) {
+    public Employee(EmployeeCreateDTO registerDTO, Position position, Job job, Department department) {
         this.empId = registerDTO.getEmpId();
         this.position = position;
         this.job = job;

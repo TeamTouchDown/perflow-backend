@@ -5,9 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EmployeePwdRegisterDTO {
+public class EmployeeUpdateRequestDTO {
 
-    private String empId;
 
-    private String password;
 }
