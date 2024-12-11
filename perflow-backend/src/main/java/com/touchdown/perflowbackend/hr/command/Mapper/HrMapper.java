@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 public class HrMapper {
 
     public static DepartmentQueryResponseDTO toResponse(Department department) {
+
         return DepartmentQueryResponseDTO.builder()
                 .departmentId(department.getDepartmentId())
                 .name(department.getName())
@@ -19,6 +20,7 @@ public class HrMapper {
     }
 
     private static List<DepartmentQueryResponseDTO> toResponseList(List<Department> departments) {
+
         return departments.stream()
                 .map(HrMapper::toResponse)
                 .collect(Collectors.toList());
