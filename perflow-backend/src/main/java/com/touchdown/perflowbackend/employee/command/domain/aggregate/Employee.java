@@ -112,4 +112,8 @@ public class Employee extends BaseEntity {
     public void registerPassword(String password) {
         this.password = password;
     }
+
+    public void updateStatus(EmployeeStatus status) {
+        this.status = status;
+    }
 }
