@@ -3,20 +3,30 @@ package com.touchdown.perflowbackend.file.command.domain.aggregate;
 import com.touchdown.perflowbackend.announcement.command.domain.aggregate.Announcement;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.Doc;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.SQLDelete;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "file", schema = "perflow")
+@SQLDelete(sql = "UPDATE file SET status = 'DELETED', delete_datetime = now() WHERE file_id = ?")
 public class File {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "file_id", nullable = false)
-    private Long id;
+    private Long fileId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doc_id")
@@ -36,22 +46,36 @@ public class File {
     private String url;
 
     @Column(name = "type", nullable = false, length = 10)
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private FileType type;
 
     @Column(name = "size", nullable = false)
     private Integer size;
 
+    @CreatedDate
     @Column(name = "upload_datetime", nullable = false)
-    private Instant uploadDatetime;
+    private LocalDateTime uploadDatetime;
 
-    @Column(name = "attach_datetime", nullable = false)
-    private Instant attachDatetime;
-
+    @LastModifiedDate
     @Column(name = "delete_datetime")
-    private Instant deleteDatetime;
+    private LocalDateTime deleteDatetime;
 
-    @ColumnDefault("'SAVED'")
-    @Column(name = "status", nullable = false, length = 30)
-    private String status;
+    @ColumnDefault("SAVED")
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private FileStatus status = FileStatus.SAVED;
 
+    @Builder
+    public File(Long fileId, Doc doc, Announcement ann,
+                String originName, String fileName, String url,
+                FileType type, Integer size) {
+        this.fileId = fileId;
+        this.doc = doc;
+        this.ann = ann;
+        this.originName = originName;
+        this.fileName = fileName;
+        this.url = url;
+        this.type = type;
+        this.size = size;
+    }
 }
