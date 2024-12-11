@@ -16,8 +16,6 @@ public interface ApproveLineCommandRepository {
     @Query("SELECT MAX(a.groupId) FROM ApproveLine a")
     Long findMaxGroupId();
 
-    ApproveLine findNextApproveLine(Long docId, Integer approveLineOrder);
-
     @Query("SELECT line FROM ApproveLine line " +
             "WHERE line.doc.docId = :docId " +
             "AND line.approveLineOrder > :currentOrder " +

@@ -5,6 +5,7 @@ import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.approval.command.domain.repository.ApproveLineCommandRepository;
 import com.touchdown.perflowbackend.approval.command.domain.repository.ApproveSbjCommandRepository;
 import com.touchdown.perflowbackend.approval.command.domain.repository.DocCommandRepository;
+import com.touchdown.perflowbackend.approval.command.infrastructure.repository.JpaApproveSbjCommandRepository;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class ApprovalService {
     private final DocCommandRepository docCommandRepository;
     private final ApproveLineCommandRepository approveLineCommandRepository;
     private final ApproveSbjCommandRepository approveSbjCommandRepository;
+    private final JpaApproveSbjCommandRepository jpaApproveSbjCommandRepository;
 
     public void processApproval(ApprovalRequestDTO request) {
 
@@ -96,7 +98,6 @@ public class ApprovalService {
         } else if (isApprovedAll(subjects)) {
             moveToNextApproveLine(doc, approveSbj.getApproveLine());
         }
-
     }
 
     // 다음 결재선으로 이동
@@ -113,7 +114,7 @@ public class ApprovalService {
             // 다음 결재선의 모든 결재 주체를 PENDING 으로
             nextLine.getApproveSubjects().forEach(sbj -> {
                 sbj.updateStatus(Status.PENDING);
-                approveSbjCommandRepository.save(sbj);
+                jpaApproveSbjCommandRepository.save(sbj);
             });
         } else {
             // 다음 결재선이 없으면 문서를 APPROVED 상태로 변경
@@ -138,7 +139,7 @@ public class ApprovalService {
             // 다음 결재 주체가 있다면 상태를 PENDING 으로 변경
             ApproveSbj nextSbj = nextSbjOpt.get();
             nextSbj.updateStatus(Status.PENDING);
-            approveSbjCommandRepository.save(nextSbj);
+            jpaApproveSbjCommandRepository.save(nextSbj);
         } else {
             // 다음 결재 주체가 없다면 다음 결재선으로 이동
             moveToNextApproveLine(doc, approveSbj.getApproveLine());
@@ -150,7 +151,7 @@ public class ApprovalService {
 
         approveSbj.updateStatus(status);
 
-        approveSbjCommandRepository.save(approveSbj);
+        jpaApproveSbjCommandRepository.save(approveSbj);
     }
 
     // 결재 주체들이 모두 승인

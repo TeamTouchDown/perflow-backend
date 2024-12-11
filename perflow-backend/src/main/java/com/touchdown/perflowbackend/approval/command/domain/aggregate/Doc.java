@@ -7,6 +7,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,10 +33,12 @@ public class Doc extends BaseEntity {
     @JoinColumn(name = "template_id", nullable = false)
     private Template template;
 
-    @OneToMany(mappedBy = "doc", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "doc", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT) // approveLines, shares 2개의 컬렉션을 동시에 join fetch 하면 뭐 부터 로드할지 몰라서 오류 발생 -> subselect 적용 후 join fetch 제거
     private List<ApproveLine> approveLines = new ArrayList<>();
 
-    @OneToMany(mappedBy = "doc", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "doc", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
     private List<DocShareObj> shares = new ArrayList<>();
 
     @Column(name = "title", nullable = false, length = 50)

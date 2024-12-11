@@ -2,16 +2,13 @@ package com.touchdown.perflowbackend.approval.command.mapper;
 
 import com.touchdown.perflowbackend.approval.command.application.dto.ApproveLineDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRequestDTO;
-import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveLine;
-import com.touchdown.perflowbackend.approval.command.domain.aggregate.Doc;
-import com.touchdown.perflowbackend.approval.command.domain.aggregate.SbjType;
-import com.touchdown.perflowbackend.approval.command.domain.aggregate.Template;
-import com.touchdown.perflowbackend.approval.query.dto.MyApproveLineDetailResponseDTO;
-import com.touchdown.perflowbackend.approval.query.dto.MyApproveLineGroupResponseDTO;
-import com.touchdown.perflowbackend.approval.query.dto.MyApproveLineResponseDTO;
+import com.touchdown.perflowbackend.approval.command.application.dto.ShareDTO;
+import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
+import com.touchdown.perflowbackend.approval.query.dto.*;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DocMapper {
@@ -91,4 +88,48 @@ public class DocMapper {
                 .build();
     }
 
+    public static WaitingDocListResponseDTO toWaitingDocListResponseDTO(Doc doc) {
+
+        return WaitingDocListResponseDTO.builder()
+                .docId(doc.getDocId())
+                .title(doc.getTitle())
+                .createUserName(doc.getCreateUser().getName())
+                .createDatetime(doc.getCreateDatetime())
+                .status(doc.getStatus())
+                .lines(doc.getApproveLines().stream()
+                        .map(DocMapper::toApproveLineDTO)
+                        .toList())
+                .build();
+    }
+
+    public static WaitingDocDetailResponseDTO toWaitingDocDetailResponseDTO(Doc doc) {
+
+        return WaitingDocDetailResponseDTO.builder()
+                .docId(doc.getDocId())
+                .title(doc.getTitle())
+                .content(doc.getContent())
+                .templateId(doc.getTemplate().getTemplateId())
+                // 결재선
+                .approveLines(doc.getApproveLines().stream()
+                        .map(DocMapper::toApproveLineDTO)
+                        .toList())
+                .shares(toShareDTOList(doc.getShares()))
+                .build();
+    }
+
+    public static List<ShareDTO> toShareDTOList(List<DocShareObj> shares) {
+
+        List<Long> departments = new ArrayList<>();
+        List<String> employees = new ArrayList<>();
+
+        for (DocShareObj share : shares) {
+            if (share.getShareObjType() == ObjType.DEPARTMENT && share.getShareObjDepartment() != null) {
+                departments.add(share.getShareObjDepartment().getDepartmentId());
+            } else if (share.getShareObjType() == ObjType.EMPLOYEE && share.getShareObjUser() != null) {
+                employees.add(share.getShareObjUser().getEmpId());
+            }
+        }
+
+        return List.of(new ShareDTO(departments, employees));
+    }
 }
