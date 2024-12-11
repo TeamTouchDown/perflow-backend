@@ -1,7 +1,7 @@
 package com.touchdown.perflowbackend.workAttitude.command.application.service;
 
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
-import com.touchdown.perflowbackend.approval.command.domain.repository.ApproveCommandRepository;
+import com.touchdown.perflowbackend.approval.command.domain.repository.ApproveSbjCommandRepository;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
@@ -13,7 +13,6 @@ import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Travel;
 import com.touchdown.perflowbackend.workAttitude.command.domain.repository.WorkAttitudeTravelCommandRepository;
 import com.touchdown.perflowbackend.workAttitude.command.mapper.WorkAttitudeTravelMapper;
-import com.touchdown.perflowbackend.workAttitude.query.repository.WorkAttributeTravelQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +23,7 @@ public class WorkAttitudeTravelCommandService {
 
     private final WorkAttitudeTravelCommandRepository workAttitudeTravelCommandRepository;
     private final EmployeeCommandRepository employeeCommandRepository; // string 값
-    private final ApproveCommandRepository approveCommandRepository;
+    private final ApproveSbjCommandRepository approveSbjCommandRepository;
 
 
     @Transactional
@@ -75,7 +74,7 @@ public class WorkAttitudeTravelCommandService {
     }
 
     private ApproveSbj findApproveSbjById(Long approveSbjId) {
-        return approveCommandRepository.findById(approveSbjId)
+        return approveSbjCommandRepository.findById(approveSbjId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APPROVE_SBJ));
     }
 

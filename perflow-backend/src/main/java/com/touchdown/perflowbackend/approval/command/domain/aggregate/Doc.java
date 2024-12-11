@@ -62,4 +62,9 @@ public class Doc extends BaseEntity {
         this.template = template;
         this.createUser = createUser;
     }
+
+    public void updateStatus(Status status) {
+
+        this.status = status;
+    }
 }

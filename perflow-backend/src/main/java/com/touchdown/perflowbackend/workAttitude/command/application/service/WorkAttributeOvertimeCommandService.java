@@ -1,7 +1,7 @@
 package com.touchdown.perflowbackend.workAttitude.command.application.service;
 
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
-import com.touchdown.perflowbackend.approval.command.domain.repository.ApproveCommandRepository;
+import com.touchdown.perflowbackend.approval.command.domain.repository.ApproveSbjCommandRepository;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
@@ -22,7 +22,7 @@ public class WorkAttributeOvertimeCommandService {
 
     private final WorkAttributeOvertimeCommandRepository workAttributeOvertimeCommandRepository;
     private final EmployeeCommandRepository employeeCommandRepository;
-    private final ApproveCommandRepository approveCommandRepository;
+    private final ApproveSbjCommandRepository approveSbjCommandRepository;
 
     // 신규 초과근무 생성
     @Transactional
@@ -85,7 +85,7 @@ public class WorkAttributeOvertimeCommandService {
     }
 
     private ApproveSbj findApproveSbjById(Long approveSbjId) {
-        return approveCommandRepository.findById(approveSbjId)
+        return approveSbjCommandRepository.findById(approveSbjId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APPROVE_SBJ));
     }
     @Transactional

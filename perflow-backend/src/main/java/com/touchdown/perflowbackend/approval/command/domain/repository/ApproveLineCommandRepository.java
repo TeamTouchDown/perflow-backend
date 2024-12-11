@@ -2,6 +2,7 @@ package com.touchdown.perflowbackend.approval.command.domain.repository;
 
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveLine;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,4 +15,12 @@ public interface ApproveLineCommandRepository {
 
     @Query("SELECT MAX(a.groupId) FROM ApproveLine a")
     Long findMaxGroupId();
+
+    ApproveLine findNextApproveLine(Long docId, Integer approveLineOrder);
+
+    @Query("SELECT line FROM ApproveLine line " +
+            "WHERE line.doc.docId = :docId " +
+            "AND line.approveLineOrder > :currentOrder " +
+            "ORDER BY line.approveLineOrder ASC")
+    Optional<ApproveLine> findNextApproveLineAsc(@Param("docId") Long approveLineId, @Param("currentOrder") Integer currentOrder);
 }

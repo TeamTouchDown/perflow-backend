@@ -55,6 +55,9 @@ public class ApproveSbj extends BaseEntity {
     @Column(name = "complete_datetime")
     private LocalDateTime completeDatetime;
 
+    @Column(name = "comment")
+    private String comment;
+
     @Builder
     public ApproveSbj(ApproveLine approveLine, Employee sbjUser, SbjType sbjType, Department dept, Boolean isPll) {
 
@@ -63,5 +66,10 @@ public class ApproveSbj extends BaseEntity {
         this.sbjType = sbjType;
         this.dept = dept;
         this.isPll = isPll;
+    }
+
+    public void updateStatus(Status status) {
+
+        this.status = status;
     }
 }
