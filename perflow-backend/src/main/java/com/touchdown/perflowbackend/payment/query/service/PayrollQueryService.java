@@ -157,6 +157,7 @@ public class PayrollQueryService {
                             .totalEmp(totalEmp)
                             .totalPay(totalPay)
                             .build();
+
                 })
                 .collect(Collectors.toList());
 

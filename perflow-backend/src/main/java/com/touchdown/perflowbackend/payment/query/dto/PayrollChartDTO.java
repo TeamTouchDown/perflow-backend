@@ -10,6 +10,9 @@ import java.time.LocalDateTime;
 public class PayrollChartDTO {
 
     private final Long payrollId;
+
+    private final Long totalAmount;
+
     private final LocalDateTime createDatetime;
 
 }
