@@ -1,6 +1,6 @@
 package com.touchdown.perflowbackend.hr.query.service;
 
-import com.touchdown.perflowbackend.hr.command.Mapper.HrMapper;
+import com.touchdown.perflowbackend.hr.command.application.mapper.DepartmentMapper;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.query.dto.DepartmentListResponseDTO;
 import com.touchdown.perflowbackend.hr.query.dto.DepartmentQueryResponseDTO;
@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -66,6 +65,6 @@ public class HrQueryService {
 
         List<Department> allDepartmentEntity = findAllDepartments();
 
-        return HrMapper.toListDTO(allDepartmentEntity);
+        return DepartmentMapper.toListDTO(allDepartmentEntity);
     }
 }
