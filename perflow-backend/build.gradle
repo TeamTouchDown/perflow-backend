@@ -59,6 +59,10 @@ dependencies {
     implementation 'org.apache.poi:poi:5.2.3'
     implementation 'org.apache.poi:poi-ooxml:5.2.3'
 
+    implementation 'javax.persistence:javax.persistence-api:2.2' // 또는 최신 버전
+    implementation 'org.hibernate:hibernate-core:6.2.0.Final' // Hibernate 6.x 이상
+    implementation 'org.springframework:spring-orm:6.2.0' // Spring ORM 6.x 이상
+
 }
 
 tasks.named('test') {

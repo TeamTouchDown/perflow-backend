@@ -20,7 +20,7 @@ public class TemplateQueryService {
 
     private final TemplateQueryRepository templateQueryRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<TemplateListResponseDTO> getTemplates(Pageable pageable) {
 
         return templateQueryRepository.findAllTemplates(pageable)

@@ -22,6 +22,7 @@ public class DepartmentMapper {
     }
 
     public static DepartmentQueryResponseDTO toResponse(Department department) {
+
         return DepartmentQueryResponseDTO.builder()
                 .departmentId(department.getDepartmentId())
                 .name(department.getName())
@@ -30,6 +31,7 @@ public class DepartmentMapper {
     }
 
     private static List<DepartmentQueryResponseDTO> toResponseList(List<Department> departments) {
+
         return departments.stream()
                 .map(DepartmentMapper::toResponse)
                 .collect(Collectors.toList());
