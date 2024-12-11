@@ -18,6 +18,7 @@ public class DocCommandController {
 
     private final DocCommandService docCommandService;
 
+    // 결재 문서 생성
     @PostMapping("/docs")
     public ResponseEntity<SuccessCode> createDoc(
             @RequestBody DocCreateRequestDTO request
@@ -31,6 +32,7 @@ public class DocCommandController {
         return ResponseEntity.ok(SuccessCode.DOC_CREATE_SUCCESS);
     }
 
+    // 나의 결재선 생성
     @PostMapping("/my-approve-lines")
     public ResponseEntity<SuccessCode> createMyApproveLine(@RequestBody MyApproveLineCreateRequestDTO request) {
 
