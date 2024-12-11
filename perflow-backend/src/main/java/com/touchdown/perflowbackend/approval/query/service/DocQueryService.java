@@ -23,7 +23,7 @@ public class DocQueryService {
 
     private final ApproveLineQueryRepository approveLineQueryRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<MyApproveLineGroupResponseDTO> getMyApproveLineList(Pageable pageable, String createUserId
     ) {
 
@@ -40,7 +40,7 @@ public class DocQueryService {
                 });
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public MyApproveLineDetailResponseDTO getOneMyApproveLine(Long groupId) {
 
         List<ApproveLine> lines = approveLineQueryRepository.findByGroupId(groupId);
