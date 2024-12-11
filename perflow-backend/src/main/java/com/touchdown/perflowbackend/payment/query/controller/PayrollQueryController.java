@@ -65,16 +65,25 @@ public class PayrollQueryController {
     }
 
     @GetMapping("/payrolls/{payrollId}")
-    public ResponseEntity<PayrollDetailResponseDTO> getPayroll(
+    public ResponseEntity<PayrollDetailResponseDTO> getPayroll(@PathVariable Long payrollId) {
 
-            @PathVariable Long payrollId
-//            @RequestParam(required = false) String empName,
-//            @RequestParam(required = false) String empId,
-//            @RequestParam(required = false) String deptName
+        PayrollDetailResponseDTO response = payrollQueryService.getPayroll(payrollId);
+
+        return ResponseEntity.ok(response);
+
+    }
+
+    // 급여대장 검색
+    @GetMapping("/payrolls/search")
+    public ResponseEntity<PayrollDetailResponseDTO> searchPayroll(
+
+            @RequestParam(required = false) String empName,
+            @RequestParam(required = false) String empId,
+            @RequestParam(required = false) String deptName
 
     ) {
 
-        PayrollDetailResponseDTO response = payrollQueryService.getPayroll(payrollId);
+        PayrollDetailResponseDTO response = payrollQueryService.searchPayroll(empName, empId, deptName);
 
         return ResponseEntity.ok(response);
 
