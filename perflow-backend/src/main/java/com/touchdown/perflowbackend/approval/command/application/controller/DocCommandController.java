@@ -1,15 +1,14 @@
 package com.touchdown.perflowbackend.approval.command.application.controller;
 
+import com.touchdown.perflowbackend.approval.command.application.dto.ApprovalRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.MyApproveLineCreateRequestDTO;
+import com.touchdown.perflowbackend.approval.command.application.service.ApprovalService;
 import com.touchdown.perflowbackend.approval.command.application.service.DocCommandService;
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DocCommandController {
 
     private final DocCommandService docCommandService;
+    private final ApprovalService approvalService;
 
     // 결재 문서 생성
     @PostMapping("/docs")
@@ -31,6 +31,17 @@ public class DocCommandController {
 
         return ResponseEntity.ok(SuccessCode.DOC_CREATE_SUCCESS);
     }
+
+    // 문서 단일 결재
+    @PutMapping("/docs")
+    public ResponseEntity<SuccessCode> approveDoc(@RequestBody ApprovalRequestDTO request) {
+
+        approvalService.processApproval(request);
+
+        return ResponseEntity.ok(SuccessCode.DOC_APPROVE_SUCCESS);
+    }
+
+    // 문서 일괄 승인
 
     // 나의 결재선 생성
     @PostMapping("/my-approve-lines")

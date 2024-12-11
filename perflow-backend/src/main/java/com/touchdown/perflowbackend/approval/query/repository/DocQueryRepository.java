@@ -19,10 +19,6 @@ public interface DocQueryRepository extends JpaRepository<Doc, Long> {
             "AND line.status = 'PENDING'")
     Page<Doc> findWaitingDocsByUser(@Param("empId") String empId, Pageable pageable);
 
-//    @Query("SELECT doc FROM Doc doc " +
-//            "LEFT JOIN FETCH doc.approveLines line " +
-//            "LEFT JOIN FETCH doc.shares share " +
-//            "WHERE doc.docId = :docId")
     @Query("SELECT doc FROM Doc doc WHERE doc.docId = :docId")
     Optional<Doc> findDocDetailsById(@Param("docId") Long docId);
 }
