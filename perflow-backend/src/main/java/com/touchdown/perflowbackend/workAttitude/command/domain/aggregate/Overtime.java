@@ -3,7 +3,6 @@ package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
-import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.OvertimeType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -117,7 +116,7 @@ public class Overtime extends BaseEntity {
         }
     }
 
-    public void setOvertimeRetroactive(Boolean isOvertimeRetroactive) {
+    public void updateOvertimeRetroactive(Boolean isOvertimeRetroactive) {
         this.isOvertimeRetroactive = isOvertimeRetroactive;
     }
 

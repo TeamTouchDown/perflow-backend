@@ -45,7 +45,7 @@ public class WorkAttributeOvertimeCommandService {
         }
 
         overtime.updateRetroactiveStatus(Status.PENDING, reason);
-        overtime.setOvertimeRetroactive(true);
+        overtime.updateOvertimeRetroactive(true);
         workAttributeOvertimeCommandRepository.save(overtime);
     }
 

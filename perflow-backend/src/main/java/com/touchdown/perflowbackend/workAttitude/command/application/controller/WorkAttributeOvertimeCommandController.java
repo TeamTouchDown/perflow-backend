@@ -1,6 +1,7 @@
 package com.touchdown.perflowbackend.workAttitude.command.application.controller;
 
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
+import com.touchdown.perflowbackend.workAttitude.command.application.dto.RetroactiveRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.application.service.WorkAttributeOvertimeCommandService;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttributeOvertimeForEmployeeRequestDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +21,7 @@ public class WorkAttributeOvertimeCommandController {
     // 직원: 초과근무 등록
     @Operation(summary = "직원의 초과근무 등록", description = "직원이 새로운 초과근무 요청을 등록합니다.")
     @PostMapping("/emp/overtimes")
-    public ResponseEntity<SuccessCode> createOvertime(@Valid @RequestBody WorkAttributeOvertimeForEmployeeRequestDTO workAttributeOvertimeForEmployeeRequestDTO) {
+    public ResponseEntity<SuccessCode> createOvertime(@RequestBody WorkAttributeOvertimeForEmployeeRequestDTO workAttributeOvertimeForEmployeeRequestDTO) {
         workAttributeOvertimeCommandService.createOvertime(workAttributeOvertimeForEmployeeRequestDTO);
         return ResponseEntity.ok(SuccessCode.WORK_ATTRIBUTE_OVERTIME_SUCCESS);
     }
@@ -36,9 +37,8 @@ public class WorkAttributeOvertimeCommandController {
     // 직원: 소급 신청
     @Operation(summary = "직원의 초과근무 소급 신청", description = "직원이 초과근무 요청에 대한 소급 처리를 신청합니다.")
     @PostMapping("/emp/overtimes/{overtimeId}/retroactive")
-    public ResponseEntity<SuccessCode> applyForRetroactiveOvertime(@PathVariable Long overtimeId,
-                                                                   @RequestBody String reason) {
-        workAttributeOvertimeCommandService.applyForRetroactiveOvertime(overtimeId, reason);
+    public ResponseEntity<SuccessCode> applyForRetroactiveOvertime(@RequestBody RetroactiveRequestDTO retroactiveRequestDTO) {
+        workAttributeOvertimeCommandService.applyForRetroactiveOvertime(retroactiveRequestDTO.getOvertimeId(), retroactiveRequestDTO.getReason());
         return ResponseEntity.ok(SuccessCode.WORK_ATTRIBUTE_OVERTIME_RETROACTIVE_SUCCESS);
     }
 
@@ -46,9 +46,8 @@ public class WorkAttributeOvertimeCommandController {
     @Operation(summary = "팀장의 초과근무 소급 승인/반려", description = "팀장이 직원의 초과근무 소급 요청을 승인 또는 반려합니다.")
     @PutMapping("/leader/overtimes/{overtimeId}/retroactive")
     public ResponseEntity<SuccessCode> approveOrRejectRetroactiveOvertime(@PathVariable Long overtimeId,
-                                                                          @RequestParam String decision,
-                                                                          @RequestBody String reason) {
-        workAttributeOvertimeCommandService.approveOrRejectRetroactiveOvertime(overtimeId, decision, reason);
+                                                                          @RequestBody RetroactiveRequestDTO retroactiveRequestDTO) {
+        workAttributeOvertimeCommandService.approveOrRejectRetroactiveOvertime(overtimeId, String.valueOf(retroactiveRequestDTO.getOvertimeId()), retroactiveRequestDTO.getReason());
         return ResponseEntity.ok(SuccessCode.WORK_ATTRIBUTE_OVERTIME_RETROACTIVE_DECISION_SUCCESS);
     }
 
