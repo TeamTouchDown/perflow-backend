@@ -11,4 +11,7 @@ public interface ApproveLineCommandRepository {
     ApproveLine save(ApproveLine approveLine);
 
     Optional<List<ApproveLine>> findByGroupId(Long groupId);
+
+    @Query("SELECT MAX(a.groupId) FROM ApproveLine a")
+    Long findMaxGroupId();
 }

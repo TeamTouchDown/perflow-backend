@@ -30,6 +30,6 @@ public class ApproveLineDTO {
     @JsonProperty("employees")
     private final List<String> Employees;
 
-    @JsonProperty("approveTemplateType")
+    @JsonProperty("approveTemplateTypes")
     private final ApproveTemplateType approveTemplateTypes;
 }

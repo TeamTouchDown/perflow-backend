@@ -21,9 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
-import static com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveTemplateType.*;
+import static com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveTemplateType.MANUAL;
+import static com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveTemplateType.MY_APPROVE_LINE;
 
 @Slf4j
 @Service
@@ -60,7 +60,7 @@ public class DocCommandService {
 
         Employee createUser = findEmployeeById(createUserId);
 
-        Long groupId = generateGroupId();
+        Long groupId = generateGroupId(null);
         
         for(ApproveLineDTO lineDTO : request.getApproveLines()) {
 
@@ -82,9 +82,15 @@ public class DocCommandService {
         }
     }
 
-    private Long generateGroupId() {
+    private Long generateGroupId(Long docId) {
 
-        return Math.abs(UUID.randomUUID().getMostSignificantBits());
+        if (docId != null) {
+            return docId;
+        }
+
+        Long maxGroupId = approveLineCommandRepository.findMaxGroupId();
+
+        return (maxGroupId != null ? maxGroupId + 1 : 1L);
     }
 
     private void createShare(DocCreateRequestDTO request, Doc doc, Employee createUser) {
@@ -193,7 +199,7 @@ public class DocCommandService {
 
         ApproveLine approveLine = ApproveLine.builder()
                 .doc(doc)
-                .groupId(doc.getDocId())    // 문서 id 를 groupId로
+                .groupId(generateGroupId(doc.getDocId()))    // 문서 id 를 groupId로
                 .approveTemplateType(lineDTO.getApproveTemplateTypes())
                 .createUser(createUser)
                 .approveType(lineDTO.getApproveType())
