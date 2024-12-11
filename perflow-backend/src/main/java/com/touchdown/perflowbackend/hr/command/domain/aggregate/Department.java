@@ -44,6 +44,9 @@ public class Department extends BaseEntity {
     @OneToOne(mappedBy = "department", cascade = CascadeType.ALL)
     private Pic pic;
 
+    @Column(name = "status", nullable = false)
+    private String status;
+
     @Builder
     public Department(DepartmentCreateDTO createDTO, Department manageDept, Pic pic) {
         this.departmentId = createDTO.getDepartmentId();

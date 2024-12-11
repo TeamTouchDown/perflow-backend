@@ -73,6 +73,9 @@ public class Employee extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private EmployeeStatus status;
 
+    @Column(name = "resign_datetime")
+    private LocalDate resignDatetime;
+
     @Builder
     public Employee(EmployeeCreateDTO registerDTO, Position position, Job job, Department department) {
         this.empId = registerDTO.getEmpId();
