@@ -25,6 +25,9 @@ public enum ErrorCode {
     ALREADY_REGISTERED_PASSWORD(HttpStatus.BAD_REQUEST, "비밀번호 등록 이력이 존재합니다."),
     EXCEL_TEMPLATE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "엑셀 템플릿 업로드 중 오류가 발생했습니다"),
     ALREADY_DELETED_TEMPLATE(HttpStatus.BAD_REQUEST, "이미 삭제된 서식입니다."),
+    NOT_EXIST_UPLOAD_FILE(HttpStatus.BAD_REQUEST, "업로드할 파일이 없습니다."),
+    UNSUPPORTED_ENTITY(HttpStatus.BAD_REQUEST, "지원되지 않는 도메인입니다."),
+    UNSUPPORTED_FILE_EXTENSION(HttpStatus.BAD_REQUEST, "지원되지 않는 확장자입니다."),
 
     // 401 에러
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "인증 실패"),
@@ -43,6 +46,7 @@ public enum ErrorCode {
     NOT_FOUND_FIELD_TYPE(HttpStatus.NOT_FOUND, "필드 타입 정보를 찾을 수 없습니다."),
     NOT_FOUND_DEPARTMENT(HttpStatus.NOT_FOUND, "부서 정보를 찾을 수 없습니다."),
     NOT_FOUND_KPI(HttpStatus.NOT_FOUND,"KPI 정보를 찾을 수 없습니다."),
+    NOT_FOUND_FILE(HttpStatus.NOT_FOUND, "파일을 찾을 수 없습니다."),
 
     NOT_FOUND_APPROVE_SBJ(HttpStatus.NOT_FOUND, "결재 주체 정보를 찾을 수 없습니다."),
     INVALID_APPROVE_SBJ_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 결재 주체 ID입니다."),
