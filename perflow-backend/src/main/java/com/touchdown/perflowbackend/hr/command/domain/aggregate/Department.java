@@ -3,6 +3,7 @@ package com.touchdown.perflowbackend.hr.command.domain.aggregate;
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.hr.command.application.dto.department.DepartmentCreateDTO;
+import com.touchdown.perflowbackend.hr.command.application.dto.department.DepartmentUpdateDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,9 +11,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Entity
@@ -66,5 +65,14 @@ public class Department extends BaseEntity {
 
     private void setManageDept(Department manageDept) {
         this.manageDept = manageDept;
+    }
+
+    public void updateDepartment(DepartmentUpdateDTO departmentUpdateDTO, Department managedDepartment, Employee picEmployee) {
+
+        this.name = departmentUpdateDTO.getName();
+        this.responsibility = departmentUpdateDTO.getResponsibility();
+        this.contact = departmentUpdateDTO.getContact();
+        this.manageDept = managedDepartment;
+        this.pic.changeEmployee(picEmployee);
     }
 }

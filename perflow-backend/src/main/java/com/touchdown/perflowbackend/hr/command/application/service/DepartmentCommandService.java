@@ -4,6 +4,7 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
+import com.touchdown.perflowbackend.hr.command.application.dto.department.DepartmentUpdateDTO;
 import com.touchdown.perflowbackend.hr.command.application.mapper.DepartmentMapper;
 import com.touchdown.perflowbackend.hr.command.application.dto.department.DepartmentCreateDTO;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
@@ -25,7 +26,7 @@ public class DepartmentCommandService {
     @Transactional
     public void createDepartment(DepartmentCreateDTO departmentCreateDTO) {
 
-        Department managedDepartment = getManagedDepartment(departmentCreateDTO.getManageDeptId());
+        Department managedDepartment = getDepartment(departmentCreateDTO.getManageDeptId());
 
         // 부서 담당자 id로 부서 담당자 객체 생성
         Employee picEmployee = getPicEmployee(departmentCreateDTO.getPicId());
@@ -45,6 +46,19 @@ public class DepartmentCommandService {
         departmentCommandRepository.save(newDepartment);
     }
 
+    @Transactional
+    public void updateDepartment(DepartmentUpdateDTO departmentUpdateDTO, Long deptId) {
+
+        Department department = getDepartment(deptId);
+        Department managedDepartment = getDepartment(departmentUpdateDTO.getManageDeptId());
+
+        Employee picEmployee = getPicEmployee(departmentUpdateDTO.getPicId());
+
+        department.updateDepartment(departmentUpdateDTO, managedDepartment, picEmployee);
+
+        departmentCommandRepository.save(department);
+    }
+
     private Employee getPicEmployee(String picId) {
 
         return employeeCommandRepository.findById(picId).orElseThrow(
@@ -52,10 +66,10 @@ public class DepartmentCommandService {
         );
     }
 
-    private Department getManagedDepartment(Long manageDeptId) {
+    private Department getDepartment(Long manageDeptId) {
 
         return departmentCommandRepository.findById(manageDeptId).orElseThrow(
-                () -> new CustomException(ErrorCode.NOT_FOUND_MANAGED_DEPARTMENT)
+                () -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT)
         );
     }
 

@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
-@Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "pic", schema = "perflow")
@@ -29,6 +28,10 @@ public class Pic { // 부서 담당자
     public Pic(Department department, Employee employee) {
 
         this.department = department;
+        this.employee = employee;
+    }
+
+    public void changeEmployee(Employee employee) {
         this.employee = employee;
     }
 }
