@@ -3,6 +3,7 @@ package com.touchdown.perflowbackend.employee.command.domain.aggregate;
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeCreateDTO;
 import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeUpdateRequestDTO;
+import com.touchdown.perflowbackend.employee.command.application.dto.MyInfoUpdateDTO;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
@@ -11,10 +12,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 
+@Slf4j
 @Getter
 @Entity
 @NoArgsConstructor
@@ -97,6 +100,13 @@ public class Employee extends BaseEntity {
         this.contact = updateRequestDTO.getContact();
         this.email = updateRequestDTO.getEmail();
         this.joinDate = updateRequestDTO.getJoinDate();
+    }
+
+    public void updateMyInfo(MyInfoUpdateDTO updateDTO) {
+
+        this.address = updateDTO.getAddress();
+        this.contact = updateDTO.getContact();
+        this.email = updateDTO.getEmail();
     }
 
     public void registerPassword(String password) {
