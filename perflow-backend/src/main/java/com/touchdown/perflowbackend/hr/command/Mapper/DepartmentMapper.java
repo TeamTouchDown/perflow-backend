@@ -1,14 +1,24 @@
 package com.touchdown.perflowbackend.hr.command.Mapper;
 
+import com.touchdown.perflowbackend.hr.command.application.dto.department.DepartmentCreateDTO;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.query.dto.DepartmentListResponseDTO;
 import com.touchdown.perflowbackend.hr.query.dto.DepartmentQueryResponseDTO;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class HrMapper {
+public class DepartmentMapper {
+
+    public static Department toEntity(DepartmentCreateDTO createDTO, Department managedDepartment) {
+
+        return Department.builder()
+                .createDTO(createDTO)
+                .manageDept(managedDepartment)
+                .build();
+    }
 
     public static DepartmentQueryResponseDTO toResponse(Department department) {
         return DepartmentQueryResponseDTO.builder()
@@ -20,7 +30,7 @@ public class HrMapper {
 
     private static List<DepartmentQueryResponseDTO> toResponseList(List<Department> departments) {
         return departments.stream()
-                .map(HrMapper::toResponse)
+                .map(DepartmentMapper::toResponse)
                 .collect(Collectors.toList());
     }
 

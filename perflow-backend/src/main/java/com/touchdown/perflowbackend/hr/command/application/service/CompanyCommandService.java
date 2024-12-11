@@ -2,10 +2,10 @@ package com.touchdown.perflowbackend.hr.command.application.service;
 
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
-import com.touchdown.perflowbackend.hr.command.application.dto.CompanyAnnualCountUpdateDTO;
-import com.touchdown.perflowbackend.hr.command.application.dto.CompanyPaymentDatetimeUpdateDTO;
-import com.touchdown.perflowbackend.hr.command.application.dto.CompanyCreateRequestDTO;
-import com.touchdown.perflowbackend.hr.command.application.dto.CompanyUpdateRequestDTO;
+import com.touchdown.perflowbackend.hr.command.application.dto.company.CompanyAnnualCountUpdateDTO;
+import com.touchdown.perflowbackend.hr.command.application.dto.company.CompanyPaymentDatetimeUpdateDTO;
+import com.touchdown.perflowbackend.hr.command.application.dto.company.CompanyCreateRequestDTO;
+import com.touchdown.perflowbackend.hr.command.application.dto.company.CompanyUpdateRequestDTO;
 import com.touchdown.perflowbackend.hr.command.application.mapper.CompanyMapper;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Company;
 import com.touchdown.perflowbackend.hr.command.domain.repository.CompanyCommandRepository;

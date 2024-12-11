@@ -2,6 +2,7 @@ package com.touchdown.perflowbackend.hr.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.hr.command.application.dto.department.DepartmentCreateDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,12 +42,12 @@ public class Department extends BaseEntity {
     private String contact;
 
     @Builder
-    public Department(Long departmentId, String name, String responsibility, String pic, String contact, Department manageDept) {
-        this.departmentId = departmentId;
-        this.name = name;
-        this.responsibility = responsibility;
-        this.pic = pic;
-        this.contact = contact;
+    public Department(DepartmentCreateDTO createDTO, Department manageDept) {
+        this.departmentId = createDTO.getDepartmentId();
+        this.name = createDTO.getName();
+        this.responsibility = createDTO.getResponsibility();
+        this.pic = createDTO.getPic();
+        this.contact = createDTO.getContact();
         this.manageDept = manageDept;
     }
 

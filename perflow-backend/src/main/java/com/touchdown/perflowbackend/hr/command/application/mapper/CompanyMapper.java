@@ -1,6 +1,6 @@
 package com.touchdown.perflowbackend.hr.command.application.mapper;
 
-import com.touchdown.perflowbackend.hr.command.application.dto.CompanyCreateRequestDTO;
+import com.touchdown.perflowbackend.hr.command.application.dto.company.CompanyCreateRequestDTO;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Company;
 import com.touchdown.perflowbackend.hr.query.dto.CompanyResponseDTO;
 import org.springframework.stereotype.Component;

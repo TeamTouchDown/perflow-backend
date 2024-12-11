@@ -1,9 +1,9 @@
 package com.touchdown.perflowbackend.hr.command.domain.aggregate;
 
-import com.touchdown.perflowbackend.hr.command.application.dto.CompanyAnnualCountUpdateDTO;
-import com.touchdown.perflowbackend.hr.command.application.dto.CompanyPaymentDatetimeUpdateDTO;
-import com.touchdown.perflowbackend.hr.command.application.dto.CompanyCreateRequestDTO;
-import com.touchdown.perflowbackend.hr.command.application.dto.CompanyUpdateRequestDTO;
+import com.touchdown.perflowbackend.hr.command.application.dto.company.CompanyAnnualCountUpdateDTO;
+import com.touchdown.perflowbackend.hr.command.application.dto.company.CompanyPaymentDatetimeUpdateDTO;
+import com.touchdown.perflowbackend.hr.command.application.dto.company.CompanyCreateRequestDTO;
+import com.touchdown.perflowbackend.hr.command.application.dto.company.CompanyUpdateRequestDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
