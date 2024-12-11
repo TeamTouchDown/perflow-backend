@@ -16,16 +16,15 @@ public interface PayrollQueryRepository extends JpaRepository<Payroll, Long> {
     Optional<Payroll> findByPayrollsId(Long payrollId);
 
     @Query("SELECT new com.touchdown.perflowbackend.payment.query.dto.PayrollDTO(" +
-            "p.payrollId, e.empId, e.name, e.dept.name, e.status, " +
-            "e.pay, pd.extendLaborAllowance, pd.nightLaborAllowance, pd.holidayLaborAllowance, pd.annualAllowance, pd.incentive, " +
-            "(e.pay + pd.extendLaborAllowance + pd.nightLaborAllowance + pd.holidayLaborAllowance + pd.annualAllowance + pd.incentive) AS totalPayment," +
+            "p.payrollId, pd.emp.empId, pd.emp.name, pd.emp.dept.name, pd.emp.status, " +
+            "pd.emp.pay, pd.extendLaborAllowance, pd.nightLaborAllowance, pd.holidayLaborAllowance, pd.annualAllowance, pd.incentive, " +
+            "(pd.emp.pay + pd.extendLaborAllowance + pd.nightLaborAllowance + pd.holidayLaborAllowance + pd.annualAllowance + pd.incentive) AS totalPayment," +
             "pd.nationalPension, pd.healthInsurance, pd.hireInsurance, pd.longTermCareInsurance, pd.incomeTax, pd.localIncomeTax, " +
             "(pd.nationalPension + pd.healthInsurance + pd.hireInsurance + pd.longTermCareInsurance + pd.incomeTax + pd.localIncomeTax) AS totalDeduction, " +
             "pd.totalAmount, pd.status) " +
             "FROM Payroll p " +
             "JOIN PayrollDetail pd ON pd.payroll.payrollId = p.payrollId " +
-            "JOIN Employee e ON pd.emp.empId = e.empId " +
-            "WHERE e.status <> 'RESIGNED' AND p.payrollId = :payrollId")
+            "WHERE pd.emp.status <> 'RESIGNED' AND p.payrollId = :payrollId")
     List<PayrollDTO> findByPayrollId(Long payrollId);
 
     // 가장 최근 급여 대장을 조회하는 메서드
@@ -64,16 +63,17 @@ public interface PayrollQueryRepository extends JpaRepository<Payroll, Long> {
     List<PayrollChartDTO> findPayrollsByYears(@Param("startYear") int startYear, @Param("latestYear") int latestYear);
 
     @Query("SELECT new com.touchdown.perflowbackend.payment.query.dto.PayrollDTO(" +
-            "p.payrollId, e.empId, e.name, e.dept.name, e.status, " +
-            "e.pay, pd.extendLaborAllowance, pd.nightLaborAllowance, pd.holidayLaborAllowance, pd.annualAllowance, pd.incentive, " +
-            "(e.pay + pd.extendLaborAllowance + pd.nightLaborAllowance + pd.holidayLaborAllowance + pd.annualAllowance + pd.incentive) AS totalPayment," +
+            "p.payrollId, pd.emp.empId, pd.emp.name, pd.emp.dept.name, pd.emp.status, " +
+            "pd.emp.pay, pd.extendLaborAllowance, pd.nightLaborAllowance, pd.holidayLaborAllowance, pd.annualAllowance, pd.incentive, " +
+            "(pd.emp.pay + pd.extendLaborAllowance + pd.nightLaborAllowance + pd.holidayLaborAllowance + pd.annualAllowance + pd.incentive) AS totalPayment," +
             "pd.nationalPension, pd.healthInsurance, pd.hireInsurance, pd.longTermCareInsurance, pd.incomeTax, pd.localIncomeTax, " +
             "(pd.nationalPension + pd.healthInsurance + pd.hireInsurance + pd.longTermCareInsurance + pd.incomeTax + pd.localIncomeTax) AS totalDeduction, " +
             "pd.totalAmount, pd.status) " +
             "FROM Payroll p " +
             "JOIN PayrollDetail pd ON pd.payroll.payrollId = p.payrollId " +
-            "JOIN Employee e ON pd.emp.empId = e.empId " +
-            "WHERE e.status <> 'RESIGNED' AND pd.emp.empId = :empId")
+            "WHERE pd.emp.status <> 'RESIGNED' AND pd.emp.empId = :empId " +
+            "AND FUNCTION('YEAR', p.createDatetime) = FUNCTION('YEAR', CURRENT_DATE) " +
+            "AND FUNCTION('MONTH', p.createDatetime) = FUNCTION('MONTH', CURRENT_DATE)")
     Optional<PayrollDTO> findByEmpId(String empId);
 
 }
