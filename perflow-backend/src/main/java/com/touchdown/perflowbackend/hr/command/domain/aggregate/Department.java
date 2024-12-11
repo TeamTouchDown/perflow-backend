@@ -7,13 +7,17 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Entity
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "department", schema = "perflow")
 public class Department extends BaseEntity {
 
@@ -35,20 +39,24 @@ public class Department extends BaseEntity {
     @Column(name = "responsibility", nullable = false)
     private String responsibility;
 
-    @Column(name = "pic", nullable = false, length = 30)
-    private String pic;
-
     @Column(name = "contact", nullable = false, length = 30)
     private String contact;
 
+    @OneToOne(mappedBy = "department", cascade = CascadeType.ALL)
+    private Pic pic;
+
     @Builder
-    public Department(DepartmentCreateDTO createDTO, Department manageDept) {
+    public Department(DepartmentCreateDTO createDTO, Department manageDept, Pic pic) {
         this.departmentId = createDTO.getDepartmentId();
         this.name = createDTO.getName();
         this.responsibility = createDTO.getResponsibility();
-        this.pic = createDTO.getPic();
         this.contact = createDTO.getContact();
         this.manageDept = manageDept;
+        this.pic = pic;
+    }
+
+    public void addPic(Pic pic) {
+        this.pic = pic;
     }
 
     public void addSubDepartment(Department subDepartment) {

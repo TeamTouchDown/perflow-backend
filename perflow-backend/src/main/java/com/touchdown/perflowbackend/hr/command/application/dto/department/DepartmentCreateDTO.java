@@ -13,9 +13,9 @@ public class DepartmentCreateDTO {
 
     private String responsibility;
 
-    private String pic;
-
     private String contact;
 
     private Long manageDeptId;
+
+    private String picId;
 }

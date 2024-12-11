@@ -1,10 +1,11 @@
-package com.touchdown.perflowbackend.hr.command.Mapper;
+package com.touchdown.perflowbackend.hr.command.application.mapper;
 
+import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.hr.command.application.dto.department.DepartmentCreateDTO;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
+import com.touchdown.perflowbackend.hr.command.domain.aggregate.Pic;
 import com.touchdown.perflowbackend.hr.query.dto.DepartmentListResponseDTO;
 import com.touchdown.perflowbackend.hr.query.dto.DepartmentQueryResponseDTO;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,6 @@ public class DepartmentMapper {
                     .name(department.getName())
                     .deptId(department.getDepartmentId())
                     .responsibility(department.getResponsibility())
-                    .pic(department.getPic())
                     .contact(department.getContact())
                     .build();
             if (department.getManageDept() != null) {
@@ -57,5 +57,13 @@ public class DepartmentMapper {
         }
 
         return departmentListDTO;
+    }
+
+    public static Pic toPic(Department department, Employee employee) {
+
+        return Pic.builder()
+                .department(department)
+                .employee(employee)
+                .build();
     }
 }

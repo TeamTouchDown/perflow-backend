@@ -1,6 +1,6 @@
 package com.touchdown.perflowbackend.hr.query.service;
 
-import com.touchdown.perflowbackend.hr.command.Mapper.DepartmentMapper;
+import com.touchdown.perflowbackend.hr.command.application.mapper.DepartmentMapper;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.query.dto.DepartmentListResponseDTO;
 import com.touchdown.perflowbackend.hr.query.dto.DepartmentQueryResponseDTO;
