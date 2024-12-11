@@ -5,6 +5,7 @@ import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -24,38 +25,43 @@ public class ApproveSbj extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "approve_line_id", nullable = false)
-    private ApproveLine approveLineId;
+    private ApproveLine approveLine;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sbj_user_id")
-    private Employee sbjUserId;
+    private Employee sbjUser;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dept_id")
-    private Department deptId;
+    private Department dept;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "sbj_department_pic", nullable = false)
+    // 부서 결재 시 담당자(수신함에서 접수 선택 시 담당자로 지정됨)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sbj_department_pic")
     private Employee sbjDepartmentPic;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "sbj_type", nullable = false, length = 30)
-    private String sbjType;
+    private SbjType sbjType;
 
-    @Column(name = "seq_approve_order")
-    private Long seqApproveOrder;
-
-    @ColumnDefault("0")
+    @ColumnDefault("false")
     @Column(name = "is_pll", nullable = false)
     private Boolean isPll;
 
-    @ColumnDefault("0")
-    @Column(name = "is_auto", nullable = false)
-    private Boolean isAuto;
-
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
-    private Status status;
+    private Status status = Status.ACTIVATED;
 
     @Column(name = "complete_datetime")
     private LocalDateTime completeDatetime;
 
+    @Builder
+    public ApproveSbj(ApproveLine approveLine, Employee sbjUser, SbjType sbjType, Department dept, Boolean isPll) {
+
+        this.approveLine = approveLine;
+        this.sbjUser = sbjUser;
+        this.sbjType = sbjType;
+        this.dept = dept;
+        this.isPll = isPll;
+    }
 }
