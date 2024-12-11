@@ -10,9 +10,13 @@ import java.util.List;
 public class PayrollListResponseDTO {
 
     private List<PayrollResponseDTO> payrolls;
+
     private int totalPages;
+
     private int totalItems;
+
     private int currentPage;
+
     private int pageSize;
 
 }
