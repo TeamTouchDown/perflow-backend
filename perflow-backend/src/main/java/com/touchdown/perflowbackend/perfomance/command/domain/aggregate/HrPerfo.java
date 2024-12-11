@@ -40,4 +40,8 @@ public class HrPerfo extends BaseEntity {
         this.score = score;
         this.status = status;
     }
+
+    public void updateHrPerfo(Double score) {
+        this.score = score;
+    }
 }

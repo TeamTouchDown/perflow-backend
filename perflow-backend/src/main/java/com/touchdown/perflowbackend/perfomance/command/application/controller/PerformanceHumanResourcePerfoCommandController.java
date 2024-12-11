@@ -20,6 +20,17 @@ public class PerformanceHumanResourcePerfoCommandController {
 
         humanResourceCommandService.createHumanResource(empId);
 
-        return ResponseEntity.ok(SuccessCode.SUCCESS);
+        return ResponseEntity.ok(SuccessCode.HRPERFO_UPLOAD_SUCCESS);
+    }
+
+    // 인사 평가 수정
+    @PutMapping("/{empId}")
+    public ResponseEntity<SuccessCode> updateHrPerfo(
+            @PathVariable("empId") String empId,
+            @RequestParam("score") Double score) {
+
+        humanResourceCommandService.updateHumanResource(empId,score);
+
+        return ResponseEntity.ok(SuccessCode.HRPERFO_UPDATE_SUCCESS);
     }
 }

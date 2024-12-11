@@ -17,6 +17,9 @@ import com.touchdown.perflowbackend.perfomance.command.mapper.PerformanceMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.Year;
 import java.util.Comparator;
 import java.util.List;
 
@@ -46,12 +49,34 @@ public class HumanResourceCommandService {
         hrPerfoCommandRepository.save(finalHrPerfo);
     }
 
+    // 인사 평가 수정
+    public void updateHumanResource(String empId,Double score){
+
+        // 평가자 정보 받아오기
+        Employee Emp = findEmployeeByEmpId(empId);
+
+        // 평가자의 사전 인사평가 받아오기
+        HrPerfo hrPerfo = findHrPerfoByEmpId(empId);
+
+        // 점수 업데이트
+        hrPerfo.updateHrPerfo(score);
+
+        // 저장
+        hrPerfoCommandRepository.save(hrPerfo);
+    }
+
     // 받아온 EMP id를 이용해 EMP 정보 불러오기
     private Employee findEmployeeByEmpId(String empId) {
         return employeeCommandRepository.findById(empId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP));
     }
 
+    // 받아온 EMP id를 이용해 EMP 정보 불러오기
+    private HrPerfo findHrPerfoByEmpId(String empId) {
+        int currentYear = Year.now().getValue(); // 현재 연도 가져오기
+        return hrPerfoCommandRepository.findByEmpIdAndCurrentYear(empId, currentYear)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_HRPERFO));
+    }
     // 받아온 EMP를 이용해 최종 점수 계산하기
     private Double getfinalScore(Employee emp) {
 
@@ -220,7 +245,6 @@ public class HumanResourceCommandService {
         // 총점 추출
         Double finalPerfoScore = finalPersonalKPIScore + finalTeamKPIScore + finalColPerfoScore + finalDownPerfoScore + finalWorkScore;
 
-        return finalPerfoScore;
+        return BigDecimal.valueOf(finalPerfoScore).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
-
 }
