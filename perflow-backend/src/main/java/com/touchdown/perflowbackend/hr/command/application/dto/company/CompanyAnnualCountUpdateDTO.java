@@ -1,4 +1,4 @@
-package com.touchdown.perflowbackend.hr.command.application.dto;
+package com.touchdown.perflowbackend.hr.command.application.dto.company;
 
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
