@@ -18,10 +18,10 @@ public class CompanyCommandController {
     private final CompanyCommandService companyCommandService;
 
     @PostMapping
-    public ResponseEntity<SuccessCode> registerCompany(
+    public ResponseEntity<SuccessCode> createCompany(
             @RequestBody CompanyCreateRequestDTO companyCreateRequestDTO
     ) {
-        companyCommandService.registerCompany(companyCreateRequestDTO);
+        companyCommandService.createCompany(companyCreateRequestDTO);
 
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
