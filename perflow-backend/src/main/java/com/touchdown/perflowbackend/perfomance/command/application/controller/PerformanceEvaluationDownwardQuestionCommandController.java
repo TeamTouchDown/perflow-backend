@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/hr/perfomances/downward/perfo/question")
 @RequiredArgsConstructor
-public class PerfomanceEvaluationDownwardQuestionCommandController {
+public class PerformanceEvaluationDownwardQuestionCommandController {
 
     private final EvalutionCommandService evalutionCommandService;
 

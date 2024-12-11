@@ -19,10 +19,6 @@ public class HrPerfoHistory extends BaseEntity {
     private Long hrPerfoHistoryId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "hr_perfo_id", nullable = false)
-    private HrPerfo hrPerfo;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "emp_id", nullable = false)
     private Employee emp;
 
@@ -34,4 +30,7 @@ public class HrPerfoHistory extends BaseEntity {
 
     @Column(name = "adjustment_reason", nullable = false)
     private String adjustmentReason;
+
+    @Column(name = "perfo_type", nullable = false)
+    private String perfoType;
 }

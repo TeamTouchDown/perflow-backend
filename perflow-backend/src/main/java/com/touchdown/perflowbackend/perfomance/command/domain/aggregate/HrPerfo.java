@@ -4,6 +4,7 @@ import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,10 +23,21 @@ public class HrPerfo extends BaseEntity {
     @JoinColumn(name = "emp_id", nullable = false)
     private Employee emp;
 
-    @Column(name = "grade", nullable = false, length = 30)
+    @Column(name = "grade", length = 30)
     @Enumerated(EnumType.STRING)
     private Grade grade;
 
     @Column(name = "score", nullable = false)
-    private Long score;
+    private Double score;
+
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private HrPerfoStatus status;
+
+    @Builder
+    public HrPerfo(Employee emp, Double score, HrPerfoStatus status) {
+        this.emp = emp;
+        this.score = score;
+        this.status = status;
+    }
 }
