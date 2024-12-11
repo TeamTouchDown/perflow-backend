@@ -101,6 +101,16 @@ public class EmployeeCommandService {
     }
 
     @Transactional
+    public void updateEmployee(EmployeeUpdateRequestDTO employeeUpdateRequestDTO) {
+
+        Employee employee = findEmpById(employeeUpdateRequestDTO.getEmpId());
+
+        employee.updateEmployee(employeeUpdateRequestDTO);
+
+        employeeCommandRepository.save(employee);
+    }
+
+    @Transactional
     public TokenResponseDTO loginRequestEmployee(EmployeeLoginRequestDTO employeeLoginRequestDTO) {
 
         // 1. AuthenticationManager를 통해 인증 수행
@@ -127,8 +137,7 @@ public class EmployeeCommandService {
     @Transactional
     public void createEmployeePassword(EmployeePwdCreateDTO employeePwdCreateDTO) {
 
-        Employee employee = employeeCommandRepository.findById(employeePwdCreateDTO.getEmpId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP));
-
+        Employee employee = findEmpById(employeePwdCreateDTO.getEmpId());
         /* 이미 초기 비밀번호 등록이 완료된 사원이라면 등록 불가. */
         if (!employee.getPassword().isEmpty()) {
             throw new CustomException(ErrorCode.ALREADY_REGISTERED_PASSWORD);
@@ -238,4 +247,12 @@ public class EmployeeCommandService {
 
         emailService.sendStyledEmail(newEmployee.getEmail(), newEmployee.getName(), emailToken);
     }
+
+    public Employee findEmpById(String empId) {
+
+        return employeeCommandRepository.findById(empId).orElseThrow(
+                () -> new CustomException(ErrorCode.NOT_FOUND_EMP)
+        );
+    }
+
 }
