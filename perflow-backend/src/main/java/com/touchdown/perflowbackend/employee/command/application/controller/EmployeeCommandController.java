@@ -44,7 +44,7 @@ public class EmployeeCommandController {
         return ResponseEntity.ok(SuccessCode.EMP_CSV_CREATE_SUCCESS);
     }
 
-    @PutMapping("/hr/employees")
+    @PutMapping("/hr/employees") // 사원 정보 수정
     public ResponseEntity<SuccessCode> updateEmployee(
             @RequestBody EmployeeUpdateRequestDTO employeeUpdateRequestDTO
     ) {
@@ -52,6 +52,19 @@ public class EmployeeCommandController {
         employeeCommandService.updateEmployee(employeeUpdateRequestDTO);
 
         return ResponseEntity.ok(SuccessCode.EMP_UPDATE_SUCCESS);
+    }
+
+    @PutMapping("/employees") // 내 정보 수정
+    public ResponseEntity<SuccessCode> updateMyInfo(
+            @RequestBody MyInfoUpdateDTO myInfoUpdateDTO
+    ) {
+
+        String empId = EmployeeUtil.getEmpId();
+
+        employeeCommandService.updateMyInfo(empId, myInfoUpdateDTO);
+
+        return ResponseEntity.ok(SuccessCode.MY_INFO_UPDATE_SUCCESS);
+
     }
 
     @PostMapping("/login")
@@ -86,7 +99,7 @@ public class EmployeeCommandController {
         return ResponseEntity.ok(SuccessCode.LOGOUT_SUCCESS);
     }
 
-    @PutMapping("/pwd")
+    @PutMapping("/employee/pwd")
     public ResponseEntity<SuccessCode> createEmployeePassword(@RequestBody EmployeePwdCreateDTO employeePwdCreateDTO) {
 
         employeeCommandService.createEmployeePassword(employeePwdCreateDTO);

@@ -111,6 +111,16 @@ public class EmployeeCommandService {
     }
 
     @Transactional
+    public void updateMyInfo(String empId, MyInfoUpdateDTO myInfoUpdateDTO) {
+
+        Employee employee = findEmpById(empId);
+
+        employee.updateMyInfo(myInfoUpdateDTO);
+
+        employeeCommandRepository.save(employee);
+    }
+
+    @Transactional
     public TokenResponseDTO loginRequestEmployee(EmployeeLoginRequestDTO employeeLoginRequestDTO) {
 
         // 1. AuthenticationManager를 통해 인증 수행
@@ -139,7 +149,7 @@ public class EmployeeCommandService {
 
         Employee employee = findEmpById(employeePwdCreateDTO.getEmpId());
         /* 이미 초기 비밀번호 등록이 완료된 사원이라면 등록 불가. */
-        if (!employee.getPassword().isEmpty()) {
+        if (employee.getPassword() != null) {
             throw new CustomException(ErrorCode.ALREADY_REGISTERED_PASSWORD);
         }
 

@@ -1,6 +1,5 @@
 package com.touchdown.perflowbackend.employee.command.application.dto;
 
-import com.touchdown.perflowbackend.employee.command.domain.aggregate.EmployeeStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
