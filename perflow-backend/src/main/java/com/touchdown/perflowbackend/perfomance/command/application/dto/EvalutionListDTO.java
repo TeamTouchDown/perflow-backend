@@ -10,8 +10,6 @@ import java.util.List;
 public class EvalutionListDTO {
 
     private final String perfoedEmpId;
+
     private final List<EvalutionDetailDTO> answers;
-
-
-
 }

@@ -21,6 +21,11 @@ public enum SuccessCode {
     PASSWORD_REGISTER_SUCCESS(HttpStatus.OK, "초기 비밀번호 등록 성공"),
     TOKEN_REISSUE_SUCCESS(HttpStatus.OK, "AccessToken 재발급 성공!"),
 
+    // 200 - 회사 관련 성공
+    COMPANY_REGISTER_SUCCESS(HttpStatus.OK, "회사 정보 등록 성공"),
+    COMPANY_UPDATE_SUCCESS(HttpStatus.OK, "회사 정보 수정 성공"),
+    COMPANY_DELETE_SUCCESS(HttpStatus.OK, "회사 정보 삭제 성공"),
+
     // 200 - 급여대장 관련 성공
     EXCEL_TEMPLATE_UPLOAD_SUCCESS(HttpStatus.OK, "엑셀 템플릿을 성공적으로 업로드 하였습니다."),
     PAYROLL_UPLOAD_SUCCESS(HttpStatus.OK, "급여대장을 성공적으로 업로드 하였습니다."),
@@ -47,6 +52,19 @@ public enum SuccessCode {
     EVALUTION_COL_UPLOAD_SUCCESS(HttpStatus.OK, "동료 평가가 성공적으로 작성되었습니다."),
     EVALUTION_COL_UPDATE_SUCCESS(HttpStatus.OK, "동료 평가가 성공적으로 수정되었습니다."),
 
+    // 동료 평가 문항 생성
+    EVALUTION_COL_QUESTION_UPLOAD_SUCCESS(HttpStatus.OK, "동료 평가 문항이 성공적으로 생성되었습니다."),
+    EVALUTION_COL_QUESTION_UPDATE_SUCCESS(HttpStatus.OK, "동료 평가 문항이 성공적으로 수정되었습니다."),
+    EVALUTION_COL_QUESTION_DELETE_SUCCESS(HttpStatus.OK, "동료 평가 문항이 성공적으로 삭제되었습니다."),
+
+    // 하향 평가
+    EVALUTION_DOWN_UPLOAD_SUCCESS(HttpStatus.OK, "하향 평가가 성공적으로 작성되었습니다."),
+    EVALUTION_DOWN_UPDATE_SUCCESS(HttpStatus.OK, "하향 평가가 성공적으로 수정되었습니다."),
+
+    // 동료 평가 문항 생성
+    EVALUTION_DOWN_QUESTION_UPLOAD_SUCCESS(HttpStatus.OK, "하향 평가 문항이 성공적으로 생성되었습니다."),
+    EVALUTION_DOWN_QUESTION_UPDATE_SUCCESS(HttpStatus.OK, "하향 평가 문항이 성공적으로 수정되었습니다."),
+    EVALUTION_DOWN_QUESTION_DELETE_SUCCESS(HttpStatus.OK, "하향 평가 문항이 성공적으로 삭제되었습니다."),
 
     // 201
     WORK_ATTITUDE_TRAVEL_SUCCESS(HttpStatus.CREATED, "출장 요청 등록이 완료 되었습니다."),

@@ -2,7 +2,7 @@ package com.touchdown.perflowbackend.notification.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Appoint;
-import com.touchdown.perflowbackend.payment.command.domain.aggregate.Payroll;
+import com.touchdown.perflowbackend.payment.command.domain.aggregate.PayrollDetail;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.HrPerfo;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Annual;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Overtime;
@@ -60,7 +60,7 @@ public class Notification {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payroll_id")
-    private Payroll payroll;
+    private PayrollDetail payrollDetail;
 
     @Column(name = "content", nullable = false, length = 50)
     private String content;

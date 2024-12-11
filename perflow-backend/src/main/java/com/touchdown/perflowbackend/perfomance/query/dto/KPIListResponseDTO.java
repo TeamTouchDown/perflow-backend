@@ -11,7 +11,10 @@ import java.util.List;
 public class KPIListResponseDTO {
 
     private List<KPIDetailResponseDTO> kpiLists;
+
     private Long totalKpis;
+
     private Long minKpis;
+
     private Long maxKpis;
 }

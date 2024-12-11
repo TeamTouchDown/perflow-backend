@@ -10,6 +10,6 @@ import lombok.Getter;
 public class EvaAnswerResponseDTO {
 
     private final Long questionId;
-    private final String answer;
 
+    private final String answer;
 }

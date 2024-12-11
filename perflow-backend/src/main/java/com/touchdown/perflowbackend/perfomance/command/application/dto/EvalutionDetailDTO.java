@@ -8,5 +8,6 @@ import lombok.RequiredArgsConstructor;
 public class EvalutionDetailDTO {
 
     private final Long questionId;
+
     private final String answer;
 }
