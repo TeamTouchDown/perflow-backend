@@ -9,11 +9,14 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "announcement", schema = "perflow")
+@SQLDelete(sql = "UPDATE announcement SET status = 'DELETED' WHERE ann_id = ?")
 public class Announcement extends BaseEntity {
 
     @Id
@@ -35,6 +38,11 @@ public class Announcement extends BaseEntity {
     @Lob
     @Column(name = "content", nullable = false)
     private String content;
+
+    @ColumnDefault("SAVED")
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.SAVED;
 
     @Builder
     public Announcement(Long annId, Department dept, Employee emp, String title, String content) {
