@@ -1,7 +1,9 @@
 package com.touchdown.perflowbackend.employee.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
-import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeRegisterDTO;
+import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeCreateDTO;
+import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeUpdateRequestDTO;
+import com.touchdown.perflowbackend.employee.command.application.dto.MyInfoUpdateDTO;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
@@ -10,14 +12,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
+@Slf4j
 @Getter
 @Entity
 @NoArgsConstructor
@@ -74,7 +74,7 @@ public class Employee extends BaseEntity {
     private EmployeeStatus status;
 
     @Builder
-    public Employee(EmployeeRegisterDTO registerDTO, Position position, Job job, Department department) {
+    public Employee(EmployeeCreateDTO registerDTO, Position position, Job job, Department department) {
         this.empId = registerDTO.getEmpId();
         this.position = position;
         this.job = job;
@@ -90,7 +90,30 @@ public class Employee extends BaseEntity {
         this.status = EmployeeStatus.ACTIVE;
     }
 
+    public void updateEmployee(EmployeeUpdateRequestDTO updateRequestDTO) {
+
+        this.name = updateRequestDTO.getName();
+        this.gender = updateRequestDTO.getGender();
+        this.rrn = updateRequestDTO.getRrn();
+        this.pay = updateRequestDTO.getPay();
+        this.address = updateRequestDTO.getAddress();
+        this.contact = updateRequestDTO.getContact();
+        this.email = updateRequestDTO.getEmail();
+        this.joinDate = updateRequestDTO.getJoinDate();
+    }
+
+    public void updateMyInfo(MyInfoUpdateDTO updateDTO) {
+
+        this.address = updateDTO.getAddress();
+        this.contact = updateDTO.getContact();
+        this.email = updateDTO.getEmail();
+    }
+
     public void registerPassword(String password) {
         this.password = password;
+    }
+
+    public void updateStatus(EmployeeStatus status) {
+        this.status = status;
     }
 }

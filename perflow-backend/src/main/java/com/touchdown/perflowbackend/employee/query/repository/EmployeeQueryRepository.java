@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface EmployeeQueryRepository extends JpaRepository<Employee, Long> {
+public interface EmployeeQueryRepository extends JpaRepository<Employee, String> {
 
     @Query("SELECT e FROM Employee e WHERE e.dept.departmentId = :departmentId")
     List<Employee> findByDeptId(@Param("deptId") Long departmentId);

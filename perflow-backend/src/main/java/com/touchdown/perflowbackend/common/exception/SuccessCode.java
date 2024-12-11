@@ -16,13 +16,15 @@ public enum SuccessCode {
     // 200 - 인사정보 관련 성공
     LOGIN_SUCCESS(HttpStatus.OK, "로그인 성공"),
     LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃 성공"),
-    EMP_REGISTER_SUCCESS(HttpStatus.OK, "사원 등록 성공"),
-    EMP_CSV_REGISTER_SUCCESS(HttpStatus.OK, "사원 목록 등록 성공"),
-    PASSWORD_REGISTER_SUCCESS(HttpStatus.OK, "초기 비밀번호 등록 성공"),
+    EMP_CREATE_SUCCESS(HttpStatus.OK, "사원 등록 성공"),
+    EMP_CSV_CREATE_SUCCESS(HttpStatus.OK, "사원 목록 등록 성공"),
+    EMP_UPDATE_SUCCESS(HttpStatus.OK, "사원 정보 수정 성공"),
+    MY_INFO_UPDATE_SUCCESS(HttpStatus.OK, "내 정보 수정 성공"),
+    PASSWORD_CREATE_SUCCESS(HttpStatus.OK, "초기 비밀번호 등록 성공"),
     TOKEN_REISSUE_SUCCESS(HttpStatus.OK, "AccessToken 재발급 성공!"),
 
     // 200 - 회사 관련 성공
-    COMPANY_REGISTER_SUCCESS(HttpStatus.OK, "회사 정보 등록 성공"),
+    COMPANY_CREATE_SUCCESS(HttpStatus.OK, "회사 정보 등록 성공"),
     COMPANY_UPDATE_SUCCESS(HttpStatus.OK, "회사 정보 수정 성공"),
     COMPANY_DELETE_SUCCESS(HttpStatus.OK, "회사 정보 삭제 성공"),
 
