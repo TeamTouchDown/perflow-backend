@@ -25,17 +25,19 @@ public class ExcelTemplateQueryController {
     public ResponseEntity<byte[]> downloadTemplate() {
 
         try {
-
+            // 엑셀 템플릿을 바이트 배열로 생성
             byte[] template = excelTemplateQueryService.generatePayrollTemplate();
+
+            // 응답 헤더 설정 및 Excel 파일 반환
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=payroll_template.xlsx")
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .contentType(MediaType.valueOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                     .body(template);
 
         } catch (IOException e) {
-
+            // 예외 발생 시 처리
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
-
         }
     }
 }
+

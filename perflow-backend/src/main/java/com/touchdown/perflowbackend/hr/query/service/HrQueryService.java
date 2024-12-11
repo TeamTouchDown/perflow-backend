@@ -1,6 +1,8 @@
 package com.touchdown.perflowbackend.hr.query.service;
 
+import com.touchdown.perflowbackend.hr.command.Mapper.HrMapper;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
+import com.touchdown.perflowbackend.hr.query.dto.DepartmentListResponseDTO;
 import com.touchdown.perflowbackend.hr.query.dto.DepartmentQueryResponseDTO;
 import com.touchdown.perflowbackend.hr.query.repository.DepartmentQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -59,4 +61,11 @@ public class HrQueryService {
         return new DepartmentQueryResponseDTO(department.getDepartmentId(), department.getName(), subDepartments);
     }
 
+    // 트리 구조로 만들지 않은 모든 부서 데이터 조회
+    public List<DepartmentListResponseDTO> readDepartmentList() {
+
+        List<Department> allDepartmentEntity = findAllDepartments();
+
+        return HrMapper.toListDTO(allDepartmentEntity);
+    }
 }

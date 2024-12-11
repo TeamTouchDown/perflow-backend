@@ -10,5 +10,6 @@ import lombok.Getter;
 public class KPILimitResponseDTO {
 
     private final Long minKpis;
+
     private final Long maxKpis;
 }

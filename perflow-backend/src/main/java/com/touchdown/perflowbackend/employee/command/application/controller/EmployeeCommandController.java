@@ -12,11 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/hr/employees")
+@RequestMapping("/api/v1")
 public class EmployeeCommandController {
 
     private final EmployeeCommandService employeeCommandService;
@@ -24,13 +25,56 @@ public class EmployeeCommandController {
     private static final String REFRESH_TOKEN_HEADER = "refreshToken";
     private static final String BEARER_PREFIX = "Bearer ";
 
-    @PostMapping
-    public ResponseEntity<SuccessCode> registerEmployee(
-            @RequestBody EmployeeRegisterDTO employeeRegisterDTO) {
+    @PostMapping("/hr/employees")
+    public ResponseEntity<SuccessCode> createEmployee(
+            @RequestBody EmployeeCreateDTO employeeCreateDTO) {
 
-        employeeCommandService.registerEmployee(employeeRegisterDTO);
+        employeeCommandService.createEmployee(employeeCreateDTO);
 
-        return ResponseEntity.ok(SuccessCode.SUCCESS);
+        return ResponseEntity.ok(SuccessCode.EMP_CREATE_SUCCESS);
+    }
+
+    @PostMapping("/hr/employees/list")
+    public ResponseEntity<SuccessCode> createEmployeeList(
+            @RequestPart(value = "empCSV", required = false) MultipartFile empCSV
+    ) {
+
+        employeeCommandService.createEmployeeList(empCSV);
+
+        return ResponseEntity.ok(SuccessCode.EMP_CSV_CREATE_SUCCESS);
+    }
+
+    @PutMapping("/hr/employees") // 사원 정보 수정
+    public ResponseEntity<SuccessCode> updateEmployee(
+            @RequestBody EmployeeUpdateRequestDTO employeeUpdateRequestDTO
+    ) {
+
+        employeeCommandService.updateEmployee(employeeUpdateRequestDTO);
+
+        return ResponseEntity.ok(SuccessCode.EMP_UPDATE_SUCCESS);
+    }
+
+    @PutMapping("/employees") // 내 정보 수정
+    public ResponseEntity<SuccessCode> updateMyInfo(
+            @RequestBody MyInfoUpdateDTO myInfoUpdateDTO
+    ) {
+
+        String empId = EmployeeUtil.getEmpId();
+
+        employeeCommandService.updateMyInfo(empId, myInfoUpdateDTO);
+
+        return ResponseEntity.ok(SuccessCode.MY_INFO_UPDATE_SUCCESS);
+
+    }
+
+    @PutMapping("/hr/employees/status")
+    public ResponseEntity<SuccessCode> updateEmployeeStatus(
+            @RequestBody EmployeeStatusUpdateDTO employeeStatusUpdateDTO
+    ) {
+
+        employeeCommandService.updateEmployeeStatus(employeeStatusUpdateDTO);
+
+        return ResponseEntity.ok(SuccessCode.EMP_UPDATE_SUCCESS);
     }
 
     @PostMapping("/login")
@@ -60,16 +104,15 @@ public class EmployeeCommandController {
         // Remove "Bearer " prefix
         accessToken = accessToken.substring(7);
 
-        log.info(empId + " " + accessToken);
         employeeCommandService.logoutRequestEmployee(new EmployeeLogoutRequestDTO(empId, accessToken));
 
         return ResponseEntity.ok(SuccessCode.LOGOUT_SUCCESS);
     }
 
-    @PutMapping("/pwd")
-    public ResponseEntity<SuccessCode> registerEmployeePassword(@RequestBody EmployeePwdRegisterDTO employeePwdRegisterDTO) {
+    @PutMapping("/employee/pwd")
+    public ResponseEntity<SuccessCode> createEmployeePassword(@RequestBody EmployeePwdCreateDTO employeePwdCreateDTO) {
 
-        employeeCommandService.registerEmployeePassword(employeePwdRegisterDTO);
+        employeeCommandService.createEmployeePassword(employeePwdCreateDTO);
 
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
@@ -89,4 +132,5 @@ public class EmployeeCommandController {
 
         return ResponseEntity.ok().headers(headers).body(SuccessCode.TOKEN_REISSUE_SUCCESS);
     }
+
 }
