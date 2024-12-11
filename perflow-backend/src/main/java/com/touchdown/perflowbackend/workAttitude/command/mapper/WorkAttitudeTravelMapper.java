@@ -39,7 +39,7 @@ public class WorkAttitudeTravelMapper {
                 .travelRejectReason(travel.getTravelRejectReason())
                 .createDatetime(travel.getCreateDatetime())
                 .updateDatetime(travel.getCreateDatetime())
-                .status(travel.getStatus().toString())
+                .status(travel.getStatus())
                 .build();
     }
 }

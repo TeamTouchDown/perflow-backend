@@ -4,17 +4,26 @@ spring:
     url: jdbc:mariadb://localhost:${db.port}/${db.name}
     username: ${db.user}
     password: ${db.password}
-
   redis:
     data:
       host: localhost # Redis 서버 호스트
       port: 6379      # Redis 포트
-
   jpa:
     properties:
       hibernate:
-        ddl-auto: create
-
+        ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    port: ${spring.mail.port}
+    username: ${spring.mail.username}
+    password: ${spring.mail.password}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+            required: true
+          auth: true
   config:
     import: "classpath:API-KEY.yml"
 

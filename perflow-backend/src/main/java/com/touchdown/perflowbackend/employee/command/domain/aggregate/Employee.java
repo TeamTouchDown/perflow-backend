@@ -1,7 +1,9 @@
 package com.touchdown.perflowbackend.employee.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
-import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeRegisterDTO;
+import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeCreateDTO;
+import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeUpdateRequestDTO;
+import com.touchdown.perflowbackend.employee.command.application.dto.MyInfoUpdateDTO;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
@@ -10,12 +12,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 
+@Slf4j
 @Getter
 @Entity
 @NoArgsConstructor
+@ToString
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "employee", schema = "perflow")
 public class Employee extends BaseEntity {
 
@@ -35,7 +42,7 @@ public class Employee extends BaseEntity {
     @JoinColumn(name = "dept_id", nullable = false)
     private Department dept;
 
-    @Column(name = "password", nullable = false, length = 255)
+    @Column(name = "password", nullable = true, length = 255)
     private String password;
 
     @Column(name = "name", nullable = false, length = 30)
@@ -66,8 +73,11 @@ public class Employee extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private EmployeeStatus status;
 
+    @Column(name = "resign_datetime")
+    private LocalDate resignDatetime;
+
     @Builder
-    public Employee(EmployeeRegisterDTO registerDTO, Position position, Job job, Department department) {
+    public Employee(EmployeeCreateDTO registerDTO, Position position, Job job, Department department) {
         this.empId = registerDTO.getEmpId();
         this.position = position;
         this.job = job;
@@ -83,7 +93,30 @@ public class Employee extends BaseEntity {
         this.status = EmployeeStatus.ACTIVE;
     }
 
+    public void updateEmployee(EmployeeUpdateRequestDTO updateRequestDTO) {
+
+        this.name = updateRequestDTO.getName();
+        this.gender = updateRequestDTO.getGender();
+        this.rrn = updateRequestDTO.getRrn();
+        this.pay = updateRequestDTO.getPay();
+        this.address = updateRequestDTO.getAddress();
+        this.contact = updateRequestDTO.getContact();
+        this.email = updateRequestDTO.getEmail();
+        this.joinDate = updateRequestDTO.getJoinDate();
+    }
+
+    public void updateMyInfo(MyInfoUpdateDTO updateDTO) {
+
+        this.address = updateDTO.getAddress();
+        this.contact = updateDTO.getContact();
+        this.email = updateDTO.getEmail();
+    }
+
     public void registerPassword(String password) {
         this.password = password;
+    }
+
+    public void updateStatus(EmployeeStatus status) {
+        this.status = status;
     }
 }

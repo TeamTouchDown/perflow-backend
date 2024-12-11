@@ -4,7 +4,6 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
-import com.touchdown.perflowbackend.hr.command.domain.repository.DepartmentCommandRepository;
 import com.touchdown.perflowbackend.perfomance.command.application.dto.KPIDetailRequestDTO;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.Kpi;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.PersonalType;
@@ -20,7 +19,6 @@ public class KPICommandService {
 
     private final KpiCommandRepository kpiCommandRepository;
     private final EmployeeCommandRepository employeeCommandRepository;
-    private final DepartmentCommandRepository departmentCommandRepository;
 
     // 개인 KPI 생성
     @Transactional

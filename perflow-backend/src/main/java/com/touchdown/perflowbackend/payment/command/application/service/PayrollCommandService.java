@@ -2,9 +2,8 @@ package com.touchdown.perflowbackend.payment.command.application.service;
 
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
-import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
-import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.Payroll;
+import com.touchdown.perflowbackend.payment.command.domain.aggregate.PayrollDetail;
 import com.touchdown.perflowbackend.payment.command.domain.repository.PayrollCommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
@@ -23,7 +22,6 @@ import java.io.InputStream;
 public class PayrollCommandService {
 
     private final PayrollCommandRepository payrollCommandRepository;
-    private final EmployeeCommandRepository employeeRepository;
 
     @Transactional
     public void updatePayrollFromExcel(
@@ -35,17 +33,20 @@ public class PayrollCommandService {
             Workbook workbook = new XSSFWorkbook(inputStream);
             Sheet sheet = workbook.getSheetAt(0); // 첫 번째 시트를 가져옵니다.
 
-            // 1. 급여대장 정보 조회 (payrollId로 찾기)
-            Payroll payroll = payrollCommandRepository.findByPayrollId(payrollId)
+            // 1. 급여대장 정보 조회
+            Payroll payroll = payrollCommandRepository.findByPayrollIdWithDetails(payrollId)
                     .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PAYROLL));
 
             // 2. 엑셀 데이터 파싱 시작
             for (Row row : sheet) {
+
                 if (row.getRowNum() == 0) continue; // 첫 번째 행은 헤더, 건너뜀
 
                 // 사원 ID와 급여 정보를 읽어옴
                 String empId = row.getCell(0).getStringCellValue(); // 사원 ID (문자열)
-                Employee employee = employeeRepository.findById(empId)
+                PayrollDetail payrollDetail = payroll.getPayrollDetailList().stream()
+                        .filter(detail -> detail.getEmp().getEmpId().equals(empId))
+                        .findFirst()
                         .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));
 
                 // 급여 항목들 읽어오기
@@ -63,9 +64,9 @@ public class PayrollCommandService {
                 Long totalAmount = (long) row.getCell(19).getNumericCellValue();
 
                 // 급여 정보를 수정
-                payroll.updatePayroll(
+                payrollDetail.updatePayroll(
 
-                        employee, extendLaborAllowance, nightLaborAllowance, holidayLaborAllowance,
+                        extendLaborAllowance, nightLaborAllowance, holidayLaborAllowance,
                         annualAllowance, incentive, nationalPension, healthInsurance, hireInsurance,
                         longTermCareInsurance, incomeTax, localIncomeTax, totalAmount);
 

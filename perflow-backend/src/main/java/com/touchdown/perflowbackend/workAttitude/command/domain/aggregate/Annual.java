@@ -40,6 +40,7 @@ public class Annual extends BaseEntity { //연차
     private LocalDateTime annualEnd;
 
     @Column(name = "annual_status", nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
     private Status annualStatus;
 
     @Column(name = "annual_reject_reason")
@@ -47,6 +48,7 @@ public class Annual extends BaseEntity { //연차
 
     @ColumnDefault("'ACTIVE'")
     @Column(name = "status", nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @ColumnDefault("0")
@@ -57,6 +59,7 @@ public class Annual extends BaseEntity { //연차
     private String annualRetroactiveReason; // 소급 사유
 
     @Column(name = "annual_retroactive_status", length = 30)
+    @Enumerated(EnumType.STRING)
     private Status annualRetroactiveStatus; // 소급 상태 (대기, 승인, 반려)
 
 

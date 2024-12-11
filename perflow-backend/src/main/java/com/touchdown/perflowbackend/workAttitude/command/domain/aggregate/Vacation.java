@@ -42,12 +42,14 @@ public class Vacation extends BaseEntity {
     private LocalDateTime vacationEnd;
 
     @Column(name = "vacation_status", nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
     private Status vacationStatus;
 
     @Column(name = "vacation_reject_reason")
     private String vacationRejectReason;
 
     @Column(name = "status", nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
 }
