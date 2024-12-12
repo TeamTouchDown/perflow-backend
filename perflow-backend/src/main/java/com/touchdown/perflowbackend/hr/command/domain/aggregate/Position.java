@@ -13,6 +13,7 @@ import org.hibernate.annotations.SQLDelete;
 @Entity
 @NoArgsConstructor
 @Table(name = "`position`", schema = "perflow")
+@SQLDelete(sql = "UPDATE position SET status = 'DELETED' WHERE position_id = ?")
 public class Position extends BaseEntity {
 
     @Id

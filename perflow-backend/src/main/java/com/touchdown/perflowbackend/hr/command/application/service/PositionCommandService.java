@@ -35,10 +35,19 @@ public class PositionCommandService {
         positionCommandRepository.save(position);
     }
 
+    @Transactional
+    public void deletePosition(Long positionId) {
+
+        Position position = getPosition(positionId);
+
+        positionCommandRepository.delete(position);
+    }
+
     private Position getPosition(Long positionId) {
 
         return positionCommandRepository.findById(positionId).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_POSITION)
         );
     }
+
 }

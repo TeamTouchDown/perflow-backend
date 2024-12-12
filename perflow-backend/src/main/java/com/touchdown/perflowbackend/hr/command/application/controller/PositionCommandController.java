@@ -15,24 +15,40 @@ public class PositionCommandController {
 
     private final PositionCommandService positionCommandService;
 
-    @PostMapping("/hr/position")
+    @PostMapping("/hr/position/{positionId}")
     public ResponseEntity<SuccessCode> createPosition(
-            @RequestBody PositionCreateDTO positionCreateDTO
+            @RequestBody PositionCreateDTO positionCreateDTO,
+            @PathVariable(name = "positionId") Long positionId
     ) {
+
+        positionCreateDTO.setPositionId(positionId);
 
         positionCommandService.createPosition(positionCreateDTO);
 
         return ResponseEntity.ok(SuccessCode.POSITION_CREATE_SUCCESS);
     }
 
-    @PutMapping("/hr/position")
+    @PutMapping("/hr/position/{positionId}")
     public ResponseEntity<SuccessCode> updatePosition(
-            @RequestBody PositionUpdateDTO positionUpdateDTO
+            @RequestBody PositionUpdateDTO positionUpdateDTO,
+            @PathVariable(name = "positionId") Long positionId
     ) {
+
+        positionUpdateDTO.setPositionId(positionId);
 
         positionCommandService.updatePosition(positionUpdateDTO);
 
         return ResponseEntity.ok(SuccessCode.POSITION_UPDATE_SUCCESS);
+    }
+
+    @DeleteMapping("/hr/position/{positionId}")
+    public ResponseEntity<SuccessCode> deletePosition(
+            @PathVariable(name = "positionId") Long positionId
+    ) {
+
+        positionCommandService.deletePosition(positionId);
+
+        return ResponseEntity.ok(SuccessCode.POSITION_DELETE_SUCCESS);
     }
 
 }

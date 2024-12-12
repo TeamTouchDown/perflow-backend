@@ -19,6 +19,7 @@ public enum SuccessCode {
     EMP_UPDATE_SUCCESS(HttpStatus.OK, "사원 정보 수정 성공"),
     DEPARTMENT_UPDATE_SUCCESS(HttpStatus.OK, "부서 정보 수정 성공"),
     POSITION_UPDATE_SUCCESS(HttpStatus.OK,"직위 정보 수정 성공"),
+    POSITION_DELETE_SUCCESS(HttpStatus.OK,"직위 정보 삭제 성공"),
     MY_INFO_UPDATE_SUCCESS(HttpStatus.OK, "내 정보 수정 성공"),
     PASSWORD_CREATE_SUCCESS(HttpStatus.OK, "초기 비밀번호 등록 성공"),
     TOKEN_REISSUE_SUCCESS(HttpStatus.OK, "AccessToken 재발급 성공!"),
