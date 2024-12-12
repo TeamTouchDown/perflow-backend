@@ -34,6 +34,9 @@ public class HrPerfo extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private HrPerfoStatus status;
 
+    @Column(name = "review")
+    private String review;
+
     @Builder
     public HrPerfo(Employee emp, Double score, HrPerfoStatus status) {
         this.emp = emp;
