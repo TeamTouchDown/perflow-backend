@@ -25,6 +25,14 @@ public class PositionCommandController {
         return ResponseEntity.ok(SuccessCode.POSITION_CREATE_SUCCESS);
     }
 
-    
+    @PutMapping("/hr/position")
+    public ResponseEntity<SuccessCode> updatePosition(
+            @RequestBody PositionUpdateDTO positionUpdateDTO
+    ) {
+
+        positionCommandService.updatePosition(positionUpdateDTO);
+
+        return ResponseEntity.ok(SuccessCode.POSITION_UPDATE_SUCCESS);
+    }
 
 }
