@@ -29,4 +29,10 @@ public class Attendance { //출퇴
     @Column(name = "get_off_datetime", nullable = false)
     private LocalDateTime getOffDatetime;
 
+    @Column(name = "auth_num", nullable = true)
+    private String authNum;
+
+    @Column(name = "expire_time", nullable = true)
+    private LocalDateTime expireTime;
+
 }

@@ -70,6 +70,11 @@ dependencies {
     implementation 'org.hibernate:hibernate-core:6.2.0.Final' // Hibernate 6.x 이상
     implementation 'org.springframework:spring-orm:6.2.0' // Spring ORM 6.x 이상
 
+    //QR 인증
+    implementation 'com.google.zxing:core:3.4.1'
+    implementation 'com.google.zxing:javase:3.4.1'
+
+
 }
 
 tasks.named('test') {
