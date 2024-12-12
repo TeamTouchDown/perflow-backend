@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Setter
 @ToString
 @Builder
-public class EmployeeRegisterDTO {
+public class EmployeeCreateDTO {
 
     private String empId;
 

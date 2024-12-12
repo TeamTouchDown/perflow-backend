@@ -18,5 +18,4 @@ public class DepartmentQueryResponseDTO {
 
     private final List<DepartmentQueryResponseDTO> subDepartments;
 
-
 }

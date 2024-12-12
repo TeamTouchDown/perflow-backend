@@ -5,31 +5,40 @@ import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.Payroll;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.PayrollDetail;
+import com.touchdown.perflowbackend.payment.command.domain.aggregate.PayrollSpecifications;
+import com.touchdown.perflowbackend.payment.query.dto.*;
+import com.touchdown.perflowbackend.payment.query.repository.PayrollDetailQueryRepository;
 import com.touchdown.perflowbackend.payment.query.repository.PayrollQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PayrollQueryService {
 
     private final PayrollQueryRepository payrollQueryRepository;
+    private final PayrollDetailQueryRepository payrollDetailQueryRepository;
 
     // 급여 데이터에 대한 엑셀 생성 메서드
     @Transactional
     public byte[] generatePayroll(Long payrollId) throws IOException {
 
         // 데이터베이스에서 급여 데이터를 조회
-        Payroll payroll = payrollQueryRepository.findByPayrollId(payrollId)
+        Payroll payroll = payrollQueryRepository.findByPayrollsId(payrollId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PAYROLL));
 
         // 엑셀 워크북 생성
@@ -127,6 +136,191 @@ public class PayrollQueryService {
         ); // 공제 내역 합계
         row.createCell(19).setCellValue(payrollDetail.getTotalAmount()); // 총합계
         row.createCell(20).setCellValue(payrollDetail.getStatus().name()); // 지급 상태
+
+    }
+
+    @Transactional(readOnly = true)
+    public PayrollListResponseDTO getPayrolls(Pageable pageable) {
+
+        Page<Payroll> page = payrollQueryRepository.findAll(pageable);
+
+        List<PayrollResponseDTO> payrolls = page.getContent().stream()
+                .map(payroll -> {
+                    // 총 사원 수 (payrollDetailList의 크기)
+                    long totalEmp = payroll.getPayrollDetailList().size();
+
+                    // 총 지급 금액 (payrollDetailList의 totalAmount 합산)
+                    long totalPay = payroll.getPayrollDetailList().stream()
+                            .mapToLong(PayrollDetail::getTotalAmount) // PayrollDetail의 totalAmount 값을 합산
+                            .sum();
+
+                    return PayrollResponseDTO.builder()
+                            .payrollId(payroll.getPayrollId())
+                            .name(payroll.getName())
+                            .createDatetime(LocalDate.from(payroll.getCreateDatetime()))
+                            .totalEmp(totalEmp)
+                            .totalPay(totalPay)
+                            .build();
+
+                })
+                .collect(Collectors.toList());
+
+        return PayrollListResponseDTO.builder()
+                .payrolls(payrolls)
+                .totalPages(page.getTotalPages())
+                .totalItems((int) page.getTotalElements())
+                .currentPage(page.getNumber() + 1)
+                .pageSize(page.getSize())
+                .build();
+
+    }
+
+    @Transactional(readOnly = true)
+    public PayrollDetailResponseDTO getPayroll(Long payrollId) {
+
+        List<PayrollDTO> payroll = payrollQueryRepository.findByPayrollId(payrollId);
+
+        return new PayrollDetailResponseDTO(payroll);
+
+    }
+
+    @Transactional(readOnly = true)
+    public PayrollDetailResponseDTO searchPayroll(String empName, String empId, String deptName) {
+        // Specification 동적 쿼리 생성
+        Specification<PayrollDetail> spec = Specification.where(null);
+        if (empName != null) spec = spec.and(PayrollSpecifications.hasEmpName(empName));
+        if (empId != null) spec = spec.and(PayrollSpecifications.hasEmpId(empId));
+        if (deptName != null) spec = spec.and(PayrollSpecifications.hasDeptName(deptName));
+
+        // PayrollDetailRepository를 통해 데이터 조회
+        List<PayrollDetail> payrollDetails = payrollDetailQueryRepository.findAll(spec);
+
+        // 조회 결과를 DTO로 변환
+        List<PayrollDTO> payrollDTOs = payrollDetails.stream()
+                .map(this::convertToPayrollDTO)
+                .collect(Collectors.toList());
+
+        return new PayrollDetailResponseDTO(payrollDTOs);
+    }
+
+    private PayrollDTO convertToPayrollDTO(PayrollDetail payrollDetail) {
+
+        Long totalPayment = payrollDetail.getEmp().getPay() +
+                payrollDetail.getExtendLaborAllowance() +
+                payrollDetail.getNightLaborAllowance() +
+                payrollDetail.getHolidayLaborAllowance() +
+                payrollDetail.getAnnualAllowance() +
+                payrollDetail.getIncentive();
+
+        Long totalDeduction = payrollDetail.getNationalPension() +
+                payrollDetail.getHealthInsurance() +
+                payrollDetail.getHireInsurance() +
+                payrollDetail.getLongTermCareInsurance() +
+                payrollDetail.getIncomeTax() +
+                payrollDetail.getLocalIncomeTax();
+
+        return new PayrollDTO(
+
+                payrollDetail.getPayroll().getPayrollId(),
+                payrollDetail.getEmp().getEmpId(),
+                payrollDetail.getEmp().getName(),
+                payrollDetail.getEmp().getDept().getName(),
+                payrollDetail.getEmp().getStatus(),
+                payrollDetail.getEmp().getPay(),
+                payrollDetail.getExtendLaborAllowance(),
+                payrollDetail.getNightLaborAllowance(),
+                payrollDetail.getHolidayLaborAllowance(),
+                payrollDetail.getAnnualAllowance(),
+                payrollDetail.getIncentive(),
+                totalPayment,
+                payrollDetail.getNationalPension(),
+                payrollDetail.getHealthInsurance(),
+                payrollDetail.getHireInsurance(),
+                payrollDetail.getLongTermCareInsurance(),
+                payrollDetail.getIncomeTax(),
+                payrollDetail.getLocalIncomeTax(),
+                totalDeduction,
+                payrollDetail.getTotalAmount(),
+                payrollDetail.getStatus()
+
+        );
+    }
+
+    // 가장 최근 급여의 월을 기준으로 3년간 데이터를 조회하는 메서드
+    @Transactional(readOnly = true)
+    public List<PayrollChartDTO> getPayrollsByMonthAndThreeYears() {
+        // 가장 최근 급여 데이터 조회
+        PayrollChartDTO latestPayroll = payrollQueryRepository.findLatestPayroll();
+
+        if (latestPayroll == null) {
+
+            throw new CustomException(ErrorCode.NOT_FOUND_PAYROLL);
+
+        }
+
+        // 최근 급여 대장의 월과 연도를 기준으로 3년간 급여 데이터 조회
+        int latestMonth = latestPayroll.getCreateDatetime().getMonthValue();
+        int latestYear = latestPayroll.getCreateDatetime().getYear();
+        int startYear = latestYear - 2;  // 3년 범위
+
+        // 3년간 급여 데이터 조회
+        return payrollQueryRepository.findPayrollsByMonthAndYears(latestMonth, startYear, latestYear);
+
+    }
+
+    // 가장 최근 급여의 월을 기준으로 3개월간 데이터를 조회하는 메서드
+    @Transactional(readOnly = true)
+    public List<PayrollChartDTO> getLastThreeMonthsPayrolls() {
+        // 가장 최근 급여 데이터 조회
+        PayrollChartDTO latestPayroll = payrollQueryRepository.findLatestPayroll();
+
+        if (latestPayroll == null) {
+
+            throw new CustomException(ErrorCode.NOT_FOUND_PAYROLL);
+
+        }
+
+        int latestMonth = latestPayroll.getCreateDatetime().getMonthValue();
+        int latestYear = latestPayroll.getCreateDatetime().getYear();
+        int startMonth = latestMonth - 2;  // 3개월 범위 (현재 월에서 2개월 전까지)
+
+        if (startMonth <= 0) {
+
+            startMonth += 12; // 12월에서 1월로 넘어갈 경우 처리
+            latestYear -= 1;  // 작년으로 변경
+
+        }
+
+        // 3개월간 급여 데이터 조회
+        return payrollQueryRepository.findPayrollsByMonths(startMonth, latestMonth, latestYear);
+
+    }
+
+    // 3년간 급여 데이터 조회
+    @Transactional(readOnly = true)
+    public List<PayrollChartDTO> getLastThreeYearsPayrolls() {
+        // 가장 최근 급여 데이터 조회
+        PayrollChartDTO latestPayroll = payrollQueryRepository.findLatestPayroll();
+
+        if (latestPayroll == null) {
+            throw new CustomException(ErrorCode.NOT_FOUND_PAYROLL);
+        }
+
+        int latestYear = latestPayroll.getCreateDatetime().getYear();
+        int startYear = latestYear - 2; // 3년 범위
+
+        // 3년간 급여 데이터 조회
+        return payrollQueryRepository.findPayrollsByYears(startYear, latestYear);
+
+    }
+
+    @Transactional(readOnly = true)
+    public PayStubDTO getPayStub(String empId) {
+
+        PayrollDTO payStub = payrollQueryRepository.findByEmpId(empId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));
+
+        return new PayStubDTO(payStub);
 
     }
 }
