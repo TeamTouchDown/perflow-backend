@@ -19,7 +19,7 @@ public class WaitingDocDetailResponseDTO {
 
     private final Long templateId;
 
-    private final List<ApproveLineDTO> approveLines;
+    private final List<ApproveLineDetailDTO> approveLines;
 
     private final List<ShareDTO> shares;
 

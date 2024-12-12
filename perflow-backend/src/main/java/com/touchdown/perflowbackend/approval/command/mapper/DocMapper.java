@@ -111,25 +111,43 @@ public class DocMapper {
                 .templateId(doc.getTemplate().getTemplateId())
                 // 결재선
                 .approveLines(doc.getApproveLines().stream()
-                        .map(DocMapper::toApproveLineDTO)
+                        .map(DocMapper::toApproveLineDetailDTO)
                         .toList())
                 .shares(toShareDTOList(doc.getShares()))
                 .build();
     }
 
+    public static ApproveLineDetailDTO toApproveLineDetailDTO(ApproveLine line) {
+
+        return ApproveLineDetailDTO.builder()
+                .approveLineId(line.getApproveLineId())
+                .approveType(line.getApproveType())
+                .approveLineOrder(line.getApproveLineOrder())
+                .approveSbjs(line.getApproveSubjects().stream()
+                        .map(DocMapper::toApproveSbjDTO)
+                        .toList())
+                .build();
+    }
+
+    public static ApproveSbjDTO toApproveSbjDTO(ApproveSbj sbj) {
+
+        return ApproveSbjDTO.builder()
+                .sbjType(sbj.getSbjType())
+                .empId(sbj.getSbjUser() != null ? sbj.getSbjUser().getEmpId() : null)   // sbjType에 따라 null 값 넘겨야 함
+                .departmentId(sbj.getDept() != null ? sbj.getDept().getDepartmentId() : null)
+                .status(sbj.getStatus())
+                .build();
+    }
+
     public static List<ShareDTO> toShareDTOList(List<DocShareObj> shares) {
-
-        List<Long> departments = new ArrayList<>();
-        List<String> employees = new ArrayList<>();
-
-        for (DocShareObj share : shares) {
-            if (share.getShareObjType() == ObjType.DEPARTMENT && share.getShareObjDepartment() != null) {
-                departments.add(share.getShareObjDepartment().getDepartmentId());
-            } else if (share.getShareObjType() == ObjType.EMPLOYEE && share.getShareObjUser() != null) {
-                employees.add(share.getShareObjUser().getEmpId());
-            }
-        }
-
-        return List.of(new ShareDTO(departments, employees));
+        return shares.stream()
+                .map(share -> new ShareDTO(
+                        share.getShareObjType(),
+                        share.getShareObjType() == ObjType.DEPARTMENT && share.getShareObjDepartment() != null
+                                ? List.of(share.getShareObjDepartment().getDepartmentId()) : new ArrayList<>(),
+                        share.getShareObjType() == ObjType.EMPLOYEE && share.getShareObjUser() != null
+                                ? List.of(share.getShareObjUser().getEmpId()) : new ArrayList<>()
+                ))
+                .toList();
     }
 }
