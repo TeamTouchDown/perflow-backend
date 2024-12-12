@@ -8,6 +8,9 @@ import java.util.Optional;
 
 public interface SeverancePayQueryRepository extends JpaRepository<SeverancePay, Long> {
 
-    @Query("SELECT s FROM SeverancePay s WHERE s.severancePayId = :severancePayId")
+    @Query("SELECT s " +
+            "FROM SeverancePay s " +
+            "JOIN SeverancePayDetail spd ON s.severancePayId = spd.severancePay.severancePayId " +
+            "WHERE s.severancePayId = :severancePayId AND spd.emp.status = 'RESIGNED'")
     Optional<SeverancePay> findBySeverancePaysId(Long severancePayId);
 }

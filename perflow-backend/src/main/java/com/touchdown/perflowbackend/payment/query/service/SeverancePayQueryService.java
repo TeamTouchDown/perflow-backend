@@ -27,7 +27,7 @@ public class SeverancePayQueryService {
 
         // 데이터베이스에서 급여 데이터를 조회
         SeverancePay severancePay = severancePayQueryRepository.findBySeverancePaysId(severancePayId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PAYROLL));
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_SEVERANCE_PAY));
 
         // 엑셀 워크북 생성
         Workbook workbook = new XSSFWorkbook();
