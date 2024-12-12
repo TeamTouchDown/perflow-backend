@@ -18,9 +18,15 @@ public class EmployeeDetailResponseDTO {
 
     private Long positionId;
 
+    private String positionName;
+
     private Long jobId;
 
+    private String jobName;
+
     private Long deptId;
+
+    private String deptName;
 
     private String name;
 
@@ -45,8 +51,11 @@ public class EmployeeDetailResponseDTO {
 
         this.empId = emp.getEmpId();
         this.positionId = emp.getPosition().getPositionId();
+        this.positionName = emp.getPosition().getName();
         this.jobId = emp.getJob().getJobId();
+        this.jobName = emp.getJob().getName();
         this.deptId = emp.getDept().getDepartmentId();
+        this.deptName = emp.getDept().getName();
         this.name = emp.getName();
         this.gender = emp.getGender();
         this.rrn = emp.getRrn();
