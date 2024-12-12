@@ -18,13 +18,13 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/hr")
+@RequestMapping("/api/v1")
 public class PayrollQueryController {
 
     private final PayrollQueryService payrollQueryService;
 
-    @GetMapping("/payrolls/{payrollId}/download")
-    public ResponseEntity<byte[]> downloadPayroll(@PathVariable long payrollId) {
+    @GetMapping("/hr/payrolls/{payrollId}/download")
+    public ResponseEntity<byte[]> downloadPayroll(@PathVariable Long payrollId) {
 
         try {
             // 급여 데이터 생성
@@ -50,7 +50,7 @@ public class PayrollQueryController {
         }
     }
 
-    @GetMapping("/payrolls")
+    @GetMapping("/hr/payrolls")
     public ResponseEntity<PayrollListResponseDTO> getPayrolls(
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "12") int size
@@ -64,7 +64,7 @@ public class PayrollQueryController {
 
     }
 
-    @GetMapping("/payrolls/{payrollId}")
+    @GetMapping("/hr/payrolls/{payrollId}")
     public ResponseEntity<PayrollDetailResponseDTO> getPayroll(@PathVariable Long payrollId) {
 
         PayrollDetailResponseDTO response = payrollQueryService.getPayroll(payrollId);
@@ -74,23 +74,24 @@ public class PayrollQueryController {
     }
 
     // 급여대장 검색
-    @GetMapping("/payrolls/search")
+    @GetMapping("/hr/payrolls/{payrollId}/search")
     public ResponseEntity<PayrollDetailResponseDTO> searchPayroll(
 
+            @PathVariable Long payrollId,
             @RequestParam(required = false) String empName,
             @RequestParam(required = false) String empId,
             @RequestParam(required = false) String deptName
 
     ) {
 
-        PayrollDetailResponseDTO response = payrollQueryService.searchPayroll(empName, empId, deptName);
+        PayrollDetailResponseDTO response = payrollQueryService.searchPayroll(payrollId, empName, empId, deptName);
 
         return ResponseEntity.ok(response);
 
     }
 
     // 해당 월의 3년간 급여 데이터 조회
-    @GetMapping("/payrolls/chart/last-three-years-by-latest-month")
+    @GetMapping("/hr/payrolls/chart/last-three-years-by-latest-month")
     public ResponseEntity<List<PayrollChartDTO>> getPayrollsByMonthAndThreeYears() {
 
         List<PayrollChartDTO> payrolls = payrollQueryService.getPayrollsByMonthAndThreeYears();
@@ -99,7 +100,7 @@ public class PayrollQueryController {
     }
 
     // 3개월간 급여 데이터 조회
-    @GetMapping("/payrolls/chart/last-three-months")
+    @GetMapping("/hr/payrolls/chart/last-three-months")
     public ResponseEntity<List<PayrollChartDTO>> getLastThreeMonthsPayrolls() {
 
         List<PayrollChartDTO> payrolls = payrollQueryService.getLastThreeMonthsPayrolls();
@@ -108,7 +109,7 @@ public class PayrollQueryController {
     }
 
     // 3년간 급여 데이터 조회
-    @GetMapping("/payrolls/chart/last-three-years")
+    @GetMapping("/hr/payrolls/chart/last-three-years")
     public ResponseEntity<List<PayrollChartDTO>> getLastThreeYearsPayrolls() {
 
         List<PayrollChartDTO> payrolls = payrollQueryService.getLastThreeYearsPayrolls();
@@ -116,6 +117,7 @@ public class PayrollQueryController {
 
     }
 
+    // 급여명세서 조회
     @GetMapping("/pay-stub/{empId}")
     public ResponseEntity<PayStubDTO> getPayStub(@PathVariable String empId) {
 

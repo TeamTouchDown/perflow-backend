@@ -15,4 +15,7 @@ public interface EmployeeQueryRepository extends JpaRepository<Employee, String>
 
     List<Employee> findAll(); // 사원 목록 조회
 
+    @Query("SELECT e FROM Employee e WHERE e.status = 'RESIGNED'")
+    List<Employee> findResignedEmployees();
+
 }
