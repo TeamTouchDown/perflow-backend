@@ -44,7 +44,7 @@ public class Department extends BaseEntity {
     @OneToOne(mappedBy = "department", cascade = CascadeType.ALL)
     private Pic pic;
 
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = true)
     private String status;
 
     @Builder
