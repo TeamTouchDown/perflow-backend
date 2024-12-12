@@ -24,7 +24,7 @@ public class PayrollQueryController {
     private final PayrollQueryService payrollQueryService;
 
     @GetMapping("/hr/payrolls/{payrollId}/download")
-    public ResponseEntity<byte[]> downloadPayroll(@PathVariable long payrollId) {
+    public ResponseEntity<byte[]> downloadPayroll(@PathVariable Long payrollId) {
 
         try {
             // 급여 데이터 생성
@@ -116,7 +116,7 @@ public class PayrollQueryController {
         return ResponseEntity.ok(payrolls);
 
     }
-    
+
     // 급여명세서 조회
     @GetMapping("/pay-stub/{empId}")
     public ResponseEntity<PayStubDTO> getPayStub(@PathVariable String empId) {
