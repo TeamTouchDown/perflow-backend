@@ -23,16 +23,15 @@ public class Attendance { //출퇴
     @JoinColumn(name = "emp_id", nullable = false)
     private Employee empId;
 
-    @Column(name = "get_work_datetime", nullable = false)
+    @Column(name = "get_work_datetime", nullable = true)
     private LocalDateTime getWorkDatetime;
 
-    @Column(name = "get_off_datetime", nullable = false)
+    @Column(name = "get_off_datetime", nullable = true) // 퇴근 시간이 없을 수도 있음
     private LocalDateTime getOffDatetime;
 
-    @Column(name = "auth_num", nullable = true)
-    private String authNum;
+    @Column(name = "status", nullable = false, length = 10)
+    private String status; // 상태: "출근" / "퇴근"
 
-    @Column(name = "expire_time", nullable = true)
-    private LocalDateTime expireTime;
+
 
 }
