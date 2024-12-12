@@ -2,15 +2,15 @@ package com.touchdown.perflowbackend.payment.query.controller;
 
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
+import com.touchdown.perflowbackend.payment.query.dto.SeverancePayListResponseDTO;
 import com.touchdown.perflowbackend.payment.query.service.SeverancePayQueryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -47,6 +47,20 @@ public class SeverancePayQueryController {
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
 
         }
+    }
+
+    @GetMapping("/hr/severance-pays")
+    public ResponseEntity<SeverancePayListResponseDTO> getSeverancePays(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "12") int size
+    ) {
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        SeverancePayListResponseDTO response = severancePayQueryService.getSeverancePays(pageable);
+
+        return ResponseEntity.ok(response);
+
     }
 
 }

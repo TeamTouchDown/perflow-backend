@@ -5,16 +5,22 @@ import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.SeverancePay;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.SeverancePayDetail;
+import com.touchdown.perflowbackend.payment.query.dto.SeverancePayListResponseDTO;
+import com.touchdown.perflowbackend.payment.query.dto.SeverancePayResponseDTO;
 import com.touchdown.perflowbackend.payment.query.repository.SeverancePayQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -112,6 +118,42 @@ public class SeverancePayQueryService {
         row.createCell(10).setCellValue(severancePayDetail.getAnnualAllowance()); // 연차수당
         row.createCell(11).setCellValue(severancePayDetail.getTotalAmount()); // 총합계
         row.createCell(12).setCellValue(severancePayDetail.getStatus().name()); // 지급 상태
+
+    }
+
+    @Transactional(readOnly = true)
+    public SeverancePayListResponseDTO getSeverancePays(Pageable pageable) {
+
+        Page<SeverancePay> page = severancePayQueryRepository.findAll(pageable);
+
+        List<SeverancePayResponseDTO> severancePays = page.getContent().stream()
+                .map(severancePay -> {
+                    // 총 사원 수 (severancePayDetailList의 크기)
+                    long totalEmp = severancePay.getSeverancePayDetailList().size();
+
+                    // 총 지급 금액 (severancePayDetailList의 totalAmount 합산)
+                    long totalPay = severancePay.getSeverancePayDetailList().stream()
+                            .mapToLong(SeverancePayDetail::getTotalAmount) // SeverancePayDetail의 totalAmount 값을 합산
+                            .sum();
+
+                    return SeverancePayResponseDTO.builder()
+                            .severancePayId(severancePay.getSeverancePayId())
+                            .name(severancePay.getName())
+                            .createDatetime(LocalDate.from(severancePay.getCreateDatetime()))
+                            .totalEmp(totalEmp)
+                            .totalPay(totalPay)
+                            .build();
+
+                })
+                .collect(Collectors.toList());
+
+        return SeverancePayListResponseDTO.builder()
+                .severancePays(severancePays)
+                .totalPages(page.getTotalPages())
+                .totalItems((int) page.getTotalElements())
+                .currentPage(page.getNumber() + 1)
+                .pageSize(page.getSize())
+                .build();
 
     }
 }

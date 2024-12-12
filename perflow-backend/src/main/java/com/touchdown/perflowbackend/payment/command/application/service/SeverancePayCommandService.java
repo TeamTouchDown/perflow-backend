@@ -22,7 +22,6 @@ public class SeverancePayCommandService {
 
     private final SeverancePayCommandRepository severancePayCommandRepository;
 
-
     public void updateSeverancePayFromExcel(Long severancePayId, MultipartFile file) throws IOException {
 
         try (InputStream inputStream = file.getInputStream()) {
