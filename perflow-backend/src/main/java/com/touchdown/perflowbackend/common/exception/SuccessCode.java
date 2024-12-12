@@ -83,9 +83,8 @@ public enum SuccessCode {
     WORK_ATTRIBUTE_OVERTIME_RETROACTIVE_SUCCESS(HttpStatus.OK, "소급 신청이 완료되었습니다."),
     WORK_ATTRIBUTE_OVERTIME_RETROACTIVE_DECISION_SUCCESS(HttpStatus.OK, "소급 승인/반려 처리가 완료되었습니다."),
 
-
-
-    ;
+    // 출퇴근
+    WORK_ATTITUDE_ATTENDANCE_SUCCESS(HttpStatus.OK,"" );
 
     private final HttpStatus httpStatus;
     private final String message;
