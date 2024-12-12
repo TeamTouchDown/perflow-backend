@@ -21,7 +21,7 @@ public class PositionQueryController {
     public ResponseEntity<List<PositionResponseDTO>> getPosition() {
 
         List<PositionResponseDTO> positionDTOList = positionQueryService.getAllPosition();
-        
+
         return ResponseEntity.ok(positionDTOList);
     }
 }
