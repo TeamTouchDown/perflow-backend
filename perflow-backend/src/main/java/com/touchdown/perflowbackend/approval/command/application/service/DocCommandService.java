@@ -9,6 +9,7 @@ import com.touchdown.perflowbackend.approval.command.domain.repository.ApproveLi
 import com.touchdown.perflowbackend.approval.command.domain.repository.DocCommandRepository;
 import com.touchdown.perflowbackend.approval.command.domain.repository.TemplateCommandRepository;
 import com.touchdown.perflowbackend.approval.command.mapper.DocMapper;
+import com.touchdown.perflowbackend.approval.query.service.TemplateQueryService;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
@@ -35,6 +36,7 @@ public class DocCommandService {
     private final DocCommandRepository docCommandRepository;
     private final DepartmentCommandRepository departmentCommandRepository;
     private final ApproveLineCommandRepository approveLineCommandRepository;
+    private final TemplateQueryService templateQueryService;
 
     @Transactional
     public void createNewDoc(DocCreateRequestDTO request, String createUserId) {

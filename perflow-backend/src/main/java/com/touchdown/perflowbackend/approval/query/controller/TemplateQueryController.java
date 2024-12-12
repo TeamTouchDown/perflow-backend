@@ -16,6 +16,7 @@ public class TemplateQueryController {
 
     private final TemplateQueryService templateQueryService;
 
+    // 서식 목록 조회
     @GetMapping
     public ResponseEntity<Page<TemplateListResponseDTO>> readTemplates(Pageable pageable) {
 
@@ -23,10 +24,10 @@ public class TemplateQueryController {
 
     }
 
+    // 서식 상세 조회
     @GetMapping("/{templateId}")
     public ResponseEntity<TemplateDetailResponseDTO> readOne(@PathVariable Long templateId) {
 
         return ResponseEntity.ok(templateQueryService.getOne(templateId));
     }
-
 }

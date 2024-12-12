@@ -33,4 +33,5 @@ public class TemplateQueryService {
                 .map(TemplateMapper::toTemplateDetailResponseDTO)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_TEMPLATE));
     }
+
 }
