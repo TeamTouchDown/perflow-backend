@@ -73,8 +73,8 @@ public class Employee extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private EmployeeStatus status;
 
-    @Column(name = "resign_datetime")
-    private LocalDate resignDatetime;
+    @Column(name = "resign_date")
+    private LocalDate resignDate;
 
     @Builder
     public Employee(EmployeeCreateDTO registerDTO, Position position, Job job, Department department) {
