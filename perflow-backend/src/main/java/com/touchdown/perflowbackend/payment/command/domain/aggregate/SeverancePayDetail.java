@@ -7,9 +7,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 @Getter
 @Entity
 @Table(name = "severance_pay_detail", schema = "perflow")
@@ -22,11 +19,15 @@ public class SeverancePayDetail extends BaseEntity {
     private Long severancePayDetailId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "severance_pay_id", nullable = false)
+    private SeverancePay severancePay;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "emp_id", nullable = false)
     private Employee emp;
 
-    @Column(name = "severance_pay", nullable = false)
-    private Long severancePay;
+    @Column(name = "total_amount", nullable = false)
+    private Long totalAmount;
 
     @Column(name = "extend_labor_allowance")
     private Long extendLaborAllowance;
@@ -40,14 +41,38 @@ public class SeverancePayDetail extends BaseEntity {
     @Column(name = "annual_allowance")
     private Long annualAllowance;
 
-    @Column(name = "severance_day", nullable = false)
-    private LocalDate severanceDay;
-
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
     private Status status = Status.PENDING;
 
-    @Column(name = "payment_datetime", nullable = false)
-    private LocalDateTime paymentDatetime;
+    // SeverancePay 객체를 설정하는 메서드 (setter 대신)
+    public void assignSeverancePay(SeverancePay severancePay) {
 
+        this.severancePay = severancePay;
+
+    }
+
+    public SeverancePayDetail(Employee emp, Long extendLaborAllowance, Long nightLaborAllowance, Long holidayLaborAllowance,
+                         Long annualAllowance, Long totalAmount) {
+
+        this.emp = emp;
+        this.extendLaborAllowance = extendLaborAllowance;
+        this.nightLaborAllowance = nightLaborAllowance;
+        this.holidayLaborAllowance = holidayLaborAllowance;
+        this.annualAllowance = annualAllowance;
+        this.totalAmount = totalAmount;
+
+    }
+
+    public void updateSeverancePay(Long extendLaborAllowance, Long nightLaborAllowance,
+                              Long holidayLaborAllowance, Long annualAllowance, Long totalAmount) {
+
+        this.extendLaborAllowance = extendLaborAllowance;
+        this.nightLaborAllowance = nightLaborAllowance;
+        this.holidayLaborAllowance = holidayLaborAllowance;
+        this.annualAllowance = annualAllowance;
+        this.totalAmount = totalAmount;
+        this.status = Status.UPDATED;
+
+    }
 }

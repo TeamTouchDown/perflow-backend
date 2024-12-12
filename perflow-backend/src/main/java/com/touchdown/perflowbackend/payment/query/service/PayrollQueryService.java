@@ -175,6 +175,7 @@ public class PayrollQueryService {
 
     }
 
+    // 급여대장 상세 조회
     @Transactional(readOnly = true)
     public PayrollDetailResponseDTO getPayroll(Long payrollId) {
 
@@ -184,8 +185,9 @@ public class PayrollQueryService {
 
     }
 
+    // 급여대장 상세 조회 내 검색
     @Transactional(readOnly = true)
-    public PayrollDetailResponseDTO searchPayroll(String empName, String empId, String deptName) {
+    public PayrollDetailResponseDTO searchPayroll(Long payrollId, String empName, String empId, String deptName) {
         // Specification 동적 쿼리 생성
         Specification<PayrollDetail> spec = Specification.where(null);
         if (empName != null) spec = spec.and(PayrollSpecifications.hasEmpName(empName));
@@ -201,6 +203,7 @@ public class PayrollQueryService {
                 .collect(Collectors.toList());
 
         return new PayrollDetailResponseDTO(payrollDTOs);
+
     }
 
     private PayrollDTO convertToPayrollDTO(PayrollDetail payrollDetail) {
@@ -314,6 +317,7 @@ public class PayrollQueryService {
 
     }
 
+    // 사원 자신의 급여명세서 조회
     @Transactional(readOnly = true)
     public PayStubDTO getPayStub(String empId) {
 
