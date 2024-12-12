@@ -9,4 +9,6 @@ public interface JobCommandRepository {
     Optional<Job> findById(Long jobId);
 
     Job save(Job job);
+
+    void delete(Job job);
 }

@@ -48,6 +48,14 @@ public class JobCommandService {
         jobCommandRepository.save(job);
     }
 
+    @Transactional
+    public void deleteJob(Long jobId) {
+
+        Job job = getJob(jobId);
+
+        jobCommandRepository.delete(job);
+    }
+
     private Job getJob(Long jobId) {
         return jobCommandRepository.findById(jobId).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_JOB)
@@ -60,6 +68,4 @@ public class JobCommandService {
                 () -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT)
         );
     }
-
-
 }

@@ -24,13 +24,27 @@ public class JobCommandController {
         return ResponseEntity.ok(SuccessCode.JOB_CREATE_SUCCESS);
     }
 
-    @PutMapping("/hr/job")
+    @PutMapping("/hr/job/{jobId}")
     public ResponseEntity<SuccessCode> updateJob(
-            @RequestBody JobUpdateDTO jobUpdateDTO
+            @RequestBody JobUpdateDTO jobUpdateDTO,
+            @PathVariable(name = "jobId") Long jobId
     ) {
+
+        jobUpdateDTO.setJobId(jobId);
 
         jobCommandService.updateJob(jobUpdateDTO);
 
         return ResponseEntity.ok(SuccessCode.JOB_UPDATE_SUCCESS);
     }
+
+    @DeleteMapping("/hr/job/{jobId}")
+    public ResponseEntity<SuccessCode> deleteJob(
+            @PathVariable(name = "jobId") Long jobId
+    ) {
+
+        jobCommandService.deleteJob(jobId);
+
+        return ResponseEntity.ok(SuccessCode.JOB_DELETE_SUCCESS);
+    }
+
 }
