@@ -7,32 +7,32 @@ import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
-import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttributeOvertimeForEmployeeRequestDTO;
+import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeOvertimeForEmployeeRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Overtime;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
-import com.touchdown.perflowbackend.workAttitude.command.domain.repository.WorkAttributeOvertimeCommandRepository;
-import com.touchdown.perflowbackend.workAttitude.command.mapper.WorkAttributeOvertimeMapper;
+import com.touchdown.perflowbackend.workAttitude.command.domain.repository.WorkAttitudeOvertimeCommandRepository;
+import com.touchdown.perflowbackend.workAttitude.command.mapper.WorkAttitudeOvertimeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class WorkAttributeOvertimeCommandService {
+public class WorkAttitudeOvertimeCommandService {
 
-    private final WorkAttributeOvertimeCommandRepository workAttributeOvertimeCommandRepository;
+    private final WorkAttitudeOvertimeCommandRepository workAttitudeOvertimeCommandRepository;
     private final EmployeeCommandRepository employeeCommandRepository;
     private final ApproveCommandRepository approveCommandRepository;
 
     // 신규 초과근무 생성
     @Transactional
-    public void createOvertime(WorkAttributeOvertimeForEmployeeRequestDTO requestDTO) {
+    public void createOvertime(WorkAttitudeOvertimeForEmployeeRequestDTO requestDTO) {
         String empId = EmployeeUtil.getEmpId();
         Employee employee = findEmployeeByEmpId(empId);
         ApproveSbj approveSbj = findApproveSbjById(requestDTO.getApproveSbjId());
 
-        Overtime overtime = WorkAttributeOvertimeMapper.toEntity(requestDTO, employee, approveSbj);
-        workAttributeOvertimeCommandRepository.save(overtime);
+        Overtime overtime = WorkAttitudeOvertimeMapper.toEntity(requestDTO, employee, approveSbj);
+        workAttitudeOvertimeCommandRepository.save(overtime);
     }
 
     // 소급 신청
@@ -46,7 +46,7 @@ public class WorkAttributeOvertimeCommandService {
 
         overtime.updateRetroactiveStatus(Status.PENDING, reason);
         overtime.updateOvertimeRetroactive(true);
-        workAttributeOvertimeCommandRepository.save(overtime);
+        workAttitudeOvertimeCommandRepository.save(overtime);
     }
 
     // 소급 승인/반려
@@ -62,7 +62,7 @@ public class WorkAttributeOvertimeCommandService {
             throw new CustomException(ErrorCode.INVALID_RETROACTIVE_DECISION);
         }
 
-        workAttributeOvertimeCommandRepository.save(overtime);
+        workAttitudeOvertimeCommandRepository.save(overtime);
     }
 
     // 초과근무 삭제
@@ -70,12 +70,12 @@ public class WorkAttributeOvertimeCommandService {
     public void deleteOvertime(Long overtimeId) {
         Overtime overtime = findOvertimeById(overtimeId);
         overtime.deleteOvertime();
-        workAttributeOvertimeCommandRepository.save(overtime);
+        workAttitudeOvertimeCommandRepository.save(overtime);
     }
 
     // Helper methods
     private Overtime findOvertimeById(Long overtimeId) {
-        return workAttributeOvertimeCommandRepository.findById(overtimeId)
+        return workAttitudeOvertimeCommandRepository.findById(overtimeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_OVERTIME));
     }
 
@@ -89,15 +89,15 @@ public class WorkAttributeOvertimeCommandService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APPROVE_SBJ));
     }
     @Transactional
-    public void updateOvertimeStatus(Long overtimeId, WorkAttributeOvertimeForEmployeeRequestDTO workAttributeOvertimeForEmployeeRequestDTO) {
+    public void updateOvertimeStatus(Long overtimeId, WorkAttitudeOvertimeForEmployeeRequestDTO workAttitudeOvertimeForEmployeeRequestDTO) {
         // 1. 초과근무 데이터 조회
         Overtime overtime = findOvertimeById(overtimeId);
 
         // 2. 상태에 따른 로직 처리
-        if (workAttributeOvertimeForEmployeeRequestDTO.getOvertimeStatus() == Status.REJECTED) {
+        if (workAttitudeOvertimeForEmployeeRequestDTO.getOvertimeStatus() == Status.REJECTED) {
             // 상태가 반려인 경우 반려 사유 설정
-            overtime.updateOvertimeStatus(Status.REJECTED, workAttributeOvertimeForEmployeeRequestDTO.getOvertimeRetroactiveReason());
-        } else if (workAttributeOvertimeForEmployeeRequestDTO.getOvertimeStatus() == Status.CONFIRMED) {
+            overtime.updateOvertimeStatus(Status.REJECTED, workAttitudeOvertimeForEmployeeRequestDTO.getOvertimeRetroactiveReason());
+        } else if (workAttitudeOvertimeForEmployeeRequestDTO.getOvertimeStatus() == Status.CONFIRMED) {
             // 상태가 승인인 경우 반려 사유 초기화
             overtime.updateOvertimeStatus(Status.CONFIRMED, null);
         } else {
@@ -106,7 +106,7 @@ public class WorkAttributeOvertimeCommandService {
         }
 
         // 3. 업데이트된 엔티티 저장
-        workAttributeOvertimeCommandRepository.save(overtime);
+        workAttitudeOvertimeCommandRepository.save(overtime);
     }
 
 }

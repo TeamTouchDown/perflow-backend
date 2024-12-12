@@ -1,6 +1,5 @@
 package com.touchdown.perflowbackend.workAttitude.query.repository;
 
-import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Travel;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface WorkAttributeTravelQueryRepository extends JpaRepository<Travel, Long> {
+public interface WorkAttitudeTravelQueryRepository extends JpaRepository<Travel, Long> {
 
     // 직원용: 삭제되지 않은 내역 조회
     @Query("SELECT t FROM Travel t WHERE t.employee.empId = :empId AND t.status != 'DELETED'")

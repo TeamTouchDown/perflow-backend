@@ -2,9 +2,9 @@ package com.touchdown.perflowbackend.workAttitude.query.service;
 
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Overtime;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.OvertimeType;
-import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttributeOvertimeForEmployeeSummaryDTO;
-import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttributeOvertimeForTeamLeaderSummaryDTO;
-import com.touchdown.perflowbackend.workAttitude.query.repository.WorkAttributeOvertimeQueryRepository;
+import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeForEmployeeSummaryDTO;
+import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeForTeamLeaderSummaryDTO;
+import com.touchdown.perflowbackend.workAttitude.query.repository.WorkAttitudeOvertimeQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,13 +16,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class WorkAttributeOvertimeQueryService {
+public class WorkAttitudeOvertimeQueryService {
     //각 초과근무별 업무 시간 계산 로직 만들기
 
-    private final WorkAttributeOvertimeQueryRepository repository;
+    private final WorkAttitudeOvertimeQueryRepository repository;
 
     @Transactional
-    public List<WorkAttributeOvertimeForTeamLeaderSummaryDTO> getOvertimeSummaryForAllEmployees() {
+    public List<WorkAttitudeOvertimeForTeamLeaderSummaryDTO> getOvertimeSummaryForAllEmployees() {
         List<Overtime> overtimes = repository.findAllNotDeleted();
 
         // 사원별로 그룹화 후 시간 계산
@@ -39,7 +39,7 @@ public class WorkAttributeOvertimeQueryService {
                     long extendedHours = calculateTotalHours(employeeOvertimes, OvertimeType.EXTENDED);
                     long totalHours = nightHours + holidayHours + extendedHours;
 
-                    return WorkAttributeOvertimeForTeamLeaderSummaryDTO.builder()
+                    return WorkAttitudeOvertimeForTeamLeaderSummaryDTO.builder()
                             .employeeName(employeeName)
                             .nightHours(nightHours)
                             .holidayHours(holidayHours)
@@ -60,7 +60,7 @@ public class WorkAttributeOvertimeQueryService {
 
 
     @Transactional
-    public WorkAttributeOvertimeForEmployeeSummaryDTO getOvertimeSummaryForEmployee(String empId) {
+    public WorkAttitudeOvertimeForEmployeeSummaryDTO getOvertimeSummaryForEmployee(String empId) {
         List<Overtime> overtimes = repository.findByEmpIdNotDeleted(empId);
 
         long nightHours = calculateTotalHours(overtimes, OvertimeType.NIGHT);
@@ -68,7 +68,7 @@ public class WorkAttributeOvertimeQueryService {
         long extendedHours = calculateTotalHours(overtimes, OvertimeType.EXTENDED);
         long totalHours = nightHours + holidayHours + extendedHours;
 
-        return WorkAttributeOvertimeForEmployeeSummaryDTO.builder()
+        return WorkAttitudeOvertimeForEmployeeSummaryDTO.builder()
                 .employeeName(overtimes.get(0).getEmpId().getName())
                 .nightHours(nightHours)
                 .holidayHours(holidayHours)

@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class RetroactiveRequestDTO {
+public class WorkAttitudeRetroactiveRequestDTO {
 
     @NotNull
     private Long overtimeId;
