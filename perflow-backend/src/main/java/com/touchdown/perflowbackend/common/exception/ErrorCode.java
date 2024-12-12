@@ -28,11 +28,15 @@ public enum ErrorCode {
     ALREADY_REGISTER_COMPANY(HttpStatus.BAD_REQUEST, "회사 데이터는 이미 등록 되어있습니다. 2개 이상의 데이터는 등록 할 수 없습니다."),
     EXCEL_TEMPLATE_UPLOAD_ERROR(HttpStatus.BAD_REQUEST, "엑셀 템플릿 업로드 중 오류가 발생했습니다"),
     ALREADY_DELETED_TEMPLATE(HttpStatus.BAD_REQUEST, "이미 삭제된 서식입니다."),
+    NOT_EXIST_UPLOAD_FILE(HttpStatus.BAD_REQUEST, "업로드할 파일이 없습니다."),
+    UNSUPPORTED_ENTITY(HttpStatus.BAD_REQUEST, "지원되지 않는 도메인입니다."),
+    UNSUPPORTED_FILE_EXTENSION(HttpStatus.BAD_REQUEST, "지원되지 않는 확장자입니다."),
     INVALID_APPROVE_TEMPLATE_TYPE(HttpStatus.BAD_REQUEST, "잘못된 결재선 형식입니다."),
     INVALID_APPROVE_TYPE(HttpStatus.BAD_REQUEST, "잘못된 결재 방식입니다."),
     NOT_MATCHED_CSV(HttpStatus.BAD_REQUEST, "CSV파일 로드에 실패했습니다."),
     NOT_ENOUGH_ANNUAL(HttpStatus.BAD_REQUEST, "연차는 12일 이상의 데이터를 입력해야 합니다."),
     NOT_MATCHED_PAYMENT_DATE(HttpStatus.BAD_REQUEST, "급여 지급일은 1일에서 28일 사이의 데이터를 등록해야합니다."),
+    ALREADY_CREATE_PIC(HttpStatus.BAD_REQUEST, "이미 존재하는 담당자 데이터입니다. 부서와 담당자를 확인해주세요."),
 
     // 401 에러
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "인증 실패"),
@@ -52,9 +56,12 @@ public enum ErrorCode {
     NOT_FOUND_FIELD_TYPE(HttpStatus.NOT_FOUND, "필드 타입 정보를 찾을 수 없습니다."),
     NOT_FOUND_DEPARTMENT(HttpStatus.NOT_FOUND, "부서 정보를 찾을 수 없습니다."),
     NOT_FOUND_MY_APPROVE_LINE(HttpStatus.NOT_FOUND, "나의 결재선 정보를 찾을 수 없습니다."),
+    NOT_FOUND_MANAGED_DEPARTMENT(HttpStatus.NOT_FOUND, "상위 부서 정보를 찾을 수 없습니다."),
     NOT_FOUND_APPROVE_LINE(HttpStatus.NOT_FOUND, "결재선 정보를 찾을 수 없습니다."),
     NOT_FOUND_DOC(HttpStatus.NOT_FOUND, "문서 정보를 찾을 수 없습니다."),
     NOT_FOUND_KPI(HttpStatus.NOT_FOUND,"KPI 정보를 찾을 수 없습니다."),
+    NOT_FOUND_HRPERFO(HttpStatus.NOT_FOUND,"평가 점수 정보를 찾을 수 없습니다."),
+    NOT_FOUND_FILE(HttpStatus.NOT_FOUND, "파일을 찾을 수 없습니다."),
 
     NOT_FOUND_APPROVE_SBJ(HttpStatus.NOT_FOUND, "결재 주체 정보를 찾을 수 없습니다."),
     INVALID_APPROVE_SBJ_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 결재 주체 ID입니다."),

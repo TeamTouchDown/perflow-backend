@@ -16,15 +16,15 @@ public enum SuccessCode {
     // 200 - 인사정보 관련 성공
     LOGIN_SUCCESS(HttpStatus.OK, "로그인 성공"),
     LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃 성공"),
-    EMP_CREATE_SUCCESS(HttpStatus.OK, "사원 등록 성공"),
-    EMP_CSV_CREATE_SUCCESS(HttpStatus.OK, "사원 목록 등록 성공"),
     EMP_UPDATE_SUCCESS(HttpStatus.OK, "사원 정보 수정 성공"),
+    DEPARTMENT_UPDATE_SUCCESS(HttpStatus.OK, "부서 정보 수정 성공"),
+    POSITION_UPDATE_SUCCESS(HttpStatus.OK,"직위 정보 수정 성공"),
+    POSITION_DELETE_SUCCESS(HttpStatus.OK,"직위 정보 삭제 성공"),
     MY_INFO_UPDATE_SUCCESS(HttpStatus.OK, "내 정보 수정 성공"),
     PASSWORD_CREATE_SUCCESS(HttpStatus.OK, "초기 비밀번호 등록 성공"),
     TOKEN_REISSUE_SUCCESS(HttpStatus.OK, "AccessToken 재발급 성공!"),
 
     // 200 - 회사 관련 성공
-    COMPANY_CREATE_SUCCESS(HttpStatus.OK, "회사 정보 등록 성공"),
     COMPANY_UPDATE_SUCCESS(HttpStatus.OK, "회사 정보 수정 성공"),
     COMPANY_DELETE_SUCCESS(HttpStatus.OK, "회사 정보 삭제 성공"),
 
@@ -52,7 +52,6 @@ public enum SuccessCode {
     KPI_TEAM_UPDATE_SUCCESS(HttpStatus.OK, "팀 KPI를 성공적으로 수정하였습니다."),
     KPI_TEAM_DELETE_SUCCESS(HttpStatus.OK, "팀 KPI를 성공적으로 삭제하였습니다."),
 
-
     // 동료 평가
     EVALUTION_COL_UPLOAD_SUCCESS(HttpStatus.OK, "동료 평가가 성공적으로 작성되었습니다."),
     EVALUTION_COL_UPDATE_SUCCESS(HttpStatus.OK, "동료 평가가 성공적으로 수정되었습니다."),
@@ -71,8 +70,17 @@ public enum SuccessCode {
     EVALUTION_DOWN_QUESTION_UPDATE_SUCCESS(HttpStatus.OK, "하향 평가 문항이 성공적으로 수정되었습니다."),
     EVALUTION_DOWN_QUESTION_DELETE_SUCCESS(HttpStatus.OK, "하향 평가 문항이 성공적으로 삭제되었습니다."),
 
+    // 인사 평가
+    HRPERFO_UPLOAD_SUCCESS(HttpStatus.OK, "인사 평가가 성공적으로 작성되었습니다."),
+    HRPERFO_UPDATE_SUCCESS(HttpStatus.OK, "인사 평가가 성공적으로 수정되었습니다."),
+
     // 201
     WORK_ATTITUDE_TRAVEL_SUCCESS(HttpStatus.CREATED, "출장 요청 등록이 완료 되었습니다."),
+    EMP_CREATE_SUCCESS(HttpStatus.CREATED, "사원 등록 성공"),
+    EMP_CSV_CREATE_SUCCESS(HttpStatus.CREATED, "사원 목록 등록 성공"),
+    COMPANY_CREATE_SUCCESS(HttpStatus.CREATED, "회사 정보 등록 성공"),
+    DEPARTMENT_CREATE_SUCCESS(HttpStatus.CREATED, "부서 정보 등록 성공"),
+    POSITION_CREATE_SUCCESS(HttpStatus.CREATED, "직위 정보 등록 성공"),
 
     //초과근무
     WORK_ATTRIBUTE_OVERTIME_SUCCESS(HttpStatus.OK, "초과근무 등록이 완료 되었습니다."),

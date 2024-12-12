@@ -67,4 +67,14 @@ public class PerformanceMapper {
                 .perfoType(PerfoType.valueOf(createQuestionRequestDTO.getPerfoType()))
                 .build();
     }
+
+    // 인사 평가 생성(등급 생성 전)
+    public static HrPerfo finalHrPerfo(Employee emp, Double finalScore){
+
+        return HrPerfo.builder()
+                .emp(emp)
+                .score(finalScore)
+                .status(HrPerfoStatus.WAIT)
+                .build();
+    }
 }

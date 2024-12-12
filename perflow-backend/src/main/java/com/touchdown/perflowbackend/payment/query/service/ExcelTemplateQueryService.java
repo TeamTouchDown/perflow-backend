@@ -1,7 +1,7 @@
 package com.touchdown.perflowbackend.payment.query.service;
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
-import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
+import com.touchdown.perflowbackend.employee.query.repository.EmployeeQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExcelTemplateQueryService {
 
-    private final EmployeeCommandRepository employeeCommandRepository;
+    private final EmployeeQueryRepository employeeQueryRepository;
 
     // 급여대장 엑셀 템플릿 생성 메서드
     public byte[] generatePayrollTemplate() throws IOException {
@@ -26,7 +26,7 @@ public class ExcelTemplateQueryService {
         createHeader(sheet);
 
         // 사원 정보 가져오기
-        List<Employee> employees = employeeCommandRepository.findAll();
+        List<Employee> employees = employeeQueryRepository.findAll();
 
         // 데이터 행 작성
         int rowIndex = 1;

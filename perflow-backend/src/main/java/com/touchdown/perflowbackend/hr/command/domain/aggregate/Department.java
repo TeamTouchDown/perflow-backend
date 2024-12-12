@@ -2,10 +2,13 @@ package com.touchdown.perflowbackend.hr.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.hr.command.application.dto.department.DepartmentCreateDTO;
+import com.touchdown.perflowbackend.hr.command.application.dto.department.DepartmentUpdateDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +16,7 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "department", schema = "perflow")
 public class Department extends BaseEntity {
 
@@ -34,20 +38,27 @@ public class Department extends BaseEntity {
     @Column(name = "responsibility", nullable = false)
     private String responsibility;
 
-    @Column(name = "pic", nullable = false, length = 30)
-    private String pic;
-
     @Column(name = "contact", nullable = false, length = 30)
     private String contact;
 
+    @OneToOne(mappedBy = "department", cascade = CascadeType.ALL)
+    private Pic pic;
+
+    @Column(name = "status", nullable = true)
+    private String status;
+
     @Builder
-    public Department(Long departmentId, String name, String responsibility, String pic, String contact, Department manageDept) {
-        this.departmentId = departmentId;
-        this.name = name;
-        this.responsibility = responsibility;
-        this.pic = pic;
-        this.contact = contact;
+    public Department(DepartmentCreateDTO createDTO, Department manageDept, Pic pic) {
+        this.departmentId = createDTO.getDepartmentId();
+        this.name = createDTO.getName();
+        this.responsibility = createDTO.getResponsibility();
+        this.contact = createDTO.getContact();
         this.manageDept = manageDept;
+        this.pic = pic;
+    }
+
+    public void addPic(Pic pic) {
+        this.pic = pic;
     }
 
     public void addSubDepartment(Department subDepartment) {
@@ -57,5 +68,14 @@ public class Department extends BaseEntity {
 
     private void setManageDept(Department manageDept) {
         this.manageDept = manageDept;
+    }
+
+    public void updateDepartment(DepartmentUpdateDTO departmentUpdateDTO, Department managedDepartment, Employee picEmployee) {
+
+        this.name = departmentUpdateDTO.getName();
+        this.responsibility = departmentUpdateDTO.getResponsibility();
+        this.contact = departmentUpdateDTO.getContact();
+        this.manageDept = managedDepartment;
+        this.pic.changeEmployee(picEmployee);
     }
 }
