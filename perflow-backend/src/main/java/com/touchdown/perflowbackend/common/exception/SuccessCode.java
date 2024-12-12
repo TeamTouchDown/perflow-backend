@@ -74,6 +74,7 @@ public enum SuccessCode {
     EMP_CSV_CREATE_SUCCESS(HttpStatus.CREATED, "사원 목록 등록 성공"),
     COMPANY_CREATE_SUCCESS(HttpStatus.CREATED, "회사 정보 등록 성공"),
     DEPARTMENT_CREATE_SUCCESS(HttpStatus.CREATED, "부서 정보 등록 성공"),
+    POSITION_CREATE_SUCCESS(HttpStatus.CREATED, "직위 정보 등록 성공"),
 
     //초과근무
     WORK_ATTRIBUTE_OVERTIME_SUCCESS(HttpStatus.OK, "초과근무 등록이 완료 되었습니다."),
