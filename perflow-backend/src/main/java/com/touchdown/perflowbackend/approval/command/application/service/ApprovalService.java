@@ -33,7 +33,7 @@ public class ApprovalService {
         Doc doc = findDocById(request.getDocId());
 
         // 결재 주체 조회
-        ApproveSbj approveSbj = findApproveSbjById(request.getDocId(), LoginId, request.getSbjType());
+        ApproveSbj approveSbj = findApproveSbjById(request.getDocId(), LoginId, request.getEmpDeptType());
 
         // 결재 주체 상태 변경
         updateApproveSbjStatus(approveSbj, request.getStatus());
@@ -171,9 +171,9 @@ public class ApprovalService {
         return docCommandRepository.findById(docId).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DOC));
     }
 
-    private ApproveSbj findApproveSbjById(Long docId, String approveSbjId, SbjType sbjType) {
+    private ApproveSbj findApproveSbjById(Long docId, String approveSbjId, EmpDeptType empDeptType) {
 
-        return approveSbjCommandRepository.findByDocIdAndApproveSbjIdAndType(docId, approveSbjId, sbjType)
+        return approveSbjCommandRepository.findByDocIdAndApproveSbjIdAndType(docId, approveSbjId, empDeptType)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APPROVE_SBJ));
     }
 }

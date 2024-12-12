@@ -1,7 +1,7 @@
 package com.touchdown.perflowbackend.approval.command.domain.repository;
 
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
-import com.touchdown.perflowbackend.approval.command.domain.aggregate.SbjType;
+import com.touchdown.perflowbackend.approval.command.domain.aggregate.EmpDeptType;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -14,12 +14,12 @@ public interface ApproveSbjCommandRepository {
     @Query("SELECT sbj FROM ApproveSbj sbj " +
             "JOIN sbj.approveLine line " +
             "JOIN line.doc doc " +
-            "WHERE doc.docId = :docId AND sbj.sbjType = :sbjType " +
+            "WHERE doc.docId = :docId AND sbj.empDeptType = :sbjType " +
             "AND (sbj.sbjUser.empId = :approveSbjId OR CAST(sbj.dept.departmentId AS string) = :approveSbjId)")
     Optional<ApproveSbj> findByDocIdAndApproveSbjIdAndType(
             @Param("docId") Long docId,
             @Param("approveSbjId") String approveSbjId,
-            @Param("sbjType") SbjType sbjType
+            @Param("sbjType") EmpDeptType empDeptType
         );
 
 //    void save(ApproveSbj approveSbj);

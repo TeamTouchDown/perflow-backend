@@ -77,11 +77,11 @@ public class DocMapper {
                 .approveLineOrder(line.getApproveLineOrder())
                 .pllGroupId(line.getPllGroupId())
                 .departments(line.getApproveSubjects().stream()
-                        .filter(subject -> subject.getSbjType() == SbjType.DEPARTMENT)
+                        .filter(subject -> subject.getEmpDeptType() == EmpDeptType.DEPARTMENT)
                         .map(subject -> subject.getDept().getDepartmentId())
                         .toList())
                 .employees(line.getApproveSubjects().stream()
-                        .filter(subject -> subject.getSbjType() == SbjType.EMPLOYEE)
+                        .filter(subject -> subject.getEmpDeptType() == EmpDeptType.EMPLOYEE)
                         .map(subject -> subject.getSbjUser().getEmpId())
                         .toList())
                 .approveTemplateTypes(line.getApproveTemplateType())
@@ -132,7 +132,7 @@ public class DocMapper {
     public static ApproveSbjDTO toApproveSbjDTO(ApproveSbj sbj) {
 
         return ApproveSbjDTO.builder()
-                .sbjType(sbj.getSbjType())
+                .empDeptType(sbj.getEmpDeptType())
                 .empId(sbj.getSbjUser() != null ? sbj.getSbjUser().getEmpId() : null)   // sbjType에 따라 null 값 넘겨야 함
                 .departmentId(sbj.getDept() != null ? sbj.getDept().getDepartmentId() : null)
                 .status(sbj.getStatus())
@@ -142,10 +142,10 @@ public class DocMapper {
     public static List<ShareDTO> toShareDTOList(List<DocShareObj> shares) {
         return shares.stream()
                 .map(share -> new ShareDTO(
-                        share.getShareObjType(),
-                        share.getShareObjType() == ObjType.DEPARTMENT && share.getShareObjDepartment() != null
+                        share.getShareEmpDeptType(),
+                        share.getShareEmpDeptType() == EmpDeptType.DEPARTMENT && share.getShareObjDepartment() != null
                                 ? List.of(share.getShareObjDepartment().getDepartmentId()) : new ArrayList<>(),
-                        share.getShareObjType() == ObjType.EMPLOYEE && share.getShareObjUser() != null
+                        share.getShareEmpDeptType() == EmpDeptType.EMPLOYEE && share.getShareObjUser() != null
                                 ? List.of(share.getShareObjUser().getEmpId()) : new ArrayList<>()
                 ))
                 .toList();

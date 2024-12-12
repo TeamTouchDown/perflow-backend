@@ -42,7 +42,7 @@ public class ApproveSbj extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "sbj_type", nullable = false, length = 30)
-    private SbjType sbjType;
+    private EmpDeptType empDeptType;
 
     @ColumnDefault("false")
     @Column(name = "is_pll", nullable = false)
@@ -59,11 +59,11 @@ public class ApproveSbj extends BaseEntity {
     private String comment;
 
     @Builder
-    public ApproveSbj(ApproveLine approveLine, Employee sbjUser, SbjType sbjType, Department dept, Boolean isPll) {
+    public ApproveSbj(ApproveLine approveLine, Employee sbjUser, EmpDeptType empDeptType, Department dept, Boolean isPll) {
 
         this.approveLine = approveLine;
         this.sbjUser = sbjUser;
-        this.sbjType = sbjType;
+        this.empDeptType = empDeptType;
         this.dept = dept;
         this.isPll = isPll;
     }

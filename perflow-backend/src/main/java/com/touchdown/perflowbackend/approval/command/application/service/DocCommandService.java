@@ -100,24 +100,24 @@ public class DocCommandService {
             // 공유 대상이 사원인 경우
             for (String empId : shareDTO.getEmployees()) {
                 Employee shareUser = findEmployeeById(empId);
-                DocShareObj shareObj = createShareObj(doc, ObjType.EMPLOYEE, shareUser, null, createUser);
+                DocShareObj shareObj = createShareObj(doc, EmpDeptType.EMPLOYEE, shareUser, null, createUser);
                 doc.getShares().add(shareObj);
             }
 
             // 공유 대상이 부서인 경우
             for(Long deptId : shareDTO.getDepartments()) {
                 Department shareDepartment = findDepartmentByID(deptId);
-                DocShareObj shareObj = createShareObj(doc, ObjType.DEPARTMENT, null, shareDepartment, createUser);
+                DocShareObj shareObj = createShareObj(doc, EmpDeptType.DEPARTMENT, null, shareDepartment, createUser);
                 doc.getShares().add(shareObj);
             }
         }
     }
 
-    private DocShareObj createShareObj(Doc doc, ObjType objType, Employee shareUser, Department shareDepartment, Employee createUser) {
+    private DocShareObj createShareObj(Doc doc, EmpDeptType EmpDeptType, Employee shareUser, Department shareDepartment, Employee createUser) {
 
         return DocShareObj.builder()
                 .doc(doc)
-                .shareObjType(objType)
+                .shareEmpDeptType(EmpDeptType)
                 .shareObjUser(shareUser)
                 .shareObjDepartment(shareDepartment)
                 .shareAddUser(createUser)
@@ -169,7 +169,7 @@ public class DocCommandService {
             for (ApproveSbj myApproveSbj : myApproveLine.getApproveSubjects()) {
                 ApproveSbj newApproveSbj = ApproveSbj.builder()
                         .approveLine(newApproveLine)
-                        .sbjType(myApproveSbj.getSbjType())
+                        .empDeptType(myApproveSbj.getEmpDeptType())
                         .sbjUser(myApproveSbj.getSbjUser())
                         .dept(myApproveSbj.getDept())
                         .isPll(myApproveSbj.getIsPll())
@@ -218,23 +218,23 @@ public class DocCommandService {
         // 결재 주체가 사원인 경우
         for (String empId : lineDTO.getEmployees()) {
             Employee employee = findEmployeeById(empId);
-            ApproveSbj approveSbj = createApproveSbj(approveLine, SbjType.EMPLOYEE, employee, null, isParallel(lineDTO));
+            ApproveSbj approveSbj = createApproveSbj(approveLine, EmpDeptType.EMPLOYEE, employee, null, isParallel(lineDTO));
             approveLine.getApproveSubjects().add(approveSbj);
         }
 
         // 결재 주체가 부서인 경우
         for (Long deptId : lineDTO.getDepartments()) {
             Department department = findDepartmentByID(deptId);
-            ApproveSbj approveSbj = createApproveSbj(approveLine, SbjType.DEPARTMENT, null, department, isParallel(lineDTO));
+            ApproveSbj approveSbj = createApproveSbj(approveLine, EmpDeptType.DEPARTMENT, null, department, isParallel(lineDTO));
             approveLine.getApproveSubjects().add(approveSbj);
         }
     }
 
-    private ApproveSbj createApproveSbj(ApproveLine approveLine, SbjType sbjType, Employee sbjUser, Department dept, boolean isParallel) {
+    private ApproveSbj createApproveSbj(ApproveLine approveLine, EmpDeptType empDeptType, Employee sbjUser, Department dept, boolean isParallel) {
 
         return ApproveSbj.builder()
                 .approveLine(approveLine)
-                .sbjType(sbjType)
+                .empDeptType(empDeptType)
                 .sbjUser(sbjUser)
                 .dept(dept)
                 .isPll(isParallel)
