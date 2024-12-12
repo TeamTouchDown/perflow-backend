@@ -1,17 +1,17 @@
-package com.touchdown.perflowbackend.workAttitude.command.application.dto;
+package com.touchdown.perflowbackend.workAttitude.query.dto;
 
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
+import lombok.Builder;
 import lombok.Data;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
+@Builder
 @Data
-public class WorkAttitudeAttendanceRequestDTO {
-
+public class WorkAttitudeAttendanceResponseDTO {
     @Null
     private Long attendanceId;
 
@@ -19,12 +19,13 @@ public class WorkAttitudeAttendanceRequestDTO {
     private String empId;
 
     @Nullable
-    private LocalDateTime checkInDateTime;
+    private LocalDateTime checkInDateTime; // 출근 시간
 
     @Nullable
-    private LocalDateTime checkOutDateTime;
+    private LocalDateTime checkOutDateTime; // 퇴근 시간
 
     @NotNull
     private Status status;
-
 }
+
+
