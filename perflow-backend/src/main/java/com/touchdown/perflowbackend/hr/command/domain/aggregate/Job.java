@@ -2,11 +2,11 @@ package com.touchdown.perflowbackend.hr.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.hr.command.application.dto.job.JobCreateDTO;
+import com.touchdown.perflowbackend.hr.command.application.dto.job.JobUpdateDTO;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
@@ -44,4 +44,11 @@ public class Job extends BaseEntity {
         this.status = createDTO.getStatus();
     }
 
+    public void updateJob(JobUpdateDTO jobUpdateDTO, Department department) {
+
+        this.dept = department;
+        this.name = jobUpdateDTO.getName();
+        this.responsibility = jobUpdateDTO.getResponsibility();
+        this.status = jobUpdateDTO.getStatus();
+    }
 }

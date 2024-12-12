@@ -4,6 +4,7 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.hr.command.application.dto.department.DepartmentCreateDTO;
 import com.touchdown.perflowbackend.hr.command.application.dto.job.JobCreateDTO;
+import com.touchdown.perflowbackend.hr.command.application.dto.job.JobUpdateDTO;
 import com.touchdown.perflowbackend.hr.command.application.mapper.JobMapper;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
@@ -35,10 +36,30 @@ public class JobCommandService {
 
     }
 
+    @Transactional
+    public void updateJob(JobUpdateDTO jobUpdateDTO) {
+
+        Job job = getJob(jobUpdateDTO.getJobId());
+
+        Department department = getDepartment(jobUpdateDTO.getDeptId());
+
+        job.updateJob(jobUpdateDTO, department);
+
+        jobCommandRepository.save(job);
+    }
+
+    private Job getJob(Long jobId) {
+        return jobCommandRepository.findById(jobId).orElseThrow(
+                () -> new CustomException(ErrorCode.NOT_FOUND_JOB)
+        );
+    }
+
     public Department getDepartment(Long deptId) {
 
         return departmentCommandRepository.findById(deptId).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT)
         );
     }
+
+
 }
