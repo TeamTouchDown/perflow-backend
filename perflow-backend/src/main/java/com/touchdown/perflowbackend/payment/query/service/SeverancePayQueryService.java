@@ -5,8 +5,8 @@ import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.SeverancePay;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.SeverancePayDetail;
-import com.touchdown.perflowbackend.payment.query.dto.SeverancePayListResponseDTO;
-import com.touchdown.perflowbackend.payment.query.dto.SeverancePayResponseDTO;
+import com.touchdown.perflowbackend.payment.command.domain.aggregate.Status;
+import com.touchdown.perflowbackend.payment.query.dto.*;
 import com.touchdown.perflowbackend.payment.query.repository.SeverancePayQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -156,4 +157,67 @@ public class SeverancePayQueryService {
                 .build();
 
     }
+
+    // 퇴직금 정보 상세 조회
+    @Transactional(readOnly = true)
+    public SeverancePayDetailResponseDTO getSeverancePay(Long severancePayId) {
+
+        List<Object[]> results = severancePayQueryRepository.findSeverancePayDetails(severancePayId);
+
+        List<SeverancePayDTO> severancePays = mapToDTO(results);  // Object[]를 SeverancePayDTO로 변환
+
+        return SeverancePayDetailResponseDTO.builder()  // SeverancePayDetailResponseDTO로 감쌈
+                .severancePays(severancePays)
+                .build();
+
+    }
+
+    private List<SeverancePayDTO> mapToDTO(List<Object[]> results) {
+
+        return results.stream()
+                .map(result -> new SeverancePayDTO(
+
+                        (Long) result[0],
+                        (String) result[1],
+                        (String) result[2],
+                        toLocalDate(result[3]),
+                        toLocalDate(result[4]),
+                        (String) result[5],
+                        (String) result[6],
+                        (Long) result[7],
+                        (Long) result[8],
+                        (Long) result[9],
+                        (Long) result[10],
+                        (Long) result[11],
+                        Status.valueOf((String) result[12])
+
+                ))
+
+                .collect(Collectors.toList());
+    }
+
+    private LocalDate toLocalDate(Object date) {
+
+        if (date == null) {
+            return null; // null 처리
+
+        } else if (date instanceof java.sql.Date) {
+
+            return ((java.sql.Date) date).toLocalDate();
+
+        } else if (date instanceof java.util.Date) {
+
+            return ((java.util.Date) date).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        } else if (date instanceof LocalDate) {
+
+            return (LocalDate) date;
+
+        } else {
+
+            throw new IllegalArgumentException("Unexpected date type: " + date);
+
+        }
+    }
+
 }

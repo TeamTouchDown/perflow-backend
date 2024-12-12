@@ -2,6 +2,7 @@ package com.touchdown.perflowbackend.payment.query.controller;
 
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
+import com.touchdown.perflowbackend.payment.query.dto.SeverancePayDetailResponseDTO;
 import com.touchdown.perflowbackend.payment.query.dto.SeverancePayListResponseDTO;
 import com.touchdown.perflowbackend.payment.query.service.SeverancePayQueryService;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,15 @@ public class SeverancePayQueryController {
         Pageable pageable = PageRequest.of(page - 1, size);
 
         SeverancePayListResponseDTO response = severancePayQueryService.getSeverancePays(pageable);
+
+        return ResponseEntity.ok(response);
+
+    }
+
+    @GetMapping("/hr/severance-pays/{severancePayId}")
+    public ResponseEntity<SeverancePayDetailResponseDTO> getSeverancePay(@PathVariable Long severancePayId) {
+
+        SeverancePayDetailResponseDTO response = (SeverancePayDetailResponseDTO) severancePayQueryService.getSeverancePay(severancePayId);
 
         return ResponseEntity.ok(response);
 
