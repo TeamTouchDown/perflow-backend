@@ -19,6 +19,8 @@ public class EmployeeQueryResponseDTO {
 
     private final String position;
 
+    private final String job;
+
     private final String name;
 
 }

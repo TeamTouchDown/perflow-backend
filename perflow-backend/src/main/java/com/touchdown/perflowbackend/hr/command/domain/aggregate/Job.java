@@ -29,4 +29,7 @@ public class Job extends BaseEntity {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
 
+    @Column(name = "status", nullable = false)
+    private String status;
+
 }

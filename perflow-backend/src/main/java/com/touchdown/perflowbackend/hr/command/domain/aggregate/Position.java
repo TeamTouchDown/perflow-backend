@@ -24,4 +24,6 @@ public class Position extends BaseEntity {
     @Column(name = "level", nullable = false)
     private Integer level;
 
+    @Column(name = "status", nullable = false)
+    private String status;
 }

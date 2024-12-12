@@ -41,3 +41,13 @@ token:
 springdoc:
   swagger-ui:
     path: /
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${aws.access}
+      secretKey: ${aws.secret}
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: ${aws.bucket}

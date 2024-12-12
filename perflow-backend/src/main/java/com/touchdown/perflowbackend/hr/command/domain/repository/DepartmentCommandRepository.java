@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface DepartmentCommandRepository {
 
     Optional<Department> findById(Long departmentId);
+
+    Department save(Department newDepartment);
 }
