@@ -11,8 +11,8 @@ public class WorkAttitudeAttendanceMapper {
     public static Attendance toEntity(WorkAttitudeAttendanceRequestDTO requestDTO, Employee employee){
         return Attendance.builder()
                 .empId(employee)
-                .CheckInDateTime(requestDTO.getCheckInDateTime())
-                .CheckOutDateTime(requestDTO.getCheckOutDateTime())
+                .checkInDateTime(requestDTO.getCheckInDateTime())
+                .checkOutDateTime(requestDTO.getCheckOutDateTime())
                 .status(requestDTO.getStatus().toString())
                 .build();
     }
