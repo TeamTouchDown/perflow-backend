@@ -54,9 +54,9 @@ public class AppointCommandService {
                 break;
             }
             case CHANGE_JOB -> {
-
-                after = changeJobEmployee(employee, appointCreateDTO);
+                
                 before = employee.getJob().getName();
+                after = changeJobEmployee(employee, appointCreateDTO);
                 break;
             }
         }
