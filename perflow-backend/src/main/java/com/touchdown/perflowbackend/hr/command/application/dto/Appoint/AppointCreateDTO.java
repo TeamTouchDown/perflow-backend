@@ -20,9 +20,7 @@ public class AppointCreateDTO {
 
     private Type type;
 
-    private String before;
-
-    private String after;
+    private Long after;
 
     private LocalDateTime appointDatetime;
 }
