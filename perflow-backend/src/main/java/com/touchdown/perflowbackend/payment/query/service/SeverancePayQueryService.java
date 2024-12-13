@@ -9,6 +9,7 @@ import com.touchdown.perflowbackend.payment.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.payment.query.dto.*;
 import com.touchdown.perflowbackend.payment.query.repository.SeverancePayQueryRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
@@ -20,9 +21,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SeverancePayQueryService {
@@ -199,6 +202,7 @@ public class SeverancePayQueryService {
     private LocalDate toLocalDate(Object date) {
 
         if (date == null) {
+
             return null; // null 처리
 
         } else if (date instanceof java.sql.Date) {
@@ -220,4 +224,66 @@ public class SeverancePayQueryService {
         }
     }
 
+    // 퇴직한 사원의 퇴직금 명세서 조회
+    @Transactional(readOnly = true)
+    public SeverancePayStubDetailDTO getSeverancePayStub(String empId) {
+        // 단일 결과 Object[]를 반환받음
+        Object[] rawResult = (Object[]) severancePayQueryRepository.findByEmpId(empId);
+
+        // 반환값 디버깅 로그
+        log.error("Query result class: {}", rawResult.getClass());
+        log.error("Query result contents: {}", Arrays.toString(rawResult));
+
+        // 결과 배열이 null이거나 비어 있는지 확인
+        if (rawResult == null || rawResult.length == 0 || !(rawResult[0] instanceof Object[])) {
+
+            throw new IllegalArgumentException("Unexpected result structure or empty result.");
+
+        }
+
+        // 내부 배열 추출
+        Object[] result = (Object[]) rawResult[0];
+
+        // 결과가 예상 크기보다 작으면 예외 발생
+        if (result.length < 15) {
+
+            throw new IllegalArgumentException("Unexpected result array size: " + result.length);
+
+        }
+
+        // 각 인덱스의 값을 안전하게 캐스팅
+        String empIdResult = result[0] instanceof String ? (String) result[0] : null;
+        String name = result[1] instanceof String ? (String) result[1] : null;
+        LocalDate joinDate = toLocalDate(result[2]);
+        LocalDate resignDate = toLocalDate(result[3]);
+        String departmentName = result[4] instanceof String ? (String) result[4] : null;
+        String positionName = result[5] instanceof String ? (String) result[5] : null;
+        Long totalLaborDays = result[6] instanceof Long ? (Long) result[6] : null;
+        Long threeMonthTotalPay = result[7] instanceof Long ? (Long) result[7] : null;
+        Long threeMonthTotalAllowance = result[8] instanceof Long ? (Long) result[8] : null;
+        Long annualAllowance = result[9] instanceof Long ? (Long) result[9] : null;
+        Long totalAllowance = result[10] instanceof Long ? (Long) result[10] : null;
+        Long extendLaborAllowance = result[11] instanceof Long ? (Long) result[11] : null;
+        Long nightLaborAllowance = result[12] instanceof Long ? (Long) result[12] : null;
+        Long holidayLaborAllowance = result[13] instanceof Long ? (Long) result[13] : null;
+        Long totalAmount = result[14] instanceof Long ? (Long) result[14] : null;
+
+        // DTO 생성
+        SeverancePayStubDTO severancePay = new SeverancePayStubDTO(
+
+                empIdResult, name, joinDate, resignDate, departmentName,
+                positionName, totalLaborDays, threeMonthTotalPay,
+                threeMonthTotalAllowance, annualAllowance, totalAllowance,
+                extendLaborAllowance, nightLaborAllowance, holidayLaborAllowance, totalAmount
+
+        );
+
+        log.error("Parsed DTO: {}", severancePay);
+
+        // SeverancePayStubDTO를 SeverancePayStubDetailDTO로 감싸서 반환
+        return SeverancePayStubDetailDTO.builder()
+                .severancePayStub(severancePay)
+                .build();
+        
+    }
 }

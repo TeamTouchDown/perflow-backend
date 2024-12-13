@@ -4,8 +4,10 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.payment.query.dto.SeverancePayDetailResponseDTO;
 import com.touchdown.perflowbackend.payment.query.dto.SeverancePayListResponseDTO;
+import com.touchdown.perflowbackend.payment.query.dto.SeverancePayStubDetailDTO;
 import com.touchdown.perflowbackend.payment.query.service.SeverancePayQueryService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.time.LocalDate;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -68,6 +71,17 @@ public class SeverancePayQueryController {
     public ResponseEntity<SeverancePayDetailResponseDTO> getSeverancePay(@PathVariable Long severancePayId) {
 
         SeverancePayDetailResponseDTO response = (SeverancePayDetailResponseDTO) severancePayQueryService.getSeverancePay(severancePayId);
+
+        return ResponseEntity.ok(response);
+
+    }
+
+    @GetMapping("/severance-stub/{empId}")
+    public ResponseEntity<SeverancePayStubDetailDTO> getSeverancePayStub(@PathVariable String empId) {
+
+        SeverancePayStubDetailDTO response = severancePayQueryService.getSeverancePayStub(empId);
+
+        log.error("Response DTO: {}", response);
 
         return ResponseEntity.ok(response);
 
