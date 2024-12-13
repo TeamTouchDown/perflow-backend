@@ -1,7 +1,9 @@
 package com.touchdown.perflowbackend.hr.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.hr.command.application.dto.Appoint.AppointCreateDTO;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +24,8 @@ public class Appoint {
     private Employee emp;
 
     @Column(name = "type", nullable = false, length = 30)
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private Type type;
 
     @Column(name = "`before`", nullable = false, length = 30)
     private String before;
@@ -32,5 +35,16 @@ public class Appoint {
 
     @Column(name = "appoint_datetime", nullable = false)
     private LocalDateTime appointDatetime;
+
+    @Builder
+    public Appoint(AppointCreateDTO appointCreateDTO, Employee emp) {
+        this.appointId = appointCreateDTO.getAppointId();
+        this.emp = emp;
+        this.type = appointCreateDTO.getType();
+        this.before = appointCreateDTO.getBefore();
+        this.after = appointCreateDTO.getAfter();
+        this.appointDatetime = appointCreateDTO.getAppointDatetime();
+    }
+
 
 }
