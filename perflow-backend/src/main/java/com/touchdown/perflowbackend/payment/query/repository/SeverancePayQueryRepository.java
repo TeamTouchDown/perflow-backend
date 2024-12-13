@@ -38,4 +38,28 @@ public interface SeverancePayQueryRepository extends JpaRepository<SeverancePay,
             nativeQuery = true)
     List<Object[]> findSeverancePayDetails(Long severancePayId);
 
+    @Query(value = "SELECT " +
+            "e.emp_id, " +
+            "e.name, " +
+            "e.join_date, " +
+            "e.resign_date, " +
+            "d.name, " +
+            "p.name, " +
+            "DATEDIFF(e.resign_date, e.join_date) + 1 AS totalLaborDays, " +
+            "e.pay * 3, " +
+            "(spd.extend_labor_allowance + spd.night_labor_allowance + spd.holiday_labor_allowance + spd.annual_allowance), " +
+            "spd.annual_allowance, " +
+            "(spd.extend_labor_allowance + spd.night_labor_allowance + spd.holiday_labor_allowance), " +
+            "spd.extend_labor_allowance, " +
+            "spd.night_labor_allowance, " +
+            "spd.holiday_labor_allowance, " +
+            "spd.total_amount " +
+            "FROM Severance_pay s " +
+            "JOIN Severance_pay_detail spd ON s.severance_pay_id = spd.severance_pay_id " +
+            "JOIN Employee e ON spd.emp_id = e.emp_id " +
+            "JOIN Position p ON e.position_id = p.position_id " +
+            "JOIN Department d ON e.dept_id = d.dept_id " +
+            "WHERE e.status = 'RESIGNED' AND spd.emp_id = :empId",
+            nativeQuery = true)
+    Object[] findByEmpId(String empId);
 }
