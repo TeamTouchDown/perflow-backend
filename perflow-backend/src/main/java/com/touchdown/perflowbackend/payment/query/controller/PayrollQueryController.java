@@ -4,6 +4,7 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.payment.query.dto.*;
 import com.touchdown.perflowbackend.payment.query.service.PayrollQueryService;
+import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -120,6 +121,8 @@ public class PayrollQueryController {
     // 급여명세서 조회
     @GetMapping("/pay-stub/{empId}")
     public ResponseEntity<PayStubDTO> getPayStub(@PathVariable String empId) {
+
+        empId = EmployeeUtil.getEmpId();
 
         PayStubDTO response = payrollQueryService.getPayStub(empId);
 
