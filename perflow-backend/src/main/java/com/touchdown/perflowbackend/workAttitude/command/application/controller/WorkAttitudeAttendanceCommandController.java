@@ -22,8 +22,6 @@ public class WorkAttitudeAttendanceCommandController {
     @PostMapping("/emp/attendances")
     public ResponseEntity<SuccessCode>createAttendance(@RequestBody WorkAttitudeAttendanceRequestDTO workAttitudeAttendanceRequestDTO){
         workAttitudeAttendanceCommandService.createAttendance(workAttitudeAttendanceRequestDTO);
-
-        // 성공 코드를 반환
         return ResponseEntity.ok(SuccessCode.WORK_ATTITUDE_ATTENDANCE_SUCCESS);
     }
 
