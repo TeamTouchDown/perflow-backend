@@ -123,7 +123,7 @@ public class AppointCommandService {
 
         if (before.equals(after)) {
 
-            throw new CustomException(ErrorCode.DUPLICATE_DEPT_REQUEST);
+            throw new CustomException(ErrorCode.DUPLICATE_JOB_REQUEST);
         }
 
         // 직책 업데이트
