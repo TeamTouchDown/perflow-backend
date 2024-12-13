@@ -37,20 +37,20 @@ public class AppointCommandService {
 
             case PROMOTION -> { // 승진
 
-                after = promotionEmployee(employee, appointCreateDTO);
                 before = employee.getPosition().getName();
+                after = promotionEmployee(employee, appointCreateDTO);
                 break;
             }
             case DEMOTION -> { // 강등
 
-                after = demotionEmployee(employee, appointCreateDTO);
                 before = employee.getPosition().getName();
+                after = demotionEmployee(employee, appointCreateDTO);
                 break;
             }
             case TRANSFER -> { // 부서이동
 
-                after = transferEmployee(employee, appointCreateDTO);
                 before = employee.getDept().getName();
+                after = transferEmployee(employee, appointCreateDTO);
                 break;
             }
             case CHANGE_JOB -> {
