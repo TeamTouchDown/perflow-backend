@@ -5,6 +5,8 @@ import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRe
 import com.touchdown.perflowbackend.approval.command.application.dto.MyApproveLineCreateRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.service.ApprovalService;
 import com.touchdown.perflowbackend.approval.command.application.service.DocCommandService;
+import com.touchdown.perflowbackend.approval.command.domain.aggregate.TemplateField;
+import com.touchdown.perflowbackend.approval.command.domain.repository.TemplateFieldCommandRepository;
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -44,13 +46,13 @@ public class DocCommandController {
     // 문서 일괄 승인
 
     // 나의 결재선 생성
-    @PostMapping("/my-approve-lines")
-    public ResponseEntity<SuccessCode> createMyApproveLine(@RequestBody MyApproveLineCreateRequestDTO request) {
-
-        // todo: 현재 로그인 한 사용자 나중에 넣기
-        String createUserId = "23-MK004";
-        docCommandService.createNewMyApproveLine(request, createUserId);
-
-        return ResponseEntity.ok(SuccessCode.MY_APPROVE_LINE_CREATE_SUCCESS);
-    }
+//    @PostMapping("/my-approve-lines")
+//    public ResponseEntity<SuccessCode> createMyApproveLine(@RequestBody MyApproveLineCreateRequestDTO request) {
+//
+//        // todo: 현재 로그인 한 사용자 나중에 넣기
+//        String createUserId = "23-MK004";
+//        docCommandService.createNewMyApproveLine(request, createUserId);
+//
+//        return ResponseEntity.ok(SuccessCode.MY_APPROVE_LINE_CREATE_SUCCESS);
+//    }
 }

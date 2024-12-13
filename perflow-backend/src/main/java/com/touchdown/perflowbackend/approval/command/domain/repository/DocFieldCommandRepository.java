@@ -4,5 +4,5 @@ import com.touchdown.perflowbackend.approval.command.domain.aggregate.DocField;
 
 public interface DocFieldCommandRepository {
 
-    void save(DocField build);
+    DocField save(DocField build);
 }

@@ -18,7 +18,8 @@ public interface ApproveLineCommandRepository {
             "WHERE line.doc.docId = :docId " +
             "AND line.approveLineOrder > :currentOrder " +
             "ORDER BY line.approveLineOrder ASC")
-    Optional<ApproveLine> findNextApproveLineAsc(@Param("docId") Long approveLineId, @Param("currentOrder") Integer currentOrder);
+    Optional<ApproveLine> findNextApproveLineAsc(@Param("docId") Long approveLineId, @Param("currentOrder") Long currentOrder);
 
-    Optional<List<ApproveLine>> findAllByGroupId(long groupId);
+    @Query("SELECT a FROM ApproveLine a WHERE a.groupId = :groupId")
+    Optional<List<ApproveLine>> findAllByGroupId(@Param("groupId") long groupId);
 }

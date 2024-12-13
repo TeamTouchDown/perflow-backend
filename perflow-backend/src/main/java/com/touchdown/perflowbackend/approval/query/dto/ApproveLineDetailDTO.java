@@ -14,7 +14,7 @@ public class ApproveLineDetailDTO {
 
     private final ApproveType approveType;
 
-    private final Integer approveLineOrder;
+    private final Long approveLineOrder;
 
     private final List<ApproveSbjDTO> approveSbjs;
 }

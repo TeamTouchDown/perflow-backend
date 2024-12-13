@@ -13,7 +13,7 @@ public interface DocQueryRepository extends JpaRepository<Doc, Long> {
 
     @Query("SELECT DISTINCT doc FROM Doc doc " +
             "JOIN doc.approveLines line " +
-            "JOIN line.approveSubjects sbj " +
+            "JOIN line.approveSbjs sbj " +
             "WHERE sbj.sbjUser.empId = :empId " +
             "AND sbj.status = 'ACTIVATED' " +
             "AND line.status = 'PENDING'")

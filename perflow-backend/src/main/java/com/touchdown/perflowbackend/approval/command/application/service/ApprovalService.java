@@ -49,7 +49,7 @@ public class ApprovalService {
     private void updateDocStatus(Doc doc) {
 
         List<ApproveSbj> allSubjects = doc.getApproveLines().stream()
-                .flatMap(line -> line.getApproveSubjects().stream())
+                .flatMap(line -> line.getApproveSbjs().stream())
                 .toList();
 
         if (isRejectedAny(allSubjects)) {
@@ -90,7 +90,7 @@ public class ApprovalService {
     private void handlePllApproval(Doc doc, ApproveSbj approveSbj) {
 
         // 현재 결재선의 모든 결재 주체의 상태
-        List<ApproveSbj> subjects = approveSbj.getApproveLine().getApproveSubjects();
+        List<ApproveSbj> subjects = approveSbj.getApproveLine().getApproveSbjs();
 
         if (isRejectedAny(subjects)) {
             doc.updateStatus(Status.REJECTED);
@@ -112,7 +112,7 @@ public class ApprovalService {
             ApproveLine nextLine = nextLineOpt.get();
 
             // 다음 결재선의 모든 결재 주체를 PENDING 으로
-            nextLine.getApproveSubjects().forEach(sbj -> {
+            nextLine.getApproveSbjs().forEach(sbj -> {
                 sbj.updateStatus(Status.PENDING);
                 jpaApproveSbjCommandRepository.save(sbj);
             });
@@ -127,12 +127,12 @@ public class ApprovalService {
     private void handleSeqApproval(Doc doc, ApproveSbj approveSbj) {
 
         // 현재 결재선의 모든 결재 주체의 상태
-        List<ApproveSbj> subjects = approveSbj.getApproveLine().getApproveSubjects();
+        List<ApproveSbj> subjects = approveSbj.getApproveLine().getApproveSbjs();
 
         // 현재 결재 주체의 순서보다 높은 주체를 필터링
         Optional<ApproveSbj> nextSbjOpt = subjects.stream()
                 .filter(sbj -> sbj.getApproveLine().getApproveLineOrder() > approveSbj.getApproveLine().getApproveLineOrder()) // ApproveLine 참조
-                .sorted(Comparator.comparingInt(sbj -> sbj.getApproveLine().getApproveLineOrder()))
+                .sorted(Comparator.comparingLong(sbj -> sbj.getApproveLine().getApproveLineOrder()))
                 .findFirst();
 
         if (nextSbjOpt.isPresent()) {

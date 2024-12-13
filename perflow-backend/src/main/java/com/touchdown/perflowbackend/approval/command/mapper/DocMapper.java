@@ -6,13 +6,15 @@ import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRe
 import com.touchdown.perflowbackend.approval.command.application.dto.ShareDTO;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.approval.query.dto.*;
+import com.touchdown.perflowbackend.common.exception.CustomException;
+import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
-import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
-import com.touchdown.perflowbackend.employee.query.repository.EmployeeQueryRepository;
+import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DocMapper {
 
@@ -78,11 +80,11 @@ public class DocMapper {
                 .approveType(line.getApproveType())
                 .approveLineOrder(line.getApproveLineOrder())
                 .pllGroupId(line.getPllGroupId())
-                .departments(line.getApproveSubjects().stream()
+                .departments(line.getApproveSbjs().stream()
                         .filter(subject -> subject.getEmpDeptType() == EmpDeptType.DEPARTMENT)
                         .map(subject -> subject.getDept().getDepartmentId())
                         .toList())
-                .employees(line.getApproveSubjects().stream()
+                .employees(line.getApproveSbjs().stream()
                         .filter(subject -> subject.getEmpDeptType() == EmpDeptType.EMPLOYEE)
                         .map(subject -> subject.getSbjUser().getEmpId())
                         .toList())
@@ -109,7 +111,6 @@ public class DocMapper {
         return WaitingDocDetailResponseDTO.builder()
                 .docId(doc.getDocId())
                 .title(doc.getTitle())
-//                .content(doc.getContent())
                 .templateId(doc.getTemplate().getTemplateId())
                 // 결재선
                 .approveLines(doc.getApproveLines().stream()
@@ -125,7 +126,7 @@ public class DocMapper {
                 .approveLineId(line.getApproveLineId())
                 .approveType(line.getApproveType())
                 .approveLineOrder(line.getApproveLineOrder())
-                .approveSbjs(line.getApproveSubjects().stream()
+                .approveSbjs(line.getApproveSbjs().stream()
                         .map(DocMapper::toApproveSbjDTO)
                         .toList())
                 .build();
@@ -137,7 +138,6 @@ public class DocMapper {
                 .empDeptType(sbj.getEmpDeptType())
                 .empId(sbj.getSbjUser() != null ? sbj.getSbjUser().getEmpId() : null)   // sbjType에 따라 null 값 넘겨야 함
                 .departmentId(sbj.getDept() != null ? sbj.getDept().getDepartmentId() : null)
-                .status(sbj.getStatus())
                 .build();
     }
 
@@ -151,5 +151,49 @@ public class DocMapper {
                                 ? List.of(share.getShareObjUser().getEmpId()) : new ArrayList<>()
                 ))
                 .toList();
+    }
+
+    public static ApproveSbj toApproveSbj(
+            ApproveSbjDTO sbjDTO,
+            Map<String, Employee> employeeMap,
+            Map<Long, Department> departmentMap,
+            ApproveType approveType) {
+
+        Employee sbjUser = null;
+        if (sbjDTO.getEmpId() != null) {
+            sbjUser = employeeMap.get(sbjDTO.getEmpId());
+            if (sbjUser == null) {
+                throw new CustomException(ErrorCode.NOT_FOUND_EMP);
+            }
+        }
+
+        Department dept = null;
+        if (sbjDTO.getDepartmentId() != null) {
+            dept = departmentMap.get(sbjDTO.getDepartmentId());
+            if (dept == null) {
+                throw new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT);
+            }
+        }
+
+        boolean isPll = approveType == ApproveType.PLL || approveType == ApproveType.PLLAGR;
+
+        return ApproveSbj.builder()
+                .empDeptType(sbjDTO.getEmpDeptType())
+                .sbjUser(sbjUser)
+                .dept(dept)
+                .isPll(isPll)
+                .build();
+
+    }
+
+    public static DocShareObj toDocShareObj(Doc doc, Employee createUser, EmpDeptType empDeptType, Employee employee, Department department) {
+
+        return DocShareObj.builder()
+                .doc(doc)
+                .shareAddUser(createUser)
+                .shareEmpDeptType(empDeptType)
+                .shareObjUser(employee)
+                .shareObjDepartment(department)
+                .build();
     }
 }

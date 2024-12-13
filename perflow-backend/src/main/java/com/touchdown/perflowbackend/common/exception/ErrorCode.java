@@ -53,6 +53,7 @@ public enum ErrorCode {
     NOT_FOUND_POSITION(HttpStatus.NOT_FOUND, "직위 정보를 찾을 수 없습니다."),
     NOT_FOUND_JOB(HttpStatus.NOT_FOUND, "직책 정보를 찾을 수 없습니다."),
     NOT_FOUND_TEMPLATE(HttpStatus.NOT_FOUND, "서식 정보를 찾을 수 없습니다."),
+    NOT_FOUND_TEMPLATE_FIELD(HttpStatus.NOT_FOUND, "서식 필드 정보를 찾을 수 없습니다."),
     NOT_FOUND_FIELD_TYPE(HttpStatus.NOT_FOUND, "필드 타입 정보를 찾을 수 없습니다."),
     NOT_FOUND_DEPARTMENT(HttpStatus.NOT_FOUND, "부서 정보를 찾을 수 없습니다."),
     NOT_FOUND_MY_APPROVE_LINE(HttpStatus.NOT_FOUND, "나의 결재선 정보를 찾을 수 없습니다."),

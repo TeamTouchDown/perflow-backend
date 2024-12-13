@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class DocField extends BaseEntity {
 
     @Id
-    @Column(name = "doc_id", nullable = false)
+    @Column(name = "doc_field_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long docFieldId;
 

@@ -1,8 +1,6 @@
 package com.touchdown.perflowbackend.approval.command.application.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
 import java.util.List;
