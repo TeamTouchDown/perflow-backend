@@ -10,6 +10,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -139,8 +140,11 @@ public class ExcelTemplateQueryService {
         holidayAllowanceCell.setCellValue(holidayAllowance);
         holidayAllowanceCell.setCellStyle(numberCellStyle);
 
-        // 연차수당
-        Long annualAllowance = calculateAnnualAllowance(hourlyPay);
+        // 연차수당 (12월인 경우에만 계산)
+        Long annualAllowance = 0L;
+        if (LocalDate.now().getMonthValue() == 12) {
+            annualAllowance = calculateAnnualAllowance(hourlyPay);
+        }
         Cell annualAllowanceCell = row.createCell(9);
         annualAllowanceCell.setCellValue(annualAllowance);
         annualAllowanceCell.setCellStyle(numberCellStyle);

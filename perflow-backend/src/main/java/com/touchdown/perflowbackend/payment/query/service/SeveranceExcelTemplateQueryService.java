@@ -5,7 +5,6 @@ import com.touchdown.perflowbackend.employee.query.repository.EmployeeQueryRepos
 import com.touchdown.perflowbackend.workAttitude.query.dto.ThreeMonthOvertimeDTO;
 import com.touchdown.perflowbackend.workAttitude.query.repository.WorkAttitudeOvertimeQueryRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SeveranceExcelTemplateQueryService {
@@ -49,8 +47,6 @@ public class SeveranceExcelTemplateQueryService {
 
             // 퇴사일 3개월 전까지 연장근무 시간 등을 가져오는 쿼리 호출
             List<ThreeMonthOvertimeDTO> overtimeSummaryList = workAttitudeOvertimeQueryRepository.findOvertimeSummaryForResignedEmployees(threeMonthsAgo);
-
-            log.debug("Found {} overtime records for employee: {}", overtimeSummaryList.size(), employee.getEmpId());
 
             // overtimeSummaryList를 empId를 키로 하는 맵으로 변환
             Map<String, ThreeMonthOvertimeDTO> overtimeSummaryMap = overtimeSummaryList.stream()
@@ -155,9 +151,12 @@ public class SeveranceExcelTemplateQueryService {
         holidayAllowanceCell.setCellValue(holidayAllowance);
         holidayAllowanceCell.setCellStyle(numberCellStyle);
 
-        // 연차수당
-        Long annualAllowance = calculateResignedAnnualAllowance(hourlyPay);
-        Cell annualAllowanceCell = row.createCell(10);
+        // 연차수당 (12월인 경우에만 계산)
+        Long annualAllowance = 0L;
+        if (LocalDate.now().getMonthValue() == 12) {
+            annualAllowance = calculateResignedAnnualAllowance(hourlyPay);
+        }
+        Cell annualAllowanceCell = row.createCell(9);
         annualAllowanceCell.setCellValue(annualAllowance);
         annualAllowanceCell.setCellStyle(numberCellStyle);
 
