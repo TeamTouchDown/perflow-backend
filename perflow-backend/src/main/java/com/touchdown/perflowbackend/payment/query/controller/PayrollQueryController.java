@@ -119,10 +119,10 @@ public class PayrollQueryController {
     }
 
     // 급여명세서 조회
-    @GetMapping("/pay-stub/{empId}")
-    public ResponseEntity<PayStubDTO> getPayStub(@PathVariable String empId) {
+    @GetMapping("/pay-stub")
+    public ResponseEntity<PayStubDTO> getPayStub() {
 
-        empId = EmployeeUtil.getEmpId();
+        String empId = EmployeeUtil.getEmpId();
 
         PayStubDTO response = payrollQueryService.getPayStub(empId);
 

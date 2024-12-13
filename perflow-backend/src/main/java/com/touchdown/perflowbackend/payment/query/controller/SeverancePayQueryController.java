@@ -77,10 +77,10 @@ public class SeverancePayQueryController {
 
     }
 
-    @GetMapping("/severance-stub/{empId}")
-    public ResponseEntity<SeverancePayStubDetailDTO> getSeverancePayStub(@PathVariable String empId) {
+    @GetMapping("/severance-stub")
+    public ResponseEntity<SeverancePayStubDetailDTO> getSeverancePayStub() {
 
-        empId = EmployeeUtil.getEmpId();
+        String empId = EmployeeUtil.getEmpId();
 
         SeverancePayStubDetailDTO response = severancePayQueryService.getSeverancePayStub(empId);
 
