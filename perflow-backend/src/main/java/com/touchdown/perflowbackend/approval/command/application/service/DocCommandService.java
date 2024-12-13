@@ -1,6 +1,8 @@
 package com.touchdown.perflowbackend.approval.command.application.service;
 
-import com.touchdown.perflowbackend.approval.command.application.dto.*;
+import com.touchdown.perflowbackend.approval.command.application.dto.ApproveLineRequestDTO;
+import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRequestDTO;
+import com.touchdown.perflowbackend.approval.command.application.dto.ShareDTO;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.approval.command.domain.repository.ApproveLineCommandRepository;
 import com.touchdown.perflowbackend.approval.command.domain.repository.DocCommandRepository;
@@ -23,10 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -43,7 +42,6 @@ public class DocCommandService {
     private final DocCommandRepository docCommandRepository;
     private final DepartmentCommandRepository departmentCommandRepository;
     private final ApproveLineCommandRepository approveLineCommandRepository;
-    private final TemplateQueryService templateQueryService;
     private final DocFieldCommandRepository docFieldCommandRepository;
     private final JpaEmployeeCommandRepository jpaEmployeeCommandRepository;
     private final JpaDepartmentCommandRepository jpaDepartmentCommandRepository;
@@ -73,59 +71,6 @@ public class DocCommandService {
         docCommandRepository.save(doc);
     }
 
-    // 사용자가 입력한 필드 데이터 저장
-    private void createDocFields(DocCreateRequestDTO request, Doc doc) {
-
-        request.getFields().forEach(field -> {
-
-            docFieldCommandRepository.save(
-                    DocField.builder()
-                            .doc(doc)
-                            .templateField(field.getTemplateField())
-                            .userValue(field.getUserValue().toString())
-                            .build()
-            );
-        });
-    }
-
-    @Transactional
-    public void createNewMyApproveLine(MyApproveLineCreateRequestDTO request, String createUserId) {
-
-        Employee createUser = findEmployeeById(createUserId);
-
-        Long groupId = generateGroupId(null);
-        
-        for(ApproveLineDTO lineDTO : request.getApproveLines()) {
-
-            ApproveLine approveLine = ApproveLine.builder()
-                    .doc(null)
-                    .groupId(groupId)
-                    .createUser(createUser)
-                    .approveTemplateType(MY_APPROVE_LINE)
-                    .name(request.getName())
-                    .description(request.getDescription())
-                    .approveType(lineDTO.getApproveType())
-                    .approveLineOrder(lineDTO.getApproveLineOrder())
-                    .pllGroupId(lineDTO.getPllGroupId())
-                    .build();
-
-            addApproveSbjs(lineDTO, approveLine);
-
-            approveLineCommandRepository.save(approveLine);
-        }
-    }
-
-    private Long generateGroupId(Long docId) {
-
-        if (docId != null) {
-            return docId;
-        }
-
-        Long maxGroupId = approveLineCommandRepository.findMaxGroupId();
-
-        return (maxGroupId != null ? maxGroupId + 1 : 1L);
-    }
-
     private void createShare(DocCreateRequestDTO request, Doc doc, Employee createUser) {
 
         // 모든 empId와 departmentId 추출
@@ -146,56 +91,45 @@ public class DocCommandService {
         Map<Long, Department> departmentMap = jpaDepartmentCommandRepository.findAllById(departmentIds).stream()
                 .collect(Collectors.toMap(Department::getDepartmentId, Function.identity()));
 
-        for (ShareDTO shareDTO : request.getShares()) {
+        List<DocShareObj> docShareObjs = new ArrayList<>();
 
-            // 공유 대상이 사원인 경우
+        for(ShareDTO shareDTO : request.getShares()) {
+
             if (shareDTO.getShareEmpDeptType() == EmpDeptType.EMPLOYEE) {
                 shareDTO.getEmployees().forEach(empId -> {
                     Employee employee = employeeMap.get(empId);
                     if (employee == null) {
                         throw new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE);
                     }
+
                     DocShareObj docShareObj = DocShareObj.builder()
                             .doc(doc)
                             .shareAddUser(createUser)
                             .shareEmpDeptType(EmpDeptType.EMPLOYEE)
                             .shareObjUser(employee)
                             .build();
-
-                    docShareObj.add(docShareObj);
+                    docShareObjs.add(docShareObj);
                 });
-                // 공유 대상이 부서인 경우
             } else if (shareDTO.getShareEmpDeptType() == EmpDeptType.DEPARTMENT) {
                 shareDTO.getDepartments().forEach(departmentId -> {
-                            Department department = departmentMap.get(departmentId);
-                            if (department == null) {
-                                throw new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT);
-                            }
-
-                            DocShareObj docShareObj = DocShareObj.builder()
-                                    .doc(doc)
-                                    .shareAddUser(createUser)
-                                    .shareEmpDeptType(EmpDeptType.DEPARTMENT)
-                                    .shareObjDepartment(department)
-                                    .build();
-                            docShareObj.add(docShareObj);
+                    Department department = departmentMap.get(departmentId);
+                    if (department == null) {
+                        throw new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT);
+                    }
+                    DocShareObj docShareObj = DocShareObj.builder()
+                            .doc(doc)
+                            .shareAddUser(createUser)
+                            .shareEmpDeptType(EmpDeptType.DEPARTMENT)
+                            .shareObjDepartment(department)
+                            .build();
+                    docShareObjs.add(docShareObj);
                 });
-            }  else {
+            } else {
                 throw new CustomException(ErrorCode.INVALID_SHARE_TYPE);
+            }
         }
 
-
-    }
-
-    private DocShareObj createShareObj(Doc doc, EmpDeptType EmpDeptType, Employee shareUser, Department shareDepartment, Employee createUser) {
-
-        return DocShareObj.builder()
-                .doc(doc)
-                .shareEmpDeptType(EmpDeptType)
-                .shareObjUser(shareUser)
-                .shareObjDepartment(shareDepartment)
-                .shareAddUser(createUser)
-                .build();
+        jpaDocShareObjCommandRepository.saveAll(docShareObjs);
     }
 
     // 결재선 리스트 추가
@@ -213,6 +147,66 @@ public class DocCommandService {
             }
             doc.getApproveLines().add(approveLine);
         }
+    }
+
+    // 결재선 추가
+    private ApproveLine createApproveLine(ApproveLineRequestDTO lineDTO, Doc doc, Employee createUser) {
+
+        // 모든 empId, departmentId
+        Set<String> empIds = lineDTO.getApproveSbjs().stream()
+                .map(ApproveSbjDTO::getEmpId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        Set<Long> departmentIds = lineDTO.getApproveSbjs().stream()
+                .map(ApproveSbjDTO::getDepartmentId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        // 모든 사원, 부서 조회할 때마다 DB 접근하지 않기 위해 한 번에 Map 을 사용하여 한 번에 조회
+        Map<String, Employee> employeeMap = jpaEmployeeCommandRepository.findAllById(empIds).stream()
+                .collect(Collectors.toMap(Employee::getEmpId, Function.identity()));
+        Map<Long, Department> departmentMap = jpaDepartmentCommandRepository.findAllById(departmentIds).stream()
+                .collect(Collectors.toMap(Department::getDepartmentId, Function.identity()));
+
+        ApproveLine newApproveLine = ApproveLine.builder()
+                .doc(doc)
+                .groupId(generateGroupId(doc.getDocId()))    // 문서 id 를 group id 로
+                .approveTemplateType(lineDTO.getApproveTemplateTypes())
+                .createUser(createUser)
+                .approveType(lineDTO.getApproveType())
+                .approveLineOrder(lineDTO.getApproveLineOrder())
+                .pllGroupId(lineDTO.getPllGroupId())
+                .build();
+
+        // 결재 주체 추가
+        for (ApproveSbjDTO sbjDTO : lineDTO.getApproveSbjs()) {
+            Employee sbjUser = null;
+            if (sbjDTO.getEmpId() != null) {
+                sbjUser = employeeMap.get(sbjDTO.getEmpId());
+                if (sbjUser == null) {
+                    throw new CustomException(ErrorCode.NOT_FOUND_EMP);
+                }
+            }
+
+            Department dept = null;
+            if (sbjDTO.getDepartmentId() != null) {
+                dept = departmentMap.get(sbjDTO.getDepartmentId());
+                if (dept == null) {
+                    throw new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT);
+                }
+            }
+
+            ApproveSbj approveSbj = ApproveSbj.builder()
+                    .empDeptType(sbjDTO.getEmpDeptType())
+                    .sbjUser(sbjUser) // Employee 설정
+                    .dept(dept)       // Department 설정
+                    .build();
+
+            newApproveLine.addApproveSbj(approveSbj); // 관계 설정
+        }
+
+        return newApproveLine;
     }
 
     // 나의 결재선 불러오기
@@ -335,122 +329,51 @@ public class DocCommandService {
         return false;
     }
 
+    // 결재선의 group id 생성
+    private Long generateGroupId(Long docId) {
+
+        if (docId != null) {
+            return docId;
+        }
+
+        Long maxGroupId = approveLineCommandRepository.findMaxGroupId();
+
+        return (maxGroupId != null ? maxGroupId + 1 : 1L);
+    }
+
+    // 사용자가 입력한 필드 데이터 저장
+    private void createDocFields(DocCreateRequestDTO request, Doc doc) {
+
+        request.getFields().forEach(field -> {
+
+            docFieldCommandRepository.save(
+                    DocField.builder()
+                            .doc(doc)
+                            .templateField(field.getTemplateField())
+                            .userValue(field.getUserValue().toString())
+                            .build()
+            );
+        });
+    }
+
     // 문서 객체 생성
     private Doc createDoc(DocCreateRequestDTO request, Employee createUser, Template template) {
 
         return DocMapper.toEntity(request, createUser, template);
     }
+    
+    // 사원 조회
+    private Employee findEmployeeById(String createUserId) {
 
-    // 결재선 추가
-    private ApproveLine createApproveLine(ApproveLineRequestDTO lineDTO, Doc doc, Employee createUser) {
-
-        // 모든 empId, departmentId
-        Set<String> empIds = lineDTO.getApproveSbjs().stream()
-                .map(ApproveSbjDTO::getEmpId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-
-        Set<Long> departmentIds = lineDTO.getApproveSbjs().stream()
-                .map(ApproveSbjDTO::getDepartmentId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-
-        // 모든 사원, 부서 조회할 때마다 DB 접근하지 않기 위해 한 번에 Map 을 사용하여 한 번에 조회
-        Map<String, Employee> employeeMap = jpaEmployeeCommandRepository.findAllById(empIds).stream()
-                .collect(Collectors.toMap(Employee::getEmpId, Function.identity()));
-        Map<Long, Department> departmentMap = jpaDepartmentCommandRepository.findAllById(departmentIds).stream()
-                .collect(Collectors.toMap(Department::getDepartmentId, Function.identity()));
-
-        ApproveLine newApproveLine = ApproveLine.builder()
-                .doc(doc)
-                .groupId(generateGroupId(doc.getDocId()))    // 문서 id 를 group id 로
-                .approveTemplateType(lineDTO.getApproveTemplateTypes())
-                .createUser(createUser)
-                .approveType(lineDTO.getApproveType())
-                .approveLineOrder(lineDTO.getApproveLineOrder())
-                .pllGroupId(lineDTO.getPllGroupId())
-                .build();
-
-        // 결재 주체 추가
-        for (ApproveSbjDTO sbjDTO : lineDTO.getApproveSbjs()) {
-            Employee sbjUser = null;
-            if (sbjDTO.getEmpId() != null) {
-                sbjUser = employeeMap.get(sbjDTO.getEmpId());
-                if (sbjUser == null) {
-                    throw new CustomException(ErrorCode.NOT_FOUND_EMP);
-                }
-            }
-
-            Department dept = null;
-            if (sbjDTO.getDepartmentId() != null) {
-                dept = departmentMap.get(sbjDTO.getDepartmentId());
-                if (dept == null) {
-                    throw new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT);
-                }
-            }
-
-            ApproveSbj approveSbj = ApproveSbj.builder()
-                    .empDeptType(sbjDTO.getEmpDeptType())
-                    .sbjUser(sbjUser) // Employee 설정
-                    .dept(dept)       // Department 설정
-                    .build();
-
-            newApproveLine.addApproveSbj(approveSbj); // 관계 설정
-        }
-
-        return newApproveLine;
+        return employeeCommandRepository.findById(createUserId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP));
     }
-
-    // 결재 주체 추가
-    private void addApproveSbjs(List<ApproveSbj> sbjs, ApproveLine approveLine) {
-
-        // 결재 주체가 사원인 경우
-        for (String empId : sbjs.getEmployees()) {
-            Employee employee = findEmployeeById(empId);
-            ApproveSbj approveSbj = createApproveSbj(approveLine, EmpDeptType.EMPLOYEE, employee, null, isParallel(lineDTO));
-            approveLine.getApproveSubjects().add(approveSbj);
-        }
-
-        // 결재 주체가 부서인 경우
-        for (Long deptId : lineDTO.getDepartments()) {
-            Department department = findDepartmentByID(deptId);
-            ApproveSbj approveSbj = createApproveSbj(approveLine, EmpDeptType.DEPARTMENT, null, department, isParallel(lineDTO));
-            approveLine.getApproveSubjects().add(approveSbj);
-        }
-    }
-
-    private ApproveSbj createApproveSbj(ApproveLine approveLine, EmpDeptType empDeptType, Employee sbjUser, Department dept, boolean isParallel) {
-
-        return ApproveSbj.builder()
-                .approveLine(approveLine)
-                .empDeptType(empDeptType)
-                .sbjUser(sbjUser)
-                .dept(dept)
-                .isPll(isParallel)
-                .build();
-    }
-
-    // 결재방식이 병렬/병렬합의인지 확인
-    private Boolean isParallel(ApproveLineDTO lineDTO) {
-
-        return lineDTO.getApproveType() == ApproveType.PLL || lineDTO.getApproveType() == ApproveType.PLLAGR;
-    }
-
+    
+    // 서식 조회
     private Template findTemplateById(Long templateId) {
 
         return templateCommandRepository.findById(templateId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_TEMPLATE));
     }
 
-    private Employee findEmployeeById(String createUserId) {
-
-        return employeeCommandRepository.findById(createUserId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP));
-    }
-
-    private Department findDepartmentByID(Long deptId) {
-
-        return departmentCommandRepository.findById(deptId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT));
-    }
 }
