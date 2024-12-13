@@ -11,6 +11,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -64,5 +65,21 @@ public class SeverancePayCommandService {
             severancePayCommandRepository.save(severancePay);
 
         }
+    }
+
+    @Transactional
+    public void completeSeverancePay(Long severancePayId) {
+
+        SeverancePay severancePay = severancePayCommandRepository.findById(severancePayId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_SEVERANCE_PAY));
+
+        for(SeverancePayDetail detail : severancePay.getSeverancePayDetailList()) {
+
+            detail.completeSeverancePay();
+
+        }
+
+        severancePayCommandRepository.save(severancePay);
+
     }
 }
