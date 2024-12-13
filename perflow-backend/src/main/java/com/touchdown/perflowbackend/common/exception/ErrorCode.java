@@ -37,6 +37,7 @@ public enum ErrorCode {
     NOT_MATCHED_PAYMENT_DATE(HttpStatus.BAD_REQUEST, "급여 지급일은 1일에서 28일 사이의 데이터를 등록해야합니다."),
     ALREADY_CREATE_PIC(HttpStatus.BAD_REQUEST, "이미 존재하는 담당자 데이터입니다. 부서와 담당자를 확인해주세요."),
     TOO_MANY_PROMOTION_STEPS(HttpStatus.BAD_REQUEST,"승급은 한번에 한 단계씩만 가능합니다."),
+    ALREADY_IN_DEPARTMENT(HttpStatus.BAD_REQUEST, "이미 소속된 부서입니다. 다른 부서를 선택해주세요."),
 
     // 401 에러
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "인증 실패"),

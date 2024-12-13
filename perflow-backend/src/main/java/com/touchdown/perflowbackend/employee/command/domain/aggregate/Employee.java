@@ -120,7 +120,7 @@ public class Employee extends BaseEntity {
         this.status = status;
     }
 
-    public void updatePosition(Position position) {
+    public void updatePosition(Position position) {this.position = position; }
 
-    }
+    public void updateDepartment(Department dept) { this.dept = dept; }
 }
