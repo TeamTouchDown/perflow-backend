@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 @Builder
 public class WorkAttitudeOvertimeForTeamLeaderSummaryDTO {
-
+    private String empId; // 사번
 
     private String employeeName; // 사원 이름
 
