@@ -22,6 +22,8 @@ public enum SuccessCode {
     POSITION_DELETE_SUCCESS(HttpStatus.OK,"직위 정보 삭제 성공"),
     JOB_UPDATE_SUCCESS(HttpStatus.OK,"직책 정보 수정 성공"),
     JOB_DELETE_SUCCESS(HttpStatus.OK,"직책 정보 삭제 성공"),
+    APPOINT_UPDATE_SUCCESS(HttpStatus.OK,"발령 정보 수정 성공"),
+    APPOINT_DELETE_SUCCESS(HttpStatus.OK,"발령 정보 삭제 성공"),
     MY_INFO_UPDATE_SUCCESS(HttpStatus.OK, "내 정보 수정 성공"),
     PASSWORD_CREATE_SUCCESS(HttpStatus.OK, "초기 비밀번호 등록 성공"),
     TOKEN_REISSUE_SUCCESS(HttpStatus.OK, "AccessToken 재발급 성공!"),
@@ -84,6 +86,7 @@ public enum SuccessCode {
     DEPARTMENT_CREATE_SUCCESS(HttpStatus.CREATED, "부서 정보 등록 성공"),
     POSITION_CREATE_SUCCESS(HttpStatus.CREATED, "직위 정보 등록 성공"),
     JOB_CREATE_SUCCESS(HttpStatus.CREATED, "직책 정보 등록 성공"),
+    APPOINT_CREATE_SUCCESS(HttpStatus.CREATED, "발령 정보 등록 성공"),
 
     //초과근무
     WORK_ATTRIBUTE_OVERTIME_SUCCESS(HttpStatus.OK, "초과근무 등록이 완료 되었습니다."),

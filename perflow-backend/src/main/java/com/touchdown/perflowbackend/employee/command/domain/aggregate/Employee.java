@@ -119,4 +119,8 @@ public class Employee extends BaseEntity {
     public void updateStatus(EmployeeStatus status) {
         this.status = status;
     }
+
+    public void updatePosition(Position position) {
+
+    }
 }
