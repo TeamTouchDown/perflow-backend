@@ -24,10 +24,10 @@ public class Attendance { //출퇴
     @JoinColumn(name = "emp_id", nullable = false)
     private Employee empId;
 
-    @Column(name = "get_work_datetime", nullable = true)
+    @Column(name = "check_in_datetime", nullable = true)
     private LocalDateTime checkInDateTime;
 
-    @Column(name = "get_off_datetime", nullable = true) // 퇴근 시간이 없을 수도 있음
+    @Column(name = "check_out_datetime", nullable = true) // 퇴근 시간이 없을 수도 있음
     private LocalDateTime checkOutDateTime;
 
     @Column(name = "status", nullable = false, length = 10)
@@ -36,12 +36,12 @@ public class Attendance { //출퇴
 
     @Builder
     public Attendance(Employee empId,
-                      LocalDateTime CheckInDateTime,
-                      LocalDateTime CheckOutDateTime,
+                      LocalDateTime checkInDateTime,
+                      LocalDateTime checkOutDateTime,
                       String status) {
         this.empId = empId;
-        this.checkInDateTime = CheckInDateTime;
-        this.checkOutDateTime = CheckOutDateTime;
+        this.checkInDateTime = checkInDateTime;
+        this.checkOutDateTime = checkOutDateTime;
         this.status = status;
     }
 }
