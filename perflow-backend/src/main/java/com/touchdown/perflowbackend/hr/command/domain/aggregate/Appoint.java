@@ -37,12 +37,12 @@ public class Appoint {
     private LocalDateTime appointDatetime;
 
     @Builder
-    public Appoint(AppointCreateDTO appointCreateDTO, Employee emp) {
+    public Appoint(AppointCreateDTO appointCreateDTO, String after, String before, Employee emp) {
         this.appointId = appointCreateDTO.getAppointId();
         this.emp = emp;
         this.type = appointCreateDTO.getType();
-        this.before = appointCreateDTO.getBefore();
-        this.after = appointCreateDTO.getAfter();
+        this.before = before;
+        this.after = after;
         this.appointDatetime = appointCreateDTO.getAppointDatetime();
     }
 
