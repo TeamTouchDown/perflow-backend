@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @Getter
 @Entity
@@ -71,5 +72,9 @@ public class ApproveSbj extends BaseEntity {
     public void updateStatus(Status status) {
 
         this.status = status;
+    }
+
+    public void setApproveLine(ApproveLine approveLine) {
+        this.approveLine = approveLine;
     }
 }

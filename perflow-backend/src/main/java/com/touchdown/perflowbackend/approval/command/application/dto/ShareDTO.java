@@ -12,9 +12,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ShareDTO {
 
-    private final EmpDeptType shareEmpDeptType;
+    private final EmpDeptType shareEmpDeptType; // 공유 대상 종류(DEPARTMENT, EMPLOYEE)
 
-    private final List<Long> departments;
+    private final List<Long> departments;   // 공유 부서 목록
 
-    private final List<String> employees;
+    private final List<String> employees;   // 공유 사원 목록
 }

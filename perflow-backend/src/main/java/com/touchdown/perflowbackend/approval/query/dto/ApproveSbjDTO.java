@@ -14,7 +14,4 @@ public class ApproveSbjDTO {
     private final String empId;
 
     private final Long departmentId;
-
-    private final Status status;
-
 }

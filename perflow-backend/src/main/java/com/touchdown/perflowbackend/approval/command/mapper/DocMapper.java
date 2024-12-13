@@ -1,11 +1,14 @@
 package com.touchdown.perflowbackend.approval.command.mapper;
 
 import com.touchdown.perflowbackend.approval.command.application.dto.ApproveLineDTO;
+import com.touchdown.perflowbackend.approval.command.application.dto.ApproveLineRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.ShareDTO;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.approval.query.dto.*;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
+import com.touchdown.perflowbackend.employee.query.repository.EmployeeQueryRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,7 +21,6 @@ public class DocMapper {
         // 문서 생성
         return Doc.builder()
                 .title(request.getTitle())
-                .content(request.getContent())
                 .template(template)
                 .createUser(createUser)
                 .build();
@@ -107,7 +109,7 @@ public class DocMapper {
         return WaitingDocDetailResponseDTO.builder()
                 .docId(doc.getDocId())
                 .title(doc.getTitle())
-                .content(doc.getContent())
+//                .content(doc.getContent())
                 .templateId(doc.getTemplate().getTemplateId())
                 // 결재선
                 .approveLines(doc.getApproveLines().stream()

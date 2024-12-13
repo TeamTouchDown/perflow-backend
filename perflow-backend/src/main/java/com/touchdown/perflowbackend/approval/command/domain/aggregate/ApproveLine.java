@@ -35,7 +35,7 @@ public class ApproveLine extends BaseEntity {
     private Long groupId;
 
     @OneToMany(mappedBy = "approveLine", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ApproveSbj> approveSubjects = new ArrayList<>();
+    private List<ApproveSbj> approveSbjs = new ArrayList<>();
 
     @Column(name = "name", length = 30)
     private String name;
@@ -48,7 +48,7 @@ public class ApproveLine extends BaseEntity {
     private ApproveTemplateType approveTemplateType;
 
     @Column(name = "approve_line_order", nullable = false)
-    private Integer approveLineOrder;
+    private Long approveLineOrder;
 
     @Column(name = "pll_group_id")
     private Long pllGroupId;
@@ -65,7 +65,7 @@ public class ApproveLine extends BaseEntity {
     private LocalDateTime completeDatetime;
 
     @Builder
-    public ApproveLine(Doc doc, ApproveTemplateType approveTemplateType, Long groupId, String name, String description, ApproveType approveType, Integer approveLineOrder, Long pllGroupId, Employee createUser) {
+    public ApproveLine(Doc doc, ApproveTemplateType approveTemplateType, Long groupId, String name, String description, ApproveType approveType, Long approveLineOrder, Long pllGroupId, Employee createUser) {
 
         this.doc = doc;
         this.approveTemplateType = approveTemplateType;
@@ -77,4 +77,16 @@ public class ApproveLine extends BaseEntity {
         this.pllGroupId = pllGroupId;
         this.createUser = createUser;
     }
+
+    public void addApproveSbj(ApproveSbj approveSbj) {
+        // 결재 대상 리스트가 null 인 경우 초기화
+        if (this.approveSbjs == null) {
+            this.approveSbjs = new ArrayList<>();
+        }
+
+        // 리스트에 추가하고 ApproveSbj 객체에 결재선을 설정
+        this.approveSbjs.add(approveSbj);
+        approveSbj.setApproveLine(this);
+    }
+
 }

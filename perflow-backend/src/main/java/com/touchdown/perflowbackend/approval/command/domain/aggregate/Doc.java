@@ -44,9 +44,9 @@ public class Doc extends BaseEntity {
     @Column(name = "title", nullable = false, length = 50)
     private String title;
 
-    @Lob
-    @Column(name = "content", nullable = false)
-    private String content;
+//    @Lob
+//    @Column(name = "content", nullable = false)
+//    private String content;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
@@ -59,10 +59,9 @@ public class Doc extends BaseEntity {
     private LocalDateTime draftDatetime;
 
     @Builder
-    public Doc(String title, String content, Template template, Employee createUser) {
+    public Doc(String title, Template template, Employee createUser) {
 
         this.title = title;
-        this.content = content;
         this.template = template;
         this.createUser = createUser;
     }

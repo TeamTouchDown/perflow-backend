@@ -65,6 +65,10 @@ public enum ErrorCode {
 
     NOT_FOUND_APPROVE_SBJ(HttpStatus.NOT_FOUND, "결재 주체 정보를 찾을 수 없습니다."),
     INVALID_APPROVE_SBJ_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 결재 주체 ID입니다."),
+    INVALID_DATE_FORMAT(HttpStatus.BAD_REQUEST, "잘못된 날짜 형식입니다."),
+    INVALID_MONEY_FORMAT(HttpStatus.BAD_REQUEST, "잘못된 금액 형식입니다."),
+    UNSUPPORTED_FIELD_TYPE(HttpStatus.BAD_REQUEST, "지원하지 않는 필드 타입입니다."),
+    INVALID_SHARE_TYPE(HttpStatus.BAD_REQUEST, "잘못된 공유 타입입니다."),
 
     NOT_FOUND_ANNOUNCEMENT(HttpStatus.NOT_FOUND, "해당 공지사항을 찾을 수 없습니다."),
 

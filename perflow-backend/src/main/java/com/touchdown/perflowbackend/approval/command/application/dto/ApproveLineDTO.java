@@ -21,7 +21,7 @@ public class ApproveLineDTO {
     private final ApproveType approveType;
 
     @JsonProperty("order")
-    private final Integer approveLineOrder;
+    private final Long approveLineOrder;
 
     @JsonProperty("pllGroupId")
     private final Long pllGroupId;

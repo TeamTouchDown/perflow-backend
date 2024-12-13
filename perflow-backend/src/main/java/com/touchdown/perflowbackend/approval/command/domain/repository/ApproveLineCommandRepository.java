@@ -11,8 +11,6 @@ public interface ApproveLineCommandRepository {
 
     ApproveLine save(ApproveLine approveLine);
 
-    Optional<List<ApproveLine>> findByGroupId(Long groupId);
-
     @Query("SELECT MAX(a.groupId) FROM ApproveLine a")
     Long findMaxGroupId();
 
@@ -21,4 +19,6 @@ public interface ApproveLineCommandRepository {
             "AND line.approveLineOrder > :currentOrder " +
             "ORDER BY line.approveLineOrder ASC")
     Optional<ApproveLine> findNextApproveLineAsc(@Param("docId") Long approveLineId, @Param("currentOrder") Integer currentOrder);
+
+    Optional<List<ApproveLine>> findAllByGroupId(long groupId);
 }
