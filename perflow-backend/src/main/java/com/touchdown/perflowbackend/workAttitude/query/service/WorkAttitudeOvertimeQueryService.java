@@ -1,5 +1,7 @@
 package com.touchdown.perflowbackend.workAttitude.query.service;
 
+import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.employee.query.repository.EmployeeQueryRepository;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Overtime;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.OvertimeType;
 import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeForEmployeeSummaryDTO;
@@ -20,6 +22,7 @@ public class WorkAttitudeOvertimeQueryService {
     //각 초과근무별 업무 시간 계산 로직 만들기
 
     private final WorkAttitudeOvertimeQueryRepository repository;
+    private final EmployeeQueryRepository employeeQueryRepository;
 
     @Transactional
     public List<WorkAttitudeOvertimeForTeamLeaderSummaryDTO> getOvertimeSummaryForAllEmployees() {
@@ -27,11 +30,16 @@ public class WorkAttitudeOvertimeQueryService {
 
         // 사원별로 그룹화 후 시간 계산
         Map<String, List<Overtime>> groupedByEmployee = overtimes.stream()
-                .collect(Collectors.groupingBy(overtime -> overtime.getEmpId().getName()));
+                .collect(Collectors.groupingBy(overtime -> overtime.getEmpId().getEmpId()));
+
+        List<Employee> employees = employeeQueryRepository.findAll();
+
+        Map<String, String> employee = employees.stream()
+                .collect(Collectors.toMap(Employee::getEmpId, Employee::getName));
 
         return groupedByEmployee.entrySet().stream()
                 .map(entry -> {
-                    String employeeName = entry.getKey();
+                    String empId = entry.getKey();
                     List<Overtime> employeeOvertimes = entry.getValue();
 
                     long nightHours = calculateTotalHours(employeeOvertimes, OvertimeType.NIGHT);
@@ -39,7 +47,11 @@ public class WorkAttitudeOvertimeQueryService {
                     long extendedHours = calculateTotalHours(employeeOvertimes, OvertimeType.EXTENDED);
                     long totalHours = nightHours + holidayHours + extendedHours;
 
+                    // 사원 이름 가져오기
+                    String employeeName = employee.get(empId);  // empId로 이름을 가져옴
+
                     return WorkAttitudeOvertimeForTeamLeaderSummaryDTO.builder()
+                            .empId(empId)
                             .employeeName(employeeName)
                             .nightHours(nightHours)
                             .holidayHours(holidayHours)
@@ -48,7 +60,6 @@ public class WorkAttitudeOvertimeQueryService {
                             .build();
                 }).toList();
     }
-
     private long calculateTotalHours(List<Overtime> overtimes, OvertimeType type) {
         return overtimes.stream()
                 .filter(overtime -> overtime.getOvertimeType() == type)
