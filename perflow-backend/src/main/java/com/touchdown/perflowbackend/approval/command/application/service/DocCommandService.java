@@ -22,7 +22,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveTemplateType.MANUAL;
 import static com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveTemplateType.MY_APPROVE_LINE;
 
 @Slf4j
@@ -106,15 +105,8 @@ public class DocCommandService {
     private void createApproveLines(DocCreateRequestDTO request, Doc doc, Employee createUser) {
 
         for (ApproveLineRequestDTO lineDTO : request.getApproveLines()) {
-            ApproveLine approveLine;
 
-            if (lineDTO.getApproveTemplateType() == MY_APPROVE_LINE) { // 나의 결재선에서 불러온 경우
-                approveLine = loadMyApproveLine(lineDTO, doc, createUser);
-            } else if (lineDTO.getApproveTemplateType() == MANUAL) {   // 결재 문서 작성 시 결재선을 직접 설정한 경우
-                approveLine = createApproveLine(lineDTO, doc, createUser);
-            } else {
-                throw new CustomException(ErrorCode.INVALID_APPROVE_TEMPLATE_TYPE);
-            }
+            ApproveLine approveLine = createApproveLine(lineDTO, doc, createUser);
             doc.getApproveLines().add(approveLine);
         }
     }
@@ -137,9 +129,15 @@ public class DocCommandService {
         Map<String, Employee> employeeMap = findEmployeesByIds(empIds);
         Map<Long, Department> departmentMap = findDepartmentsByIds(departmentIds);
 
+        // groupId 설정
+        Long groupId = (lineDTO.getApproveTemplateType() == MY_APPROVE_LINE)
+                ? generateGroupId(null) // 새 group id 생성
+                : doc.getDocId();   // 문서 id 를 group id 로
+
+        // 새로운 결재선 생성
         ApproveLine newApproveLine = ApproveLine.builder()
                 .doc(doc)
-                .groupId(generateGroupId(doc.getDocId()))    // 문서 id 를 group id 로
+                .groupId(generateGroupId(groupId))
                 .approveTemplateType(lineDTO.getApproveTemplateType())
                 .createUser(createUser)
                 .approveType(lineDTO.getApproveType())
@@ -156,156 +154,6 @@ public class DocCommandService {
         return newApproveLine;
     }
 
-    // 나의 결재선 불러오기
-    private ApproveLine loadMyApproveLine(ApproveLineRequestDTO lineDTO, Doc doc, Employee createUser) {
-
-        log.info("loadMyApproveLine 실행");
-
-        // 모든 empId, departmentId
-        Set<String> empIds = lineDTO.getApproveSbjs().stream()
-                .map(ApproveSbjDTO::getEmpId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-
-        Set<Long> departmentIds = lineDTO.getApproveSbjs().stream()
-                .map(ApproveSbjDTO::getDepartmentId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
-
-        // 모든 사원, 부서 조회할 때마다 DB 접근하지 않기 위해 한 번에 Map 을 사용하여 한 번에 조회
-        Map<String, Employee> employeeMap = employeeCommandRepository.findAllById(empIds).stream()
-                .collect(Collectors.toMap(Employee::getEmpId, Function.identity()));
-        Map<Long, Department> departmentMap = departmentCommandRepository.findAllById(departmentIds).stream()
-                .collect(Collectors.toMap(Department::getDepartmentId, Function.identity()));
-
-        log.info("나의 결재선 조회 시작 - findAllByGroupId");
-
-        log.info("dto의 groupId: ", lineDTO.getGroupId());
-
-        // 나의 결재선 조회
-        List<ApproveLine> myApproveLines = approveLineCommandRepository.findAllByGroupId(lineDTO.getGroupId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MY_APPROVE_LINE));
-
-        log.info("요청된 나의 결재선 데이터와 기존 나의 결재선 데이터 비교 시작");
-
-        // 요청된 나의 결재선 데이터와 기존 나의 결재선 데이터 비교
-        if (!isApproveLineEqual(myApproveLines, lineDTO)) {
-            // 기존 나의 결재선과 다르면 새로운 결재선 생성
-            ApproveLine newApproveLine = ApproveLine.builder()
-                    .doc(doc)
-                    .approveType(lineDTO.getApproveType())
-                    .approveLineOrder(lineDTO.getApproveLineOrder())
-                    .pllGroupId(lineDTO.getPllGroupId())
-                    .groupId(generateGroupId(null)) //새 groupId 생성
-                    .approveTemplateType(lineDTO.getApproveTemplateType())
-                    .createUser(createUser)
-                    .build();
-
-            log.info("결재선 데이터 생성 후, 결재 주체 생성 시작");
-
-            for (ApproveSbjDTO sbjDTO : lineDTO.getApproveSbjs()) {
-                Employee sbjUser = null;
-                if (sbjDTO.getEmpId() != null) {    // 사원 id 가 null 이 아니면
-                    sbjUser = employeeMap.get(sbjDTO.getEmpId());   // Map 에서 Employee 가져옴
-                    if (sbjUser == null) {
-                        throw new CustomException(ErrorCode.NOT_FOUND_EMP);
-                    }
-                }
-
-                Department dept = null;
-                if (sbjDTO.getDepartmentId() != null) { // 부서 id 가 null 이 아니면
-                    dept = departmentMap.get(sbjDTO.getDepartmentId()); // Map 에서 Department 가져옴
-                    if (dept == null) {
-                        throw new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT);
-                    }
-                }
-
-                log.info("approveSbj 생성");
-
-                ApproveSbj approveSbj = ApproveSbj.builder()
-                        .empDeptType(sbjDTO.getEmpDeptType())
-                        .sbjUser(sbjUser) // Employee 설정
-                        .dept(dept)       // Department 설정
-                        .isPll(lineDTO.getApproveType() == ApproveType.PLL || lineDTO.getApproveType() == ApproveType.PLLAGR)
-                        .build();
-                newApproveLine.addApproveSbj(approveSbj); // 관계 설정
-            }
-            return newApproveLine;
-        }
-
-        log.info("기존 나의 결재선 데이터와 동일하여, 결재선 데이터를 복사한다");
-        // 기존 나의 결재선 데이터와 동일하면 복사
-        ApproveLine newApproveLine = ApproveLine.builder()
-                .doc(doc)
-                .approveType(lineDTO.getApproveType())
-                .approveLineOrder(lineDTO.getApproveLineOrder())
-                .pllGroupId(lineDTO.getPllGroupId())
-                .groupId(lineDTO.getGroupId())  // 기존 groupId 유지
-                .createUser(createUser)
-                .build();
-
-
-        // 기존 ApproveSbjs 복사
-        for (ApproveSbj originalSbj : myApproveLines.get(0).getApproveSbjs()) {
-            ApproveSbj copiedSbj = ApproveSbj.builder()
-                    .empDeptType(originalSbj.getEmpDeptType())
-                    .sbjUser(originalSbj.getSbjUser()) // Employee 복사
-                    .dept(originalSbj.getDept())       // Department 복사
-                    .isPll(lineDTO.getApproveType() == ApproveType.PLL || lineDTO.getApproveType() == ApproveType.PLLAGR)
-                    .build();
-            newApproveLine.addApproveSbj(copiedSbj); // 관계 설정
-        }
-
-        return newApproveLine;
-    }
-
-    // 결재선 변경 확인
-    private boolean isApproveLineEqual(List<ApproveLine> myApproveLines, List<ApproveLineRequestDTO> lineDTOs) {
-
-        log.info("isApproveLineEqual 실행");
-        log.info("myApproveLines.size(): ", myApproveLines.size());
-        log.info("lineDTO.getApproveSbjs().size() :", lineDTO.getApproveSbjs().size());
-
-        // 결재선 개수가 다르면 false
-        if(myApproveLines.size() != lineDTO.getApproveSbjs().size()){
-            return false;
-        }
-
-        boolean matched = myApproveLines.stream()
-                .anyMatch(line ->
-                                line.getApproveType().equals(lineDTO.getApproveType()) &&   // approveType 비교
-                                line.getApproveLineOrder().equals(lineDTO.getApproveLineOrder()) && // approveLineOrder 비교
-                                isApproveSbjsEqual(line.getApproveSbjs(), lineDTO.getApproveSbjs())  // approveSbj 비교
-                );
-        return !matched;
-    }
-
-    // 결재 주체 변경 확인
-    private boolean isApproveSbjsEqual(List<ApproveSbj> originalApproveSbjs, List<ApproveSbjDTO> newApproveSbjs) {
-
-        log.info("isApproveSbjsModified 실행");
-        log.info("originalApproveSbjs.size(): ", originalApproveSbjs.size());
-        log.info("newApproveSbjs.size(): ", newApproveSbjs.size());
-
-        // 크기가 다르면 false
-        if (originalApproveSbjs.size() != newApproveSbjs.size()) {
-            return false;
-        }
-
-        // 모든 결재 주체가 동일한지 확인
-        for (int i = 0; i < originalApproveSbjs.size(); i++) {
-            ApproveSbj originalSbj = originalApproveSbjs.get(i);
-            ApproveSbjDTO newSbj = newApproveSbjs.get(i);
-
-            if (!originalSbj.getEmpDeptType().equals(newSbj.getEmpDeptType()) ||
-                    !Objects.equals(originalSbj.getSbjUser().getEmpId(), newSbj.getEmpId()) ||
-                    !Objects.equals(originalSbj.getDept().getDepartmentId(), newSbj.getDepartmentId())) {
-                return false;   // 하나라도 다르면 false
-            }
-        }
-
-        return true;    // 모두 동일한 경우
-    }
 
     // 결재선의 group id 생성
     private Long generateGroupId(Long docId) {
