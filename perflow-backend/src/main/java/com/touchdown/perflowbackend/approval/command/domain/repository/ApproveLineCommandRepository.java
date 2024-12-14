@@ -21,5 +21,5 @@ public interface ApproveLineCommandRepository {
     Optional<ApproveLine> findNextApproveLineAsc(@Param("docId") Long approveLineId, @Param("currentOrder") Long currentOrder);
 
     @Query("SELECT a FROM ApproveLine a WHERE a.groupId = :groupId")
-    Optional<List<ApproveLine>> findAllByGroupId(@Param("groupId") long groupId);
+    Optional<List<ApproveLine>> findAllByGroupId(@Param("groupId") Long groupId);
 }

@@ -14,7 +14,7 @@ import java.util.List;
 public class ApproveLineRequestDTO {
 
     @JsonProperty("group_id")
-    private Long groupId;
+    private final Long groupId;
 
     @JsonProperty("approveType")
     private final ApproveType approveType;    // 결재 방식(동의, 참조, 병렬...)
@@ -26,7 +26,7 @@ public class ApproveLineRequestDTO {
     private final Long pllGroupId;  // 병렬 그룹 id
 
     @JsonProperty("approveTemplateTypes")   // 나의결재선에서 가져온 결재선 or 문서 작성 시 직접 설정한 결재선
-    private final ApproveTemplateType approveTemplateTypes; // MY_APPROVE_LINE, MANUAL
+    private final ApproveTemplateType approveTemplateType; // MY_APPROVE_LINE, MANUAL
 
     @JsonProperty("approveSbjs")
     private final List<ApproveSbjDTO> approveSbjs;  // 결재 대상 리스트
