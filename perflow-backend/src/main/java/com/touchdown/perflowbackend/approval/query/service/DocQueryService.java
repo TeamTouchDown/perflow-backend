@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +28,7 @@ public class DocQueryService {
     private final ApproveLineQueryRepository approveLineQueryRepository;
     private final DocQueryRepository docQueryRepository;
 
+    // 나의 결재선 목록 조회
     @Transactional(readOnly = true)
     public Page<MyApproveLineGroupResponseDTO> getMyApproveLineList(Pageable pageable, String createUserId
     ) {
@@ -43,6 +46,7 @@ public class DocQueryService {
                 });
     }
 
+    // 나의 결재선 상세 조회
     @Transactional(readOnly = true)
     public MyApproveLineDetailResponseDTO getOneMyApproveLine(Long groupId) {
 
@@ -55,13 +59,15 @@ public class DocQueryService {
         return DocMapper.toMyApproveLineDetailResponseDTO(lines);
     }
 
-//    @Transactional(readOnly = true)
-//    public Page<WaitingDocListResponseDTO> getWaitingDocList(Pageable pageable, String empId) {
-//
-//        Page<Doc> docs = docQueryRepository.findWaitingDocsByUser(empId, pageable);
-//
-//        return docs.map(DocMapper::toWaitingDocListResponseDTO);
-//    }
+    // 대기 문서 목록 조회
+    @Transactional(readOnly = true)
+    public Page<WaitingDocListResponseDTO> getWaitingDocList(Pageable pageable, String empId) {
+
+        // doc id 페이징 처리
+        Page<Doc> docs = docQueryRepository.findWaitingDocsByUser(empId, pageable);
+
+        return docs.map(DocMapper::toWaitingDocListResponseDTO);
+    }
 //
 //    @Transactional(readOnly = true)
 //    public WaitingDocDetailResponseDTO getOneWaitingDoc(Long docId) {

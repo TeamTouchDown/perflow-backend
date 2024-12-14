@@ -1,5 +1,6 @@
 package com.touchdown.perflowbackend.approval.command.mapper;
 
+import com.touchdown.perflowbackend.approval.command.application.dto.ApproveLineDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.ShareDTO;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
@@ -87,19 +88,16 @@ public class DocMapper {
                 .build();
     }
 
-//    public static WaitingDocListResponseDTO toWaitingDocListResponseDTO(Doc doc) {
-//
-//        return WaitingDocListResponseDTO.builder()
-//                .docId(doc.getDocId())
-//                .title(doc.getTitle())
-//                .createUserName(doc.getCreateUser().getName())
-//                .createDatetime(doc.getCreateDatetime())
-//                .status(doc.getStatus())
-//                .lines(doc.getApproveLines().stream()
-//                        .map(DocMapper::toApproveLineDTO)
-//                        .toList())
-//                .build();
-//    }
+    // 대기 문서 목록 조회 시
+    public static WaitingDocListResponseDTO toWaitingDocListResponseDTO(Doc doc) {
+
+        return WaitingDocListResponseDTO.builder()
+                .docId(doc.getDocId())
+                .title(doc.getTitle())
+                .createUserName(doc.getCreateUser().getName())
+                .createDatetime(doc.getCreateDatetime())
+                .build();
+    }
 //
 //    public static WaitingDocDetailResponseDTO toWaitingDocDetailResponseDTO(Doc doc) {
 //

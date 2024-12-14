@@ -27,7 +27,7 @@ public class DocField extends BaseEntity {
     private TemplateField templateField;
 
     @Lob
-    @Column(name = "user_value", nullable = false)
+    @Column(name = "user_value")
     private String userValue;   // 사용자가 입력한 값
 
     @Column(name = "status", nullable = false)

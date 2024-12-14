@@ -22,8 +22,4 @@ public class WaitingDocListResponseDTO {
     private final String createUserName;
 
     private final LocalDateTime createDatetime;
-
-    private final Status status;
-
-    private final List<ApproveLineDTO> lines;   // 결재선(사원, 부서 이름)
 }

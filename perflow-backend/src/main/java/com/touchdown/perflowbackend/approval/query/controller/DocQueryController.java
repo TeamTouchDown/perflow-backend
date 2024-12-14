@@ -5,6 +5,7 @@ import com.touchdown.perflowbackend.approval.query.dto.MyApproveLineGroupRespons
 import com.touchdown.perflowbackend.approval.query.dto.WaitingDocDetailResponseDTO;
 import com.touchdown.perflowbackend.approval.query.dto.WaitingDocListResponseDTO;
 import com.touchdown.perflowbackend.approval.query.service.DocQueryService;
+import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,14 +40,15 @@ public class DocQueryController {
     }
 
     // 대기 문서 목록 조회
-//    @GetMapping("/waiting-docs")
-//    public ResponseEntity<Page<WaitingDocListResponseDTO>> getWaitingDocs(Pageable pageable) {
-//
-//        String empId = "23-IT003";
-//
-//        return ResponseEntity.ok(docQueryService.getWaitingDocList(pageable, empId));
-//    }
-//
+    @GetMapping("/waiting-docs")
+    public ResponseEntity<Page<WaitingDocListResponseDTO>> getWaitingDocs(Pageable pageable) {
+
+//        String empId = EmployeeUtil.getEmpId();
+        String empId = "23-IT003";
+
+        return ResponseEntity.ok(docQueryService.getWaitingDocList(pageable, empId));
+    }
+
 //    @GetMapping("/waiting-docs/{docId}")
 //    public ResponseEntity<WaitingDocDetailResponseDTO> getWaitingDoc(@PathVariable Long docId) {
 //

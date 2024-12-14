@@ -54,7 +54,6 @@ public class TemplateField extends BaseEntity {
         this.status = status;
     }
 
-
     public void updateField(TemplateField updatedField) {
 
         this.fieldOrder = updatedField.fieldOrder;

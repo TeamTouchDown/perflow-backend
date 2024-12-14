@@ -33,5 +33,4 @@ public class ApproveLineResponseDTO {
 
     @JsonProperty
     private final List<ApproveSbjDTO> approveSbjs;
-
 }

@@ -34,7 +34,7 @@ public class ApproveLine extends BaseEntity {
     @JoinColumn(name = "group_id")
     private Long groupId;
 
-    @OneToMany(mappedBy = "approveLine", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "approveLine", cascade = CascadeType.ALL)
     private List<ApproveSbj> approveSbjs = new ArrayList<>();
 
     @Column(name = "name", length = 30)
