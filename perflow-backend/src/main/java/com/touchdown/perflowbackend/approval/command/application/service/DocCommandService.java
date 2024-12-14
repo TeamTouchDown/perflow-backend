@@ -137,7 +137,7 @@ public class DocCommandService {
         // 새로운 결재선 생성
         ApproveLine newApproveLine = ApproveLine.builder()
                 .doc(doc)
-                .groupId(generateGroupId(groupId))
+                .groupId(groupId)
                 .approveTemplateType(lineDTO.getApproveTemplateType())
                 .createUser(createUser)
                 .approveType(lineDTO.getApproveType())
