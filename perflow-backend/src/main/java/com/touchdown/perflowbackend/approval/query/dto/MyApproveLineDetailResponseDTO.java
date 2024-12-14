@@ -14,5 +14,5 @@ public class MyApproveLineDetailResponseDTO {
 
     private final String description;
 
-    private final List<ApproveLineDTO> approveLines;
+    private final List<ApproveLineResponseDTO> approveLines;
 }

@@ -39,18 +39,18 @@ public class DocQueryController {
     }
 
     // 대기 문서 목록 조회
-    @GetMapping("/waiting-docs")
-    public ResponseEntity<Page<WaitingDocListResponseDTO>> getWaitingDocs(Pageable pageable) {
-
-        String empId = "23-IT003";
-
-        return ResponseEntity.ok(docQueryService.getWaitingDocList(pageable, empId));
-    }
-
-    @GetMapping("/waiting-docs/{docId}")
-    public ResponseEntity<WaitingDocDetailResponseDTO> getWaitingDoc(@PathVariable Long docId) {
-
-        return ResponseEntity.ok(docQueryService.getOneWaitingDoc(docId));
-    }
+//    @GetMapping("/waiting-docs")
+//    public ResponseEntity<Page<WaitingDocListResponseDTO>> getWaitingDocs(Pageable pageable) {
+//
+//        String empId = "23-IT003";
+//
+//        return ResponseEntity.ok(docQueryService.getWaitingDocList(pageable, empId));
+//    }
+//
+//    @GetMapping("/waiting-docs/{docId}")
+//    public ResponseEntity<WaitingDocDetailResponseDTO> getWaitingDoc(@PathVariable Long docId) {
+//
+//        return ResponseEntity.ok(docQueryService.getOneWaitingDoc(docId));
+//    }
 
 }

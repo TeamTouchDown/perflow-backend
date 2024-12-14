@@ -55,20 +55,20 @@ public class DocQueryService {
         return DocMapper.toMyApproveLineDetailResponseDTO(lines);
     }
 
-    @Transactional(readOnly = true)
-    public Page<WaitingDocListResponseDTO> getWaitingDocList(Pageable pageable, String empId) {
-
-        Page<Doc> docs = docQueryRepository.findWaitingDocsByUser(empId, pageable);
-
-        return docs.map(DocMapper::toWaitingDocListResponseDTO);
-    }
-
-    @Transactional(readOnly = true)
-    public WaitingDocDetailResponseDTO getOneWaitingDoc(Long docId) {
-
-        Doc doc = docQueryRepository.findDocDetailsById(docId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DOC));
-
-        return DocMapper.toWaitingDocDetailResponseDTO(doc);
-    }
+//    @Transactional(readOnly = true)
+//    public Page<WaitingDocListResponseDTO> getWaitingDocList(Pageable pageable, String empId) {
+//
+//        Page<Doc> docs = docQueryRepository.findWaitingDocsByUser(empId, pageable);
+//
+//        return docs.map(DocMapper::toWaitingDocListResponseDTO);
+//    }
+//
+//    @Transactional(readOnly = true)
+//    public WaitingDocDetailResponseDTO getOneWaitingDoc(Long docId) {
+//
+//        Doc doc = docQueryRepository.findDocDetailsById(docId)
+//                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DOC));
+//
+//        return DocMapper.toWaitingDocDetailResponseDTO(doc);
+//    }
 }

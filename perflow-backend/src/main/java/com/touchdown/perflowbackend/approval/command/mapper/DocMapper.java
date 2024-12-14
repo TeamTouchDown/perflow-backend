@@ -1,7 +1,5 @@
 package com.touchdown.perflowbackend.approval.command.mapper;
 
-import com.touchdown.perflowbackend.approval.command.application.dto.ApproveLineDTO;
-import com.touchdown.perflowbackend.approval.command.application.dto.ApproveLineRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.ShareDTO;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
@@ -68,57 +66,54 @@ public class DocMapper {
                 .name(lines.get(0).getName())
                 .description(lines.get(0).getDescription())
                 .approveLines(lines.stream()
-                        .map(DocMapper::toApproveLineDTO)
+                        .map(DocMapper::toApproveLineResponseDTO)
                         .toList())
                 .build();
     }
 
-    public static ApproveLineDTO toApproveLineDTO(ApproveLine line) {
+    // 나의 결재선 상세 조회 시
+    public static ApproveLineResponseDTO toApproveLineResponseDTO(ApproveLine line) {
 
-        return ApproveLineDTO.builder()
+        return ApproveLineResponseDTO.builder()
+                .groupId(line.getGroupId())
                 .approveLineId(line.getApproveLineId())
                 .approveType(line.getApproveType())
                 .approveLineOrder(line.getApproveLineOrder())
                 .pllGroupId(line.getPllGroupId())
-                .departments(line.getApproveSbjs().stream()
-                        .filter(subject -> subject.getEmpDeptType() == EmpDeptType.DEPARTMENT)
-                        .map(subject -> subject.getDept().getDepartmentId())
-                        .toList())
-                .employees(line.getApproveSbjs().stream()
-                        .filter(subject -> subject.getEmpDeptType() == EmpDeptType.EMPLOYEE)
-                        .map(subject -> subject.getSbjUser().getEmpId())
-                        .toList())
-                .approveTemplateTypes(line.getApproveTemplateType())
-                .build();
-    }
-
-    public static WaitingDocListResponseDTO toWaitingDocListResponseDTO(Doc doc) {
-
-        return WaitingDocListResponseDTO.builder()
-                .docId(doc.getDocId())
-                .title(doc.getTitle())
-                .createUserName(doc.getCreateUser().getName())
-                .createDatetime(doc.getCreateDatetime())
-                .status(doc.getStatus())
-                .lines(doc.getApproveLines().stream()
-                        .map(DocMapper::toApproveLineDTO)
+                .approveTemplateType(line.getApproveTemplateType())
+                .approveSbjs(line.getApproveSbjs().stream()
+                        .map(DocMapper::toApproveSbjDTO)
                         .toList())
                 .build();
     }
 
-    public static WaitingDocDetailResponseDTO toWaitingDocDetailResponseDTO(Doc doc) {
-
-        return WaitingDocDetailResponseDTO.builder()
-                .docId(doc.getDocId())
-                .title(doc.getTitle())
-                .templateId(doc.getTemplate().getTemplateId())
-                // 결재선
-                .approveLines(doc.getApproveLines().stream()
-                        .map(DocMapper::toApproveLineDetailDTO)
-                        .toList())
-                .shares(toShareDTOList(doc.getShares()))
-                .build();
-    }
+//    public static WaitingDocListResponseDTO toWaitingDocListResponseDTO(Doc doc) {
+//
+//        return WaitingDocListResponseDTO.builder()
+//                .docId(doc.getDocId())
+//                .title(doc.getTitle())
+//                .createUserName(doc.getCreateUser().getName())
+//                .createDatetime(doc.getCreateDatetime())
+//                .status(doc.getStatus())
+//                .lines(doc.getApproveLines().stream()
+//                        .map(DocMapper::toApproveLineDTO)
+//                        .toList())
+//                .build();
+//    }
+//
+//    public static WaitingDocDetailResponseDTO toWaitingDocDetailResponseDTO(Doc doc) {
+//
+//        return WaitingDocDetailResponseDTO.builder()
+//                .docId(doc.getDocId())
+//                .title(doc.getTitle())
+//                .templateId(doc.getTemplate().getTemplateId())
+//                // 결재선
+//                .approveLines(doc.getApproveLines().stream()
+//                        .map(DocMapper::toApproveLineDetailDTO)
+//                        .toList())
+//                .shares(toShareDTOList(doc.getShares()))
+//                .build();
+//    }
 
     public static ApproveLineDetailDTO toApproveLineDetailDTO(ApproveLine line) {
 
