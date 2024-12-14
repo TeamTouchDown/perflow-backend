@@ -41,9 +41,6 @@ public class Template extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVATED;
 
-    @OneToMany(mappedBy = "template", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<TemplateField> fields;
-
     @Builder
     public Template(Long templateId, Employee createUser, String name, String description, Status status) {
         this.templateId = templateId;
@@ -61,40 +58,4 @@ public class Template extends BaseEntity {
             this.description = description;
         }
     }
-
-    public void updateFields(List<TemplateField> updatedFields) {
-
-        // 기존의 필드 Map 생성
-        Map<Long, TemplateField> existingFieldsMap = this.fields.stream()
-                .collect(Collectors.toMap(TemplateField::getTemplateFieldId, fields -> fields));
-
-        // 새 필드 저장, 기존 필드 업데이트
-        for (TemplateField newField : updatedFields) {
-            if (existingFieldsMap.containsKey(newField.getTemplateFieldId())) {
-
-                // 기존 필드가 요청에 포함된 경우 : 수정
-                existingFieldsMap.get(newField.getTemplateFieldId()).updateField(newField);
-            } else {
-                // 요청에 없는 기존 필드 : 추가
-                this.fields.add(newField);
-            }
-        }
-
-        // 삭제되지 않은 필드 유지
-        this.fields.removeIf(field -> updatedFields.stream()
-                .noneMatch(updateField -> updateField.getTemplateFieldId().equals(field.getTemplateFieldId())));
-    }
-
-    public void deleteTemplate() {
-
-        this.status = Status.DELETED;
-
-        if (fields != null) {
-            for(TemplateField field : fields) {
-                field.deleteField();
-
-            }
-        }
-    }
-
 }

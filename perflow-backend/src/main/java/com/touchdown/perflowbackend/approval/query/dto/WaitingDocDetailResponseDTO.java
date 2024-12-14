@@ -1,26 +1,23 @@
 package com.touchdown.perflowbackend.approval.query.dto;
 
-import com.touchdown.perflowbackend.approval.command.application.dto.ApproveLineDTO;
-import com.touchdown.perflowbackend.approval.command.application.dto.ShareDTO;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Builder
 public class WaitingDocDetailResponseDTO {
 
-    private final Long docId;
+    private final Long docId;   // 문서 id
 
-    private final String title;
+    private final String title; // 문서 제목
 
-    private final String content;
+    private final Map<String, Object> fields;   // 필드 데이터 (키 - 값)
 
-    private final Long templateId;
+    private final List<WaitingDocApproveLineDTO> approveLines;    // 결재선 정보
 
-    private final List<ApproveLineDetailDTO> approveLines;
-
-    private final List<ShareDTO> shares;
+    private final List<WaitingDocShareDTO> shares;    // 공유 설정 정보
 
 }

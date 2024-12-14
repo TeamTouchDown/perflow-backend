@@ -2,12 +2,11 @@ package com.touchdown.perflowbackend.approval.query.service;
 
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveLine;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.Doc;
+import com.touchdown.perflowbackend.approval.command.domain.aggregate.DocField;
 import com.touchdown.perflowbackend.approval.command.mapper.DocMapper;
-import com.touchdown.perflowbackend.approval.query.dto.MyApproveLineDetailResponseDTO;
-import com.touchdown.perflowbackend.approval.query.dto.MyApproveLineGroupResponseDTO;
-import com.touchdown.perflowbackend.approval.query.dto.WaitingDocDetailResponseDTO;
-import com.touchdown.perflowbackend.approval.query.dto.WaitingDocListResponseDTO;
+import com.touchdown.perflowbackend.approval.query.dto.*;
 import com.touchdown.perflowbackend.approval.query.repository.ApproveLineQueryRepository;
+import com.touchdown.perflowbackend.approval.query.repository.DocFieldQueryRepository;
 import com.touchdown.perflowbackend.approval.query.repository.DocQueryRepository;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
@@ -17,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,6 +27,7 @@ public class DocQueryService {
 
     private final ApproveLineQueryRepository approveLineQueryRepository;
     private final DocQueryRepository docQueryRepository;
+    private final DocFieldQueryRepository docFieldQueryRepository;
 
     // 나의 결재선 목록 조회
     @Transactional(readOnly = true)
@@ -68,13 +69,15 @@ public class DocQueryService {
 
         return docs.map(DocMapper::toWaitingDocListResponseDTO);
     }
-//
-//    @Transactional(readOnly = true)
-//    public WaitingDocDetailResponseDTO getOneWaitingDoc(Long docId) {
-//
-//        Doc doc = docQueryRepository.findDocDetailsById(docId)
-//                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DOC));
-//
-//        return DocMapper.toWaitingDocDetailResponseDTO(doc);
-//    }
+
+    // 대기 문서 상세 조회
+    @Transactional(readOnly = true)
+    public WaitingDocDetailResponseDTO getOneWaitingDoc(Long docId) {
+
+        // 문서 조회
+        Doc doc = docQueryRepository.findById(docId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DOC));
+
+        return DocMapper.toWaitingDocDetailResponseDTO(doc);
+    }
 }

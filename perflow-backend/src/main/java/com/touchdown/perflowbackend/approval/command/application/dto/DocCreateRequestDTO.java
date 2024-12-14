@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Builder
@@ -13,7 +14,7 @@ public class DocCreateRequestDTO {
 
     private final String title; // 문서 제목
 
-    private final List<TemplateFieldDTO> fields;    // 필드 데이터
+    private final Map<String, String> fields;   // 키 - 쌍으로 구성
 
     private final List<ApproveLineRequestDTO> approveLines;    // 결재선 정보
 

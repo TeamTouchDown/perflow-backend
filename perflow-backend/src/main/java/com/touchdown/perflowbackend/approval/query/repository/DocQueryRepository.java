@@ -22,6 +22,6 @@ public interface DocQueryRepository extends JpaRepository<Doc, Long> {
     Page<Doc> findWaitingDocsByUser(@Param("empId") String empId, Pageable pageable);
 
 
-    @Query("SELECT doc FROM Doc doc WHERE doc.docId = :docId")
-    Optional<Doc> findDocDetailsById(@Param("docId") Long docId);
+//    @Query("SELECT doc FROM Doc doc WHERE doc.docId = :docId")
+//    Optional<Doc> findDocDetailsById(@Param("docId") Long docId);
 }

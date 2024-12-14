@@ -49,10 +49,10 @@ public class DocQueryController {
         return ResponseEntity.ok(docQueryService.getWaitingDocList(pageable, empId));
     }
 
-//    @GetMapping("/waiting-docs/{docId}")
-//    public ResponseEntity<WaitingDocDetailResponseDTO> getWaitingDoc(@PathVariable Long docId) {
-//
-//        return ResponseEntity.ok(docQueryService.getOneWaitingDoc(docId));
-//    }
+    @GetMapping("/waiting-docs/{docId}")
+    public ResponseEntity<WaitingDocDetailResponseDTO> getWaitingDoc(@PathVariable Long docId) {
+
+        return ResponseEntity.ok(docQueryService.getOneWaitingDoc(docId));
+    }
 
 }

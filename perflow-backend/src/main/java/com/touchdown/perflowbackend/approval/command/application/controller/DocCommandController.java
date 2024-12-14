@@ -2,11 +2,8 @@ package com.touchdown.perflowbackend.approval.command.application.controller;
 
 import com.touchdown.perflowbackend.approval.command.application.dto.ApprovalRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRequestDTO;
-import com.touchdown.perflowbackend.approval.command.application.dto.MyApproveLineCreateRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.service.ApprovalService;
 import com.touchdown.perflowbackend.approval.command.application.service.DocCommandService;
-import com.touchdown.perflowbackend.approval.command.domain.aggregate.TemplateField;
-import com.touchdown.perflowbackend.approval.command.domain.repository.TemplateFieldCommandRepository;
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

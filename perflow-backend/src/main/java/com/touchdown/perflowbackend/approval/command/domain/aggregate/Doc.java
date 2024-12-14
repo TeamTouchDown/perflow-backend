@@ -41,12 +41,11 @@ public class Doc extends BaseEntity {
     @Fetch(FetchMode.SUBSELECT)
     private List<DocShareObj> shares = new ArrayList<>();
 
+    @OneToMany(mappedBy = "doc", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<DocField> docFields = new ArrayList<>();
+
     @Column(name = "title", nullable = false, length = 50)
     private String title;
-
-//    @Lob
-//    @Column(name = "content", nullable = false)
-//    private String content;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)

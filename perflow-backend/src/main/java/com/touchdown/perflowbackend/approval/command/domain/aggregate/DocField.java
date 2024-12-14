@@ -22,9 +22,8 @@ public class DocField extends BaseEntity {
     @JoinColumn(name = "doc_id", nullable = false)
     private Doc doc;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "template_field_id", nullable = false)
-    private TemplateField templateField;
+    @Column(name = "field_key")
+    private String fieldKey;
 
     @Lob
     @Column(name = "user_value")
@@ -34,9 +33,9 @@ public class DocField extends BaseEntity {
     private Status status = Status.ACTIVATED;
 
     @Builder
-    public DocField(Doc doc, TemplateField templateField, String userValue) {
+    public DocField(Doc doc, String fieldKey, String userValue) {
         this.doc = doc;
-        this.templateField = templateField;
+        this.fieldKey = fieldKey;
         this.userValue = userValue;
     }
 

@@ -36,14 +36,13 @@ public class DocCommandService {
     private final ApproveLineCommandRepository approveLineCommandRepository;
     private final DocFieldCommandRepository docFieldCommandRepository;
     private final DocShareObjCommandRepository docShareObjCommandRepository;
-    private final TemplateFieldCommandRepository templateFieldCommandRepository;
-
 
     @Transactional
     public void createNewDoc(DocCreateRequestDTO request, String createUserId) {
 
         log.info("createNewDoc 실행");
-        // 사원 조회
+
+        // 작성자 조회
         Employee createUser = findEmployeeById(createUserId);
 
         // 서식 조회
@@ -53,7 +52,7 @@ public class DocCommandService {
         Doc doc = createDoc(request, createUser, template);
         docCommandRepository.save(doc);
 
-        // 필드 데이터 설정
+        // 필드 데이터 저장
         createDocFields(request, doc);
 
         // 결재선 생성
@@ -71,31 +70,30 @@ public class DocCommandService {
                 .flatMap(shareDTO -> shareDTO.getEmployees().stream())
                 .collect(Collectors.toSet());
 
-        Set<Long> departmentIds = request.getShares().stream()
-                .filter(shareDTO -> shareDTO.getShareEmpDeptType() == EmpDeptType.DEPARTMENT)
-                .flatMap(shareDTO -> shareDTO.getDepartments().stream())
-                .collect(Collectors.toSet());
-
-        // 사원 및 부서를 한 번에 조회
+        // 사원을 한 번에 조회
         Map<String, Employee> employeeMap = findEmployeesByIds(empIds);
-        Map<Long, Department> departmentMap = findDepartmentsByIds(departmentIds);
 
         List<DocShareObj> docShareObjs = new ArrayList<>();
 
         for(ShareDTO shareDTO : request.getShares()) {
-            if (shareDTO.getShareEmpDeptType() == EmpDeptType.EMPLOYEE) {
-                shareDTO.getEmployees().forEach(empId -> {
-                    Employee employee = employeeMap.get(empId);
-                    docShareObjs.add(DocMapper.toDocShareObj(doc, createUser, EmpDeptType.EMPLOYEE, employee, null));
-                });
-            } else if (shareDTO.getShareEmpDeptType() == EmpDeptType.DEPARTMENT) {
-                shareDTO.getDepartments().forEach(departmentId -> {
-                    Department department = departmentMap.get(departmentId);
-                    docShareObjs.add(DocMapper.toDocShareObj(doc, createUser, EmpDeptType.DEPARTMENT, null, department));
-                });
-            } else {
-                throw new CustomException(ErrorCode.INVALID_SHARE_TYPE);
-            }
+            shareDTO.getEmployees().forEach(empId -> {
+                Employee employee = employeeMap.get(empId);
+                docShareObjs.add(DocMapper.toDocShareObj(doc, createUser, EmpDeptType.EMPLOYEE, employee));
+            });
+
+//            if (shareDTO.getShareEmpDeptType() == EmpDeptType.EMPLOYEE) {
+//                shareDTO.getEmployees().forEach(empId -> {
+//                    Employee employee = employeeMap.get(empId);
+//                    docShareObjs.add(DocMapper.toDocShareObj(doc, createUser, EmpDeptType.EMPLOYEE, employee));
+//                });
+//            } else if (shareDTO.getShareEmpDeptType() == EmpDeptType.DEPARTMENT) {
+//                shareDTO.getDepartments().forEach(departmentId -> {
+//                    Department department = departmentMap.get(departmentId);
+//                    docShareObjs.add(DocMapper.toDocShareObj(doc, createUser, EmpDeptType.DEPARTMENT, null, department));
+//                });
+//            } else {
+//                throw new CustomException(ErrorCode.INVALID_SHARE_TYPE);
+//            }
         }
 
         docShareObjCommandRepository.saveAll(docShareObjs);
@@ -120,14 +118,9 @@ public class DocCommandService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
-        Set<Long> departmentIds = lineDTO.getApproveSbjs().stream()
-                .map(ApproveSbjDTO::getDepartmentId)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
 
         // 모든 사원, 부서 조회할 때마다 DB 접근하지 않기 위해 한 번에 Map 을 사용하여 한 번에 조회
         Map<String, Employee> employeeMap = findEmployeesByIds(empIds);
-        Map<Long, Department> departmentMap = findDepartmentsByIds(departmentIds);
 
         // groupId 설정
         Long groupId = (lineDTO.getApproveTemplateType() == MY_APPROVE_LINE)
@@ -147,7 +140,7 @@ public class DocCommandService {
 
         // 결재 주체 추가
         lineDTO.getApproveSbjs().forEach(sbjDTO -> {
-            ApproveSbj approveSbj = DocMapper.toApproveSbj(sbjDTO, employeeMap, departmentMap, lineDTO.getApproveType());
+            ApproveSbj approveSbj = DocMapper.toApproveSbj(sbjDTO, employeeMap, lineDTO.getApproveType());
             newApproveLine.addApproveSbj(approveSbj);
         });
 
@@ -172,29 +165,15 @@ public class DocCommandService {
 
         log.info("createDocFields 메소드 시작: ");
 
-        request.getFields().forEach(field -> {
-
-            log.info("field: " + field);
-
-            // templateField 조회
-            TemplateField templateField = findTemplateFieldById(field.getTemplateFieldId());
-
+        request.getFields().forEach((fieldKey, userValue) -> {
             DocField docField = DocField.builder()
                     .doc(doc)
-                    .templateField(templateField)
-                    .userValue(field.getUserValue().toString())
+                    .fieldKey(fieldKey)
+                    .userValue(userValue)
                     .build();
-
             docFieldCommandRepository.save(docField);
         });
     }
-
-    private TemplateField findTemplateFieldById(Long templateFieldId) {
-        log.info("Fetching TemplateField with ID: {}", templateFieldId);
-        return templateFieldCommandRepository.findById(templateFieldId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_TEMPLATE_FIELD));
-    }
-
 
     // 문서 객체 생성
     private Doc createDoc(DocCreateRequestDTO request, Employee createUser, Template template) {
@@ -222,10 +201,10 @@ public class DocCommandService {
                 .collect(Collectors.toMap(Employee::getEmpId, Function.identity()));
     }
 
-    private Map<Long, Department> findDepartmentsByIds(Set<Long> departmentIds) {
-        log.info("findDepartmentByIds 실행");
-        return departmentCommandRepository.findAllById(departmentIds).stream()
-                .collect(Collectors.toMap(Department::getDepartmentId, Function.identity()));
-    }
+//    private Map<Long, Department> findDepartmentsByIds(Set<Long> departmentIds) {
+//        log.info("findDepartmentByIds 실행");
+//        return departmentCommandRepository.findAllById(departmentIds).stream()
+//                .collect(Collectors.toMap(Department::getDepartmentId, Function.identity()));
+//    }
 
 }

@@ -1,6 +1,5 @@
 package com.touchdown.perflowbackend.approval.command.mapper;
 
-import com.touchdown.perflowbackend.approval.command.application.dto.ApproveLineDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.ShareDTO;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
@@ -8,12 +7,12 @@ import com.touchdown.perflowbackend.approval.query.dto.*;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
-import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DocMapper {
 
@@ -113,6 +112,59 @@ public class DocMapper {
 //                .build();
 //    }
 
+    public static WaitingDocDetailResponseDTO toWaitingDocDetailResponseDTO(Doc doc) {
+        return WaitingDocDetailResponseDTO.builder()
+                .docId(doc.getDocId())
+                .title(doc.getTitle())
+                .fields(mapFields(doc.getDocFields())) // 필드 데이터 매핑
+                .approveLines(mapApproveLines(doc.getApproveLines())) // 결재선 매핑
+                .shares(mapShares(doc.getShares())) // 공유 설정 매핑
+                .build();
+    }
+
+    private static List<WaitingDocShareDTO> mapShares(List<DocShareObj> shares) {
+
+        return shares.stream()
+                .filter(share -> share.getShareEmpDeptType() == EmpDeptType.EMPLOYEE && share.getShareObjUser() != null)
+                .map(share -> new WaitingDocShareDTO(
+                        EmpDeptType.EMPLOYEE,
+                        List.of(share.getShareObjUser().getEmpId()),
+                        List.of(share.getShareObjUser().getName())
+                ))
+                .toList();
+    }
+
+    private static List<WaitingDocApproveLineDTO> mapApproveLines(List<ApproveLine> approveLines) {
+
+        return approveLines.stream()
+                .map(line -> WaitingDocApproveLineDTO.builder()
+                        .groupId(line.getGroupId())
+                        .approveType(line.getApproveType())
+                        .approveLineOrder(line.getApproveLineOrder())
+                        .pllGroupId(line.getPllGroupId())
+                        .approveTemplateType(line.getApproveTemplateType())
+                        .approveSbjs(mapApproveSubjects(line.getApproveSbjs())) // 결재 주체 매핑
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private static List<WaitingDocApproveSbjDTO> mapApproveSubjects(List<ApproveSbj> approveSbjs) {
+
+        return approveSbjs.stream()
+                .map(sbj -> WaitingDocApproveSbjDTO.builder()
+                        .empDeptType(sbj.getEmpDeptType())
+                        .empId(sbj.getSbjUser().getEmpId())
+                        .empName(sbj.getSbjUser().getName())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private static Map<String, Object> mapFields(List<DocField> docFields) {
+
+        return docFields.stream()
+                .collect(Collectors.toMap(DocField::getFieldKey, DocField::getUserValue));
+    }
+
     public static ApproveLineDetailDTO toApproveLineDetailDTO(ApproveLine line) {
 
         return ApproveLineDetailDTO.builder()
@@ -130,7 +182,7 @@ public class DocMapper {
         return ApproveSbjDTO.builder()
                 .empDeptType(sbj.getEmpDeptType())
                 .empId(sbj.getSbjUser() != null ? sbj.getSbjUser().getEmpId() : null)   // sbjType에 따라 null 값 넘겨야 함
-                .departmentId(sbj.getDept() != null ? sbj.getDept().getDepartmentId() : null)
+//                .departmentId(sbj.getDept() != null ? sbj.getDept().getDepartmentId() : null)
                 .build();
     }
 
@@ -138,8 +190,6 @@ public class DocMapper {
         return shares.stream()
                 .map(share -> new ShareDTO(
                         share.getShareEmpDeptType(),
-                        share.getShareEmpDeptType() == EmpDeptType.DEPARTMENT && share.getShareObjDepartment() != null
-                                ? List.of(share.getShareObjDepartment().getDepartmentId()) : new ArrayList<>(),
                         share.getShareEmpDeptType() == EmpDeptType.EMPLOYEE && share.getShareObjUser() != null
                                 ? List.of(share.getShareObjUser().getEmpId()) : new ArrayList<>()
                 ))
@@ -149,7 +199,6 @@ public class DocMapper {
     public static ApproveSbj toApproveSbj(
             ApproveSbjDTO sbjDTO,
             Map<String, Employee> employeeMap,
-            Map<Long, Department> departmentMap,
             ApproveType approveType) {
 
         Employee sbjUser = null;
@@ -160,33 +209,23 @@ public class DocMapper {
             }
         }
 
-        Department dept = null;
-        if (sbjDTO.getDepartmentId() != null) {
-            dept = departmentMap.get(sbjDTO.getDepartmentId());
-            if (dept == null) {
-                throw new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT);
-            }
-        }
-
         boolean isPll = approveType == ApproveType.PLL || approveType == ApproveType.PLLAGR;
 
         return ApproveSbj.builder()
                 .empDeptType(sbjDTO.getEmpDeptType())
                 .sbjUser(sbjUser)
-                .dept(dept)
                 .isPll(isPll)
                 .build();
-
     }
 
-    public static DocShareObj toDocShareObj(Doc doc, Employee createUser, EmpDeptType empDeptType, Employee employee, Department department) {
+    public static DocShareObj toDocShareObj(Doc doc, Employee createUser, EmpDeptType empDeptType, Employee employee) {
 
         return DocShareObj.builder()
                 .doc(doc)
                 .shareAddUser(createUser)
                 .shareEmpDeptType(empDeptType)
                 .shareObjUser(employee)
-                .shareObjDepartment(department)
                 .build();
     }
+
 }
