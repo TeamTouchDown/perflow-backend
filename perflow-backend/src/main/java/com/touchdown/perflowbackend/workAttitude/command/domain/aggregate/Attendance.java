@@ -38,11 +38,11 @@ public class Attendance { //출퇴
     public Attendance(Employee empId,
                       LocalDateTime checkInDateTime,
                       LocalDateTime checkOutDateTime,
-                      AttendanceStatus status) {
+                      AttendanceStatus attendanceStatus) {
         this.empId = empId;
         this.checkInDateTime = checkInDateTime;
         this.checkOutDateTime = checkOutDateTime;
-        this.attendanceStatus = status;
+        this.attendanceStatus = attendanceStatus;
     }
 
     public void updateCheckOut(LocalDateTime checkOutDateTime, AttendanceStatus attendanceStatus) {
