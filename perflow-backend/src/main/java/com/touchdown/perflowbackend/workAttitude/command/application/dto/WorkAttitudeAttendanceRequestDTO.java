@@ -1,12 +1,10 @@
 package com.touchdown.perflowbackend.workAttitude.command.application.dto;
 
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.AttendanceStatus;
-import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import lombok.Data;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
