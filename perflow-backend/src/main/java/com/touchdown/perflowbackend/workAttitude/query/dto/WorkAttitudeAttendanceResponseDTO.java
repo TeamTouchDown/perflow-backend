@@ -1,5 +1,6 @@
 package com.touchdown.perflowbackend.workAttitude.query.dto;
 
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.AttendanceStatus;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
@@ -25,7 +26,7 @@ public class WorkAttitudeAttendanceResponseDTO {
     private LocalDateTime checkOutDateTime; // 퇴근 시간
 
     @NotNull
-    private Status status;
+    private AttendanceStatus AttendanceStatus;
 }
 
 
