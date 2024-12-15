@@ -1,9 +1,6 @@
 package com.touchdown.perflowbackend.approval.command.application.service;
 
-import com.touchdown.perflowbackend.approval.command.application.dto.ApproveLineRequestDTO;
-import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRequestDTO;
-import com.touchdown.perflowbackend.approval.command.application.dto.MyApproveLineCreateRequestDTO;
-import com.touchdown.perflowbackend.approval.command.application.dto.ShareDTO;
+import com.touchdown.perflowbackend.approval.command.application.dto.*;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.approval.command.domain.repository.*;
 import com.touchdown.perflowbackend.approval.command.mapper.DocMapper;
@@ -78,6 +75,39 @@ public class DocCommandService {
             ApproveLine approveLine = createApproveLineForMyApproveLine(lineDTO, createUser, groupId, request.getName(), request.getDescription());
             approveLineCommandRepository.save(approveLine);
         }
+    }
+
+    // 나의 결재선 수정
+    @Transactional
+    public void updateMyApproveLine(
+            Long groupId,
+            MyApproveLineUpdateRequestDTO request,
+            String updateUserId) {
+
+        List<ApproveLine> originLines = approveLineCommandRepository.findAllByGroupId(groupId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MY_APPROVE_LINE));
+
+        if (originLines.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_MY_APPROVE_LINE);
+        }
+
+        // 기존 결재선 삭제 (approvesbj 도 삭제됨)
+        approveLineCommandRepository.deleteAll(originLines);
+
+        Employee updateUser = findEmployeeById(updateUserId);
+
+        // 새로운 결재선 생성
+        List<ApproveLine> newLines = request.getApproveLines().stream()
+                .map(lineDTO -> createNewMyApproveLine(lineDTO, null, updateUserId))
+                .toList();
+
+        // 이름, 설명
+        newLines.forEach(line -> {
+            line.updateName(request.getName());
+            line.updateDescription(request.getDescription());
+        });
+
+        approveLineCommandRepository.saveAll(newLines);
     }
 
     private ApproveLine createApproveLineForMyApproveLine(
@@ -243,4 +273,5 @@ public class DocCommandService {
         return employeeCommandRepository.findAllById(empIds).stream()
                 .collect(Collectors.toMap(Employee::getEmpId, Function.identity()));
     }
+
 }

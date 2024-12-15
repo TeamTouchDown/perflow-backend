@@ -3,6 +3,7 @@ package com.touchdown.perflowbackend.approval.command.application.controller;
 import com.touchdown.perflowbackend.approval.command.application.dto.ApprovalRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.MyApproveLineCreateRequestDTO;
+import com.touchdown.perflowbackend.approval.command.application.dto.MyApproveLineUpdateRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.service.ApprovalService;
 import com.touchdown.perflowbackend.approval.command.application.service.DocCommandService;
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
@@ -52,5 +53,18 @@ public class DocCommandController {
         docCommandService.createNewMyApproveLine(request, createUserId);
 
         return ResponseEntity.ok(SuccessCode.MY_APPROVE_LINE_CREATE_SUCCESS);
+    }
+
+    // 나의 결재선 수정
+    @PutMapping("/my-approve-lines/{groupId}")
+    public ResponseEntity<SuccessCode> updateMyApproveLine(
+            @PathVariable Long groupId,
+            @RequestBody MyApproveLineUpdateRequestDTO request) {
+
+        String updateUserId = "23-MK004";
+
+        docCommandService.updateMyApproveLine(groupId, request, updateUserId);
+
+        return ResponseEntity.ok(SuccessCode.MY_APPROVE_LINE_UPDATE_SUCCESS);
     }
 }
