@@ -12,7 +12,7 @@ public class WorkAttitudeAttendanceMapper {
                 .empId(employee)
                 .checkInDateTime(requestDTO.getCheckInDateTime())
                 .checkOutDateTime(requestDTO.getCheckOutDateTime())
-                .status(requestDTO.getAttendanceStatus())
+                .attendanceStatus(requestDTO.getAttendanceStatus())
                 .build();
     }
 
