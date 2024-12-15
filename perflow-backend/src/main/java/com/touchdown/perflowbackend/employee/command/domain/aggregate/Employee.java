@@ -66,6 +66,9 @@ public class Employee extends BaseEntity {
     @Column(name = "email", nullable = false, length = 30)
     private String email;
 
+    @Column(name = "seal", nullable = true)
+    private String seal;
+
     @Column(name = "join_date", nullable = false)
     private LocalDate joinDate;
 
