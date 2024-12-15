@@ -36,25 +36,25 @@ public class DocMapper {
                 .build();
     }
 
-    public static MyApproveLineGroupResponseDTO toMyApproveLineGroupResponseDTO(
-            Long groupId,
-            String name,
-            String description,
-            LocalDateTime createDatetime,
-            List<ApproveLine> lines
-    ) {
-        List<MyApproveLineResponseDTO> lineDTOs = lines.stream()
-                .map(DocMapper::toMyApproveLineResponseDTO)
-                .toList();
-
-        return MyApproveLineGroupResponseDTO.builder()
-                .groupId(groupId)
-                .name(name)
-                .description(description)
-                .createDatetime(createDatetime)
-                .lines(lineDTOs)
-                .build();
-    }
+//    public static MyApproveLineGroupResponseDTO toMyApproveLineGroupResponseDTO(
+//            Long groupId,
+//            String name,
+//            String description,
+//            LocalDateTime createDatetime,
+//            List<ApproveLine> lines
+//    ) {
+//        List<MyApproveLineResponseDTO> lineDTOs = lines.stream()
+//                .map(DocMapper::toMyApproveLineResponseDTO)
+//                .toList();
+//
+//        return MyApproveLineGroupResponseDTO.builder()
+//                .groupId(groupId)
+//                .name(name)
+//                .description(description)
+//                .createDatetime(createDatetime)
+//                .lines(lineDTOs)
+//                .build();
+//    }
 
     // ApproveLine 엔터티 리스트 -> MyApproveLineDetailResponseDTO
     public static MyApproveLineDetailResponseDTO toMyApproveLineDetailResponseDTO(List<ApproveLine> lines) {

@@ -34,17 +34,19 @@ public class DocQueryService {
     public Page<MyApproveLineGroupResponseDTO> getMyApproveLineList(Pageable pageable, String createUserId
     ) {
 
-        return approveLineQueryRepository.findAllMyApproveLines(pageable, createUserId)
-                .map(group -> {
-                    List<ApproveLine> lines = approveLineQueryRepository.findByGroupId(group.getGroupId());
-                    return DocMapper.toMyApproveLineGroupResponseDTO(
-                            group.getGroupId(),
-                            group.getName(),
-                            group.getDescription(),
-                            group.getCreateDatetime(),
-                            lines
-                    );
-                });
+        return approveLineQueryRepository.findAllMyApproveLines(pageable, createUserId);
+
+//        return approveLineQueryRepository.findAllMyApproveLines(pageable, createUserId)
+//                .map(group -> {
+//                    List<ApproveLine> lines = approveLineQueryRepository.findByGroupId(group.getGroupId());
+//                    return DocMapper.toMyApproveLineGroupResponseDTO(
+//                            group.getGroupId(),
+//                            group.getName(),
+//                            group.getDescription(),
+//                            group.getCreateDatetime(),
+//                            lines
+//                    );
+//                });
     }
 
     // 나의 결재선 상세 조회
