@@ -10,20 +10,21 @@ import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Attend
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.AttendanceStatus;
 import com.touchdown.perflowbackend.workAttitude.command.domain.repository.WorkAttitudeAttendanceCommandRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class WorkAttitudeAttendanceCommandService {
-
     private final WorkAttitudeAttendanceCommandRepository attendanceRepository;
     private final EmployeeCommandRepository employeeRepository;
     private final QRCodeGenerator qrCodeGenerator;
 
     @Transactional
-    public void checkInWithQR() {
+    public String generateQRCodeForCheckIn() {
         String empId = EmployeeUtil.getEmpId();
         Employee employee = findEmployeeByEmpId(empId);
 
@@ -32,11 +33,17 @@ public class WorkAttitudeAttendanceCommandService {
             throw new CustomException(ErrorCode.ALREADY_CHECKED_IN);
         }
 
-        // QR 생성 및 인증
-        String qrCode = qrCodeGenerator.generateQRCode(empId);
-        boolean isValidated = qrCodeGenerator.validateQRCode(empId, qrCode);
+        // QR 코드 생성
+        return qrCodeGenerator.generateQRCode(empId);
+    }
 
-        if (!isValidated) {
+    @Transactional
+    public void validateAndCheckIn(String qrCode) {
+        String empId = EmployeeUtil.getEmpId();
+        Employee employee = findEmployeeByEmpId(empId);
+
+        // QR 코드 검증
+        if (!qrCodeGenerator.validateQRCode(empId, qrCode)) {
             throw new CustomException(ErrorCode.INVALID_QR_CODE);
         }
 
@@ -51,23 +58,32 @@ public class WorkAttitudeAttendanceCommandService {
     }
 
     @Transactional
-    public void checkOutWithQR() {
+    public String generateQRCodeForCheckOut() {
         String empId = EmployeeUtil.getEmpId();
         Employee employee = findEmployeeByEmpId(empId);
 
         // 퇴근 여부 확인
-        Attendance attendance = attendanceRepository.findByEmpIdAndCheckOutDateTimeIsNull(employee)
+        attendanceRepository.findByEmpIdAndCheckOutDateTimeIsNull(employee)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ATTENDANCE));
 
-        // QR 생성 및 인증
-        String qrCode = qrCodeGenerator.generateQRCode(empId);
-        boolean isValidated = qrCodeGenerator.validateQRCode(empId, qrCode);
+        // QR 코드 생성
+        return qrCodeGenerator.generateQRCode(empId);
+    }
 
-        if (!isValidated) {
+    @Transactional
+    public void validateAndCheckOut(String qrCode) {
+        String empId = EmployeeUtil.getEmpId();
+        Employee employee = findEmployeeByEmpId(empId);
+
+        // QR 코드 검증
+        if (!qrCodeGenerator.validateQRCode(empId, qrCode)) {
             throw new CustomException(ErrorCode.INVALID_QR_CODE);
         }
 
         // 퇴근 처리
+        Attendance attendance = attendanceRepository.findByEmpIdAndCheckOutDateTimeIsNull(employee)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ATTENDANCE));
+
         attendance.updateCheckOut(LocalDateTime.now(), AttendanceStatus.OFF);
         attendanceRepository.save(attendance);
     }
