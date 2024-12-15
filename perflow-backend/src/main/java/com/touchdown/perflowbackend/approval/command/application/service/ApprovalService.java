@@ -10,6 +10,7 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
@@ -24,19 +25,25 @@ public class ApprovalService {
     private final ApproveSbjCommandRepository approveSbjCommandRepository;
     private final JpaApproveSbjCommandRepository jpaApproveSbjCommandRepository;
 
+    @Transactional
     public void processApproval(ApprovalRequestDTO request) {
 
         // todo: 로그인 기능 이후 수정하기
-        String LoginId = "23-HR001";
+        String LoginId = "23-OP005";
 
         // 문서 조회
         Doc doc = findDocById(request.getDocId());
 
         // 결재 주체 조회
-        ApproveSbj approveSbj = findApproveSbjById(request.getDocId(), LoginId, request.getEmpDeptType());
+        ApproveSbj approveSbj = findApproveSbjById(
+                request.getDocId(),
+                request.getEmpDeptType(),
+                request.getApproveLineId(),
+                request.getApproveSbjId()
+        );
 
         // 결재 주체 상태 변경
-        updateApproveSbjStatus(approveSbj, request.getStatus());
+        updateApproveSbjStatus(approveSbj, request.getStatus(), request.getComment());
 
         // 결재 방식 처리
         handleApproval(doc, approveSbj);
@@ -45,17 +52,35 @@ public class ApprovalService {
         updateDocStatus(approveSbj.getApproveLine().getDoc());
     }
 
+    // 결재선 상태 업데이트
+    private void updateApproveLineStatus(ApproveLine line) {
+
+        List<ApproveSbj> sbjs = line.getApproveSbjs();
+
+        if (isRejectedAny(sbjs)) {
+            line.updateStatus(Status.REJECTED);
+        } else if (isApprovedAll(sbjs)) {
+            line.updateStatus(Status.APPROVED);
+        } else {
+            line.updateStatus(Status.PENDING);
+        }
+        approveLineCommandRepository.save(line);
+    }
+
     // 문서 상태 업데이트
     private void updateDocStatus(Doc doc) {
 
-        List<ApproveSbj> allSubjects = doc.getApproveLines().stream()
-                .flatMap(line -> line.getApproveSbjs().stream())
-                .toList();
+        // 모든 결재선 상태를 최신으로 갱신
+        doc.getApproveLines().forEach(this::updateApproveLineStatus);
 
-        if (isRejectedAny(allSubjects)) {
+        List<ApproveLine> allLines = doc.getApproveLines();
+
+        if (allLines.stream().anyMatch(line -> line.getStatus() == Status.REJECTED)) {
             doc.updateStatus(Status.REJECTED);
-        } else if (isApprovedAll(allSubjects)) {
-            doc.updateStatus(Status.APPROVED);
+        } else if (allLines.stream().allMatch(line -> line.getStatus() == Status.APPROVED)) {
+            doc.updateStatus(Status.APPROVED);  // 모든 결재선이 APPROVED 여야 문서를 APPROVED 로
+        } else {
+            doc.updateStatus(Status.ACTIVATED);
         }
 
         docCommandRepository.save(doc);
@@ -65,7 +90,12 @@ public class ApprovalService {
     // 결재 방식 처리
     private void handleApproval(Doc doc, ApproveSbj approveSbj) {
 
-        switch(approveSbj.getApproveLine().getApproveType()) {
+        ApproveType approveType = approveSbj.getApproveLine().getApproveType();
+
+        // 결재선 상태 업데이트
+        updateApproveLineStatus(approveSbj.getApproveLine());
+
+        switch(approveType) {
 
             // 동의, 합의
             case SEQ, AGR:
@@ -89,13 +119,17 @@ public class ApprovalService {
     // 병렬, 병렬 합의 처리
     private void handlePllApproval(Doc doc, ApproveSbj approveSbj) {
 
-        // 현재 결재선의 모든 결재 주체의 상태
-        List<ApproveSbj> subjects = approveSbj.getApproveLine().getApproveSbjs();
+        ApproveLine currentLine = approveSbj.getApproveLine();
 
-        if (isRejectedAny(subjects)) {
+        // 현재 결재선 상태 업데이트
+        updateApproveLineStatus(currentLine);
+
+        if (currentLine.getStatus() == Status.REJECTED) {
+            // 현재 결재선 중 하나라도 반려되면 문서를 REJECTED 로
             doc.updateStatus(Status.REJECTED);
             docCommandRepository.save(doc);
-        } else if (isApprovedAll(subjects)) {
+        } else if (currentLine.getStatus() == Status.APPROVED) {
+            // 현재 결재선의 모든 주체가 승인하면 다음 결재선으로
             moveToNextApproveLine(doc, approveSbj.getApproveLine());
         }
     }
@@ -110,12 +144,15 @@ public class ApprovalService {
 
         if (nextLineOpt.isPresent()) {
             ApproveLine nextLine = nextLineOpt.get();
+            nextLine.getApproveSbjs().forEach(sbj -> sbj.updateStatus(Status.PENDING));
+            approveLineCommandRepository.save(nextLine);
 
             // 다음 결재선의 모든 결재 주체를 PENDING 으로
-            nextLine.getApproveSbjs().forEach(sbj -> {
-                sbj.updateStatus(Status.PENDING);
-                jpaApproveSbjCommandRepository.save(sbj);
-            });
+//            nextLine.getApproveSbjs().forEach(sbj -> {
+//                sbj.updateStatus(Status.PENDING);
+////                jpaApproveSbjCommandRepository.save(sbj);
+//            });
+
         } else {
             // 다음 결재선이 없으면 문서를 APPROVED 상태로 변경
             doc.updateStatus(Status.APPROVED);
@@ -129,11 +166,15 @@ public class ApprovalService {
         // 현재 결재선의 모든 결재 주체의 상태
         List<ApproveSbj> subjects = approveSbj.getApproveLine().getApproveSbjs();
 
-        // 현재 결재 주체의 순서보다 높은 주체를 필터링
+//        Optional<ApproveSbj> nextSbjOpt = subjects.stream()
+//                .filter(sbj -> sbj.getApproveLine().getApproveLineOrder() > approveSbj.getApproveLine().getApproveLineOrder()) // ApproveLine 참조
+//                .sorted(Comparator.comparingLong(sbj -> sbj.getApproveLine().getApproveLineOrder()))
+//                .findFirst();
+
+        // 현재 결재 주체가 속한 결재선의 순서를 기준으로 다음 결재 주체 찾기
         Optional<ApproveSbj> nextSbjOpt = subjects.stream()
-                .filter(sbj -> sbj.getApproveLine().getApproveLineOrder() > approveSbj.getApproveLine().getApproveLineOrder()) // ApproveLine 참조
-                .sorted(Comparator.comparingLong(sbj -> sbj.getApproveLine().getApproveLineOrder()))
-                .findFirst();
+                .filter(sbj -> sbj.getApproveLine().getApproveLineOrder() > approveSbj.getApproveLine().getApproveLineOrder())
+                .min(Comparator.comparing(sbj -> sbj.getApproveLine().getApproveLineOrder()));
 
         if (nextSbjOpt.isPresent()) {
             // 다음 결재 주체가 있다면 상태를 PENDING 으로 변경
@@ -147,9 +188,14 @@ public class ApprovalService {
     }
 
     // 결제 주체 상태 변경
-    private void updateApproveSbjStatus(ApproveSbj approveSbj, Status status) {
+    private void updateApproveSbjStatus(ApproveSbj approveSbj, Status status, String comment) {
 
         approveSbj.updateStatus(status);
+
+        // 승인, 반려 의견이 있으면 저장
+        if (comment != null) {
+            approveSbj.updateComment(comment);
+        }
 
         jpaApproveSbjCommandRepository.save(approveSbj);
     }
@@ -171,9 +217,9 @@ public class ApprovalService {
         return docCommandRepository.findById(docId).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DOC));
     }
 
-    private ApproveSbj findApproveSbjById(Long docId, String approveSbjId, EmpDeptType empDeptType) {
+    private ApproveSbj findApproveSbjById(Long docId, EmpDeptType empDeptType, Long approveLineId, Long approveSbjId) {
 
-        return approveSbjCommandRepository.findByDocIdAndApproveSbjIdAndType(docId, approveSbjId, empDeptType)
+        return approveSbjCommandRepository.findByDocIdAndApproveSbjIdAndType(docId, empDeptType, approveLineId, approveSbjId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APPROVE_SBJ));
     }
 }

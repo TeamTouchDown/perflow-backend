@@ -89,4 +89,9 @@ public class ApproveLine extends BaseEntity {
         approveSbj.setApproveLine(this);
     }
 
+    public void updateStatus(Status status) {
+
+        this.status = status;
+    }
+
 }

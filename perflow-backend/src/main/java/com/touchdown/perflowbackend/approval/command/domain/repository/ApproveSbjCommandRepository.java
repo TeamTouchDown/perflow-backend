@@ -14,13 +14,26 @@ public interface ApproveSbjCommandRepository {
     @Query("SELECT sbj FROM ApproveSbj sbj " +
             "JOIN sbj.approveLine line " +
             "JOIN line.doc doc " +
-            "WHERE doc.docId = :docId AND sbj.empDeptType = :sbjType " +
-            "AND (sbj.sbjUser.empId = :approveSbjId OR CAST(sbj.dept.departmentId AS string) = :approveSbjId)")
+            "WHERE doc.docId = :docId " +
+            "AND line.approveLineId = :approveLineId " +
+            "AND sbj.approveSbjId = :approveSbjId " +
+            "AND sbj.empDeptType = :sbjType ")
     Optional<ApproveSbj> findByDocIdAndApproveSbjIdAndType(
             @Param("docId") Long docId,
-            @Param("approveSbjId") String approveSbjId,
-            @Param("sbjType") EmpDeptType empDeptType
+            @Param("sbjType") EmpDeptType empDeptType,
+            @Param("approveLineId") Long approveLineId,
+            @Param("approveSbjId") Long approveSbjId
         );
+//        @Query("SELECT sbj FROM ApproveSbj sbj " +
+//            "JOIN sbj.approveLine line " +
+//            "JOIN line.doc doc " +
+//            "WHERE doc.docId = :docId AND sbj.empDeptType = :sbjType " +
+//            "AND (sbj.sbjUser.empId = :approveSbjId OR CAST(sbj.dept.departmentId AS string) = :approveSbjId)")
+//    Optional<ApproveSbj> findByDocIdAndApproveSbjIdAndType(
+//            @Param("docId") Long docId,
+//            @Param("approveSbjId") String approveSbjId,
+//            @Param("sbjType") EmpDeptType empDeptType
+//        );
 
 //    void save(ApproveSbj approveSbj);
 

@@ -138,23 +138,26 @@ public class DocMapper {
 
         return approveLines.stream()
                 .map(line -> WaitingDocApproveLineDTO.builder()
+                        .approveLineId(line.getApproveLineId())
                         .groupId(line.getGroupId())
                         .approveType(line.getApproveType())
                         .approveLineOrder(line.getApproveLineOrder())
                         .pllGroupId(line.getPllGroupId())
                         .approveTemplateType(line.getApproveTemplateType())
-                        .approveSbjs(mapApproveSubjects(line.getApproveSbjs())) // 결재 주체 매핑
+                        .approveSbjs(mapApproveSubjects(line.getApproveSbjs(), line.getApproveLineId())) // 결재 주체 매핑
                         .build())
                 .collect(Collectors.toList());
     }
 
-    private static List<WaitingDocApproveSbjDTO> mapApproveSubjects(List<ApproveSbj> approveSbjs) {
+    private static List<WaitingDocApproveSbjDTO> mapApproveSubjects(List<ApproveSbj> approveSbjs, Long approveLineId) {
 
         return approveSbjs.stream()
                 .map(sbj -> WaitingDocApproveSbjDTO.builder()
                         .empDeptType(sbj.getEmpDeptType())
                         .empId(sbj.getSbjUser().getEmpId())
                         .empName(sbj.getSbjUser().getName())
+                        .approveLineId(approveLineId)
+                        .approveSbjId(sbj.getApproveSbjId())
                         .build())
                 .collect(Collectors.toList());
     }

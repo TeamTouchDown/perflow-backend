@@ -74,6 +74,11 @@ public class ApproveSbj extends BaseEntity {
         this.status = status;
     }
 
+    public void updateComment(String comment) {
+
+        this.comment = comment;
+    }
+
     public void setApproveLine(ApproveLine approveLine) {
         this.approveLine = approveLine;
     }

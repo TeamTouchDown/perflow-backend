@@ -44,15 +44,16 @@ public class DocQueryController {
     public ResponseEntity<Page<WaitingDocListResponseDTO>> getWaitingDocs(Pageable pageable) {
 
 //        String empId = EmployeeUtil.getEmpId();
-        String empId = "23-IT003";
+//        String empId = "23-IT003";
+        String empId = "23-OP005";
 
         return ResponseEntity.ok(docQueryService.getWaitingDocList(pageable, empId));
     }
 
+    // 대기 문서 상세 조회
     @GetMapping("/waiting-docs/{docId}")
     public ResponseEntity<WaitingDocDetailResponseDTO> getWaitingDoc(@PathVariable Long docId) {
 
         return ResponseEntity.ok(docQueryService.getOneWaitingDoc(docId));
     }
-
 }

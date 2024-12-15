@@ -12,6 +12,9 @@ import java.util.List;
 @Builder
 public class WaitingDocApproveLineDTO {
 
+    @JsonProperty("approve_line_id")
+    private final Long approveLineId;
+
     @JsonProperty("group_id")
     private final Long groupId;
 

@@ -17,4 +17,10 @@ public class WaitingDocApproveSbjDTO {
 
     @JsonProperty("sbjName")
     private final String empName;   // 사원 이름
+
+    @JsonProperty("approve_line_id")
+    private final Long approveLineId;
+
+    @JsonProperty("approve_sbj_id")
+    private final Long approveSbjId;
 }
