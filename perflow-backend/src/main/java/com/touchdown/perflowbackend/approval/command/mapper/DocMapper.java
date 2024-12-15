@@ -56,27 +56,24 @@ public class DocMapper {
 //                .build();
 //    }
 
-    // ApproveLine 엔터티 리스트 -> MyApproveLineDetailResponseDTO
-    public static MyApproveLineDetailResponseDTO toMyApproveLineDetailResponseDTO(List<ApproveLine> lines) {
-        if (lines.isEmpty()) {
-            throw new IllegalArgumentException("결재선 empty");
-        }
+    // 나의 결재선 상세 조회 시
+    public static MyApproveLineDetailResponseDTO toMyApproveLineDetailResponseDTO(List<ApproveLine> lines, ApproveLine firstLine) {
 
         return MyApproveLineDetailResponseDTO.builder()
-                .name(lines.get(0).getName())
-                .description(lines.get(0).getDescription())
+                .groupId(firstLine.getGroupId())
+                .name(firstLine.getName())
+                .description(firstLine.getDescription())
                 .approveLines(lines.stream()
                         .map(DocMapper::toApproveLineResponseDTO)
                         .toList())
                 .build();
     }
 
-    // 나의 결재선 상세 조회 시
-    public static ApproveLineResponseDTO toApproveLineResponseDTO(ApproveLine line) {
+    public static MyApproveLineDTO toApproveLineResponseDTO(ApproveLine line) {
 
-        return ApproveLineResponseDTO.builder()
-                .groupId(line.getGroupId())
+        return MyApproveLineDTO.builder()
                 .approveLineId(line.getApproveLineId())
+                .groupId(line.getGroupId())
                 .approveType(line.getApproveType())
                 .approveLineOrder(line.getApproveLineOrder())
                 .pllGroupId(line.getPllGroupId())
@@ -84,6 +81,17 @@ public class DocMapper {
                 .approveSbjs(line.getApproveSbjs().stream()
                         .map(DocMapper::toApproveSbjDTO)
                         .toList())
+                .build();
+    }
+
+    public static MyApproveSbjDTO toApproveSbjDTO(ApproveSbj sbj) {
+
+        return MyApproveSbjDTO.builder()
+                .empDeptType(sbj.getEmpDeptType())
+                .empId(sbj.getSbjUser().getEmpId())
+                .empName(sbj.getSbjUser().getName())
+                .approveLineId(sbj.getApproveLine().getApproveLineId())
+                .approveSbjId(sbj.getApproveSbjId())
                 .build();
     }
 
@@ -219,27 +227,6 @@ public class DocMapper {
 
         return docFields.stream()
                 .collect(Collectors.toMap(DocField::getFieldKey, DocField::getUserValue));
-    }
-
-    public static ApproveLineDetailDTO toApproveLineDetailDTO(ApproveLine line) {
-
-        return ApproveLineDetailDTO.builder()
-                .approveLineId(line.getApproveLineId())
-                .approveType(line.getApproveType())
-                .approveLineOrder(line.getApproveLineOrder())
-                .approveSbjs(line.getApproveSbjs().stream()
-                        .map(DocMapper::toApproveSbjDTO)
-                        .toList())
-                .build();
-    }
-
-    public static ApproveSbjDTO toApproveSbjDTO(ApproveSbj sbj) {
-
-        return ApproveSbjDTO.builder()
-                .empDeptType(sbj.getEmpDeptType())
-                .empId(sbj.getSbjUser() != null ? sbj.getSbjUser().getEmpId() : null)   // sbjType에 따라 null 값 넘겨야 함
-//                .departmentId(sbj.getDept() != null ? sbj.getDept().getDepartmentId() : null)
-                .build();
     }
 
     public static List<ShareDTO> toShareDTOList(List<DocShareObj> shares) {

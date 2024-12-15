@@ -10,9 +10,11 @@ import java.util.List;
 @Builder
 public class MyApproveLineDetailResponseDTO {
 
+    private final Long groupId;
+
     private final String name;
 
     private final String description;
 
-    private final List<ApproveLineResponseDTO> approveLines;
+    private final List<MyApproveLineDTO> approveLines;
 }

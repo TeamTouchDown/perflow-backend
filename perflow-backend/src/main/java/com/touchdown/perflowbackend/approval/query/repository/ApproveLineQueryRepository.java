@@ -23,6 +23,9 @@ public interface ApproveLineQueryRepository extends JpaRepository<ApproveLine, L
             @Param("createUserId") String createUserId);
 
     // 나의 결재선 목록 조회 시 결재선(부서, 사원, 결재방식) 상세 정보 조회
-    @Query("SELECT a FROM ApproveLine a WHERE a.groupId = :groupId AND a.status <> 'DELETED'")
+    @Query("SELECT line FROM ApproveLine line " +
+            "WHERE line.groupId = :groupId " +
+            "AND line.approveTemplateType = 'MY_APPROVE_LINE' " +
+            "AND line.status <> 'DELETED'")
     List<ApproveLine> findByGroupId(@Param("groupId") Long groupId);
 }

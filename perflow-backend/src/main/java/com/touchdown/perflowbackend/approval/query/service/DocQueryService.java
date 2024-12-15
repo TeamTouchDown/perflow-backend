@@ -35,18 +35,6 @@ public class DocQueryService {
     ) {
 
         return approveLineQueryRepository.findAllMyApproveLines(pageable, createUserId);
-
-//        return approveLineQueryRepository.findAllMyApproveLines(pageable, createUserId)
-//                .map(group -> {
-//                    List<ApproveLine> lines = approveLineQueryRepository.findByGroupId(group.getGroupId());
-//                    return DocMapper.toMyApproveLineGroupResponseDTO(
-//                            group.getGroupId(),
-//                            group.getName(),
-//                            group.getDescription(),
-//                            group.getCreateDatetime(),
-//                            lines
-//                    );
-//                });
     }
 
     // 나의 결재선 상세 조회
@@ -55,11 +43,14 @@ public class DocQueryService {
 
         List<ApproveLine> lines = approveLineQueryRepository.findByGroupId(groupId);
 
+        // 첫 번째 결재선에서 결재선 설명, 이름, groupId 가져오기
+        ApproveLine firstLine = lines.get(0);
+
         if (lines.isEmpty()) {
             throw new CustomException(ErrorCode.NOT_FOUND_MY_APPROVE_LINE);
         }
 
-        return DocMapper.toMyApproveLineDetailResponseDTO(lines);
+        return DocMapper.toMyApproveLineDetailResponseDTO(lines, firstLine);
     }
 
     // 대기 문서 목록 조회
