@@ -31,6 +31,7 @@ public class Attendance { //출퇴
     private LocalDateTime checkOutDateTime;
 
     @Column(name = "status", nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
     private AttendanceStatus attendanceStatus; // 상태: "출근" / "퇴근"
 
 
