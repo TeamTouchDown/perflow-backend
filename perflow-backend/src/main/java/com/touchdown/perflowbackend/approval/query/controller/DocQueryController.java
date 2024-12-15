@@ -1,9 +1,6 @@
 package com.touchdown.perflowbackend.approval.query.controller;
 
-import com.touchdown.perflowbackend.approval.query.dto.MyApproveLineDetailResponseDTO;
-import com.touchdown.perflowbackend.approval.query.dto.MyApproveLineGroupResponseDTO;
-import com.touchdown.perflowbackend.approval.query.dto.WaitingDocDetailResponseDTO;
-import com.touchdown.perflowbackend.approval.query.dto.WaitingDocListResponseDTO;
+import com.touchdown.perflowbackend.approval.query.dto.*;
 import com.touchdown.perflowbackend.approval.query.service.DocQueryService;
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import lombok.RequiredArgsConstructor;
@@ -55,5 +52,21 @@ public class DocQueryController {
     public ResponseEntity<WaitingDocDetailResponseDTO> getWaitingDoc(@PathVariable Long docId) {
 
         return ResponseEntity.ok(docQueryService.getOneWaitingDoc(docId));
+    }
+
+    // 처리 문서 목록 조회
+    @GetMapping("/processed-docs")
+    public ResponseEntity<Page<ProcessedDocListResponseDTO>> getProcessedDocs(Pageable pageable) {
+
+        String empId = "23-OP005";
+
+        return ResponseEntity.ok(docQueryService.getProcessedDocList(pageable, empId));
+    }
+
+    // 처리 문서 상세 조회
+    @GetMapping("/processed-docs/{docId}")
+    public ResponseEntity<ProcessedDocDetailResponseDTO> getProcessedDoc(@PathVariable Long docId) {
+
+        return ResponseEntity.ok(docQueryService.getOneProcessedDoc(docId));
     }
 }

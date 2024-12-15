@@ -2,6 +2,7 @@ package com.touchdown.perflowbackend.approval.command.application.service;
 
 import com.touchdown.perflowbackend.approval.command.application.dto.ApproveLineRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRequestDTO;
+import com.touchdown.perflowbackend.approval.command.application.dto.MyApproveLineCreateRequestDTO;
 import com.touchdown.perflowbackend.approval.command.application.dto.ShareDTO;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.approval.command.domain.repository.*;
@@ -37,6 +38,7 @@ public class DocCommandService {
     private final DocFieldCommandRepository docFieldCommandRepository;
     private final DocShareObjCommandRepository docShareObjCommandRepository;
 
+    // 새 결재 문서 생성
     @Transactional
     public void createNewDoc(DocCreateRequestDTO request, String createUserId) {
 
@@ -62,6 +64,61 @@ public class DocCommandService {
         createShare(request, doc, createUser);
     }
 
+    // 나의 결재선 생성
+    @Transactional
+    public void createNewMyApproveLine(MyApproveLineCreateRequestDTO request, String createUserId) {
+
+        // 작성자 조회
+        Employee createUser = findEmployeeById(createUserId);
+
+        Long groupId = generateGroupId(null);
+
+        // 결재선 생성
+        for(ApproveLineRequestDTO lineDTO : request.getApproveLines()) {
+            ApproveLine approveLine = createApproveLineForMyApproveLine(lineDTO, createUser, groupId, request.getName(), request.getDescription());
+            approveLineCommandRepository.save(approveLine);
+        }
+    }
+
+    private ApproveLine createApproveLineForMyApproveLine(
+            ApproveLineRequestDTO lineDTO,
+            Employee createUser,
+            Long groupId,
+            String name,
+            String description
+    ) {
+
+        // 모든 empId 추출
+        Set<String> empIds = lineDTO.getApproveSbjs().stream()
+                .map(ApproveSbjDTO::getEmpId)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        // 모든 사원 조회
+        Map<String, Employee> employeeMap = findEmployeesByIds(empIds);
+
+        // 새로운 결재선 생성
+        ApproveLine newApproveLine = ApproveLine.builder()
+                .doc(null) // 문서와 연결되지 않음
+                .groupId(groupId)
+                .approveTemplateType(ApproveTemplateType.MY_APPROVE_LINE) // 나의 결재선
+                .createUser(createUser)
+                .approveType(lineDTO.getApproveType())
+                .approveLineOrder(lineDTO.getApproveLineOrder())
+                .pllGroupId(lineDTO.getPllGroupId())
+                .name(name) // 필요하면 그룹 이름 추가
+                .description(description)
+                .build();
+
+        // 결재 주체 추가
+        lineDTO.getApproveSbjs().forEach(sbjDTO -> {
+            ApproveSbj approveSbj = DocMapper.toApproveSbj(sbjDTO, employeeMap, lineDTO.getApproveType());
+            newApproveLine.addApproveSbj(approveSbj);
+        });
+
+        return newApproveLine;
+    }
+
     private void createShare(DocCreateRequestDTO request, Doc doc, Employee createUser) {
 
         // 모든 empId와 departmentId 추출
@@ -80,20 +137,6 @@ public class DocCommandService {
                 Employee employee = employeeMap.get(empId);
                 docShareObjs.add(DocMapper.toDocShareObj(doc, createUser, EmpDeptType.EMPLOYEE, employee));
             });
-
-//            if (shareDTO.getShareEmpDeptType() == EmpDeptType.EMPLOYEE) {
-//                shareDTO.getEmployees().forEach(empId -> {
-//                    Employee employee = employeeMap.get(empId);
-//                    docShareObjs.add(DocMapper.toDocShareObj(doc, createUser, EmpDeptType.EMPLOYEE, employee));
-//                });
-//            } else if (shareDTO.getShareEmpDeptType() == EmpDeptType.DEPARTMENT) {
-//                shareDTO.getDepartments().forEach(departmentId -> {
-//                    Department department = departmentMap.get(departmentId);
-//                    docShareObjs.add(DocMapper.toDocShareObj(doc, createUser, EmpDeptType.DEPARTMENT, null, department));
-//                });
-//            } else {
-//                throw new CustomException(ErrorCode.INVALID_SHARE_TYPE);
-//            }
         }
 
         docShareObjCommandRepository.saveAll(docShareObjs);
@@ -200,11 +243,4 @@ public class DocCommandService {
         return employeeCommandRepository.findAllById(empIds).stream()
                 .collect(Collectors.toMap(Employee::getEmpId, Function.identity()));
     }
-
-//    private Map<Long, Department> findDepartmentsByIds(Set<Long> departmentIds) {
-//        log.info("findDepartmentByIds 실행");
-//        return departmentCommandRepository.findAllById(departmentIds).stream()
-//                .collect(Collectors.toMap(Department::getDepartmentId, Function.identity()));
-//    }
-
 }

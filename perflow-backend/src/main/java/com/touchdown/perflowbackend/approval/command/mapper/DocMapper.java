@@ -97,32 +97,83 @@ public class DocMapper {
                 .createDatetime(doc.getCreateDatetime())
                 .build();
     }
-//
-//    public static WaitingDocDetailResponseDTO toWaitingDocDetailResponseDTO(Doc doc) {
-//
-//        return WaitingDocDetailResponseDTO.builder()
-//                .docId(doc.getDocId())
-//                .title(doc.getTitle())
-//                .templateId(doc.getTemplate().getTemplateId())
-//                // 결재선
-//                .approveLines(doc.getApproveLines().stream()
-//                        .map(DocMapper::toApproveLineDetailDTO)
-//                        .toList())
-//                .shares(toShareDTOList(doc.getShares()))
-//                .build();
-//    }
 
+    // 처리 문서 목록 조회 시
+    public static ProcessedDocListResponseDTO toProcessedDocListResponseDTO(Doc doc) {
+
+        return ProcessedDocListResponseDTO.builder()
+                .docId(doc.getDocId())
+                .title(doc.getTitle())
+                .createUserName(doc.getCreateUser().getName())
+                .createDatetime(doc.getCreateDatetime())
+                .build();
+    }
+
+    // 대기 문서 상세 조회 시
     public static WaitingDocDetailResponseDTO toWaitingDocDetailResponseDTO(Doc doc) {
         return WaitingDocDetailResponseDTO.builder()
                 .docId(doc.getDocId())
                 .title(doc.getTitle())
                 .fields(mapFields(doc.getDocFields())) // 필드 데이터 매핑
-                .approveLines(mapApproveLines(doc.getApproveLines())) // 결재선 매핑
-                .shares(mapShares(doc.getShares())) // 공유 설정 매핑
+                .approveLines(mapWaitingApproveLines(doc.getApproveLines())) // 결재선 매핑
+                .shares(mapWaitingShares(doc.getShares())) // 공유 설정 매핑
                 .build();
     }
 
-    private static List<WaitingDocShareDTO> mapShares(List<DocShareObj> shares) {
+    public static ProcessedDocDetailResponseDTO toProcessedDocDetailResponseDTO(Doc doc) {
+
+        return ProcessedDocDetailResponseDTO.builder()
+                .docId(doc.getDocId())
+                .title(doc.getTitle())
+                .fields(mapFields(doc.getDocFields())) // 필드 데이터 매핑
+                .approveLines(mapProcessedApproveLines(doc.getApproveLines())) // 결재선 매핑
+                .shares(mapProcessedShares(doc.getShares())) // 공유 설정 매핑
+                .build();
+    }
+
+    private static List<ProcessedDocShareDTO> mapProcessedShares(List<DocShareObj> shares) {
+
+        return shares.stream()
+                .filter(share -> share.getShareEmpDeptType() == EmpDeptType.EMPLOYEE && share.getShareObjUser() != null)
+                .map(share -> new ProcessedDocShareDTO(
+                        EmpDeptType.EMPLOYEE,
+                        List.of(share.getShareObjUser().getEmpId()),
+                        List.of(share.getShareObjUser().getName())
+                ))
+                .toList();
+    }
+
+    private static List<ProcessedDocApproveLineDTO> mapProcessedApproveLines(List<ApproveLine> approveLines) {
+
+        return approveLines.stream()
+                .map(line -> ProcessedDocApproveLineDTO.builder()
+                        .approveLineId(line.getApproveLineId())
+                        .groupId(line.getGroupId())
+                        .approveType(line.getApproveType())
+                        .approveLineOrder(line.getApproveLineOrder())
+                        .pllGroupId(line.getPllGroupId())
+                        .approveTemplateType(line.getApproveTemplateType())
+                        .approveSbjs(mapProcessedApproveSubjects(line.getApproveSbjs(), line.getApproveLineId())) // 결재 주체 매핑
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private static List<ProcessedDocApproveSbjDTO> mapProcessedApproveSubjects(List<ApproveSbj> approveSbjs, Long approveLineId) {
+
+        return approveSbjs.stream()
+                .map(sbj -> ProcessedDocApproveSbjDTO.builder()
+                        .empDeptType(sbj.getEmpDeptType())
+                        .empId(sbj.getSbjUser().getEmpId())
+                        .empName(sbj.getSbjUser().getName())
+                        .approveLineId(approveLineId)
+                        .approveSbjId(sbj.getApproveSbjId())
+                        .status(sbj.getStatus())
+                        .comment(sbj.getComment())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private static List<WaitingDocShareDTO> mapWaitingShares(List<DocShareObj> shares) {
 
         return shares.stream()
                 .filter(share -> share.getShareEmpDeptType() == EmpDeptType.EMPLOYEE && share.getShareObjUser() != null)
@@ -134,7 +185,7 @@ public class DocMapper {
                 .toList();
     }
 
-    private static List<WaitingDocApproveLineDTO> mapApproveLines(List<ApproveLine> approveLines) {
+    private static List<WaitingDocApproveLineDTO> mapWaitingApproveLines(List<ApproveLine> approveLines) {
 
         return approveLines.stream()
                 .map(line -> WaitingDocApproveLineDTO.builder()
@@ -144,12 +195,12 @@ public class DocMapper {
                         .approveLineOrder(line.getApproveLineOrder())
                         .pllGroupId(line.getPllGroupId())
                         .approveTemplateType(line.getApproveTemplateType())
-                        .approveSbjs(mapApproveSubjects(line.getApproveSbjs(), line.getApproveLineId())) // 결재 주체 매핑
+                        .approveSbjs(mapWaitingApproveSubjects(line.getApproveSbjs(), line.getApproveLineId())) // 결재 주체 매핑
                         .build())
                 .collect(Collectors.toList());
     }
 
-    private static List<WaitingDocApproveSbjDTO> mapApproveSubjects(List<ApproveSbj> approveSbjs, Long approveLineId) {
+    private static List<WaitingDocApproveSbjDTO> mapWaitingApproveSubjects(List<ApproveSbj> approveSbjs, Long approveLineId) {
 
         return approveSbjs.stream()
                 .map(sbj -> WaitingDocApproveSbjDTO.builder()
@@ -158,6 +209,8 @@ public class DocMapper {
                         .empName(sbj.getSbjUser().getName())
                         .approveLineId(approveLineId)
                         .approveSbjId(sbj.getApproveSbjId())
+                        .status(sbj.getStatus())
+                        .comment(sbj.getComment())
                         .build())
                 .collect(Collectors.toList());
     }

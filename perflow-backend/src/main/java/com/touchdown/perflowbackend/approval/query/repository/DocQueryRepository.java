@@ -18,4 +18,11 @@ public interface DocQueryRepository extends JpaRepository<Doc, Long> {
             "AND doc.status = 'ACTIVATED' ")
     Page<Doc> findWaitingDocsByUser(@Param("empId") String empId, Pageable pageable);
 
+    @Query("SELECT DISTINCT doc FROM Doc doc " +
+            "JOIN doc.approveLines line " +
+            "JOIN line.approveSbjs sbj " +
+            "WHERE sbj.sbjUser.empId = :empId " +
+            "AND ( sbj.status ='APPROVED' OR sbj.status = 'REJECTED') " +
+            "AND doc.status <> 'DELETED'")
+    Page<Doc> findProcessedDocsByUser(@Param("empId") String empId, Pageable pageable);
 }

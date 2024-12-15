@@ -80,4 +80,24 @@ public class DocQueryService {
 
         return DocMapper.toWaitingDocDetailResponseDTO(doc);
     }
+
+    // 처리 문서 목록 조회
+    @Transactional(readOnly = true)
+    public Page<ProcessedDocListResponseDTO> getProcessedDocList(Pageable pageable, String empId) {
+
+        Page<Doc> docs = docQueryRepository.findProcessedDocsByUser(empId, pageable);
+
+        return docs.map(DocMapper::toProcessedDocListResponseDTO);
+    }
+
+    // 처리 문서 상세 조회
+    @Transactional(readOnly = true)
+    public ProcessedDocDetailResponseDTO getOneProcessedDoc(Long docId) {
+
+        // 문서 조회
+        Doc doc = docQueryRepository.findById(docId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DOC));
+
+        return DocMapper.toProcessedDocDetailResponseDTO(doc);
+    }
 }

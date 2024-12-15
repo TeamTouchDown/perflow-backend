@@ -9,9 +9,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MyApproveLineCreateRequestDTO {
 
-    private final String name;
+    private final String name;  // 결재선 이름
 
-    private final String description;
+    private final String description;   // 결재선 설명
 
-    private final List<ApproveLineDTO> approveLines;
+    private final List<ApproveLineRequestDTO> approveLines;    // 결재선 정보
 }

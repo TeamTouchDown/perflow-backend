@@ -2,14 +2,12 @@ package com.touchdown.perflowbackend.approval.query.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Builder
-@RequiredArgsConstructor
-public class WaitingDocListResponseDTO {
+public class ProcessedDocListResponseDTO {
 
     private final Long docId;
 
