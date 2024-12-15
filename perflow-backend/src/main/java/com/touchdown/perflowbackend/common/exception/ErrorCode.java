@@ -75,7 +75,9 @@ public enum ErrorCode {
     NOT_FOUND_OVERTIME(HttpStatus.NOT_FOUND, "초과 근무 정보를 찾을 수 없습니다."),
     INVALID_OVERTIME_STATUS(HttpStatus.BAD_REQUEST, "유효하지 않은 초과 근무 상태입니다. (APPROVED 또는 REJECTED만 작성하세요)"),
     INVALID_RETROACTIVE_DECISION(HttpStatus.BAD_REQUEST, "유효하지 않은 소급 처리 요청입니다."),
-    ALREADY_APPLIED_RETROACTIVE(HttpStatus.BAD_REQUEST, "이미 소급 신청된 초과근무입니다.")
+    ALREADY_APPLIED_RETROACTIVE(HttpStatus.BAD_REQUEST, "이미 소급 신청된 초과근무입니다."),
+    ALREADY_CHECKED_IN(HttpStatus.BAD_REQUEST,"출근 완료된 상태입니다."),
+    NOT_FOUND_ATTENDANCE(HttpStatus.BAD_REQUEST,"출근 처리가 안된 상태입니다.")
 
     ;
 

@@ -7,22 +7,27 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "WorkAttribute-Attendance-Controller", description = "출퇴근 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/emp/attendances")
 public class WorkAttitudeAttendanceCommandController {
+
     private final WorkAttitudeAttendanceCommandService workAttitudeAttendanceCommandService;
-    @Operation(summary = "출퇴근 등록",description = "출퇴근을 등록합니다")
-    @PostMapping("/emp/attendances")
-    public ResponseEntity<SuccessCode>createAttendance(@RequestBody WorkAttitudeAttendanceRequestDTO workAttitudeAttendanceRequestDTO){
-        workAttitudeAttendanceCommandService.createAttendance(workAttitudeAttendanceRequestDTO);
-        return ResponseEntity.ok(SuccessCode.WORK_ATTITUDE_ATTENDANCE_SUCCESS);
+
+    @Operation(summary = "출근 등록", description = "출근을 등록")
+    @PostMapping("/check-in")
+    public ResponseEntity<SuccessCode> checkIn(@RequestBody WorkAttitudeAttendanceRequestDTO workAttitudeAttendanceRequestDTO) {
+        workAttitudeAttendanceCommandService.checkIn(workAttitudeAttendanceRequestDTO);
+        return ResponseEntity.ok(SuccessCode.WORK_ATTITUDE_ATTENDANCE_CHECK_IN_SUCCESS);
     }
 
+    @Operation(summary = "퇴근 등록", description = "퇴근을 등록")
+    @PostMapping("/check-out")
+    public ResponseEntity<SuccessCode> checkOut(@RequestBody WorkAttitudeAttendanceRequestDTO workAttitudeAttendanceRequestDTO) {
+        workAttitudeAttendanceCommandService.checkOut(workAttitudeAttendanceRequestDTO);
+        return ResponseEntity.ok(SuccessCode.WORK_ATTITUDE_ATTENDANCE_CHECK_OUT_SUCCESS);
+    }
 }

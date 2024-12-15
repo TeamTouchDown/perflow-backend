@@ -30,18 +30,24 @@ public class Attendance { //출퇴
     @Column(name = "check_out_datetime", nullable = true) // 퇴근 시간이 없을 수도 있음
     private LocalDateTime checkOutDateTime;
 
-    @Column(name = "status", nullable = false, length = 10)
-    private String status; // 상태: "출근" / "퇴근"
+    @Column(name = "status", nullable = false, length = 30)
+    private AttendanceStatus attendanceStatus; // 상태: "출근" / "퇴근"
 
 
     @Builder
     public Attendance(Employee empId,
                       LocalDateTime checkInDateTime,
                       LocalDateTime checkOutDateTime,
-                      String status) {
+                      AttendanceStatus status) {
         this.empId = empId;
         this.checkInDateTime = checkInDateTime;
         this.checkOutDateTime = checkOutDateTime;
-        this.status = status;
+        this.attendanceStatus = status;
+    }
+
+    public void updateCheckOut(LocalDateTime checkOutDateTime, AttendanceStatus attendanceStatus) {
+        this.checkOutDateTime = checkOutDateTime;
+        this.attendanceStatus = attendanceStatus;
+
     }
 }
