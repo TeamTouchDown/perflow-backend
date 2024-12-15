@@ -96,11 +96,10 @@ public enum SuccessCode {
 
     // 출퇴근
     WORK_ATTITUDE_ATTENDANCE_CHECK_IN_SUCCESS(HttpStatus.OK,"출근 처리가 완료 되었습니다." ),
-    WORK_ATTITUDE_ATTENDANCE_CHECK_OUT_SUCCESS(HttpStatus.OK,"퇴근 처리가 완료 되었습니다." )
+    WORK_ATTITUDE_ATTENDANCE_CHECK_OUT_SUCCESS(HttpStatus.OK,"퇴근 처리가 완료 되었습니다." ),
 
 
-
-    ;
+    QR_CODE_VALIDATION_SUCCESS(HttpStatus.OK,"인증이 완료 되었습니다." );
 
     private final HttpStatus httpStatus;
     private final String message;

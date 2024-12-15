@@ -77,7 +77,8 @@ public enum ErrorCode {
     INVALID_RETROACTIVE_DECISION(HttpStatus.BAD_REQUEST, "유효하지 않은 소급 처리 요청입니다."),
     ALREADY_APPLIED_RETROACTIVE(HttpStatus.BAD_REQUEST, "이미 소급 신청된 초과근무입니다."),
     ALREADY_CHECKED_IN(HttpStatus.BAD_REQUEST,"출근 완료된 상태입니다."),
-    NOT_FOUND_ATTENDANCE(HttpStatus.BAD_REQUEST,"출근 처리가 안된 상태입니다.")
+    NOT_FOUND_ATTENDANCE(HttpStatus.BAD_REQUEST,"출근 처리가 안된 상태입니다."),
+    INVALID_QR_CODE(HttpStatus.BAD_REQUEST,"올바르지 않은 인증입니다."),
 
     ;
 
