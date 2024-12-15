@@ -8,7 +8,6 @@ import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeAttendanceRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Attendance;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.AttendanceStatus;
-import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.workAttitude.command.domain.repository.WorkAttitudeAttendanceCommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

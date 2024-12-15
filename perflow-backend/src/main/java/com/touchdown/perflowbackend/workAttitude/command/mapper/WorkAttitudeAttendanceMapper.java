@@ -3,7 +3,6 @@ package com.touchdown.perflowbackend.workAttitude.command.mapper;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeAttendanceRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Attendance;
-import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.AttendanceStatus;
 import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeAttendanceResponseDTO;
 
 public class WorkAttitudeAttendanceMapper {
