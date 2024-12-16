@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "WorkAttribute-OverTime-Controller", description = "초과근무 관련 API")
+@Tag(name = "WorkAttitude-OverTime-Controller", description = "초과근무 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")

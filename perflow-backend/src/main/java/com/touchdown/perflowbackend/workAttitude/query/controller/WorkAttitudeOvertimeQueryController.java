@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Tag(name = "WorkAttribute-OverTime-Controller", description = "초과근무 관련 API")
+@Tag(name = "WorkAttitude-OverTime-Controller", description = "초과근무 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
