@@ -3,6 +3,7 @@ package com.touchdown.perflowbackend.payment.query.service;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.employee.command.domain.aggregate.EmployeeStatus;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.Payroll;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.PayrollDetail;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.PayrollSpecifications;
@@ -146,11 +147,14 @@ public class PayrollQueryService {
 
         List<PayrollResponseDTO> payrolls = page.getContent().stream()
                 .map(payroll -> {
-                    // 총 사원 수 (payrollDetailList의 크기)
-                    long totalEmp = payroll.getPayrollDetailList().size();
+                    // 총 사원 수 (ACTIVE 상태인 사원만 계산)
+                    long totalEmp = payroll.getPayrollDetailList().stream()
+                            .filter(detail -> detail.getEmp().getStatus() == EmployeeStatus.ACTIVE) // 상태가 ACTIVE인지 확인
+                            .count();
 
-                    // 총 지급 금액 (payrollDetailList의 totalAmount 합산)
+                    // 총 지급 금액 (ACTIVE 상태인 사원의 급여만 합산)
                     long totalPay = payroll.getPayrollDetailList().stream()
+                            .filter(detail -> detail.getEmp().getStatus() == EmployeeStatus.ACTIVE) // 상태가 ACTIVE인지 확인
                             .mapToLong(PayrollDetail::getTotalAmount) // PayrollDetail의 totalAmount 값을 합산
                             .sum();
 
