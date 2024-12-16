@@ -9,9 +9,6 @@ import java.util.List;
 
 public interface EmployeeQueryRepository extends JpaRepository<Employee, String> {
 
-    @Query("SELECT e FROM Employee e WHERE e.dept.departmentId = :departmentId")
-    List<Employee> findByDeptId(@Param("deptId") Long departmentId);
-
     List<Employee> findAll(); // 사원 목록 조회
 
     @Query("SELECT e FROM Employee e WHERE e.status = 'ACTIVE'")
@@ -20,4 +17,16 @@ public interface EmployeeQueryRepository extends JpaRepository<Employee, String>
     @Query("SELECT e FROM Employee e WHERE e.status = 'RESIGNED'")
     List<Employee> findResignedEmployees();
 
+    // 특정 부서에 속한 직원 조회
+    List<Employee> findByDept_DepartmentId(Long deptId);
+
+    @Query("SELECT e.dept.departmentId FROM Employee e WHERE e.empId = :leaderEmpId")
+    Long findDeptIdByLeaderEmpId(@Param("leaderEmpId") String leaderEmpId);
+
+    @Query("SELECT e FROM Employee e WHERE e.dept.departmentId = :deptId")
+    List<Employee> findByDeptId(@Param("deptId") Long deptId);
+
+    // 특정 부서에 속한 직원들의 `empId` 조회
+    @Query("SELECT e.empId FROM Employee e WHERE e.dept.departmentId = :deptId")
+    List<String> findEmpIdsByDeptId(@Param("deptId") Long deptId);
 }
