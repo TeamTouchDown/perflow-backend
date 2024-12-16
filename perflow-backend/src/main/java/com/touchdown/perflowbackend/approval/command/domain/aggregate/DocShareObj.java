@@ -40,17 +40,17 @@ public class DocShareObj extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "share_obj_type", nullable = false, length = 30)
-    private ObjType shareObjType;   // 공유 대상 유형(EMPLOYEE, DEPARTMENT)
+    private EmpDeptType shareEmpDeptType;   // 공유 대상 유형(EMPLOYEE, DEPARTMENT)
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
     private Status status = Status.ACTIVATED;
 
     @Builder
-    public DocShareObj(Doc doc, ObjType shareObjType, Employee shareObjUser, Department shareObjDepartment, Employee shareAddUser) {
+    public DocShareObj(Doc doc, EmpDeptType shareEmpDeptType, Employee shareObjUser, Department shareObjDepartment, Employee shareAddUser) {
 
         this.doc = doc;
-        this.shareObjType = shareObjType;
+        this.shareEmpDeptType = shareEmpDeptType;
         this.shareObjUser = shareObjUser;
         this.shareObjDepartment = shareObjDepartment;
         this.shareAddUser = shareAddUser;

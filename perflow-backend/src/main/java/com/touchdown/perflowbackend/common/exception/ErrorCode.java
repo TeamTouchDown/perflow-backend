@@ -32,6 +32,7 @@ public enum ErrorCode {
     UNSUPPORTED_ENTITY(HttpStatus.BAD_REQUEST, "지원되지 않는 도메인입니다."),
     UNSUPPORTED_FILE_EXTENSION(HttpStatus.BAD_REQUEST, "지원되지 않는 확장자입니다."),
     INVALID_APPROVE_TEMPLATE_TYPE(HttpStatus.BAD_REQUEST, "잘못된 결재선 형식입니다."),
+    INVALID_APPROVE_TYPE(HttpStatus.BAD_REQUEST, "잘못된 결재 방식입니다."),
     NOT_MATCHED_CSV(HttpStatus.BAD_REQUEST, "CSV파일 로드에 실패했습니다."),
     NOT_ENOUGH_ANNUAL(HttpStatus.BAD_REQUEST, "연차는 12일 이상의 데이터를 입력해야 합니다."),
     NOT_MATCHED_PAYMENT_DATE(HttpStatus.BAD_REQUEST, "급여 지급일은 1일에서 28일 사이의 데이터를 등록해야합니다."),
@@ -55,10 +56,13 @@ public enum ErrorCode {
     NOT_FOUND_POSITION(HttpStatus.NOT_FOUND, "직위 정보를 찾을 수 없습니다."),
     NOT_FOUND_JOB(HttpStatus.NOT_FOUND, "직책 정보를 찾을 수 없습니다."),
     NOT_FOUND_TEMPLATE(HttpStatus.NOT_FOUND, "서식 정보를 찾을 수 없습니다."),
+    NOT_FOUND_TEMPLATE_FIELD(HttpStatus.NOT_FOUND, "서식 필드 정보를 찾을 수 없습니다."),
     NOT_FOUND_FIELD_TYPE(HttpStatus.NOT_FOUND, "필드 타입 정보를 찾을 수 없습니다."),
     NOT_FOUND_DEPARTMENT(HttpStatus.NOT_FOUND, "부서 정보를 찾을 수 없습니다."),
     NOT_FOUND_MY_APPROVE_LINE(HttpStatus.NOT_FOUND, "나의 결재선 정보를 찾을 수 없습니다."),
     NOT_FOUND_MANAGED_DEPARTMENT(HttpStatus.NOT_FOUND, "상위 부서 정보를 찾을 수 없습니다."),
+    NOT_FOUND_APPROVE_LINE(HttpStatus.NOT_FOUND, "결재선 정보를 찾을 수 없습니다."),
+    NOT_FOUND_DOC(HttpStatus.NOT_FOUND, "문서 정보를 찾을 수 없습니다."),
     NOT_FOUND_KPI(HttpStatus.NOT_FOUND,"KPI 정보를 찾을 수 없습니다."),
     NOT_FOUND_HRPERFO(HttpStatus.NOT_FOUND,"평가 점수 정보를 찾을 수 없습니다."),
     NOT_FOUND_HRPERFOINQUIRY(HttpStatus.NOT_FOUND,"인사 평가 의의제기 정보를 찾을 수 없습니다."),
@@ -66,6 +70,10 @@ public enum ErrorCode {
 
     NOT_FOUND_APPROVE_SBJ(HttpStatus.NOT_FOUND, "결재 주체 정보를 찾을 수 없습니다."),
     INVALID_APPROVE_SBJ_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 결재 주체 ID입니다."),
+    INVALID_DATE_FORMAT(HttpStatus.BAD_REQUEST, "잘못된 날짜 형식입니다."),
+    INVALID_MONEY_FORMAT(HttpStatus.BAD_REQUEST, "잘못된 금액 형식입니다."),
+    UNSUPPORTED_FIELD_TYPE(HttpStatus.BAD_REQUEST, "지원하지 않는 필드 타입입니다."),
+    INVALID_SHARE_TYPE(HttpStatus.BAD_REQUEST, "잘못된 공유 타입입니다."),
 
     NOT_FOUND_ANNOUNCEMENT(HttpStatus.NOT_FOUND, "해당 공지사항을 찾을 수 없습니다."),
 

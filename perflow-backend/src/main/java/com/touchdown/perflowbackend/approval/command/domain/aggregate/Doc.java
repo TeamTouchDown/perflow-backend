@@ -7,6 +7,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,18 +33,19 @@ public class Doc extends BaseEntity {
     @JoinColumn(name = "template_id", nullable = false)
     private Template template;
 
-    @OneToMany(mappedBy = "doc", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "doc", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT) // approveLines, shares 2개의 컬렉션을 동시에 join fetch 하면 뭐 부터 로드할지 몰라서 오류 발생 -> subselect 적용 후 join fetch 제거
     private List<ApproveLine> approveLines = new ArrayList<>();
 
-    @OneToMany(mappedBy = "doc", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "doc", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
     private List<DocShareObj> shares = new ArrayList<>();
+
+    @OneToMany(mappedBy = "doc", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<DocField> docFields = new ArrayList<>();
 
     @Column(name = "title", nullable = false, length = 50)
     private String title;
-
-    @Lob
-    @Column(name = "content", nullable = false)
-    private String content;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
@@ -55,11 +58,23 @@ public class Doc extends BaseEntity {
     private LocalDateTime draftDatetime;
 
     @Builder
-    public Doc(String title, String content, Template template, Employee createUser) {
+    public Doc(String title, Template template, Employee createUser) {
 
         this.title = title;
-        this.content = content;
         this.template = template;
         this.createUser = createUser;
+    }
+
+    public void updateStatus(Status status) {
+
+        this.status = status;
+    }
+
+    public void setApproveLines(List<ApproveLine> approveLines) {
+
+        this.approveLines.clear();
+        if (approveLines != null) {
+            this.approveLines.addAll(approveLines); // 새로운 데이터 추가
+        }
     }
 }

@@ -15,5 +15,5 @@ public class MyApproveLineResponseDTO {
 
     private final ApproveTemplateType approveTemplateType;  // MY_APPROVE_LINE, MANUAL
 
-    private final Integer approveLineOrder;   // 결재 순서
+    private final Long approveLineOrder;   // 결재 순서
 }

@@ -1,21 +1,22 @@
 package com.touchdown.perflowbackend.approval.command.application.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 
 import java.util.List;
+import java.util.Map;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Builder
 public class DocCreateRequestDTO {
 
-    private final String title;
+    private final Long templateId;  // 서식 ID
 
-    private final String content;
+    private final String title; // 문서 제목
 
-    private final Long templateId;
+    private final Map<String, String> fields;   // 키 - 쌍으로 구성
 
-    private final List<ApproveLineDTO> approveLines;
+    private final List<ApproveLineRequestDTO> approveLines;    // 결재선 정보
 
-    private final List<ShareDTO> shares;
+    private final List<ShareDTO> shares;    // 공유 설정 정보
 }
