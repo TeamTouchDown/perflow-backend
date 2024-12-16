@@ -4,6 +4,6 @@ public enum PassStatus {
 
     // 처리 상태
     WAIT, // 대기
-    RETURN, // 반려
+    REJECT, // 반려
     PASS // 처리
 }

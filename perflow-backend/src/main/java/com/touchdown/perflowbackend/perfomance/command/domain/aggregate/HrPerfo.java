@@ -2,6 +2,7 @@ package com.touchdown.perflowbackend.perfomance.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.perfomance.command.application.dto.UpdateInquiryRequestDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -46,5 +47,9 @@ public class HrPerfo extends BaseEntity {
 
     public void updateHrPerfo(Double score) {
         this.score = score;
+    }
+
+    public void updateHrPerfo(UpdateInquiryRequestDTO updateInquiryRequestDTO){
+        this.score = updateInquiryRequestDTO.getScore();
     }
 }
