@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/hr/perfomances/ratio")
 @RequiredArgsConstructor
-public class PerfomancceRatioCommandController {
+public class PerformanceRatioCommandController {
 
     private final RatioCommandService ratioCommandService;
 
@@ -36,7 +36,5 @@ public class PerfomancceRatioCommandController {
         ratioCommandService.createGradeRatio(empId, createGradeRatioRequestDTO);
 
         return ResponseEntity.ok(SuccessCode.RATIO_GRADE_UPLOAD_SUCCESS);
-
-
     }
 }
