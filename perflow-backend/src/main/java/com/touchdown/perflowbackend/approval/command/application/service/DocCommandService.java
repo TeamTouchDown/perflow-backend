@@ -5,6 +5,7 @@ import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.approval.command.domain.repository.*;
 import com.touchdown.perflowbackend.approval.command.mapper.DocMapper;
 import com.touchdown.perflowbackend.approval.query.dto.ApproveSbjDTO;
+import com.touchdown.perflowbackend.approval.query.dto.MyApproveLineResponseDTO;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
@@ -87,27 +88,70 @@ public class DocCommandService {
         List<ApproveLine> originLines = approveLineCommandRepository.findAllByGroupId(groupId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MY_APPROVE_LINE));
 
-        if (originLines.isEmpty()) {
-            throw new CustomException(ErrorCode.NOT_FOUND_MY_APPROVE_LINE);
-        }
-
         // 기존 결재선 삭제 (approvesbj 도 삭제됨)
         approveLineCommandRepository.deleteAll(originLines);
 
         Employee updateUser = findEmployeeById(updateUserId);
 
         // 새로운 결재선 생성
-        List<ApproveLine> newLines = request.getApproveLines().stream()
-                .map(lineDTO -> createNewMyApproveLine(lineDTO, null, updateUserId))
+        createNewMyApproveLineForUpdate(request, updateUserId, groupId);
+    }
+
+    @Transactional
+    public void createNewMyApproveLineForUpdate(MyApproveLineUpdateRequestDTO request, String createUserId, Long groupId) {
+
+        Employee createUser = findEmployeeById(createUserId);
+
+        // 새로운 결재선 생성
+        List<ApproveLine> approveLines = request.getApproveLines().stream()
+                .map(lineDTO -> createApproveLineForMyApproveLine(lineDTO, createUser, groupId, request.getName(), request.getDescription()))
                 .toList();
 
-        // 이름, 설명
-        newLines.forEach(line -> {
-            line.updateName(request.getName());
-            line.updateDescription(request.getDescription());
+        approveLineCommandRepository.saveAll(approveLines);
+    }
+
+    // 나의 결재선 단일 삭제
+    @Transactional
+    public void deleteMyApproveLine(Long groupId, String deleteUserId) {
+
+        // 결재선 조회
+        List<ApproveLine> approveLines = approveLineCommandRepository.findAllByGroupId(groupId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_MY_APPROVE_LINE));
+
+        // 결재선 생성자와 현재 수정하려는 사용자 비교
+        Employee deleteUser = findEmployeeById(deleteUserId);
+        if (!approveLines.get(0).getCreateUser().equals(deleteUser)) {
+            throw new CustomException(ErrorCode.AUTHENTICATION_FAILED);
+        }
+
+        approveLines.forEach(line -> {
+            line.updateStatus(Status.DELETED);
+            line.getApproveSbjs().forEach(sbj -> sbj.updateStatus(Status.DELETED));
         });
 
-        approveLineCommandRepository.saveAll(newLines);
+        approveLineCommandRepository.saveAll(approveLines);
+    }
+
+    // 나의 결재선 일괄 삭제
+    @Transactional
+    public void deleteMyApproveLines(BulkDeleteRequestDTO request, String deleteUserId) {
+
+        // 결재선 생성자와 현재 수정하려는 사용자 비교
+        Employee deleteUser = findEmployeeById(deleteUserId);
+
+        // groupId 기반으로 결재선 조회
+        List<ApproveLine> approveLines = approveLineCommandRepository.findAllByGroupIds(request.getGroupIds());
+
+        if (approveLines.isEmpty()) {
+            throw new CustomException(ErrorCode.NOT_FOUND_MY_APPROVE_LINE);
+        }
+
+        approveLines.forEach(line -> {
+            line.updateStatus(Status.DELETED);
+            line.getApproveSbjs().forEach(sbj -> sbj.updateStatus(Status.DELETED)); // 각 결재 주체도 삭제
+        });
+
+        approveLineCommandRepository.saveAll(approveLines);
     }
 
     private ApproveLine createApproveLineForMyApproveLine(
@@ -273,5 +317,4 @@ public class DocCommandService {
         return employeeCommandRepository.findAllById(empIds).stream()
                 .collect(Collectors.toMap(Employee::getEmpId, Function.identity()));
     }
-
 }

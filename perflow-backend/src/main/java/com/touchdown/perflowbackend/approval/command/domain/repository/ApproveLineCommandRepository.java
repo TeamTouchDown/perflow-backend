@@ -24,4 +24,10 @@ public interface ApproveLineCommandRepository extends JpaRepository<ApproveLine,
     @Query("SELECT line FROM ApproveLine line WHERE line.groupId = :groupId")
     Optional<List<ApproveLine>> findAllByGroupId(@Param("groupId") Long groupId);
 
+    // 나의 결재선 일괄 삭제
+    @Query("SELECT line FROM ApproveLine line " +
+            "WHERE line.groupId IN :groupIds " +
+            "AND line.approveTemplateType = 'MY_APPROVE_LINE' " +
+            "AND line.status <> 'DELETED'")
+    List<ApproveLine> findAllByGroupIds(List<Long> groupIds);
 }

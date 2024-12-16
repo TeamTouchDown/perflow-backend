@@ -1,15 +1,15 @@
 package com.touchdown.perflowbackend.approval.command.application.controller;
 
-import com.touchdown.perflowbackend.approval.command.application.dto.ApprovalRequestDTO;
-import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRequestDTO;
-import com.touchdown.perflowbackend.approval.command.application.dto.MyApproveLineCreateRequestDTO;
-import com.touchdown.perflowbackend.approval.command.application.dto.MyApproveLineUpdateRequestDTO;
+import com.touchdown.perflowbackend.approval.command.application.dto.*;
 import com.touchdown.perflowbackend.approval.command.application.service.ApprovalService;
 import com.touchdown.perflowbackend.approval.command.application.service.DocCommandService;
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
+import io.netty.util.concurrent.SucceededFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -67,4 +67,27 @@ public class DocCommandController {
 
         return ResponseEntity.ok(SuccessCode.MY_APPROVE_LINE_UPDATE_SUCCESS);
     }
+
+    // 나의 결재선 단일 삭제
+    @DeleteMapping("/my-approve-lines/{groupId}")
+    public ResponseEntity<SuccessCode> deleteMyApproveLine(@PathVariable Long groupId) {
+
+        String deleteUserId = "23-MK004";
+
+        docCommandService.deleteMyApproveLine(groupId, deleteUserId);
+
+        return ResponseEntity.ok(SuccessCode.MY_APPROVE_LINE_DELETE_SUCCESS);
+    }
+
+    // 나의 결재선 일괄 삭제
+    @DeleteMapping("/my-approve-lines")
+    public ResponseEntity<SuccessCode> deleteMyApproveLines(@RequestBody BulkDeleteRequestDTO request) {
+
+        String deleteUserId = "23-MK004";
+
+        docCommandService.deleteMyApproveLines(request, deleteUserId);
+
+        return ResponseEntity.ok(SuccessCode.MY_APPROVE_LINE_DELETE_SUCCESS);
+    }
+
 }
