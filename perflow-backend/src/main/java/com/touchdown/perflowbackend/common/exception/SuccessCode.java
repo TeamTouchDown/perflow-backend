@@ -34,6 +34,8 @@ public enum SuccessCode {
     EXCEL_TEMPLATE_UPLOAD_SUCCESS(HttpStatus.OK, "엑셀 템플릿을 성공적으로 업로드 하였습니다."),
     PAYROLL_UPLOAD_SUCCESS(HttpStatus.OK, "급여대장을 성공적으로 업로드 하였습니다."),
     SEVERANCE_PAY_UPLOAD_SUCCESS(HttpStatus.OK, "퇴직금 정보를 성공적으로 업로드 하였습니다."),
+    PAYROLL_ADJUSTMENT_SUCCESS(HttpStatus.OK, "급여 정산을 완료하였습니다."),
+    SEVERANCE_PAY_ADJUSTMENT_SUCCESS(HttpStatus.OK, "퇴직금 정산을 완료하였습니다."),
 
     // 200 결재 관련 성공
     TEMPLATE_CREATE_SUCCESS(HttpStatus.CREATED, "서식 생성에 성공하였습니다"),
@@ -84,6 +86,7 @@ public enum SuccessCode {
     DEPARTMENT_CREATE_SUCCESS(HttpStatus.CREATED, "부서 정보 등록 성공"),
     POSITION_CREATE_SUCCESS(HttpStatus.CREATED, "직위 정보 등록 성공"),
     JOB_CREATE_SUCCESS(HttpStatus.CREATED, "직책 정보 등록 성공"),
+    APPOINT_CREATE_SUCCESS(HttpStatus.CREATED, "발령 정보 등록 성공"),
 
     //초과근무
     WORK_ATTRIBUTE_OVERTIME_SUCCESS(HttpStatus.OK, "초과근무 등록이 완료 되었습니다."),
@@ -93,9 +96,8 @@ public enum SuccessCode {
     WORK_ATTRIBUTE_OVERTIME_RETROACTIVE_SUCCESS(HttpStatus.OK, "소급 신청이 완료되었습니다."),
     WORK_ATTRIBUTE_OVERTIME_RETROACTIVE_DECISION_SUCCESS(HttpStatus.OK, "소급 승인/반려 처리가 완료되었습니다."),
 
-
-
-    ;
+    // 출퇴근
+    WORK_ATTITUDE_ATTENDANCE_SUCCESS(HttpStatus.OK,"" );
 
     private final HttpStatus httpStatus;
     private final String message;

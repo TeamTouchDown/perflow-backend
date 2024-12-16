@@ -8,7 +8,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class WorkAttributeOvertimeForEmployeeRequestDTO {
+public class WorkAttitudeOvertimeForEmployeeRequestDTO {
 
     @NotNull
     private String empId;

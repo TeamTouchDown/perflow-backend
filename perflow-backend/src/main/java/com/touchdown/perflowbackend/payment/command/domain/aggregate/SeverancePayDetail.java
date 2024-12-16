@@ -75,4 +75,10 @@ public class SeverancePayDetail extends BaseEntity {
         this.status = Status.UPDATED;
 
     }
+
+    public void completeSeverancePay() {
+
+        this.status = Status.COMPLETE;
+
+    }
 }

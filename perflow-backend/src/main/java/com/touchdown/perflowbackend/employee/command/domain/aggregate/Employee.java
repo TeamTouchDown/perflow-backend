@@ -124,4 +124,11 @@ public class Employee extends BaseEntity {
     }
 
     public void updateSeal(String seal) { this.seal = seal; }
+
+    public void updatePosition(Position position) {this.position = position; }
+
+    public void updateDepartment(Department dept) { this.dept = dept; }
+
+    public void updateJob(Job job) { this.job = job; }
+
 }
