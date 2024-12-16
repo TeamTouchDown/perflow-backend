@@ -33,7 +33,7 @@ public class DocCommandController {
         return ResponseEntity.ok(SuccessCode.DOC_CREATE_SUCCESS);
     }
 
-    // 문서 단일 결재
+    // 문서 단일 결재(승인 or 반려)
     @PutMapping("/docs")
     public ResponseEntity<SuccessCode> approveDoc(@RequestBody ApprovalRequestDTO request) {
 
@@ -43,6 +43,13 @@ public class DocCommandController {
     }
 
     // 문서 일괄 승인
+    @PutMapping("/docs/bulk")
+    public ResponseEntity<SuccessCode> bulkApproveDocs(@RequestBody BulkApproveRequestDTO request) {
+
+        approvalService.processBulkApproval(request);
+
+        return ResponseEntity.ok(SuccessCode.DOC_APPROVE_SUCCESS);
+    }
 
     // 나의 결재선 생성
     @PostMapping("/my-approve-lines")

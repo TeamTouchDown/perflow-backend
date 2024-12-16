@@ -1,6 +1,7 @@
 package com.touchdown.perflowbackend.approval.command.application.service;
 
 import com.touchdown.perflowbackend.approval.command.application.dto.ApprovalRequestDTO;
+import com.touchdown.perflowbackend.approval.command.application.dto.BulkApproveRequestDTO;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.approval.command.domain.repository.ApproveLineCommandRepository;
 import com.touchdown.perflowbackend.approval.command.domain.repository.ApproveSbjCommandRepository;
@@ -9,6 +10,7 @@ import com.touchdown.perflowbackend.approval.command.infrastructure.repository.J
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ApprovalService {
 
     private final DocCommandRepository docCommandRepository;
@@ -25,6 +28,7 @@ public class ApprovalService {
     private final ApproveSbjCommandRepository approveSbjCommandRepository;
     private final JpaApproveSbjCommandRepository jpaApproveSbjCommandRepository;
 
+    // 문서 결재(승인 or 반려)
     @Transactional
     public void processApproval(ApprovalRequestDTO request) {
 
@@ -50,6 +54,20 @@ public class ApprovalService {
 
         // 문서 상태 업데이트
         updateDocStatus(approveSbj.getApproveLine().getDoc());
+    }
+
+    // 문서 일괄 승인
+    @Transactional
+    public void processBulkApproval(BulkApproveRequestDTO request) {
+
+        for (ApprovalRequestDTO approval : request.getApprovals()) {
+            try {
+                processApproval(approval);
+            } catch (CustomException e) {
+                // 예외 발생 시 다음 문서 승인 처리
+                log.error("문서 {} 승인이 {} 오류로 실패함", approval.getDocId(), e.getMessage());
+            }
+        }
     }
 
     // 결재선 상태 업데이트
@@ -147,12 +165,6 @@ public class ApprovalService {
             nextLine.getApproveSbjs().forEach(sbj -> sbj.updateStatus(Status.PENDING));
             approveLineCommandRepository.save(nextLine);
 
-            // 다음 결재선의 모든 결재 주체를 PENDING 으로
-//            nextLine.getApproveSbjs().forEach(sbj -> {
-//                sbj.updateStatus(Status.PENDING);
-////                jpaApproveSbjCommandRepository.save(sbj);
-//            });
-
         } else {
             // 다음 결재선이 없으면 문서를 APPROVED 상태로 변경
             doc.updateStatus(Status.APPROVED);
@@ -165,11 +177,6 @@ public class ApprovalService {
 
         // 현재 결재선의 모든 결재 주체의 상태
         List<ApproveSbj> subjects = approveSbj.getApproveLine().getApproveSbjs();
-
-//        Optional<ApproveSbj> nextSbjOpt = subjects.stream()
-//                .filter(sbj -> sbj.getApproveLine().getApproveLineOrder() > approveSbj.getApproveLine().getApproveLineOrder()) // ApproveLine 참조
-//                .sorted(Comparator.comparingLong(sbj -> sbj.getApproveLine().getApproveLineOrder()))
-//                .findFirst();
 
         // 현재 결재 주체가 속한 결재선의 순서를 기준으로 다음 결재 주체 찾기
         Optional<ApproveSbj> nextSbjOpt = subjects.stream()
@@ -222,4 +229,5 @@ public class ApprovalService {
         return approveSbjCommandRepository.findByDocIdAndApproveSbjIdAndType(docId, empDeptType, approveLineId, approveSbjId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APPROVE_SBJ));
     }
+
 }
