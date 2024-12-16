@@ -25,8 +25,8 @@ public interface WorkAttitudeOvertimeQueryRepository extends JpaRepository<Overt
             "SUM(CASE WHEN o.overtime_type = 'EXTENDED' THEN TIMESTAMPDIFF(HOUR, o.overtime_start, o.overtime_end) ELSE 0 END) AS extendedHours " +
             "FROM Overtime o " +
             "JOIN Employee e ON e.emp_id = o.emp_id " +
-            "WHERE e.resign_date IS NOT NULL " +
-            "AND DATE(o.create_datetime) BETWEEN :threeMonthsAgo AND e.resign_date " +
+            "WHERE e.resign_date IS NOT NULL AND o.overtimeStatus = 'CONFIRMED'" +
+            "AND DATE(o.update_datetime) BETWEEN :threeMonthsAgo AND e.resign_date " +
             "GROUP BY e.emp_id", nativeQuery = true)
     List<ThreeMonthOvertimeDTO> findOvertimeSummaryForResignedEmployees(@Param("threeMonthsAgo") LocalDate threeMonthsAgo);
 }
