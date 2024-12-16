@@ -27,7 +27,7 @@ public class QRCodeGenerator {
         // 6자리 랜덤 숫자 생성
         String qrCode = String.format("%06d", new Random().nextInt(1_000_000));
         // Redis에 저장 (1분 유효 시간)
-        redisTemplate.opsForValue().set("qr:" + empId, qrCode, 1, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set("qr:" + empId, qrCode, 30, TimeUnit.SECONDS);
         log.info("Generated QR Code: {}", qrCode);
         // QR 코드를 이미지(Base64)로 변환하여 반환
         return generateQRCodeImageBase64(qrCode);
