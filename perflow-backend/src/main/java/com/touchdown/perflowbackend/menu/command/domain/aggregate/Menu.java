@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "menu", schema = "perflow")
 public class Menu {
+
     @Id
     @Column(name = "menu_id", nullable = false)
     private Long id;
