@@ -2,10 +2,7 @@ package com.touchdown.perflowbackend.perfomance.command.mapper;
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
-import com.touchdown.perflowbackend.perfomance.command.application.dto.CreatePerfoRatioRequestDTO;
-import com.touchdown.perflowbackend.perfomance.command.application.dto.CreateQuestionRequestDTO;
-import com.touchdown.perflowbackend.perfomance.command.application.dto.EvalutionListDTO;
-import com.touchdown.perflowbackend.perfomance.command.application.dto.KPIDetailRequestDTO;
+import com.touchdown.perflowbackend.perfomance.command.application.dto.*;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.perfomance.command.domain.repository.PerfoQuestionCommandRepository;
 import com.touchdown.perflowbackend.perfomance.query.dto.KPIDetailResponseDTO;
@@ -101,6 +98,20 @@ public class PerformanceMapper {
                 .downwardWeight(createPerfoRatioRequestDTO.getDownWeight())
                 .attendanceWeight(createPerfoRatioRequestDTO.getAttendanceWeight())
                 .reason(createPerfoRatioRequestDTO.getReason())
+                .build();
+    }
+
+    // 등급 비율 생성
+    public static GradeRatio GraderatioDTOtoGradeRatio(Employee emp, CreateGradeRatioRequestDTO createGradeRatioRequestDTO) {
+
+        return GradeRatio.builder()
+                .emp(emp)
+                .sRatio(createGradeRatioRequestDTO.getSRatio())
+                .aRatio(createGradeRatioRequestDTO.getARatio())
+                .bRatio(createGradeRatioRequestDTO.getBRatio())
+                .cRatio(createGradeRatioRequestDTO.getCRatio())
+                .dRatio(createGradeRatioRequestDTO.getDRatio())
+                .reason(createGradeRatioRequestDTO.getReason())
                 .build();
     }
 }

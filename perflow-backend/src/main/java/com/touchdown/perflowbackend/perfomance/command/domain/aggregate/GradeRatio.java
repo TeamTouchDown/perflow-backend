@@ -4,6 +4,7 @@ import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -39,4 +40,15 @@ public class GradeRatio extends BaseEntity {
 
     @Column(name = "update_reason", nullable = false)
     private String updateReason;
+
+    @Builder
+    public GradeRatio(Employee emp, Long sRatio, Long aRatio, Long bRatio, Long cRatio, Long dRatio, String reason) {
+        this.emp = emp;
+        this.sRatio = sRatio;
+        this.aRatio = aRatio;
+        this.bRatio = bRatio;
+        this.cRatio = cRatio;
+        this.dRatio = dRatio;
+        this.updateReason = reason;
+    }
 }

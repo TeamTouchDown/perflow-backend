@@ -1,6 +1,7 @@
 package com.touchdown.perflowbackend.perfomance.query.controller;
 
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.Weight;
+import com.touchdown.perflowbackend.perfomance.query.dto.RatioGradeResponseDTO;
 import com.touchdown.perflowbackend.perfomance.query.dto.RatioPerfoResponseDTO;
 import com.touchdown.perflowbackend.perfomance.query.service.RatioQueryService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,16 @@ public class PerfomanceRatioQueryCommand {
             @PathVariable("deptId") Long deptId) {
 
         RatioPerfoResponseDTO response = ratioQueryService.getPerfoWeight(deptId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 등급 비율 조회
+    @GetMapping("/grade/{empId}")
+    public ResponseEntity<RatioGradeResponseDTO> getPerfoGrade(
+            @PathVariable("empId") String empId) {
+
+        RatioGradeResponseDTO response = ratioQueryService.getGradeRatio(empId);
 
         return ResponseEntity.ok(response);
     }
