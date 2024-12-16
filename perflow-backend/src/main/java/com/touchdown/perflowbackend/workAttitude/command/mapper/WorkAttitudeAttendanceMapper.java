@@ -4,6 +4,7 @@ import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeAttendanceRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Attendance;
 import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeAttendanceResponseDTO;
+import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeAttendanceSummaryResponseDTO;
 
 public class WorkAttitudeAttendanceMapper {
 
@@ -22,7 +23,17 @@ public class WorkAttitudeAttendanceMapper {
                 .empId(attendance.getEmpId().getEmpId())
                 .checkInDateTime(attendance.getCheckInDateTime())
                 .checkOutDateTime(attendance.getCheckOutDateTime())
-                .AttendanceStatus(attendance.getAttendanceStatus())
+                .attendanceStatus(attendance.getAttendanceStatus())
+                .build();
+    }
+
+    public static WorkAttitudeAttendanceSummaryResponseDTO workAttitudeAttendanceSummaryResponseDTO(String period, long totalMinutes) {
+        int hours = (int) (totalMinutes / 60);
+        int minutes = (int) (totalMinutes % 60);
+        return WorkAttitudeAttendanceSummaryResponseDTO.builder()
+                .period(period)
+                .totalHours(hours)
+                .totalMinutes(minutes)
                 .build();
     }
 }
