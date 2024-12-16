@@ -12,5 +12,6 @@ public interface HrPerfoCommandRepository extends JpaRepository<HrPerfo, Long> {
     @Query("SELECT h FROM HrPerfo h WHERE h.emp.empId = :empId AND FUNCTION('YEAR', h.createDatetime) = :currentYear")
     Optional<HrPerfo> findByEmpIdAndCurrentYear(@Param("empId") String empId, @Param("currentYear") int currentYear);
 
+    Optional<HrPerfo> findByhrPerfoId(@Param("hrPerfoId") Long hrPerfoId);
 
 }

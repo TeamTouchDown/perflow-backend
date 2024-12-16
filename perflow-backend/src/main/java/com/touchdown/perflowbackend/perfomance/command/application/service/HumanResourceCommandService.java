@@ -5,14 +5,13 @@ import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.application.service.EmployeeCommandService;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
-import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.HrPerfo;
-import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.HrPerfoHistory;
-import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.Kpi;
-import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.Weight;
+import com.touchdown.perflowbackend.perfomance.command.application.dto.UpdateInquiryRequestDTO;
+import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.perfomance.command.domain.repository.HrPerfoCommandRepository;
 import com.touchdown.perflowbackend.perfomance.command.domain.repository.KpiCommandRepository;
 import com.touchdown.perflowbackend.perfomance.command.domain.repository.WeightCommandRepository;
 import com.touchdown.perflowbackend.perfomance.command.infrastructure.repository.HrPerfoHistoryRepository;
+import com.touchdown.perflowbackend.perfomance.command.infrastructure.repository.HrPerfoInquiryRepository;
 import com.touchdown.perflowbackend.perfomance.command.mapper.PerformanceMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +31,7 @@ public class HumanResourceCommandService {
     private final EmployeeCommandRepository employeeCommandRepository;
     private final WeightCommandRepository weightCommandRepository;
     private final HrPerfoCommandRepository hrPerfoCommandRepository;
+    private final HrPerfoInquiryRepository hrPerfoInquiryRepository;
 
     // 인사 평가 생성
     public void createHumanResource(String empId){
@@ -65,18 +65,97 @@ public class HumanResourceCommandService {
         hrPerfoCommandRepository.save(hrPerfo);
     }
 
+    // 인사 평가 의의 제기 생성
+    public void createHrPerfoInquiry(String empId, Long hrperfoId, String reason){
+
+        // 인사 평가 정보 받아오기
+        HrPerfo hrPerfo = findHrPerfoByhrPerfoId(hrperfoId);
+
+        // 의의제기 작성자와 평가 받은 사람이 같은 사람인지 체크
+        checkEmpEquals(empId, hrPerfo.getEmp().getEmpId());
+
+        // 인사 평가 의의제기 생성
+        HrPerfoInquiry hrPerfoInquiry = PerformanceMapper.createhrPerfoInquiry(hrPerfo, reason);
+
+        // 저장
+        hrPerfoInquiryRepository.save(hrPerfoInquiry);
+    }
+
+    // 인사 평가 의의 제기 수정(승인)
+    public void updateHrPerfoInquiry(String empId, Long hrperfoInquiryId, UpdateInquiryRequestDTO updateInquiryRequestDTO){
+
+        // 평가자 정보 받아오기
+        Employee Emp = findEmployeeByEmpId(empId);
+
+        // 인사 평가 의의제기 정보 받아오기
+        HrPerfoInquiry hrPerfoinquiry = findHrPerfoInquiryByhrPerfoInquiryId(hrperfoInquiryId);
+
+        // 인사 평가 점수 받아오기
+        HrPerfo hrPerfo = findHrPerfoByhrPerfoId(hrPerfoinquiry.getHrPerfo().getHrPerfoId());
+
+        // 인사 평가 의의제기 정보 업데이트
+        hrPerfoinquiry.updateinquiry(Emp, updateInquiryRequestDTO);
+
+        // 인사 평가 점수 업데이트
+        hrPerfo.updateHrPerfo(updateInquiryRequestDTO);
+
+        // 인사 평가 의의제기 정보 저장
+        hrPerfoInquiryRepository.save(hrPerfoinquiry);
+
+        // 인사 평가 정보 저장
+        hrPerfoCommandRepository.save(hrPerfo);
+
+    }
+
+    // 인사 평가 의의 제기 수정(반려)
+    public void updateHrPerfoInquiry(String empId, Long hrperfoInquiryId, String reason){
+
+        // 평가자 정보 받아오기
+        Employee Emp = findEmployeeByEmpId(empId);
+
+        // 인사 평가 의의제기 정보 받아오기
+        HrPerfoInquiry hrPerfoinquiry = findHrPerfoInquiryByhrPerfoInquiryId(hrperfoInquiryId);
+
+        // 인사 평가 의의제기 정보 업데이트
+        hrPerfoinquiry.updateinquiry(Emp, reason);
+
+        // 인사 평가 의의제기 정보 저장
+        hrPerfoInquiryRepository.save(hrPerfoinquiry);
+
+    }
+
     // 받아온 EMP id를 이용해 EMP 정보 불러오기
     private Employee findEmployeeByEmpId(String empId) {
         return employeeCommandRepository.findById(empId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP));
     }
 
-    // 받아온 EMP id를 이용해 EMP 정보 불러오기
+    // 받아온 EMP id를 이용해 인사 평가 정보 불러오기
     private HrPerfo findHrPerfoByEmpId(String empId) {
         int currentYear = Year.now().getValue(); // 현재 연도 가져오기
         return hrPerfoCommandRepository.findByEmpIdAndCurrentYear(empId, currentYear)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_HRPERFO));
     }
+
+    // 받아온 인사 평가 Id를 이용해 인사 평가 정보 불러오기
+    private HrPerfo findHrPerfoByhrPerfoId(Long hrPerfoId) {
+        return hrPerfoCommandRepository.findByhrPerfoId(hrPerfoId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_HRPERFO));
+    }
+
+    // 받아온 인사 평가 의의제기 Id를 이용해 인사 평가 의의제기 정보 불러오기
+    private HrPerfoInquiry findHrPerfoInquiryByhrPerfoInquiryId(Long hrPerfoInquiryId) {
+        return hrPerfoInquiryRepository.findByhrPerfoInquiryId(hrPerfoInquiryId)
+                .orElseThrow(() -> new CustomException((ErrorCode.NOT_FOUND_HRPERFOINQUIRY)));
+    }
+
+    // 작성자가 같은지 체크하기
+    private void checkEmpEquals(String empId, String targetEmpId) {
+        if (!empId.equals(targetEmpId)) {
+            throw new CustomException(ErrorCode.NOT_MATCH_WRITER); // 사용자 정의 예외
+        }
+    }
+
     // 받아온 EMP를 이용해 최종 점수 계산하기
     private Double getfinalScore(Employee emp) {
 
@@ -172,9 +251,8 @@ public class HumanResourceCommandService {
         return Double.valueOf(hrPerfoHistoryList.stream()
                 .filter(hrPerfo -> hrPerfo.getCreateDatetime() != null &&
                         hrPerfo.getCreateDatetime().getYear() == currentYear) // 올해 데이터
-                .filter(hrPerfo -> "COL".equalsIgnoreCase(String.valueOf(hrPerfo.getPerfoType()))) // 평가 종류가 COL
                 .max(Comparator.comparingLong(HrPerfoHistory::getAdjustmentDegree)) // 가장 높은 차수 찾기
-                .map(HrPerfoHistory::getAdjustmentScore) // 점수 추출
+                .map(HrPerfoHistory::getAdjustmentColScore) // 점수 추출
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_HRPERFO))); // 조건에 맞는 데이터 없으면 예외
     }
 
@@ -194,9 +272,8 @@ public class HumanResourceCommandService {
         return Double.valueOf(hrPerfoHistoryList.stream()
                 .filter(hrPerfo -> hrPerfo.getCreateDatetime() != null &&
                         hrPerfo.getCreateDatetime().getYear() == currentYear) // 올해 데이터
-                .filter(hrPerfo -> "DOWN".equalsIgnoreCase(String.valueOf(hrPerfo.getPerfoType()))) // 평가 종류가 COL
                 .max(Comparator.comparingLong(HrPerfoHistory::getAdjustmentDegree)) // 가장 높은 차수 찾기
-                .map(HrPerfoHistory::getAdjustmentScore) // 점수 추출
+                .map(HrPerfoHistory::getAdjustmentDownScore) // 점수 추출
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_HRPERFO))); // 조건에 맞는 데이터 없으면 예외
     }
 
