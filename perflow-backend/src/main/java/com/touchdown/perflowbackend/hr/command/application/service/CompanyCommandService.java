@@ -2,6 +2,8 @@ package com.touchdown.perflowbackend.hr.command.application.service;
 
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
+import com.touchdown.perflowbackend.file.command.application.service.FileService;
+import com.touchdown.perflowbackend.file.command.domain.aggregate.FileDirectory;
 import com.touchdown.perflowbackend.hr.command.application.dto.company.CompanyAnnualCountUpdateDTO;
 import com.touchdown.perflowbackend.hr.command.application.dto.company.CompanyPaymentDatetimeUpdateDTO;
 import com.touchdown.perflowbackend.hr.command.application.dto.company.CompanyCreateRequestDTO;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -22,6 +25,7 @@ import java.time.LocalDate;
 public class CompanyCommandService {
 
     private final CompanyCommandRepository companyCommandRepository;
+    private final FileService fileService;
     private final CompanyMapper companyMapper;
     private final Long COMPANY_ID = 1L; // 회사 정보는 단 1개만 저장 될 예정
 
@@ -63,6 +67,7 @@ public class CompanyCommandService {
         companyCommandRepository.save(company);
     }
 
+    @Transactional
     public void updatePaymentDateTime(CompanyPaymentDatetimeUpdateDTO companyPaymentDatetimeUpdateDTO) {
 
         if(!isBetween1And28(companyPaymentDatetimeUpdateDTO.getDate())){
@@ -72,6 +77,18 @@ public class CompanyCommandService {
         Company company = getCompany();
 
         company.updatePaymentDatetime(companyPaymentDatetimeUpdateDTO);
+
+        companyCommandRepository.save(company);
+    }
+
+    @Transactional
+    public void createCompanySeal(MultipartFile seal) {
+
+        String sealUrl = fileService.uploadSeal(seal);
+
+        Company company = getCompany();
+
+        company.updateCompanySeal(sealUrl);
 
         companyCommandRepository.save(company);
     }
@@ -108,5 +125,6 @@ public class CompanyCommandService {
     public boolean isBetween1And28(Integer annualCount) {
         return annualCount >= 1 && annualCount <= 28;
     }
+
 
 }

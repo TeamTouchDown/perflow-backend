@@ -66,6 +66,9 @@ public class Employee extends BaseEntity {
     @Column(name = "email", nullable = false, length = 30)
     private String email;
 
+    @Column(name = "seal", nullable = true)
+    private String seal;
+
     @Column(name = "join_date", nullable = false)
     private LocalDate joinDate;
 
@@ -120,9 +123,12 @@ public class Employee extends BaseEntity {
         this.status = status;
     }
 
+    public void updateSeal(String seal) { this.seal = seal; }
+
     public void updatePosition(Position position) {this.position = position; }
 
     public void updateDepartment(Department dept) { this.dept = dept; }
 
     public void updateJob(Job job) { this.job = job; }
+
 }
