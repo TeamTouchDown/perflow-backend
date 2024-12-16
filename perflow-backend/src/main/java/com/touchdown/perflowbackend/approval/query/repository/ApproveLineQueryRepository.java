@@ -13,11 +13,13 @@ import java.util.List;
 public interface ApproveLineQueryRepository extends JpaRepository<ApproveLine, Long> {
 
     // 나의 결재선 목록 조회
-    @Query("SELECT new com.touchdown.perflowbackend.approval.query.dto.MyApproveLineGroupResponseDTO( " +
-            "line.groupId, line.name, line.description, line.createDatetime) " +
+    @Query("SELECT new com.touchdown.perflowbackend.approval.query.dto.MyApproveLineGroupResponseDTO(" +
+            "line.groupId, line.name, line.description, MIN(line.createDatetime)) " +
             "FROM ApproveLine line " +
             "WHERE line.createUser.empId = :createUserId " +
-            "AND line.approveTemplateType = 'MY_APPROVE_LINE'")
+            "AND line.approveTemplateType = 'MY_APPROVE_LINE' " +
+            "AND line.status <> 'DELETED' " +
+            "GROUP BY line.groupId, line.name, line.description")
     Page<MyApproveLineGroupResponseDTO> findAllMyApproveLines(
             Pageable pageable,
             @Param("createUserId") String createUserId);

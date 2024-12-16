@@ -33,7 +33,7 @@ public class ApprovalService {
     public void processApproval(ApprovalRequestDTO request) {
 
         // todo: 로그인 기능 이후 수정하기
-        String LoginId = "23-OP005";
+        String LoginId = "23-FN002";
 
         // 문서 조회
         Doc doc = findDocById(request.getDocId());
