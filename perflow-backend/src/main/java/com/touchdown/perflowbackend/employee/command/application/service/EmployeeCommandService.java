@@ -9,6 +9,7 @@ import com.touchdown.perflowbackend.employee.command.application.mapper.Employee
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.EmployeeStatus;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
+import com.touchdown.perflowbackend.file.command.application.service.FileService;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
@@ -53,6 +54,7 @@ public class EmployeeCommandService {
     private final DepartmentCommandRepository departmentCommandRepository;
     private final WhiteRefreshTokenRepository whiteRefreshTokenRepository;
     private final BlackAccessTokenRepository blackAccessTokenRepository;
+    private final FileService fileService;
 
     private final AuthenticationManager authenticationManager;
     private final EntityManager entityManager;
@@ -166,6 +168,18 @@ public class EmployeeCommandService {
         String pwd = passwordEncoder.encode(employeePwdCreateDTO.getPassword());
 
         employee.registerPassword(pwd);
+
+        employeeCommandRepository.save(employee);
+    }
+
+    @Transactional
+    public void uploadEmployeeSeal(String empId, MultipartFile seal) {
+
+        Employee employee = findEmpById(empId);
+
+        String sealUrl = fileService.uploadSeal(seal);
+
+        employee.updateSeal(sealUrl);
 
         employeeCommandRepository.save(employee);
     }

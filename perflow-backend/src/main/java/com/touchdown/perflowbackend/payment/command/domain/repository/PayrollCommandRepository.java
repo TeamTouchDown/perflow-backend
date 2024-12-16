@@ -18,4 +18,6 @@ public interface PayrollCommandRepository {
 
     @Query("SELECT p FROM Payroll p JOIN FETCH p.payrollDetailList WHERE p.payrollId = :payrollId")
     Optional<Payroll> findByPayrollIdWithDetails(@Param("payrollId") Long payrollId);
+
+    Optional<Payroll> findById(Long payrollId);
 }

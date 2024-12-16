@@ -9,6 +9,7 @@ import com.touchdown.perflowbackend.hr.command.application.service.CompanyComman
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,6 +52,17 @@ public class CompanyCommandController {
             @RequestBody CompanyPaymentDatetimeUpdateDTO companyPaymentDatetimeUpdateDTO
     ) {
         companyCommandService.updatePaymentDateTime(companyPaymentDatetimeUpdateDTO);
+
+        return ResponseEntity.ok(SuccessCode.COMPANY_UPDATE_SUCCESS);
+    }
+
+    // 직인 생성
+    @PostMapping("/seal")
+    public ResponseEntity<SuccessCode> createCompanySeal(
+            @RequestPart(required = false, value = "seal") MultipartFile seal
+    ) {
+
+        companyCommandService.createCompanySeal(seal);
 
         return ResponseEntity.ok(SuccessCode.COMPANY_UPDATE_SUCCESS);
     }

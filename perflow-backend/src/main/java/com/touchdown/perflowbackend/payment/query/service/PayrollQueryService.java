@@ -3,6 +3,7 @@ package com.touchdown.perflowbackend.payment.query.service;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.employee.command.domain.aggregate.EmployeeStatus;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.Payroll;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.PayrollDetail;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.PayrollSpecifications;
@@ -146,11 +147,14 @@ public class PayrollQueryService {
 
         List<PayrollResponseDTO> payrolls = page.getContent().stream()
                 .map(payroll -> {
-                    // 총 사원 수 (payrollDetailList의 크기)
-                    long totalEmp = payroll.getPayrollDetailList().size();
+                    // 총 사원 수 (ACTIVE 상태인 사원만 계산)
+                    long totalEmp = payroll.getPayrollDetailList().stream()
+                            .filter(detail -> detail.getEmp().getStatus() == EmployeeStatus.ACTIVE) // 상태가 ACTIVE인지 확인
+                            .count();
 
-                    // 총 지급 금액 (payrollDetailList의 totalAmount 합산)
+                    // 총 지급 금액 (ACTIVE 상태인 사원의 급여만 합산)
                     long totalPay = payroll.getPayrollDetailList().stream()
+                            .filter(detail -> detail.getEmp().getStatus() == EmployeeStatus.ACTIVE) // 상태가 ACTIVE인지 확인
                             .mapToLong(PayrollDetail::getTotalAmount) // PayrollDetail의 totalAmount 값을 합산
                             .sum();
 
@@ -175,6 +179,7 @@ public class PayrollQueryService {
 
     }
 
+    // 급여대장 상세 조회
     @Transactional(readOnly = true)
     public PayrollDetailResponseDTO getPayroll(Long payrollId) {
 
@@ -184,8 +189,9 @@ public class PayrollQueryService {
 
     }
 
+    // 급여대장 상세 조회 내 검색
     @Transactional(readOnly = true)
-    public PayrollDetailResponseDTO searchPayroll(String empName, String empId, String deptName) {
+    public PayrollDetailResponseDTO searchPayroll(Long payrollId, String empName, String empId, String deptName) {
         // Specification 동적 쿼리 생성
         Specification<PayrollDetail> spec = Specification.where(null);
         if (empName != null) spec = spec.and(PayrollSpecifications.hasEmpName(empName));
@@ -201,6 +207,7 @@ public class PayrollQueryService {
                 .collect(Collectors.toList());
 
         return new PayrollDetailResponseDTO(payrollDTOs);
+
     }
 
     private PayrollDTO convertToPayrollDTO(PayrollDetail payrollDetail) {
@@ -314,6 +321,7 @@ public class PayrollQueryService {
 
     }
 
+    // 사원 자신의 급여명세서 조회
     @Transactional(readOnly = true)
     public PayStubDTO getPayStub(String empId) {
 

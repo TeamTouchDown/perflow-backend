@@ -17,7 +17,11 @@ public enum SuccessCode {
     LOGIN_SUCCESS(HttpStatus.OK, "로그인 성공"),
     LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃 성공"),
     EMP_UPDATE_SUCCESS(HttpStatus.OK, "사원 정보 수정 성공"),
-    DEPARTMENT_UPDATE_SUCCESS(HttpStatus.OK, "사원 정보 수정 성공"),
+    DEPARTMENT_UPDATE_SUCCESS(HttpStatus.OK, "부서 정보 수정 성공"),
+    POSITION_UPDATE_SUCCESS(HttpStatus.OK,"직위 정보 수정 성공"),
+    POSITION_DELETE_SUCCESS(HttpStatus.OK,"직위 정보 삭제 성공"),
+    JOB_UPDATE_SUCCESS(HttpStatus.OK,"직책 정보 수정 성공"),
+    JOB_DELETE_SUCCESS(HttpStatus.OK,"직책 정보 삭제 성공"),
     MY_INFO_UPDATE_SUCCESS(HttpStatus.OK, "내 정보 수정 성공"),
     PASSWORD_CREATE_SUCCESS(HttpStatus.OK, "초기 비밀번호 등록 성공"),
     TOKEN_REISSUE_SUCCESS(HttpStatus.OK, "AccessToken 재발급 성공!"),
@@ -26,9 +30,12 @@ public enum SuccessCode {
     COMPANY_UPDATE_SUCCESS(HttpStatus.OK, "회사 정보 수정 성공"),
     COMPANY_DELETE_SUCCESS(HttpStatus.OK, "회사 정보 삭제 성공"),
 
-    // 200 - 급여대장 관련 성공
+    // 200 - 급여 관련 성공
     EXCEL_TEMPLATE_UPLOAD_SUCCESS(HttpStatus.OK, "엑셀 템플릿을 성공적으로 업로드 하였습니다."),
     PAYROLL_UPLOAD_SUCCESS(HttpStatus.OK, "급여대장을 성공적으로 업로드 하였습니다."),
+    SEVERANCE_PAY_UPLOAD_SUCCESS(HttpStatus.OK, "퇴직금 정보를 성공적으로 업로드 하였습니다."),
+    PAYROLL_ADJUSTMENT_SUCCESS(HttpStatus.OK, "급여 정산을 완료하였습니다."),
+    SEVERANCE_PAY_ADJUSTMENT_SUCCESS(HttpStatus.OK, "퇴직금 정산을 완료하였습니다."),
 
     // 200 결재 관련 성공
     TEMPLATE_CREATE_SUCCESS(HttpStatus.CREATED, "서식 생성에 성공하였습니다"),
@@ -81,6 +88,9 @@ public enum SuccessCode {
     EMP_CSV_CREATE_SUCCESS(HttpStatus.CREATED, "사원 목록 등록 성공"),
     COMPANY_CREATE_SUCCESS(HttpStatus.CREATED, "회사 정보 등록 성공"),
     DEPARTMENT_CREATE_SUCCESS(HttpStatus.CREATED, "부서 정보 등록 성공"),
+    POSITION_CREATE_SUCCESS(HttpStatus.CREATED, "직위 정보 등록 성공"),
+    JOB_CREATE_SUCCESS(HttpStatus.CREATED, "직책 정보 등록 성공"),
+    APPOINT_CREATE_SUCCESS(HttpStatus.CREATED, "발령 정보 등록 성공"),
 
     //초과근무
     WORK_ATTRIBUTE_OVERTIME_SUCCESS(HttpStatus.OK, "초과근무 등록이 완료 되었습니다."),
@@ -90,9 +100,12 @@ public enum SuccessCode {
     WORK_ATTRIBUTE_OVERTIME_RETROACTIVE_SUCCESS(HttpStatus.OK, "소급 신청이 완료되었습니다."),
     WORK_ATTRIBUTE_OVERTIME_RETROACTIVE_DECISION_SUCCESS(HttpStatus.OK, "소급 승인/반려 처리가 완료되었습니다."),
 
+    // 출퇴근
+    WORK_ATTITUDE_ATTENDANCE_CHECK_IN_SUCCESS(HttpStatus.OK,"출근 처리가 완료 되었습니다." ),
+    WORK_ATTITUDE_ATTENDANCE_CHECK_OUT_SUCCESS(HttpStatus.OK,"퇴근 처리가 완료 되었습니다." ),
 
 
-    ;
+    QR_CODE_VALIDATION_SUCCESS(HttpStatus.OK,"인증이 완료 되었습니다." );
 
     private final HttpStatus httpStatus;
     private final String message;

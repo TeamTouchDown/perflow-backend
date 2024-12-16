@@ -66,6 +66,17 @@ public class FileService {
         return toFileUploadDTO(file);
     }
 
+    public String uploadSeal(MultipartFile multipartFile) {
+
+        String originalFileName = multipartFile.getOriginalFilename();
+        String fileName = generateFileName(originalFileName);
+        String fileUrl = "https://" + bucketName + ".s3.ap-northeast-2.amazonaws.com/files/seals/" + fileName;
+
+        uploadToS3(multipartFile, fileName, FileDirectory.SEAL);
+
+        return fileUrl;
+    }
+
     // 파일 삭제 메서드
     public void deleteFile(File file) {
         // S3에서 파일 삭제

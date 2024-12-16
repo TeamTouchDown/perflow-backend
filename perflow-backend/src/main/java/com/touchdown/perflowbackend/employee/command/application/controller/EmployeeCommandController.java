@@ -133,4 +133,16 @@ public class EmployeeCommandController {
         return ResponseEntity.ok().headers(headers).body(SuccessCode.TOKEN_REISSUE_SUCCESS);
     }
 
+    @PutMapping("/seal")
+    public ResponseEntity<SuccessCode> uploadEmployeeSeal(
+            @RequestPart(required = false, value = "seal") MultipartFile seal
+    ) {
+
+        String empId = EmployeeUtil.getEmpId();
+
+        employeeCommandService.uploadEmployeeSeal(empId, seal);
+
+        return ResponseEntity.ok(SuccessCode.SUCCESS);
+    }
+
 }

@@ -112,4 +112,11 @@ public class PayrollDetail extends BaseEntity {
             this.status = Status.UPDATED;
 
     }
+
+    public void completePayroll() {
+
+        this.status = Status.COMPLETE;
+
+    }
+
 }

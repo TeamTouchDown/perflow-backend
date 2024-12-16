@@ -40,4 +40,13 @@ public class PayrollCommandController {
 
         }
     }
+
+    @PutMapping("/payrolls/{payrollId}/complete")
+    public ResponseEntity<String> completePayroll(@PathVariable Long payrollId) {
+
+        payrollCommandService.completePayroll(payrollId);
+
+        return ResponseEntity.ok(SuccessCode.PAYROLL_ADJUSTMENT_SUCCESS.getMessage());
+
+    }
 }

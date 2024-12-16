@@ -36,6 +36,9 @@ public enum ErrorCode {
     NOT_ENOUGH_ANNUAL(HttpStatus.BAD_REQUEST, "연차는 12일 이상의 데이터를 입력해야 합니다."),
     NOT_MATCHED_PAYMENT_DATE(HttpStatus.BAD_REQUEST, "급여 지급일은 1일에서 28일 사이의 데이터를 등록해야합니다."),
     ALREADY_CREATE_PIC(HttpStatus.BAD_REQUEST, "이미 존재하는 담당자 데이터입니다. 부서와 담당자를 확인해주세요."),
+    TOO_MANY_PROMOTION_STEPS(HttpStatus.BAD_REQUEST,"승진과 강등은 한번에 한 단계씩만 가능합니다."),
+    DUPLICATE_DEPT_REQUEST(HttpStatus.BAD_REQUEST, "이미 소속된 부서입니다. 다른 부서를 선택해주세요."),
+    DUPLICATE_JOB_REQUEST(HttpStatus.BAD_REQUEST,"이미 할당된 직책입니다. 다른 직책을 선택해주세요."),
 
     // 401 에러
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "인증 실패"),
@@ -67,12 +70,16 @@ public enum ErrorCode {
     NOT_FOUND_ANNOUNCEMENT(HttpStatus.NOT_FOUND, "해당 공지사항을 찾을 수 없습니다."),
 
     NOT_FOUND_PAYROLL(HttpStatus.NOT_FOUND, "해당 급여대장을 찾을 수 없습니다."),
+    NOT_FOUND_SEVERANCE_PAY(HttpStatus.NOT_FOUND, "해당 퇴직금 정보를 찾을 수 없습니다."),
     NOT_FOUND_TRAVEL(HttpStatus.NOT_FOUND, "출장 내역을 찾을 수 없습니다."),
     INVALID_STATUS(HttpStatus.BAD_REQUEST,"승인 반려에 따른 APPROVED, REJECTED 둘중에 하나로 입력 바랍니다." ),
     NOT_FOUND_OVERTIME(HttpStatus.NOT_FOUND, "초과 근무 정보를 찾을 수 없습니다."),
     INVALID_OVERTIME_STATUS(HttpStatus.BAD_REQUEST, "유효하지 않은 초과 근무 상태입니다. (APPROVED 또는 REJECTED만 작성하세요)"),
     INVALID_RETROACTIVE_DECISION(HttpStatus.BAD_REQUEST, "유효하지 않은 소급 처리 요청입니다."),
-    ALREADY_APPLIED_RETROACTIVE(HttpStatus.BAD_REQUEST, "이미 소급 신청된 초과근무입니다.")
+    ALREADY_APPLIED_RETROACTIVE(HttpStatus.BAD_REQUEST, "이미 소급 신청된 초과근무입니다."),
+    ALREADY_CHECKED_IN(HttpStatus.BAD_REQUEST,"출근 완료된 상태입니다."),
+    NOT_FOUND_ATTENDANCE(HttpStatus.BAD_REQUEST,"출근 처리가 안된 상태입니다."),
+    INVALID_QR_CODE(HttpStatus.BAD_REQUEST,"올바르지 않은 인증입니다."),
 
     ;
 

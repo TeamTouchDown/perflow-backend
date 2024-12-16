@@ -13,7 +13,6 @@ import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Travel;
 import com.touchdown.perflowbackend.workAttitude.command.domain.repository.WorkAttitudeTravelCommandRepository;
 import com.touchdown.perflowbackend.workAttitude.command.mapper.WorkAttitudeTravelMapper;
-import com.touchdown.perflowbackend.workAttitude.query.repository.WorkAttributeTravelQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -2,19 +2,19 @@ package com.touchdown.perflowbackend.workAttitude.command.mapper;
 
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
-import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttributeOvertimeForEmployeeRequestDTO;
+import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeOvertimeForEmployeeRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Overtime;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.OvertimeType;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
-import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttributeOvertimeForEmployeeSummaryDTO;
-import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttributeOvertimeForTeamLeaderSummaryDTO;
+import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeForEmployeeSummaryDTO;
+import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeForTeamLeaderSummaryDTO;
 
 import java.time.Duration;
 import java.util.List;
 
-public class WorkAttributeOvertimeMapper {
+public class WorkAttitudeOvertimeMapper {
 
-    public static Overtime toEntity(WorkAttributeOvertimeForEmployeeRequestDTO requestDTO, Employee employee, ApproveSbj approveSbj) {
+    public static Overtime toEntity(WorkAttitudeOvertimeForEmployeeRequestDTO requestDTO, Employee employee, ApproveSbj approveSbj) {
         return Overtime.builder()
                 .empId(employee) // 사원 정보
                 .approveSbjId(approveSbj) // 승인자 정보
@@ -31,13 +31,13 @@ public class WorkAttributeOvertimeMapper {
     }
 
     // List<Overtime> -> Employee Summary DTO
-    public static WorkAttributeOvertimeForEmployeeSummaryDTO toEmployeeSummaryDTO(String employeeName, List<Overtime> overtimes) {
+    public static WorkAttitudeOvertimeForEmployeeSummaryDTO toEmployeeSummaryDTO(String employeeName, List<Overtime> overtimes) {
         long nightHours = calculateTotalHoursByType(overtimes, OvertimeType.NIGHT);
         long holidayHours = calculateTotalHoursByType(overtimes, OvertimeType.HOLIDAY);
         long extendedHours = calculateTotalHoursByType(overtimes, OvertimeType.EXTENDED);
         long totalHours = nightHours + holidayHours + extendedHours;
 
-        return WorkAttributeOvertimeForEmployeeSummaryDTO.builder()
+        return WorkAttitudeOvertimeForEmployeeSummaryDTO.builder()
                 .employeeName(employeeName) // 사원 이름
                 .nightHours(nightHours) // 야간 근무 총 시간
                 .holidayHours(holidayHours) // 휴일 근무 총 시간
@@ -47,13 +47,13 @@ public class WorkAttributeOvertimeMapper {
     }
 
     // List<Overtime> -> Team Leader Summary DTO
-    public static WorkAttributeOvertimeForTeamLeaderSummaryDTO toTeamLeaderSummaryDTO(String employeeName, List<Overtime> overtimes) {
+    public static WorkAttitudeOvertimeForTeamLeaderSummaryDTO toTeamLeaderSummaryDTO(String employeeName, List<Overtime> overtimes) {
         long nightHours = calculateTotalHoursByType(overtimes, OvertimeType.NIGHT);
         long holidayHours = calculateTotalHoursByType(overtimes, OvertimeType.HOLIDAY);
         long extendedHours = calculateTotalHoursByType(overtimes, OvertimeType.EXTENDED);
         long totalHours = nightHours + holidayHours + extendedHours;
 
-        return WorkAttributeOvertimeForTeamLeaderSummaryDTO.builder()
+        return WorkAttitudeOvertimeForTeamLeaderSummaryDTO.builder()
                 .employeeName(employeeName) // 사원 이름
                 .nightHours(nightHours) // 야간 근무 총 시간
                 .holidayHours(holidayHours) // 휴일 근무 총 시간

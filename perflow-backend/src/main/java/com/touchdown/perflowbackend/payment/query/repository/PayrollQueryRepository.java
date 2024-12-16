@@ -24,7 +24,7 @@ public interface PayrollQueryRepository extends JpaRepository<Payroll, Long> {
             "pd.totalAmount, pd.status) " +
             "FROM Payroll p " +
             "JOIN PayrollDetail pd ON pd.payroll.payrollId = p.payrollId " +
-            "WHERE pd.emp.status <> 'RESIGNED' AND p.payrollId = :payrollId")
+            "WHERE pd.emp.status = 'ACTIVE' AND p.payrollId = :payrollId")
     List<PayrollDTO> findByPayrollId(Long payrollId);
 
     // 가장 최근 급여 대장을 조회하는 메서드
@@ -71,7 +71,7 @@ public interface PayrollQueryRepository extends JpaRepository<Payroll, Long> {
             "pd.totalAmount, pd.status) " +
             "FROM Payroll p " +
             "JOIN PayrollDetail pd ON pd.payroll.payrollId = p.payrollId " +
-            "WHERE pd.emp.status <> 'RESIGNED' AND pd.emp.empId = :empId " +
+            "WHERE pd.emp.status = 'ACTIVE' AND pd.emp.empId = :empId " +
             "AND FUNCTION('YEAR', p.createDatetime) = FUNCTION('YEAR', CURRENT_DATE) " +
             "AND FUNCTION('MONTH', p.createDatetime) = FUNCTION('MONTH', CURRENT_DATE)")
     Optional<PayrollDTO> findByEmpId(String empId);

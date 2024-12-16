@@ -42,6 +42,9 @@ public class Company {
     @Column(name = "email", nullable = false, length = 30)
     private String email;
 
+    @Column(name = "seal", nullable = true)
+    private String seal;
+
     @Column(name = "annual_count", nullable = false)
     private Integer annualCount;
 
@@ -79,5 +82,10 @@ public class Company {
     public void updatePaymentDatetime(CompanyPaymentDatetimeUpdateDTO companyPaymentDatetimeUpdateDTO) {
 
         this.paymentDatetime = companyPaymentDatetimeUpdateDTO.getDate();
+    }
+
+    public void updateCompanySeal(String sealUrl) {
+
+        this.seal = sealUrl;
     }
 }
