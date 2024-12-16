@@ -2,6 +2,7 @@ package com.touchdown.perflowbackend.perfomance.command.mapper;
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
+import com.touchdown.perflowbackend.perfomance.command.application.dto.CreatePerfoRatioRequestDTO;
 import com.touchdown.perflowbackend.perfomance.command.application.dto.CreateQuestionRequestDTO;
 import com.touchdown.perflowbackend.perfomance.command.application.dto.EvalutionListDTO;
 import com.touchdown.perflowbackend.perfomance.command.application.dto.KPIDetailRequestDTO;
@@ -85,6 +86,21 @@ public class PerformanceMapper {
                 .hrPerfo(hrPerfo)
                 .reason(reason)
                 .status(PassStatus.WAIT)
+                .build();
+    }
+
+    // 인사 평가 비율 생성
+    public static Weight perforatioDTOtoWeight(Employee emp, Department dept, CreatePerfoRatioRequestDTO createPerfoRatioRequestDTO) {
+
+        return Weight.builder()
+                .emp(emp)
+                .dept(dept)
+                .personalWeight(createPerfoRatioRequestDTO.getPersonalKpiWeight())
+                .teamWeight(createPerfoRatioRequestDTO.getTeamKpiWeight())
+                .colWeight(createPerfoRatioRequestDTO.getColWeight())
+                .downwardWeight(createPerfoRatioRequestDTO.getDownWeight())
+                .attendanceWeight(createPerfoRatioRequestDTO.getAttendanceWeight())
+                .reason(createPerfoRatioRequestDTO.getReason())
                 .build();
     }
 }
