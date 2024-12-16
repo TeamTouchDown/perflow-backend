@@ -77,4 +77,14 @@ public class PerformanceMapper {
                 .status(HrPerfoStatus.WAIT)
                 .build();
     }
+
+    // 인사 평가 의의 제기 생성
+    public static HrPerfoInquiry createhrPerfoInquiry(HrPerfo hrPerfo, String reason){
+
+        return HrPerfoInquiry.builder()
+                .hrPerfo(hrPerfo)
+                .reason(reason)
+                .status(PassStatus.WAIT)
+                .build();
+    }
 }

@@ -9,9 +9,6 @@ import java.util.List;
 
 public interface HrPerfoHistoryCommandRepository extends JpaRepository<HrPerfoHistory, Long> {
 
-    @Query("SELECT h FROM HrPerfoHistory h WHERE h.emp.empId = :empId")
+    @Query("SELECT h FROM HrPerfoHistory h WHERE h.perfoed_emp.empId = :empId")
     List<HrPerfoHistory> findByEmpId(@Param("empId") String empId);
-
-
-
 }

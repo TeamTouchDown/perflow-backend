@@ -2,8 +2,10 @@ package com.touchdown.perflowbackend.perfomance.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.perfomance.command.application.dto.UpdateInquiryRequestDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,8 +24,8 @@ public class HrPerfoInquiry extends BaseEntity {
     @JoinColumn(name = "hr_perfo_id", nullable = false)
     private HrPerfo hrPerfo;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "emp_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "emp_id", nullable = true)
     private Employee emp;
 
     @Column(name = "reason", nullable = false)
@@ -33,6 +35,25 @@ public class HrPerfoInquiry extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PassStatus status;
 
-    @Column(name = "pass_reason", nullable = false)
+    @Column(name = "pass_reason")
     private String passReason;
+
+    @Builder
+    public HrPerfoInquiry(HrPerfo hrPerfo, String reason, PassStatus status) {
+        this.hrPerfo = hrPerfo;
+        this.reason = reason;
+        this.status = status;
+    }
+
+    public void updateinquiry(Employee emp, UpdateInquiryRequestDTO updateInquiryRequestDTO) {
+        this.emp = emp;
+        this.passReason = updateInquiryRequestDTO.getReason();
+        this.status = PassStatus.PASS;
+    }
+
+    public void updateinquiry(Employee emp, String reason) {
+        this.emp = emp;
+        this.passReason = reason;
+        this.status = PassStatus.REJECT;
+    }
 }
