@@ -85,6 +85,13 @@ public enum SuccessCode {
     HRPERFO_INQUIRY_UPLOAD_SUCCESS(HttpStatus.OK, "인사 평가 의의제기가 성공적으로 작성되었습니다."),
     HRPERFO_INQUIRY_UPDATE_SUCCESS(HttpStatus.OK, "인사 평가 의의제기가 성공적으로 수정되었습니다."),
 
+    // 인사 평가 비율
+    RATIO_PERFO_UPLOAD_SUCCESS(HttpStatus.OK, "인사 평가 비율이 성공적으로 입력되었습니다."),
+
+    // 등급 비율
+    RATIO_GRADE_UPLOAD_SUCCESS(HttpStatus.OK, "등급 비율이 성공적으로 입력되었습니다."),
+    RATIO_GRADE_UPDATE_SUCCESS(HttpStatus.OK, "등급 비율이 성공적으로 수정되었습니다."),
+
     // 201
     WORK_ATTITUDE_TRAVEL_SUCCESS(HttpStatus.CREATED, "출장 요청 등록이 완료 되었습니다."),
     EMP_CREATE_SUCCESS(HttpStatus.CREATED, "사원 등록 성공"),

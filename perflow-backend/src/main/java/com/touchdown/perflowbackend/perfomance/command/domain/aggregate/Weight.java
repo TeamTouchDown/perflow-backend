@@ -5,6 +5,7 @@ import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -44,4 +45,16 @@ public class Weight extends BaseEntity {
 
     @Column(name = "update_reason", nullable = false)
     private String updateReason;
+
+    @Builder
+    public Weight(Department dept, Employee emp, Long personalWeight, Long teamWeight, Long colWeight, Long downwardWeight, Long attendanceWeight, String reason) {
+        this.dept = dept;
+        this.emp = emp;
+        this.personalWeight = personalWeight;
+        this.teamWeight = teamWeight;
+        this.colWeight = colWeight;
+        this.downwardWeight = downwardWeight;
+        this.attendanceWeight = attendanceWeight;
+        this.updateReason = reason;
+    }
 }
