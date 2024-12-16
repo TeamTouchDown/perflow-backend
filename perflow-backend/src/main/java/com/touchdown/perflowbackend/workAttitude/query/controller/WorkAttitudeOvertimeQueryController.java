@@ -1,9 +1,9 @@
 package com.touchdown.perflowbackend.workAttitude.query.controller;
 
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
-import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttributeOvertimeForEmployeeSummaryDTO;
-import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttributeOvertimeForTeamLeaderSummaryDTO;
-import com.touchdown.perflowbackend.workAttitude.query.service.WorkAttributeOvertimeQueryService;
+import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeForEmployeeSummaryDTO;
+import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeForTeamLeaderSummaryDTO;
+import com.touchdown.perflowbackend.workAttitude.query.service.WorkAttitudeOvertimeQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -18,15 +18,15 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
-public class WorkAttributeOvertimeQueryController {
+public class WorkAttitudeOvertimeQueryController {
 
-    private final WorkAttributeOvertimeQueryService workAttributeOvertimeQueryService;
+    private final WorkAttitudeOvertimeQueryService workAttitudeOvertimeQueryService;
 
     // 팀장 전체 조회
     @Operation(summary = "팀장 전체 조회", description = "팀장이 모든 직원의 초과근무 요약 정보를 조회합니다.")
     @GetMapping("/leader/overtime/summary")
-    public ResponseEntity<List<WorkAttributeOvertimeForTeamLeaderSummaryDTO>> getOvertimeSummaryForAllEmployees() {
-        List<WorkAttributeOvertimeForTeamLeaderSummaryDTO> summaries = workAttributeOvertimeQueryService.getOvertimeSummaryForAllEmployees();
+    public ResponseEntity<List<WorkAttitudeOvertimeForTeamLeaderSummaryDTO>> getOvertimeSummaryForAllEmployees() {
+        List<WorkAttitudeOvertimeForTeamLeaderSummaryDTO> summaries = workAttitudeOvertimeQueryService.getOvertimeSummaryForAllEmployees();
         return ResponseEntity.ok(summaries);
     }
 
@@ -34,9 +34,9 @@ public class WorkAttributeOvertimeQueryController {
 
     @Operation(summary = "사원 본인 조회", description = "사원이 자신의 초과근무 요약 정보를 조회")
     @GetMapping("/employee/overtime/summary")
-    public ResponseEntity<WorkAttributeOvertimeForEmployeeSummaryDTO> getOvertimeSummaryForEmployee() {
+    public ResponseEntity<WorkAttitudeOvertimeForEmployeeSummaryDTO> getOvertimeSummaryForEmployee() {
         String empId = EmployeeUtil.getEmpId(); // 인증된 사원 ID 가져오기
-        WorkAttributeOvertimeForEmployeeSummaryDTO summary = workAttributeOvertimeQueryService.getOvertimeSummaryForEmployee(empId);
+        WorkAttitudeOvertimeForEmployeeSummaryDTO summary = workAttitudeOvertimeQueryService.getOvertimeSummaryForEmployee(empId);
         return ResponseEntity.ok(summary);
     }
 
