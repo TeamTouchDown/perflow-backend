@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
-@Tag(name = "WorkAttitude-QR-Controller", description = "QR 코드 생성 및 검증 관련 API")
+@Tag(name = "WorkAttitude-Attendance-Controller", description = "출퇴근 관련 API")
 public class WorkAttitudeQRCommandController {
 
     private final WorkAttitudeQRCommandService workAttitudeQRCommandService;
