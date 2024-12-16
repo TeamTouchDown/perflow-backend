@@ -6,8 +6,11 @@ import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.repository.DepartmentCommandRepository;
+import com.touchdown.perflowbackend.perfomance.command.application.dto.CreateGradeRatioRequestDTO;
 import com.touchdown.perflowbackend.perfomance.command.application.dto.CreatePerfoRatioRequestDTO;
+import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.GradeRatio;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.Weight;
+import com.touchdown.perflowbackend.perfomance.command.domain.repository.GradeCommandRepository;
 import com.touchdown.perflowbackend.perfomance.command.domain.repository.WeightCommandRepository;
 import com.touchdown.perflowbackend.perfomance.command.mapper.PerformanceMapper;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ public class RatioCommandService {
     private final EmployeeCommandRepository employeeCommandRepository;
     private final DepartmentCommandRepository departmentCommandRepository;
     private final WeightCommandRepository weightCommandRepository;
+    private final GradeCommandRepository gradeCommandRepository;
 
     // 인사 평가 반영 비율 생성
     @Transactional
@@ -37,6 +41,19 @@ public class RatioCommandService {
 
         // 비율 저장
         weightCommandRepository.save(weight);
+    }
+
+    // 등급 비율 생성
+    @Transactional
+    public void createGradeRatio(String empId, CreateGradeRatioRequestDTO createGradeRatioRequestDTO) {
+
+        // 작성자 정보 확인
+        Employee emp = findEmployeeByEmpId(empId);
+
+        // 등급 비율 생성
+        GradeRatio gradeRatio = PerformanceMapper.GraderatioDTOtoGradeRatio(emp,createGradeRatioRequestDTO);
+
+        gradeCommandRepository.save(gradeRatio);
     }
 
     // 받아온 EMP id를 이용해 EMP 정보 불러오기
