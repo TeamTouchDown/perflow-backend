@@ -92,27 +92,8 @@ public class SeverancePayQueryService {
 
         row.createCell(0).setCellValue(employee.getEmpId()); // 사원 ID
         row.createCell(1).setCellValue(employee.getName()); // 사원 이름
-
-        // 날짜 셀 스타일 생성
-        Workbook workbook = sheet.getWorkbook();
-        CellStyle dateCellStyle = workbook.createCellStyle();
-        CreationHelper creationHelper = workbook.getCreationHelper();
-        dateCellStyle.setDataFormat(creationHelper.createDataFormat().getFormat("yyyy-MM-dd"));
-
-        // 입사일 설정
-        Cell joinDateCell = row.createCell(2);
-        if (employee.getJoinDate() != null) {
-            joinDateCell.setCellValue(employee.getJoinDate());
-            joinDateCell.setCellStyle(dateCellStyle);
-        }
-
-        // 퇴사일 설정
-        Cell resignDateCell = row.createCell(3);
-        if (employee.getResignDate() != null) {
-            resignDateCell.setCellValue(employee.getResignDate());
-            resignDateCell.setCellStyle(dateCellStyle);
-        }
-
+        row.createCell(2).setCellValue(employee.getJoinDate()); // 입사일
+        row.createCell(3).setCellValue(employee.getResignDate()); // 퇴사일
         row.createCell(4).setCellValue(employee.getPosition().getName()); // 직위 이름
         row.createCell(5).setCellValue(employee.getDept().getName()); // 부서 이름
         row.createCell(6).setCellValue(employee.getPay() * 3); // 기본급

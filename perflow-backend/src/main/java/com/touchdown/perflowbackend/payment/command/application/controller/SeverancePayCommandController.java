@@ -44,4 +44,13 @@ public class SeverancePayCommandController {
         }
     }
 
+    @PutMapping("/severance-pays/{severancePayId}/complete")
+    public ResponseEntity<String> completeSeverancePay(@PathVariable Long severancePayId) {
+
+        severancePayCommandService.completeSeverancePay(severancePayId);
+
+        return ResponseEntity.ok(SuccessCode.SEVERANCE_PAY_ADJUSTMENT_SUCCESS.getMessage());
+
+    }
+
 }

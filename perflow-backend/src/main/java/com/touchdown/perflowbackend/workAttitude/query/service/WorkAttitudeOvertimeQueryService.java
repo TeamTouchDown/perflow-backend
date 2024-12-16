@@ -32,7 +32,7 @@ public class WorkAttitudeOvertimeQueryService {
         Map<String, List<Overtime>> groupedByEmployee = overtimes.stream()
                 .collect(Collectors.groupingBy(overtime -> overtime.getEmpId().getEmpId()));
 
-        List<Employee> employees = employeeQueryRepository.findAll();
+        List<Employee> employees = employeeQueryRepository.findActiveEmployees();
 
         Map<String, String> employee = employees.stream()
                 .collect(Collectors.toMap(Employee::getEmpId, Employee::getName));

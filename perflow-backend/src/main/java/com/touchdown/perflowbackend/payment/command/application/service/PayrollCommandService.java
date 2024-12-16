@@ -4,6 +4,7 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.Payroll;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.PayrollDetail;
+import com.touchdown.perflowbackend.payment.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.payment.command.domain.repository.PayrollCommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
@@ -76,6 +77,23 @@ public class PayrollCommandService {
             payrollCommandRepository.save(payroll);
 
         }
+    }
+
+    // 급여 정산 완료
+    @Transactional
+    public void completePayroll(Long payrollId) {
+
+        Payroll payroll = payrollCommandRepository.findById(payrollId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_PAYROLL));
+
+        // payrollDetailList의 각 요소에 대해 status를 COMPLETE로 변경합니다.
+        for (PayrollDetail detail : payroll.getPayrollDetailList()) {
+            detail.completePayroll();  // 상태를 COMPLETE로 설정합니다.
+        }
+
+        // 변경된 내용을 저장합니다.
+        payrollCommandRepository.save(payroll);  // 이미 연관된 payrollDetail이므로 payroll만 저장하면 됩니다.
+
     }
 }
 

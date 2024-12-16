@@ -11,4 +11,6 @@ public interface SeverancePayCommandRepository {
 
     @Query("SELECT s FROM SeverancePay s JOIN FETCH s.severancePayDetailList WHERE s.severancePayId = :severancePayId")
     Optional<SeverancePay> findBySeverancePayIdWithDetails(Long severancePayId);
+
+    Optional<SeverancePay> findById(Long severancePayId);
 }
