@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Tag(name = "WorkAttribute-Controller", description = "출장 관련 API")
+@Tag(name = "WorkAttitude-Controller", description = "출장 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
