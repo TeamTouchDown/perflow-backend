@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/perfomances")
 @RequiredArgsConstructor
-public class PerfomanceHumanResourceInquiryCommandController {
+public class PerformanceHumanResourceInquiryCommandController {
 
     private final HumanResourceCommandService humanResourceCommandService;
 

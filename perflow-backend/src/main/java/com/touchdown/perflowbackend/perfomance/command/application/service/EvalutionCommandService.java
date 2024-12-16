@@ -6,12 +6,12 @@ import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.repository.DepartmentCommandRepository;
-import com.touchdown.perflowbackend.perfomance.command.application.dto.CreateQuestionRequestDTO;
-import com.touchdown.perflowbackend.perfomance.command.application.dto.EvalutionDetailDTO;
-import com.touchdown.perflowbackend.perfomance.command.application.dto.EvalutionListDTO;
-import com.touchdown.perflowbackend.perfomance.command.application.dto.UpdateQuestionRequestDTO;
+import com.touchdown.perflowbackend.perfomance.command.application.dto.*;
+import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.HrPerfoHistory;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.Perfo;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.Perfoquestion;
+import com.touchdown.perflowbackend.perfomance.command.domain.repository.HrPerfoCommandRepository;
+import com.touchdown.perflowbackend.perfomance.command.domain.repository.HrPerfoHistoryCommandRepository;
 import com.touchdown.perflowbackend.perfomance.command.domain.repository.PerfoCommandRepository;
 import com.touchdown.perflowbackend.perfomance.command.domain.repository.PerfoQuestionCommandRepository;
 import com.touchdown.perflowbackend.perfomance.command.mapper.PerformanceMapper;
@@ -31,6 +31,8 @@ public class EvalutionCommandService {
     private final EmployeeCommandRepository employeeCommandRepository;
     private final PerfoQuestionCommandRepository perfoQuestionCommandRepository;
     private final DepartmentCommandRepository departmentCommandRepository;
+    private final HrPerfoCommandRepository hrPerfoCommandRepository;
+    private final HrPerfoHistoryCommandRepository hrPerfoHistoryCommandRepository;
 
     // 동료 평가 생성
     @Transactional
@@ -121,6 +123,23 @@ public class EvalutionCommandService {
 
         // 문제 삭제
         perfoQuestionCommandRepository.deleteById(questionPerfoId);
+    }
+
+    // 평가 조정 생성
+    @Transactional
+    public void createPerfoAdjustment(String perfoId, String perfoedId, CreatePerfoAdjustmentDTO createPerfoAdjustmentDTO) {
+
+        // 평가자 존재하는지 확인
+        Employee perfoEmp = findEmployeeByEmpId(perfoId);
+
+        // 피평가자 존재하는지 확인
+        Employee perfoedEmp = findEmployeeByEmpId(perfoedId);
+
+        // 평가 조정 생성
+        HrPerfoHistory hrPerfoHistory = PerformanceMapper.perfoAdjustmentDTOToAdjustment(perfoEmp,perfoedEmp,createPerfoAdjustmentDTO);
+
+        // 평가 조절 저장
+        hrPerfoHistoryCommandRepository.save(hrPerfoHistory);
     }
 
     // 받아온 EMP id를 이용해 EMP 정보 불러오기

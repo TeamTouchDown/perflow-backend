@@ -70,4 +70,9 @@ public class Kpi extends BaseEntity {
         this.goalValueUnit = kpiDetailRequestDTO.getGoalValueUnit();
         this.goalDetail = kpiDetailRequestDTO.getGoalDetail();
     }
+
+    // kpi 진척도 업데이트
+    public void updateProgress(Double progress) {
+        this.currentValue = progress;
+    }
 }

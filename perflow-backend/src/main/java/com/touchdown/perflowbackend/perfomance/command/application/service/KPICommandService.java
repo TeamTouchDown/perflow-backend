@@ -4,10 +4,14 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
+import com.touchdown.perflowbackend.perfomance.command.application.dto.CreateKpiPassDTO;
 import com.touchdown.perflowbackend.perfomance.command.application.dto.KPIDetailRequestDTO;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.Kpi;
+import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiProgressStatus;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.PersonalType;
 import com.touchdown.perflowbackend.perfomance.command.domain.repository.KpiCommandRepository;
+import com.touchdown.perflowbackend.perfomance.command.domain.repository.KpiProgressCommandRepository;
+import com.touchdown.perflowbackend.perfomance.command.infrastructure.repository.KpiProgressRepository;
 import com.touchdown.perflowbackend.perfomance.command.mapper.PerformanceMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +23,7 @@ public class KPICommandService {
 
     private final KpiCommandRepository kpiCommandRepository;
     private final EmployeeCommandRepository employeeCommandRepository;
+    private final KpiProgressCommandRepository kpiProgressCommandRepository;
 
     // 개인 KPI 생성
     @Transactional
@@ -107,6 +112,30 @@ public class KPICommandService {
         // KPI 삭제하기
         kpiCommandRepository.deleteById(kpiId);
     }
+
+    // KPI 최신화
+    @Transactional
+    public void createKpiProgress(String empId, Long kpiId, CreateKpiPassDTO createKpiPassDTO){
+
+        // empId를 통해 사원 정보 가져오기
+        Employee emp = findEmployeeByEmpId(empId);
+
+        // 받아온 KPI id를 통해 기존 KPI 정보 받아오기
+        Kpi kpi = findKpiByKpiId(kpiId);
+
+        // kpi 최신화 기록 생성
+        KpiProgressStatus kpiProgressStatus = PerformanceMapper.kpipassDTOtokpiProgress(emp, kpi, createKpiPassDTO);
+
+        // 최신화 기록 저장
+        kpiProgressCommandRepository.save(kpiProgressStatus);
+
+        // kpi 진척도 업데이트
+        kpi.updateProgress(createKpiPassDTO.getProgress());
+
+        // kpi 진척도 저장
+        kpiCommandRepository.save(kpi);
+    }
+
 
     // KPI 작성자와 현재 유저가 일치하는지 확인
     private boolean isSameWriter(String kpiempId, String requestEmpId) {
