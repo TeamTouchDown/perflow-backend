@@ -4,6 +4,7 @@ import com.touchdown.perflowbackend.approval.command.application.dto.*;
 import com.touchdown.perflowbackend.approval.command.application.service.ApprovalService;
 import com.touchdown.perflowbackend.approval.command.application.service.DocCommandService;
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
+import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import io.netty.util.concurrent.SucceededFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +25,7 @@ public class DocCommandController {
     public ResponseEntity<SuccessCode> createDoc(
             @RequestBody DocCreateRequestDTO request
     ) {
-
-        // todo: 현재 로그인 한 사용자 나중에 넣기
-        String createUserId = "23-MK004";
+        String createUserId = EmployeeUtil.getEmpId();
 
         docCommandService.createNewDoc(request, createUserId);
 
@@ -55,8 +54,7 @@ public class DocCommandController {
     @PostMapping("/my-approve-lines")
     public ResponseEntity<SuccessCode> createMyApproveLine(@RequestBody MyApproveLineCreateRequestDTO request) {
 
-        // todo: 현재 로그인 한 사용자 나중에 넣기
-        String createUserId = "23-MK004";
+        String createUserId = EmployeeUtil.getEmpId();
         docCommandService.createNewMyApproveLine(request, createUserId);
 
         return ResponseEntity.ok(SuccessCode.MY_APPROVE_LINE_CREATE_SUCCESS);
@@ -68,7 +66,7 @@ public class DocCommandController {
             @PathVariable Long groupId,
             @RequestBody MyApproveLineUpdateRequestDTO request) {
 
-        String updateUserId = "23-MK004";
+        String updateUserId = EmployeeUtil.getEmpId();
 
         docCommandService.updateMyApproveLine(groupId, request, updateUserId);
 
@@ -79,7 +77,7 @@ public class DocCommandController {
     @DeleteMapping("/my-approve-lines/{groupId}")
     public ResponseEntity<SuccessCode> deleteMyApproveLine(@PathVariable Long groupId) {
 
-        String deleteUserId = "23-MK004";
+        String deleteUserId = EmployeeUtil.getEmpId();
 
         docCommandService.deleteMyApproveLine(groupId, deleteUserId);
 
@@ -90,7 +88,7 @@ public class DocCommandController {
     @DeleteMapping("/my-approve-lines")
     public ResponseEntity<SuccessCode> deleteMyApproveLines(@RequestBody BulkDeleteRequestDTO request) {
 
-        String deleteUserId = "23-MK004";
+        String deleteUserId = EmployeeUtil.getEmpId();
 
         docCommandService.deleteMyApproveLines(request, deleteUserId);
 

@@ -24,7 +24,7 @@ public class DocQueryController {
     public ResponseEntity<Page<MyApproveLineGroupResponseDTO>> getMyApproveLines(Pageable pageable) {
 
         // todo: 회원 기능 생기면 넣기
-        String createUserId = "23-MK004";
+        String createUserId = EmployeeUtil.getEmpId();
 
         return ResponseEntity.ok(docQueryService.getMyApproveLineList(pageable, createUserId));
     }
@@ -40,9 +40,7 @@ public class DocQueryController {
     @GetMapping("/waiting-docs")
     public ResponseEntity<Page<WaitingDocListResponseDTO>> getWaitingDocs(Pageable pageable) {
 
-//        String empId = EmployeeUtil.getEmpId();
-//        String empId = "23-IT003";
-        String empId = "23-OP005";
+        String empId = EmployeeUtil.getEmpId();
 
         return ResponseEntity.ok(docQueryService.getWaitingDocList(pageable, empId));
     }
@@ -58,7 +56,7 @@ public class DocQueryController {
     @GetMapping("/processed-docs")
     public ResponseEntity<Page<ProcessedDocListResponseDTO>> getProcessedDocs(Pageable pageable) {
 
-        String empId = "23-OP005";
+        String empId = EmployeeUtil.getEmpId();
 
         return ResponseEntity.ok(docQueryService.getProcessedDocList(pageable, empId));
     }

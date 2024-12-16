@@ -9,6 +9,7 @@ import com.touchdown.perflowbackend.approval.command.domain.repository.DocComman
 import com.touchdown.perflowbackend.approval.command.infrastructure.repository.JpaApproveSbjCommandRepository;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
+import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class ApprovalService {
     public void processApproval(ApprovalRequestDTO request) {
 
         // todo: 로그인 기능 이후 수정하기
-        String LoginId = "23-FN002";
+        String LoginId = EmployeeUtil.getEmpId();
 
         // 문서 조회
         Doc doc = findDocById(request.getDocId());
