@@ -1,8 +1,8 @@
 package com.touchdown.perflowbackend.approval.query.controller;
 
-import com.touchdown.perflowbackend.approval.query.dto.MyApproveLineDetailResponseDTO;
-import com.touchdown.perflowbackend.approval.query.dto.MyApproveLineGroupResponseDTO;
+import com.touchdown.perflowbackend.approval.query.dto.*;
 import com.touchdown.perflowbackend.approval.query.service.DocQueryService;
+import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +24,7 @@ public class DocQueryController {
     public ResponseEntity<Page<MyApproveLineGroupResponseDTO>> getMyApproveLines(Pageable pageable) {
 
         // todo: 회원 기능 생기면 넣기
-        String createUserId = "23-MK004";
+        String createUserId = EmployeeUtil.getEmpId();
 
         return ResponseEntity.ok(docQueryService.getMyApproveLineList(pageable, createUserId));
     }
@@ -34,5 +34,37 @@ public class DocQueryController {
     public ResponseEntity<MyApproveLineDetailResponseDTO> getMyApproveLine(@PathVariable Long groupId) {
 
         return ResponseEntity.ok(docQueryService.getOneMyApproveLine(groupId));
+    }
+
+    // 대기 문서 목록 조회
+    @GetMapping("/waiting-docs")
+    public ResponseEntity<Page<WaitingDocListResponseDTO>> getWaitingDocs(Pageable pageable) {
+
+        String empId = EmployeeUtil.getEmpId();
+
+        return ResponseEntity.ok(docQueryService.getWaitingDocList(pageable, empId));
+    }
+
+    // 대기 문서 상세 조회
+    @GetMapping("/waiting-docs/{docId}")
+    public ResponseEntity<WaitingDocDetailResponseDTO> getWaitingDoc(@PathVariable Long docId) {
+
+        return ResponseEntity.ok(docQueryService.getOneWaitingDoc(docId));
+    }
+
+    // 처리 문서 목록 조회
+    @GetMapping("/processed-docs")
+    public ResponseEntity<Page<ProcessedDocListResponseDTO>> getProcessedDocs(Pageable pageable) {
+
+        String empId = EmployeeUtil.getEmpId();
+
+        return ResponseEntity.ok(docQueryService.getProcessedDocList(pageable, empId));
+    }
+
+    // 처리 문서 상세 조회
+    @GetMapping("/processed-docs/{docId}")
+    public ResponseEntity<ProcessedDocDetailResponseDTO> getProcessedDoc(@PathVariable Long docId) {
+
+        return ResponseEntity.ok(docQueryService.getOneProcessedDoc(docId));
     }
 }

@@ -1,13 +1,15 @@
 package com.touchdown.perflowbackend.approval.command.application.dto;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Getter
-@RequiredArgsConstructor
-public class MyApproveLineCreateRequestDTO {
+@Builder
+public class MyApproveLineUpdateRequestDTO {
+
+    private final Long groupId;
 
     private final String name;  // 결재선 이름
 

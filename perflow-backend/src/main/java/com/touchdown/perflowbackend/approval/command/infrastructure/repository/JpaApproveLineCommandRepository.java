@@ -4,5 +4,5 @@ import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveLin
 import com.touchdown.perflowbackend.approval.command.domain.repository.ApproveLineCommandRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface JpaApproveLineCommandRepository extends JpaRepository<ApproveLine, Long>, ApproveLineCommandRepository {
-}
+//public interface JpaApproveLineCommandRepository extends JpaRepository<ApproveLine, Long>, ApproveLineCommandRepository {
+//}
