@@ -49,6 +49,22 @@ public class EmployeeQueryService {
     }
 
     @Transactional(readOnly = true)
+    public EmployeeResponseList getAllEmployeesByName(Pageable pageable, String name) {
+
+        Page<Employee> pages = findEmployeeByName(pageable, name);
+
+        List<EmployeeQueryResponseDTO> employees = EmployeeMapper.toResponseList(pages.getContent());
+
+        return EmployeeResponseList.builder()
+                .employeeList(employees)
+                .totalPages(pages.getTotalPages())
+                .totalItems((int) pages.getTotalElements())
+                .currentPage(pages.getNumber() + 1)
+                .pageSize(pages.getSize())
+                .build();
+    }
+
+    @Transactional(readOnly = true)
     public EmployeeDetailResponseDTO getEmployeeDetail(String empId) {
 
         Employee employee = findById(empId);
@@ -73,4 +89,8 @@ public class EmployeeQueryService {
         return employeeQueryRepository.findAll(pageable);
     }
 
+    private Page<Employee> findEmployeeByName(Pageable pageable, String name) {
+
+        return employeeQueryRepository.findByNameContaining(name, pageable);
+    }
 }
