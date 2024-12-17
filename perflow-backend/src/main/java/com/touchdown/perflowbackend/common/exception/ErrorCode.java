@@ -67,6 +67,9 @@ public enum ErrorCode {
     NOT_FOUND_HRPERFO(HttpStatus.NOT_FOUND,"평가 점수 정보를 찾을 수 없습니다."),
     NOT_FOUND_HRPERFOINQUIRY(HttpStatus.NOT_FOUND,"인사 평가 의의제기 정보를 찾을 수 없습니다."),
     NOT_FOUND_FILE(HttpStatus.NOT_FOUND, "파일을 찾을 수 없습니다."),
+    NOT_FOUND_PERFOQUESTION(HttpStatus.NOT_FOUND,"문항 정보를 찾을 수 없습니다."),
+    NOT_FOUND_PERFOQUESTION_ANSWER(HttpStatus.NOT_FOUND,"문항 답변을 찾을 수 없습니다."),
+    NOT_FOUND_AI_RESPONSE(HttpStatus.NOT_FOUND,"AI로 부터 응답이 없습니다."),
 
     NOT_FOUND_APPROVE_SBJ(HttpStatus.NOT_FOUND, "결재 주체 정보를 찾을 수 없습니다."),
     INVALID_APPROVE_SBJ_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 결재 주체 ID입니다."),
