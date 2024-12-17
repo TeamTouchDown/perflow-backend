@@ -6,9 +6,12 @@ import com.touchdown.perflowbackend.employee.command.Mapper.EmployeeMapper;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.query.dto.EmployeeDetailResponseDTO;
 import com.touchdown.perflowbackend.employee.query.dto.EmployeeQueryResponseDTO;
+import com.touchdown.perflowbackend.employee.query.dto.EmployeeResponseList;
 import com.touchdown.perflowbackend.employee.query.repository.EmployeeQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,11 +33,19 @@ public class EmployeeQueryService {
     }
 
     @Transactional(readOnly = true)
-    public List<EmployeeQueryResponseDTO> getAllEmployees() {
+    public EmployeeResponseList getAllEmployees(Pageable pageable) {
 
-        List<Employee> employees = findAllEmployee();
+        Page<Employee> pages = findAllEmployee(pageable);
 
-        return EmployeeMapper.toResponseList(employees);
+        List<EmployeeQueryResponseDTO> employees = EmployeeMapper.toResponseList(pages.getContent());
+
+        return EmployeeResponseList.builder()
+                .employeeList(employees)
+                .totalPages(pages.getTotalPages())
+                .totalItems((int) pages.getTotalElements())
+                .currentPage(pages.getNumber() + 1)
+                .pageSize(pages.getSize())
+                .build();
     }
 
     @Transactional(readOnly = true)
@@ -57,9 +68,9 @@ public class EmployeeQueryService {
         return employeeQueryRepository.findByDeptId(departmentId);
     }
 
-    private List<Employee> findAllEmployee() {
+    private Page<Employee> findAllEmployee(Pageable pageable) {
 
-        return employeeQueryRepository.findAll();
+        return employeeQueryRepository.findAll(pageable);
     }
 
 }
