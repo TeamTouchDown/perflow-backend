@@ -17,7 +17,7 @@ public class CustomEmployDetail implements UserDetails {
         this.employee = employee;
     }
 
-    public String getEmployeeName(){
+    public String getEmployeeName() {
         return employee.getName();
     }
 
