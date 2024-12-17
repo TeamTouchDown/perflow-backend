@@ -145,10 +145,12 @@ public class EmployeeCommandService {
 
         String empId = customEmployDetail.getUsername();
         EmployeeStatus status = customEmployDetail.getStatus();
+        String empName = customEmployDetail.getEmployeeName();
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("empId", empId);
         claims.put("status", status.name());
+        claims.put("name", empName);
 
         String accessToken = jwtTokenProvider.createAccessToken(customEmployDetail.getUsername(), claims);
         String refreshToken = jwtTokenProvider.createRefreshToken(customEmployDetail.getUsername(), claims);
