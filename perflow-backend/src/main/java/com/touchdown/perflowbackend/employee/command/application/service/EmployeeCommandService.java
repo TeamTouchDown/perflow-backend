@@ -205,7 +205,7 @@ public class EmployeeCommandService {
         String newRefreshToken = jwtTokenProvider.createRefreshToken(empId, claims);
 
         /* refreshToken 화이트 리스트로 redis에 저장 */
-        whiteRefreshTokenRepository.save(new WhiteRefreshToken(newRefreshToken, empId,604800000L));
+        whiteRefreshTokenRepository.save(new WhiteRefreshToken(newRefreshToken, empId, 604800000L));
 
         return new TokenResponseDTO(empId, newAccessToken, newRefreshToken);
     }
@@ -216,7 +216,7 @@ public class EmployeeCommandService {
         whiteRefreshTokenRepository.deleteById(logoutRequestDTO.getEmpId());
 
         /* blackList에 사용자의 최신 accessToken을 등록 */
-        blackAccessTokenRepository.save(new BlackAccessToken(logoutRequestDTO.getAccessToken(), logoutRequestDTO.getEmpId(),1800000L));
+        blackAccessTokenRepository.save(new BlackAccessToken(logoutRequestDTO.getAccessToken(), logoutRequestDTO.getEmpId(), 1800000L));
 
     }
 
