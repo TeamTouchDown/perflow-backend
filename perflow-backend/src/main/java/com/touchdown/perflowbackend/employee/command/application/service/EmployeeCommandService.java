@@ -27,7 +27,6 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.FileNameUtils;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -43,7 +42,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -57,7 +55,6 @@ public class EmployeeCommandService {
     private final WhiteRefreshTokenRepository whiteRefreshTokenRepository;
     private final BlackAccessTokenRepository blackAccessTokenRepository;
     private final FileService fileService;
-    private final RedisTemplate redisTemplate;
 
     private final AuthenticationManager authenticationManager;
     private final EntityManager entityManager;
@@ -157,7 +154,7 @@ public class EmployeeCommandService {
 
         /* refreshToken 화이트 리스트로 redis에 저장 */
         whiteRefreshTokenRepository.save(new WhiteRefreshToken(refreshToken, empId, 604800000L));
-        log.warn(whiteRefreshTokenRepository.findById(empId).toString());
+
         return new TokenResponseDTO(empId, accessToken, refreshToken);
     }
 
@@ -190,8 +187,6 @@ public class EmployeeCommandService {
     }
 
     public TokenResponseDTO reissueToken(String refreshToken) {
-
-        log.warn("리프레쉬 시작!!!!!!!!!!!!!!!!!!!!!!");
 
         String token = refreshToken.substring(7);
 
