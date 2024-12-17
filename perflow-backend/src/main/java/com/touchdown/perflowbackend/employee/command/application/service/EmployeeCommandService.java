@@ -27,6 +27,7 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.compress.utils.FileNameUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -42,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -55,6 +57,7 @@ public class EmployeeCommandService {
     private final WhiteRefreshTokenRepository whiteRefreshTokenRepository;
     private final BlackAccessTokenRepository blackAccessTokenRepository;
     private final FileService fileService;
+    private final RedisTemplate redisTemplate;
 
     private final AuthenticationManager authenticationManager;
     private final EntityManager entityManager;
@@ -151,8 +154,8 @@ public class EmployeeCommandService {
         String refreshToken = jwtTokenProvider.createRefreshToken(customEmployDetail.getUsername(), claims);
 
         /* refreshToken 화이트 리스트로 redis에 저장 */
-        whiteRefreshTokenRepository.save(new WhiteRefreshToken(refreshToken, empId));
-
+        whiteRefreshTokenRepository.save(new WhiteRefreshToken(refreshToken, empId, 604800000L));
+        log.warn(whiteRefreshTokenRepository.findById(empId).toString());
         return new TokenResponseDTO(empId, accessToken, refreshToken);
     }
 
@@ -186,19 +189,21 @@ public class EmployeeCommandService {
 
     public TokenResponseDTO reissueToken(String refreshToken) {
 
+        log.warn("리프레쉬 시작!!!!!!!!!!!!!!!!!!!!!!");
+
         String token = refreshToken.substring(7);
 
         String empId = jwtUtil.getUserId(token);
         Map<String, Object> claims = jwtUtil.parseClaims(token);
 
         /* whiteList 에 포함된 refreshToken 인지 확인 */
-        whiteRefreshTokenRepository.findById(token).orElseThrow(() -> new CustomException(ErrorCode.NOT_VALID_REFRESH_TOKEN));
+        whiteRefreshTokenRepository.findById(empId).orElseThrow(() -> new CustomException(ErrorCode.NOT_VALID_REFRESH_TOKEN));
 
         String newAccessToken = jwtTokenProvider.createAccessToken(empId, claims);
         String newRefreshToken = jwtTokenProvider.createRefreshToken(empId, claims);
 
         /* refreshToken 화이트 리스트로 redis에 저장 */
-        whiteRefreshTokenRepository.save(new WhiteRefreshToken(newRefreshToken, empId));
+        whiteRefreshTokenRepository.save(new WhiteRefreshToken(newRefreshToken, empId,604800000L));
 
         return new TokenResponseDTO(empId, newAccessToken, newRefreshToken);
     }
@@ -209,7 +214,7 @@ public class EmployeeCommandService {
         whiteRefreshTokenRepository.deleteById(logoutRequestDTO.getEmpId());
 
         /* blackList에 사용자의 최신 accessToken을 등록 */
-        blackAccessTokenRepository.save(new BlackAccessToken(logoutRequestDTO.getAccessToken(), logoutRequestDTO.getEmpId()));
+        blackAccessTokenRepository.save(new BlackAccessToken(logoutRequestDTO.getAccessToken(), logoutRequestDTO.getEmpId(),1800000L));
 
     }
 
