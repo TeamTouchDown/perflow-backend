@@ -16,4 +16,10 @@ public class WorkAttitudeAttendanceSummaryResponseDTO {
     private int totalHours;
 
     private int totalMinutes;
+
+    private  String empId;
+
+    private String empName;
+
+
 }
