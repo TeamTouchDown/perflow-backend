@@ -305,7 +305,7 @@ public class PayrollQueryService {
 
     // 3년간 급여 데이터 조회
     @Transactional(readOnly = true)
-    public List<PayrollChartDTO> getLastThreeYearsPayrolls() {
+    public List<PayrollChartWithYearDTO> getLastThreeYearsPayrolls() {
         // 가장 최근 급여 데이터 조회
         PayrollChartDTO latestPayroll = payrollQueryRepository.findLatestPayroll();
 
