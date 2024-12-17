@@ -130,6 +130,9 @@ public class EmployeeCommandController {
         headers.add(ACCESS_TOKEN_HEADER, BEARER_PREFIX + tokenResponseDTO.getAccessToken());
         headers.add(REFRESH_TOKEN_HEADER, BEARER_PREFIX + tokenResponseDTO.getRefreshToken());
 
+        log.warn(tokenResponseDTO.getAccessToken());
+        log.warn(tokenResponseDTO.getRefreshToken());
+
         return ResponseEntity.ok().headers(headers).body(SuccessCode.TOKEN_REISSUE_SUCCESS);
     }
 
