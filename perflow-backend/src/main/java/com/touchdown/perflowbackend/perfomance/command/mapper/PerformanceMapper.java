@@ -138,4 +138,14 @@ public class PerformanceMapper {
                 .reason(createPerfoAdjustmentDTO.getReason())
                 .build();
     }
+
+    // AI 요약 생성
+    public static AiPerfoSummary createAiSummary(Employee emp, PerfoType perfoType, String summary){
+
+        return AiPerfoSummary.builder()
+                .emp(emp)
+                .perfoType(perfoType)
+                .aiSummary(summary)
+                .build();
+    }
 }
