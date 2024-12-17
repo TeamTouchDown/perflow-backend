@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Tag(name = "WorkAttribute-OverTime-Controller", description = "초과근무 관련 API")
+@Tag(name = "WorkAttitude-OverTime-Controller", description = "초과근무 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -33,7 +33,7 @@ public class WorkAttitudeOvertimeQueryController {
     // 사원 본인 조회
 
     @Operation(summary = "사원 본인 조회", description = "사원이 자신의 초과근무 요약 정보를 조회")
-    @GetMapping("/employee/overtime/summary")
+    @GetMapping("/emp/overtime/summary")
     public ResponseEntity<WorkAttitudeOvertimeForEmployeeSummaryDTO> getOvertimeSummaryForEmployee() {
         String empId = EmployeeUtil.getEmpId(); // 인증된 사원 ID 가져오기
         WorkAttitudeOvertimeForEmployeeSummaryDTO summary = workAttitudeOvertimeQueryService.getOvertimeSummaryForEmployee(empId);

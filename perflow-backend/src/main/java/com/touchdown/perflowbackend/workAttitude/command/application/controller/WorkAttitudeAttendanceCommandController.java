@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "WorkAttribute-Attendance-Controller", description = "출퇴근 관련 API")
+@Tag(name = "WorkAttitude-Attendance-Controller", description = "출퇴근 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/emp/attendances")
