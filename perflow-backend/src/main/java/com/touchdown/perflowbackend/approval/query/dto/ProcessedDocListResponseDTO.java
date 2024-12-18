@@ -15,5 +15,7 @@ public class ProcessedDocListResponseDTO {
 
     private final String createUserName;
 
+    private final String empId;
+
     private final LocalDateTime createDatetime;
 }
