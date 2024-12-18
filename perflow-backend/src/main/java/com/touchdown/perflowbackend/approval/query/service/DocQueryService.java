@@ -58,9 +58,9 @@ public class DocQueryService {
     public Page<WaitingDocListResponseDTO> getWaitingDocList(Pageable pageable, String empId) {
 
         // doc id 페이징 처리
-        Page<Doc> docs = docQueryRepository.findWaitingDocsByUser(empId, pageable);
+        return docQueryRepository.findWaitingDocsByUser(empId, pageable);
 
-        return docs.map(DocMapper::toWaitingDocListResponseDTO);
+//        return docs.map(DocMapper::toWaitingDocListResponseDTO);
     }
 
     // 대기 문서 상세 조회
