@@ -102,6 +102,7 @@ public class DocMapper {
                 .docId(doc.getDocId())
                 .title(doc.getTitle())
                 .createUserName(doc.getCreateUser().getName())
+                .empId(doc.getCreateUser().getEmpId())
                 .createDatetime(doc.getCreateDatetime())
                 .build();
     }
@@ -113,6 +114,7 @@ public class DocMapper {
                 .docId(doc.getDocId())
                 .title(doc.getTitle())
                 .createUserName(doc.getCreateUser().getName())
+                .empId(doc.getCreateUser().getEmpId())
                 .createDatetime(doc.getCreateDatetime())
                 .build();
     }

@@ -17,5 +17,7 @@ public class WaitingDocListResponseDTO {
 
     private final String createUserName;
 
+    private final String empId;
+
     private final LocalDateTime createDatetime;
 }
