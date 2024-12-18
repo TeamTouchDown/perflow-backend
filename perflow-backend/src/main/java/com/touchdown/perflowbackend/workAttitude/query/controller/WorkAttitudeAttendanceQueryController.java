@@ -61,4 +61,5 @@ public class WorkAttitudeAttendanceQueryController {
     public ResponseEntity<List<WorkAttitudeAttendanceSummaryResponseDTO>> getMonthlySummaryForAllEmployees() {
         return ResponseEntity.ok(attendanceQueryService.getMonthlySummaryForAllEmployees());
     }
+
 }
