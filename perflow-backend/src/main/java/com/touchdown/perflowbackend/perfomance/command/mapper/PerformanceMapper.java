@@ -114,4 +114,38 @@ public class PerformanceMapper {
                 .reason(createGradeRatioRequestDTO.getReason())
                 .build();
     }
+
+    // KPI 처리 생성
+    public static KpiProgressStatus kpipassDTOtokpiProgress(Employee emp, Kpi kpi, CreateKpiPassDTO createKpiPassDTO) {
+
+        return KpiProgressStatus.builder()
+                .kpi(kpi)
+                .emp(emp)
+                .progressStatus(createKpiPassDTO.getProgress())
+                .updateReason(createKpiPassDTO.getReason())
+                .build();
+    }
+
+    // 평가 조정 생성
+    public static HrPerfoHistory perfoAdjustmentDTOToAdjustment(Employee perfoEmp, Employee perfoedEmp, CreatePerfoAdjustmentDTO createPerfoAdjustmentDTO) {
+
+        return HrPerfoHistory.builder()
+                .perfo_emp(perfoEmp)
+                .perfoed_emp(perfoedEmp)
+                .adjustmentColScore(createPerfoAdjustmentDTO.getColScore())
+                .adjustmentDownScore(createPerfoAdjustmentDTO.getDownScore())
+                .adjustmentDegree(createPerfoAdjustmentDTO.getDegree())
+                .reason(createPerfoAdjustmentDTO.getReason())
+                .build();
+    }
+
+    // AI 요약 생성
+    public static AiPerfoSummary createAiSummary(Employee emp, PerfoType perfoType, String summary){
+
+        return AiPerfoSummary.builder()
+                .emp(emp)
+                .perfoType(perfoType)
+                .aiSummary(summary)
+                .build();
+    }
 }

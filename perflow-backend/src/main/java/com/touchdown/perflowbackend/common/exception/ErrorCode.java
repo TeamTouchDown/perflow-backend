@@ -67,6 +67,9 @@ public enum ErrorCode {
     NOT_FOUND_HRPERFO(HttpStatus.NOT_FOUND,"평가 점수 정보를 찾을 수 없습니다."),
     NOT_FOUND_HRPERFOINQUIRY(HttpStatus.NOT_FOUND,"인사 평가 의의제기 정보를 찾을 수 없습니다."),
     NOT_FOUND_FILE(HttpStatus.NOT_FOUND, "파일을 찾을 수 없습니다."),
+    NOT_FOUND_PERFOQUESTION(HttpStatus.NOT_FOUND,"문항 정보를 찾을 수 없습니다."),
+    NOT_FOUND_PERFOQUESTION_ANSWER(HttpStatus.NOT_FOUND,"문항 답변을 찾을 수 없습니다."),
+    NOT_FOUND_AI_RESPONSE(HttpStatus.NOT_FOUND,"AI로 부터 응답이 없습니다."),
 
     NOT_FOUND_APPROVE_SBJ(HttpStatus.NOT_FOUND, "결재 주체 정보를 찾을 수 없습니다."),
     INVALID_APPROVE_SBJ_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 결재 주체 ID입니다."),
@@ -88,6 +91,9 @@ public enum ErrorCode {
     ALREADY_CHECKED_IN(HttpStatus.BAD_REQUEST,"출근 완료된 상태입니다."),
     NOT_FOUND_ATTENDANCE(HttpStatus.BAD_REQUEST,"출근 처리가 안된 상태입니다."),
     INVALID_QR_CODE(HttpStatus.BAD_REQUEST,"올바르지 않은 인증입니다."),
+    NOT_FOUND_TEAM(HttpStatus.BAD_REQUEST,"해당 팀을 찾을 수 없습니다."),
+    NOT_FOUND_ATTENDANCE_DATA(HttpStatus.NOT_FOUND, "근무 시간 데이터를 찾을 수 없습니다."),
+
 
     ;
 

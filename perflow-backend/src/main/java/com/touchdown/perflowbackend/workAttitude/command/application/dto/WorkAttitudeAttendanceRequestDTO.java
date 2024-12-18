@@ -24,6 +24,6 @@ public class WorkAttitudeAttendanceRequestDTO {
     private LocalDateTime checkOutDateTime;
 
     @NotNull
-    private AttendanceStatus AttendanceStatus;
+    private AttendanceStatus attendanceStatus;
 
 }

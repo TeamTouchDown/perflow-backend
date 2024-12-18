@@ -8,4 +8,6 @@ import java.util.List;
 public interface PerfoCommandRepository extends JpaRepository<Perfo, Long> {
 
     List<Perfo> findByPerfoEmp_EmpIdAndPerfoedEmp_EmpId(String perfoEmpId, String perfoedEmpId);
+
+    List<Perfo> findByPerfoQuestion_perfoQuestionIdAndPerfoedEmp_EmpId(Long questionId, String perfoedempId);
 }

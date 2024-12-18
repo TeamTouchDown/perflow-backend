@@ -59,6 +59,9 @@ public enum SuccessCode {
     KPI_TEAM_UPDATE_SUCCESS(HttpStatus.OK, "팀 KPI를 성공적으로 수정하였습니다."),
     KPI_TEAM_DELETE_SUCCESS(HttpStatus.OK, "팀 KPI를 성공적으로 삭제하였습니다."),
 
+    // KPI 최신화
+    KPI_PROGRESS_UPLOAD_SUCCESS(HttpStatus.OK,"KPI를 성공적으로 최신화하였습니다."),
+
     // 동료 평가
     EVALUTION_COL_UPLOAD_SUCCESS(HttpStatus.OK, "동료 평가가 성공적으로 작성되었습니다."),
     EVALUTION_COL_UPDATE_SUCCESS(HttpStatus.OK, "동료 평가가 성공적으로 수정되었습니다."),
@@ -77,6 +80,9 @@ public enum SuccessCode {
     EVALUTION_DOWN_QUESTION_UPDATE_SUCCESS(HttpStatus.OK, "하향 평가 문항이 성공적으로 수정되었습니다."),
     EVALUTION_DOWN_QUESTION_DELETE_SUCCESS(HttpStatus.OK, "하향 평가 문항이 성공적으로 삭제되었습니다."),
 
+    // 평가 조정
+    EVALUTION_ADJUSTMENT_UPDATE_SUCCESS(HttpStatus.OK,"평가 조정이 성공적으로 저장되었습니다."),
+
     // 인사 평가
     HRPERFO_UPLOAD_SUCCESS(HttpStatus.OK, "인사 평가가 성공적으로 작성되었습니다."),
     HRPERFO_UPDATE_SUCCESS(HttpStatus.OK, "인사 평가가 성공적으로 수정되었습니다."),
@@ -91,6 +97,9 @@ public enum SuccessCode {
     // 등급 비율
     RATIO_GRADE_UPLOAD_SUCCESS(HttpStatus.OK, "등급 비율이 성공적으로 입력되었습니다."),
     RATIO_GRADE_UPDATE_SUCCESS(HttpStatus.OK, "등급 비율이 성공적으로 수정되었습니다."),
+
+    // AI 요약
+    AI_SUMMARY_UPLOAD_SUCCESS(HttpStatus.OK, "AI 요약이 정상적으로 생성되었습니다."),
 
     // 201
     WORK_ATTITUDE_TRAVEL_SUCCESS(HttpStatus.CREATED, "출장 요청 등록이 완료 되었습니다."),

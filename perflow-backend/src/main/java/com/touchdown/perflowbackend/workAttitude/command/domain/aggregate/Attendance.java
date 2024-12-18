@@ -51,4 +51,8 @@ public class Attendance { //출퇴
         this.attendanceStatus = attendanceStatus;
 
     }
+
+    public String getName() {
+        return empId.getName();
+    }
 }

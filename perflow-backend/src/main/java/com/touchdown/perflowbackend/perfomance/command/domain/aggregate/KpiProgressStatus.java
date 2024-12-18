@@ -4,6 +4,7 @@ import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,4 +32,12 @@ public class KpiProgressStatus extends BaseEntity {
 
     @Column(name = "update_reason", nullable = false)
     private String updateReason;
+
+    @Builder
+    public KpiProgressStatus(Kpi kpi, Employee emp, Double progressStatus, String updateReason) {
+        this.kpi = kpi;
+        this.emp = emp;
+        this.progressStatus = progressStatus;
+        this.updateReason = updateReason;
+    }
 }

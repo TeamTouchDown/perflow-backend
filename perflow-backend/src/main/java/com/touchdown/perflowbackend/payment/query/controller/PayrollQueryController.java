@@ -54,7 +54,7 @@ public class PayrollQueryController {
     @GetMapping("/hr/payrolls")
     public ResponseEntity<PayrollListResponseDTO> getPayrolls(
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "12") int size
+            @RequestParam(value = "size", defaultValue = "10") int size
     ) {
 
         Pageable pageable = PageRequest.of(page - 1, size);
@@ -111,9 +111,9 @@ public class PayrollQueryController {
 
     // 3년간 급여 데이터 조회
     @GetMapping("/hr/payrolls/chart/last-three-years")
-    public ResponseEntity<List<PayrollChartDTO>> getLastThreeYearsPayrolls() {
+    public ResponseEntity<List<PayrollChartWithYearDTO>> getLastThreeYearsPayrolls() {
 
-        List<PayrollChartDTO> payrolls = payrollQueryService.getLastThreeYearsPayrolls();
+        List<PayrollChartWithYearDTO> payrolls = payrollQueryService.getLastThreeYearsPayrolls();
         return ResponseEntity.ok(payrolls);
 
     }
