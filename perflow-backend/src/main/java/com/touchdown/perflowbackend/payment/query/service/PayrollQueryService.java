@@ -16,7 +16,9 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -143,7 +145,11 @@ public class PayrollQueryService {
     @Transactional(readOnly = true)
     public PayrollListResponseDTO getPayrolls(Pageable pageable) {
 
-        Page<Payroll> page = payrollQueryRepository.findAll(pageable);
+        // Pageable 객체에 정렬 조건 추가 (createDatetime 기준 내림차순 정렬)
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Order.desc("createDatetime")));
+
+        // 기존 pageable을 정렬된 pageable로 변경하여 사용
+        Page<Payroll> page = payrollQueryRepository.findAll(sortedPageable);
 
         List<PayrollResponseDTO> payrolls = page.getContent().stream()
                 .map(payroll -> {
