@@ -4,6 +4,7 @@ import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,4 +29,11 @@ public class AiPerfoSummary extends BaseEntity {
 
     @Column(name = "ai_summary", nullable = false)
     private String aiSummary;
+
+    @Builder
+    public AiPerfoSummary(Employee emp, PerfoType perfoType, String aiSummary) {
+        this.emp = emp;
+        this.perfoType = perfoType;
+        this.aiSummary = aiSummary;
+    }
 }

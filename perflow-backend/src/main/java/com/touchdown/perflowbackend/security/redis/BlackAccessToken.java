@@ -13,10 +13,12 @@ public class BlackAccessToken {
 
     private String accessToken;
 
+    private Long expiration;
 
-    public BlackAccessToken(String accessToken, String empId) {
+    public BlackAccessToken(String accessToken, String empId, Long expiration) {
 
         this.accessToken = accessToken;
         this.empId = empId;
+        this.expiration = expiration;
     }
 }

@@ -57,7 +57,7 @@ public class SeverancePayQueryController {
     @GetMapping("/hr/severance-pays")
     public ResponseEntity<SeverancePayListResponseDTO> getSeverancePays(
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "12") int size
+            @RequestParam(value = "size", defaultValue = "10") int size
     ) {
 
         Pageable pageable = PageRequest.of(page - 1, size);

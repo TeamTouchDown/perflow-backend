@@ -142,16 +142,18 @@ public class EmployeeCommandService {
 
         String empId = customEmployDetail.getUsername();
         EmployeeStatus status = customEmployDetail.getStatus();
+        String empName = customEmployDetail.getEmployeeName();
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("empId", empId);
         claims.put("status", status.name());
+        claims.put("name", empName);
 
         String accessToken = jwtTokenProvider.createAccessToken(customEmployDetail.getUsername(), claims);
         String refreshToken = jwtTokenProvider.createRefreshToken(customEmployDetail.getUsername(), claims);
 
         /* refreshToken 화이트 리스트로 redis에 저장 */
-        whiteRefreshTokenRepository.save(new WhiteRefreshToken(refreshToken, empId));
+        whiteRefreshTokenRepository.save(new WhiteRefreshToken(refreshToken, empId, 604800000L));
 
         return new TokenResponseDTO(empId, accessToken, refreshToken);
     }
@@ -192,13 +194,13 @@ public class EmployeeCommandService {
         Map<String, Object> claims = jwtUtil.parseClaims(token);
 
         /* whiteList 에 포함된 refreshToken 인지 확인 */
-        whiteRefreshTokenRepository.findById(token).orElseThrow(() -> new CustomException(ErrorCode.NOT_VALID_REFRESH_TOKEN));
+        whiteRefreshTokenRepository.findById(empId).orElseThrow(() -> new CustomException(ErrorCode.NOT_VALID_REFRESH_TOKEN));
 
         String newAccessToken = jwtTokenProvider.createAccessToken(empId, claims);
         String newRefreshToken = jwtTokenProvider.createRefreshToken(empId, claims);
 
         /* refreshToken 화이트 리스트로 redis에 저장 */
-        whiteRefreshTokenRepository.save(new WhiteRefreshToken(newRefreshToken, empId));
+        whiteRefreshTokenRepository.save(new WhiteRefreshToken(newRefreshToken, empId, 604800000L));
 
         return new TokenResponseDTO(empId, newAccessToken, newRefreshToken);
     }
@@ -209,7 +211,7 @@ public class EmployeeCommandService {
         whiteRefreshTokenRepository.deleteById(logoutRequestDTO.getEmpId());
 
         /* blackList에 사용자의 최신 accessToken을 등록 */
-        blackAccessTokenRepository.save(new BlackAccessToken(logoutRequestDTO.getAccessToken(), logoutRequestDTO.getEmpId()));
+        blackAccessTokenRepository.save(new BlackAccessToken(logoutRequestDTO.getAccessToken(), logoutRequestDTO.getEmpId(), 1800000L));
 
     }
 
