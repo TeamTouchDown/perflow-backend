@@ -48,7 +48,7 @@ public class HrPerfoInquiry extends BaseEntity {
     public void updateinquiry(Employee emp, UpdateInquiryRequestDTO updateInquiryRequestDTO) {
         this.emp = emp;
         this.passReason = updateInquiryRequestDTO.getReason();
-        this.status = PassStatus.PASS;
+        this.status = PassStatus.ACTIVE;
     }
 
     public void updateinquiry(Employee emp, String reason) {

@@ -75,4 +75,9 @@ public class Kpi extends BaseEntity {
     public void updateProgress(Double progress) {
         this.currentValue = progress;
     }
+
+    // kpi 상태 업데이트
+    public void updateStatus(KpiCurrentStatus status) {
+        this.status = status;
+    }
 }
