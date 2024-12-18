@@ -2,7 +2,6 @@ package com.touchdown.perflowbackend.perfomance.command.application.controller;
 
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import com.touchdown.perflowbackend.perfomance.command.application.dto.CreateKpiPassDTO;
-import com.touchdown.perflowbackend.perfomance.command.application.dto.CreateKpiProgressDTO;
 import com.touchdown.perflowbackend.perfomance.command.application.service.KPICommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

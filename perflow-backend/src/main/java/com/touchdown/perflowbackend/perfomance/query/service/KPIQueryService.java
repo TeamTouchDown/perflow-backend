@@ -4,10 +4,15 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
+import com.touchdown.perflowbackend.perfomance.command.application.service.KPICommandService;
+import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.Kpi;
+import com.touchdown.perflowbackend.perfomance.command.domain.repository.KpiCommandRepository;
 import com.touchdown.perflowbackend.perfomance.query.dto.KPIDetailResponseDTO;
 import com.touchdown.perflowbackend.perfomance.query.dto.KPILimitResponseDTO;
 import com.touchdown.perflowbackend.perfomance.query.dto.KPIListResponseDTO;
+import com.touchdown.perflowbackend.perfomance.query.dto.KPIRejectReponseDTO;
 import com.touchdown.perflowbackend.perfomance.query.repository.KPIQueryRepository;
+import com.touchdown.perflowbackend.perfomance.query.repository.KPIStatusQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +26,8 @@ public class KPIQueryService {
 
     private final KPIQueryRepository kpiQueryRepository;
     private final EmployeeCommandRepository employeeCommandRepository;
+    private final KpiCommandRepository kpiCommandRepository;
+    private final KPIStatusQueryRepository kpiStatusQueryRepository;
 
     // 개인 KPI 리스트 조회
     @Transactional(readOnly = true)
@@ -60,8 +67,30 @@ public class KPIQueryService {
         return kpiListToDTO(lists,limit);
     }
 
+    // KPI 반려 사유 조회
+    @Transactional(readOnly = true)
+    public KPIRejectReponseDTO getKPIRejectResponse(String empId, Long kpiId) {
+
+        // 유저가 존재하는지 체크하기
+        Employee emp = findEmployeeByEmpId(empId);
+
+        // 받아온 KPI id를 통해 기존 KPI 정보 받아오기
+        Kpi kpi = findKpiByKpiId(kpiId);
+
+        KPIRejectReponseDTO rejectreason = kpiStatusQueryRepository.findrejectbyempIdandkpiId(empId, kpiId);
+
+        return rejectreason;
+    }
+
+    // 받아온 EMP Id를 이용해 사원 정보 불러오기
     private Employee findEmployeeByEmpId(String empId) {
         return employeeCommandRepository.findById(empId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP));
+    }
+
+    // 받아온 KPI id를 이용해 KPI 정보 불러오기
+    private Kpi findKpiByKpiId(Long kpiId) {
+        return kpiCommandRepository.findByKpiId(kpiId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_KPI));
     }
 }
