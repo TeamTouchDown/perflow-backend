@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.util.List;
 
+
 public interface WorkAttitudeAttendanceQueryRepository extends JpaRepository<Attendance, Long> {
 
     // 사원 단위로 전체 출퇴근 기록 조회
