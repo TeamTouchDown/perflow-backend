@@ -186,6 +186,7 @@ public class EmployeeCommandService {
         employeeCommandRepository.save(employee);
     }
 
+    @Transactional
     public TokenResponseDTO reissueToken(String refreshToken) {
 
         String token = refreshToken.substring(7);
@@ -269,7 +270,6 @@ public class EmployeeCommandService {
                 .contact(row[9])
                 .email(row[10])
                 .joinDate(LocalDate.parse(row[11]))
-                .Status(EmployeeStatus.valueOf(row[12]))
                 .build();
     }
 
