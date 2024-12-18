@@ -90,4 +90,5 @@ public class WorkAttitudeAttendanceQueryController {
         Pageable pageable = PageRequest.of(page - 1, size, Sort.by("checkInDateTime").ascending());
         return ResponseEntity.ok(attendanceQueryService.getMonthlySummaryForAllEmployees(pageable));
     }
+
 }
