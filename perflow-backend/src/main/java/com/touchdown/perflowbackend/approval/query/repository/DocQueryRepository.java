@@ -27,7 +27,7 @@ public interface DocQueryRepository extends JpaRepository<Doc, Long> {
         "AND sbj.status = 'ACTIVATED' " +     // 활성화된 결재 주체
         "AND line.status = 'PENDING' " +      // 처리 대기 중인 결재선
         "AND doc.status = 'ACTIVATED' " +     // 활성화된 문서
-        "ORDER BY doc.docId DESC")  // 최신 순 정렬
+        "ORDER BY doc.docId ASC")  // 오래된 순 정렬
     Page<WaitingDocListResponseDTO> findWaitingDocsByUser(@Param("empId") String empId, Pageable pageable);
 
     @Query("SELECT DISTINCT doc FROM Doc doc " +
