@@ -120,14 +120,23 @@ public class WorkAttitudeAttendanceQueryService {
             Map<String, Long> employeeMinutes = records.stream()
                     .filter(a ->
                             !a.getCheckInDateTime().toLocalDate().isBefore(startOfWeek) &&
-                                    !a.getCheckInDateTime().toLocalDate().isAfter(endOfWeek)
-                    )
-                    .collect(Collectors.groupingBy(a -> a.getEmpId().getEmpId(),
-                            Collectors.summingLong(a -> ChronoUnit.MINUTES.between(a.getCheckInDateTime(), a.getCheckOutDateTime()) - 60)));
-
+                                    !a.getCheckInDateTime().toLocalDate().isAfter(endOfWeek))
+                    .collect(Collectors.groupingBy(
+                            a-> a.getEmpId().getEmpId(),
+                            Collectors.summingLong(a ->{
+                                long workDuration =
+                                        ChronoUnit.MINUTES.between(
+                                                a.getCheckInDateTime(),
+                                                a.getCheckOutDateTime()
+                                        );
+                                return workDuration -60;
+                            })
+                    ));
             employeeMinutes.forEach((empId, totalMinutes) -> {
                 String empName = employeeRepository.findById(empId)
-                        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP))
+                        .orElseThrow(() ->
+                                new CustomException(ErrorCode.NOT_FOUND_EMP))
+
                         .getName();
                 summaries.add(new WorkAttitudeAttendanceSummaryResponseDTO(
                         weekIndex[0] + "주차",
@@ -201,20 +210,5 @@ public class WorkAttitudeAttendanceQueryService {
                 .pageSize(page.getSize())
                 .build();
     }
-
-    private WorkAttitudeAttendancePageResponseDTO buildPageResponseDTO(
-            Page<Attendance> page,
-            List<WorkAttitudeAttendanceSummaryResponseDTO> summaries
-    ) {
-
-        return WorkAttitudeAttendancePageResponseDTO.builder()
-                .summaries(summaries)                 // 계산된 요약 데이터 리스트
-                .totalPages(page.getTotalPages())     // 전체 페이지 수
-                .totalItems((int) page.getTotalElements()) // 전체 항목 수
-                .currentPage(page.getNumber() + 1)    // 현재 페이지 (0부터 시작하므로 +1)
-                .pageSize(page.getSize())             // 페이지 크기
-                .build();
-    }
-
 
 }
