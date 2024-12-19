@@ -38,7 +38,7 @@ public class JwtUtil {
             log.info("Invalid JWT Token {}", e);
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT Token {}", e);
-            throw new CustomException(ErrorCode.NOT_VALID_ACCESS_TOKEN);
+//            throw new CustomException(ErrorCode.NOT_VALID_ACCESS_TOKEN);
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT Token {}", e);
         } catch (IllegalArgumentException e) {

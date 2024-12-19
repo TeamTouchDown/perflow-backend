@@ -170,6 +170,7 @@ public class EmployeeCommandService {
         String pwd = passwordEncoder.encode(employeePwdCreateDTO.getPassword());
 
         employee.registerPassword(pwd);
+        employee.updateStatus(EmployeeStatus.ACTIVE);
 
         employeeCommandRepository.save(employee);
     }
@@ -291,4 +292,10 @@ public class EmployeeCommandService {
         );
     }
 
+    public void redirectToPwdRegist(String token) {
+
+        if(!jwtUtil.validateToken(token)) {
+            throw new CustomException(ErrorCode.NOT_VALID_ACCESS_TOKEN);
+        }
+    }
 }
