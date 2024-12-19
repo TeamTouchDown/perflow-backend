@@ -6,3 +6,18 @@ services:
     container_name: redis-container
     ports:
       - "6379:6379" # Redis 기본 포트를 호스트에 매핑
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: perflow_rabbitmq
+    ports:
+      - "5672:5672"   # RabbitMQ communication port
+      - "15672:15672" # RabbitMQ Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - rabbitmq-net
+
+networks:
+  rabbitmq-net:
+    driver: bridge
