@@ -1,18 +1,10 @@
 package com.touchdown.perflowbackend.notification.command.domain.aggregate;
 
-import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
-import com.touchdown.perflowbackend.hr.command.domain.aggregate.Appoint;
-import com.touchdown.perflowbackend.payment.command.domain.aggregate.PayrollDetail;
-import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.HrPerfo;
-import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Annual;
-import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Overtime;
-import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Travel;
-import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Vacation;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -30,37 +22,12 @@ public class Notification {
     @Column(name = "noti_id", nullable = false)
     private Long notiId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "approve_sbj_id")
-    private ApproveSbj approveSbj;
+    @Column(name = "ref_id", nullable = false)
+    private Long refId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hr_perfo_id")
-    private HrPerfo hrPerfo;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "appointId")
-    private Appoint appoint;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "overtime_id")
-    private Overtime overtime;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "annual_id")
-    private Annual annual;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "vacation_id")
-    private Vacation vacation;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "travel_id")
-    private Travel travel;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "payroll_id")
-    private PayrollDetail payrollDetail;
+    @Column(name = "ref_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private RefType refType;
 
     @Column(name = "content", nullable = false, length = 50)
     private String content;
@@ -68,12 +35,20 @@ public class Notification {
     @Column(name = "url", nullable = false)
     private String url;
 
-    @ColumnDefault("0")
-    @Column(name = "status", nullable = false)
-    private Boolean status = false;
+    @Column(name = "target_token", nullable = false)
+    private String targetToken;
 
     @Column(name = "create_datetime", nullable = false)
     @CreatedDate
     private LocalDateTime createDatetime;
 
+    @Builder
+    public Notification(Long notiId, Long refId, RefType refType, String content, String url, String targetToken) {
+        this.notiId = notiId;
+        this.refId = refId;
+        this.refType = refType;
+        this.content = content;
+        this.url = url;
+        this.targetToken = targetToken;
+    }
 }
