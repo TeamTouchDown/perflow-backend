@@ -12,6 +12,7 @@ spring:
     properties:
       hibernate:
         ddl-auto: update
+        show_sql: true
   mail:
     host: smtp.gmail.com
     port: ${spring.mail.port}
@@ -26,12 +27,16 @@ spring:
           auth: true
   config:
     import: "classpath:API-KEY.yml"
-
   data:
     web:
       pageable:
         default-page-size: 10
         max-page-size: 1000
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: ${spring.rabbitmq.username}
+    password: ${spring.rabbitmq.password}
 
 token:
   secret: ${token.secret}
@@ -57,3 +62,6 @@ gemini:
     key: ${gemini.api.key}
     url: ${gemini.api.url}
     model: ${gemini.api.model}
+
+fcm:
+  service-account-file: src/main/resources/${fcm.account-key}
