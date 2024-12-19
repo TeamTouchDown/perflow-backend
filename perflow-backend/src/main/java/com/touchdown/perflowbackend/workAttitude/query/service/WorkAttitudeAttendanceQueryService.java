@@ -130,12 +130,14 @@ public class WorkAttitudeAttendanceQueryService {
                         .orElseThrow(() ->
                                 new CustomException(ErrorCode.NOT_FOUND_EMP))
                         .getName();
+                int year = startOfWeek.getYear();
                 summaries.add(new WorkAttitudeAttendanceSummaryResponseDTO(
                         weekIndex[0] + "주차",
                         (int) (totalMinutes / 60),
                         (int) (totalMinutes % 60),
                         empId,
-                        empName
+                        empName,
+                        year
                 ));
             });
             weekIndex[0]++;
@@ -166,6 +168,7 @@ public class WorkAttitudeAttendanceQueryService {
                                         .sum();
                                 String empId = empEntry.getKey(); // 사원의 empId
                                 String empName = empEntry.getValue().get(0).getEmpId().getName(); // 사원의 이름
+                                int year = empEntry.getValue().get(0).getCheckInDateTime().getYear();
 
                                 // DTO 생성하여 반환
                                 return new WorkAttitudeAttendanceSummaryResponseDTO(
@@ -173,7 +176,8 @@ public class WorkAttitudeAttendanceQueryService {
                                         (int) (totalMinutes / 60), // 총 시간
                                         (int) (totalMinutes % 60), // 총 분
                                         empId, // empId
-                                        empName // empName
+                                        empName, // empName
+                                        year
                                 );
                             });
                 })
