@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class KPIDetailRequestDTO {
 
+    private final String status;
+
     private final String goal;
 
     private final Long goalValue;

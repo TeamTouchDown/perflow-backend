@@ -11,12 +11,14 @@ public interface KPIStatusQueryRepository extends JpaRepository<KpiStatus, Long>
             "s.passReason" +
             ") " +
             "FROM KpiStatus s " +
-            "JOIN s.kpi k ON s.kpiPassId = :kpiId " +
-            "JOIN k.emp e ON e.empId = :empId " +
-            "WHERE s.createDatetime = (" +
+            "JOIN s.kpi k " +
+            "JOIN k.emp e " +
+            "WHERE e.empId = :empId " +
+            "AND k.kpiId = :kpiId " +
+            "AND s.createDatetime = (" +
             "   SELECT MAX(subS.createDatetime) " +
             "   FROM KpiStatus subS " +
-            "   WHERE subS.kpiPassId = :kpiId" +
+            "   WHERE subS.kpi.kpiId = :kpiId" +
             ")")
             KPIRejectReponseDTO findrejectbyempIdandkpiId(String empId, Long kpiId);
 }
