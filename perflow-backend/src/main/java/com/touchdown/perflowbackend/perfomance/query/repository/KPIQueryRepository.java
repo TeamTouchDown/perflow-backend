@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface KPIQueryRepository extends JpaRepository<Kpi, Long> {
 
     // 사번을 통해 개인 KPI 목록 조회
-    @Query("SELECT new com.touchdown.perflowbackend.perfomance.query.dto.KPIDetailResponseDTO(r.kpiId, r.emp.empId, r.goal, r.goalValue,r.goalValueUnit,r.goalDetail, r.currentValue, r.status) " +
+    @Query("SELECT new com.touchdown.perflowbackend.perfomance.query.dto.KPIDetailResponseDTO(r.kpiId, r.emp.empId, r.goal, r.goalValue,r.goalValueUnit,r.goalDetail, r.currentValue, r.status, r.personalType) " +
             "FROM Kpi r JOIN Employee e ON e.empId = :empId WHERE (r.status != com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiCurrentStatus.EXPIRED AND r.status != com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiCurrentStatus.ACTIVE) " +
              "AND r.personalType = com.touchdown.perflowbackend.perfomance.command.domain.aggregate.PersonalType.PERSONAL")
     List<KPIDetailResponseDTO> findPersonalKPIsByEmpId(String empId);
@@ -26,7 +26,7 @@ public interface KPIQueryRepository extends JpaRepository<Kpi, Long> {
     Optional<KPILimitResponseDTO> findPersonalKPILimitByEmpId(String empId);
 
     // 사번을 통해 팀 KPI 목록 조회
-    @Query("SELECT new com.touchdown.perflowbackend.perfomance.query.dto.KPIDetailResponseDTO(r.kpiId, r.emp.empId, r.goal, r.goalValue,r.goalValueUnit,r.goalDetail, r.currentValue, r.status) " +
+    @Query("SELECT new com.touchdown.perflowbackend.perfomance.query.dto.KPIDetailResponseDTO(r.kpiId, r.emp.empId, r.goal, r.goalValue,r.goalValueUnit,r.goalDetail, r.currentValue, r.status, r.personalType) " +
             "FROM Kpi r JOIN Employee e ON e.empId = :empId WHERE (r.status != com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiCurrentStatus.EXPIRED AND r.status != com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiCurrentStatus.ACTIVE) " +
             "AND r.personalType = com.touchdown.perflowbackend.perfomance.command.domain.aggregate.PersonalType.TEAM")
     List<KPIDetailResponseDTO> findTeamKPIsByEmpId(String empId);
