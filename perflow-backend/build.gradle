@@ -52,6 +52,12 @@ dependencies {
     implementation 'software.amazon.awssdk:auth:2.20.36'
     implementation 'software.amazon.awssdk:regions:2.20.36'
 
+    // RabbitMQ
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+    // FCM
+    implementation 'com.google.firebase:firebase-admin:9.2.0'
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
@@ -60,7 +66,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
 
     // 엑셀 파일 읽고 수정을 위한 Apache POI 의존성 추가
     implementation 'org.apache.poi:poi:5.2.3'
@@ -73,7 +78,6 @@ dependencies {
     //QR 인증
     implementation 'com.google.zxing:core:3.4.1'
     implementation 'com.google.zxing:javase:3.4.1'
-
 
 }
 
