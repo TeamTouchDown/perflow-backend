@@ -8,6 +8,8 @@ import lombok.Getter;
 @Builder
 public class KPIDetailResponseDTO {
 
+    private final Long kpiId;
+
     private final String empId;
 
     private final String goal;
@@ -22,8 +24,9 @@ public class KPIDetailResponseDTO {
 
     private final KpiCurrentStatus kpiCurrentStatus;
 
-    public KPIDetailResponseDTO(String empId, String goal, Long goalValue, String goalValueUnit, String goalDetail, double currentValue, KpiCurrentStatus status) {
+    public KPIDetailResponseDTO(Long kpiId, String empId, String goal, Long goalValue, String goalValueUnit, String goalDetail, double currentValue, KpiCurrentStatus status) {
 
+        this.kpiId = kpiId;
         this.empId = empId;
         this.goal = goal;
         this.goalValue = goalValue;
