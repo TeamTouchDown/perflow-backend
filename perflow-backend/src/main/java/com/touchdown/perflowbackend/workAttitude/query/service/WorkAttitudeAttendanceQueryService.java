@@ -168,7 +168,9 @@ public class WorkAttitudeAttendanceQueryService {
                                         .sum();
                                 String empId = empEntry.getKey(); // 사원의 empId
                                 String empName = empEntry.getValue().get(0).getEmpId().getName(); // 사원의 이름
+
                                 int year = empEntry.getValue().get(0).getCheckInDateTime().getYear();
+
 
                                 // DTO 생성하여 반환
                                 return new WorkAttitudeAttendanceSummaryResponseDTO(
@@ -178,6 +180,7 @@ public class WorkAttitudeAttendanceQueryService {
                                         empId, // empId
                                         empName, // empName
                                         year
+
                                 );
                             });
                 })

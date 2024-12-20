@@ -170,6 +170,7 @@ public class EmployeeCommandService {
         String pwd = passwordEncoder.encode(employeePwdCreateDTO.getPassword());
 
         employee.registerPassword(pwd);
+        employee.updateStatus(EmployeeStatus.ACTIVE);
 
         employeeCommandRepository.save(employee);
     }
@@ -186,6 +187,7 @@ public class EmployeeCommandService {
         employeeCommandRepository.save(employee);
     }
 
+    @Transactional
     public TokenResponseDTO reissueToken(String refreshToken) {
 
         String token = refreshToken.substring(7);
@@ -269,7 +271,6 @@ public class EmployeeCommandService {
                 .contact(row[9])
                 .email(row[10])
                 .joinDate(LocalDate.parse(row[11]))
-                .Status(EmployeeStatus.valueOf(row[12]))
                 .build();
     }
 
@@ -291,4 +292,10 @@ public class EmployeeCommandService {
         );
     }
 
+    public void redirectToPwdRegist(String token) {
+
+        if(!jwtUtil.validateToken(token)) {
+            throw new CustomException(ErrorCode.NOT_VALID_ACCESS_TOKEN);
+        }
+    }
 }

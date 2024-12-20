@@ -82,7 +82,7 @@ public class PerformanceMapper {
         return HrPerfoInquiry.builder()
                 .hrPerfo(hrPerfo)
                 .reason(reason)
-                .status(PassStatus.WAIT)
+                .status(PassStatus.APPROVAL)
                 .build();
     }
 
@@ -116,13 +116,13 @@ public class PerformanceMapper {
     }
 
     // KPI 처리 생성
-    public static KpiProgressStatus kpipassDTOtokpiProgress(Employee emp, Kpi kpi, CreateKpiPassDTO createKpiPassDTO) {
+    public static KpiProgressStatus kpipassDTOtokpiProgress(Employee emp, Kpi kpi, CreateKpiProgressDTO createKpiProgressDTO) {
 
         return KpiProgressStatus.builder()
                 .kpi(kpi)
                 .emp(emp)
-                .progressStatus(createKpiPassDTO.getProgress())
-                .updateReason(createKpiPassDTO.getReason())
+                .progressStatus(createKpiProgressDTO.getProgress())
+                .updateReason(createKpiProgressDTO.getReason())
                 .build();
     }
 
@@ -146,6 +146,17 @@ public class PerformanceMapper {
                 .emp(emp)
                 .perfoType(perfoType)
                 .aiSummary(summary)
+                .build();
+    }
+
+    // KPI 공개
+    public static KpiStatus createKpiStatus(Employee emp, Kpi kpi, CreateKpiPassDTO createKpiPassDTO) {
+
+        return KpiStatus.builder()
+                .emp(emp)
+                .kpi(kpi)
+                .passStatus(PassStatus.valueOf(createKpiPassDTO.getStatus()))
+                .passReason(createKpiPassDTO.getReason())
                 .build();
     }
 }

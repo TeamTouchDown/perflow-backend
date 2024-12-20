@@ -1,12 +1,15 @@
 package com.touchdown.perflowbackend.perfomance.query.dto;
 
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiCurrentStatus;
+import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.PersonalType;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
 public class KPIDetailResponseDTO {
+
+    private final Long kpiId;
 
     private final String empId;
 
@@ -22,8 +25,11 @@ public class KPIDetailResponseDTO {
 
     private final KpiCurrentStatus kpiCurrentStatus;
 
-    public KPIDetailResponseDTO(String empId, String goal, Long goalValue, String goalValueUnit, String goalDetail, double currentValue, KpiCurrentStatus status) {
+    private final PersonalType personalType;
 
+    public KPIDetailResponseDTO(Long kpiId, String empId, String goal, Long goalValue, String goalValueUnit, String goalDetail, double currentValue, KpiCurrentStatus status, PersonalType personalType) {
+
+        this.kpiId = kpiId;
         this.empId = empId;
         this.goal = goal;
         this.goalValue = goalValue;
@@ -31,6 +37,7 @@ public class KPIDetailResponseDTO {
         this.goalDetail = goalDetail;
         this.currentValue = currentValue;
         this.kpiCurrentStatus = status;
+        this.personalType = personalType;
     }
 }
 

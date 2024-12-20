@@ -102,6 +102,9 @@ public class DocMapper {
                 .docId(doc.getDocId())
                 .title(doc.getTitle())
                 .createUserName(doc.getCreateUser().getName())
+//                .empId(doc.getCreateUser().getEmpId())
+//                .approveLineId(doc.getApproveLines().getApproveLIneId())
+//                .approveSbjId(doc.getApproveLines().getApproveSbj.getApproveSbjId())
                 .createDatetime(doc.getCreateDatetime())
                 .build();
     }

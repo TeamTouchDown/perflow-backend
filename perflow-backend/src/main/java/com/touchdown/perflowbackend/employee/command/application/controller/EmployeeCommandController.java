@@ -10,9 +10,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Slf4j
 @RestController
@@ -24,6 +28,7 @@ public class EmployeeCommandController {
     private static final String ACCESS_TOKEN_HEADER = "Authorization";
     private static final String REFRESH_TOKEN_HEADER = "refreshToken";
     private static final String BEARER_PREFIX = "Bearer ";
+    private static final String REDIRECT_URI = "http://localhost:5173/employees/pwd";
 
     @PostMapping("/hr/employees")
     public ResponseEntity<SuccessCode> createEmployee(
@@ -112,6 +117,10 @@ public class EmployeeCommandController {
     @PutMapping("/employee/pwd")
     public ResponseEntity<SuccessCode> createEmployeePassword(@RequestBody EmployeePwdCreateDTO employeePwdCreateDTO) {
 
+        log.warn(employeePwdCreateDTO.getEmpId());
+
+        employeePwdCreateDTO.setEmpId(employeePwdCreateDTO.getEmpId());
+
         employeeCommandService.createEmployeePassword(employeePwdCreateDTO);
 
         return ResponseEntity.ok(SuccessCode.SUCCESS);
@@ -145,4 +154,15 @@ public class EmployeeCommandController {
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
 
+    @GetMapping("/pwdRequest/{token}")
+    public ResponseEntity<Object> redirectToPwdRegist(
+            @PathVariable(name = "token") String token
+    ) throws URISyntaxException {
+        employeeCommandService.redirectToPwdRegist(token);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(new URI(REDIRECT_URI+"?token="+token));
+
+        return new ResponseEntity<>(headers, HttpStatus.PERMANENT_REDIRECT);
+    }
 }
