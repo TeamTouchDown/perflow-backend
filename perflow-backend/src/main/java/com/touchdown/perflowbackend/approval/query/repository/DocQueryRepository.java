@@ -25,8 +25,15 @@ public interface DocQueryRepository extends JpaRepository<Doc, Long> {
         "JOIN line.approveSbjs sbj " +
         "WHERE sbj.sbjUser.empId = :empId " +  // 현재 사용자에 해당하는 결재 주체만
         "AND sbj.status = 'ACTIVATED' " +     // 활성화된 결재 주체
-        "AND line.status = 'PENDING' " +      // 처리 대기 중인 결재선
-        "AND doc.status = 'ACTIVATED' " +     // 활성화된 문서
+        "AND sbj.status IN (com.touchdown.perflowbackend.approval.command.domain.aggregate.Status.ACTIVATED, " +
+        "                   com.touchdown.perflowbackend.approval.command.domain.aggregate.Status.PENDING) " +      // 처리 대기 중인 결재선
+        "AND doc.status = 'ACTIVATED' " +   // 활성화된 문서
+        "AND NOT EXISTS ( " +   // 현재 결재선보다 approveLineOrder 가 낮은 결재선 중 승인되지 않은 상태가 있으면 제외
+        "   SELECT 1 FROM ApproveLine prevLine " +
+        "   WHERE prevLine.doc = doc " +
+        "   AND prevLine.approveLineOrder < line.approveLineOrder " +
+        "   AND prevLine.status <> 'APPROVED' " +
+        ") " +
         "ORDER BY doc.docId ASC")  // 오래된 순 정렬
     Page<WaitingDocListResponseDTO> findWaitingDocsByUser(@Param("empId") String empId, Pageable pageable);
 
