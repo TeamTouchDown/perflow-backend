@@ -18,7 +18,11 @@ public class AnnouncementQueryController {
     private final AnnouncementQueryService announcementQueryService;
 
     @GetMapping
-    public ResponseEntity<Page<AnnouncementResponseDTO>> readAll(Pageable pageable) {
+    public ResponseEntity<Page<AnnouncementResponseDTO>> readAll(@RequestParam(value = "deptName", required = false) String deptName, Pageable pageable) {
+
+        if (deptName != null) {
+            return ResponseEntity.ok(announcementQueryService.getAnnouncementByDeptName(deptName, pageable));
+        }
 
         return ResponseEntity.ok(announcementQueryService.readAll(pageable));
     }
@@ -34,14 +38,7 @@ public class AnnouncementQueryController {
             @RequestParam String title,
             Pageable pageable
     ) {
-        return ResponseEntity.ok(announcementQueryService.searchAnnouncementsByTitle(title, pageable));
-    }
 
-    @GetMapping("/search/empName")
-    public ResponseEntity<Page<AnnouncementResponseDTO>> searchByEmpName(
-            @RequestParam String empName,
-            Pageable pageable
-    ) {
-        return ResponseEntity.ok(announcementQueryService.searchAnnouncementsByEmpName(empName, pageable));
+        return ResponseEntity.ok(announcementQueryService.searchAnnouncementsByTitle(title, pageable));
     }
 }

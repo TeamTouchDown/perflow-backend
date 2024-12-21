@@ -93,7 +93,7 @@ public class Employee extends BaseEntity {
         this.contact = registerDTO.getContact();
         this.email = registerDTO.getEmail();
         this.joinDate = registerDTO.getJoinDate();
-        this.status = EmployeeStatus.ACTIVE;
+        this.status = EmployeeStatus.PENDING;
     }
 
     public void updateEmployee(EmployeeUpdateRequestDTO updateRequestDTO) {

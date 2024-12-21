@@ -2,8 +2,10 @@ package com.touchdown.perflowbackend.perfomance.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.perfomance.command.application.dto.CreateKpiPassDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,4 +34,12 @@ public class KpiStatus extends BaseEntity {
 
     @Column(name = "pass_reason", nullable = false)
     private String passReason;
+
+    @Builder
+    public KpiStatus(Kpi kpi, Employee emp, PassStatus passStatus, String passReason) {
+        this.kpi = kpi;
+        this.emp = emp;
+        this.passStatus = passStatus;
+        this.passReason = passReason;
+    }
 }

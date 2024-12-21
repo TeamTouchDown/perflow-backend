@@ -21,5 +21,7 @@ public class WorkAttitudeAttendanceSummaryResponseDTO {
 
     private String empName;
 
+    private int year;
+
 
 }

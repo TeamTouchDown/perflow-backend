@@ -1,8 +1,6 @@
 package com.touchdown.perflowbackend.workAttitude.query.repository;
 
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Attendance;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,15 +8,16 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.util.List;
 
+
 public interface WorkAttitudeAttendanceQueryRepository extends JpaRepository<Attendance, Long> {
 
     // 사원 단위로 전체 출퇴근 기록 조회
     @Query("SELECT a FROM Attendance a WHERE a.empId.empId = :empId")
-    Page<Attendance> findByEmpId(String empId, Pageable pageable);
+    List<Attendance> findByEmpId(@Param("empId") String empId);
 
     // 팀원들의 전체 출퇴근 기록 조회 (팀장용)
     @Query("SELECT a FROM Attendance a WHERE a.empId.empId IN :empIds")
-    Page<Attendance> findByEmpIds(List<String> empIds, Pageable pageable);
+    List<Attendance> findByEmpIds(@Param("empIds") List<String> empIds);
 
     // 특정 부서의 전체 출퇴근 기록 조회 (팀장 및 인사팀용)
     @Query("SELECT a FROM Attendance a WHERE a.empId.dept.departmentId = :deptId")
