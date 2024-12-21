@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 public class Appoint {
 
     @Id
-    @Column(name = "appointId", nullable = false)
+    @Column(name = "appoint_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long appointId;
 
@@ -37,9 +38,8 @@ public class Appoint {
     @Column(name = "after", nullable = false, length = 30)
     private String after;
 
-    @Column(name = "appoint_datetime", nullable = false)
-    @CreatedDate
-    private LocalDateTime appointDatetime;
+    @Column(name = "appoint_date", nullable = false)
+    private LocalDate appointDate;
 
     @Builder
     public Appoint(AppointCreateDTO appointCreateDTO, String after, String before, Employee emp) {
@@ -48,6 +48,7 @@ public class Appoint {
         this.type = appointCreateDTO.getType();
         this.before = before;
         this.after = after;
+        this.appointDate = appointCreateDTO.getAppointDate();
     }
 
 

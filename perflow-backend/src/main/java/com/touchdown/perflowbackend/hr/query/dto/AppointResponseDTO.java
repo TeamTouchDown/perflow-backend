@@ -1,6 +1,8 @@
-package com.touchdown.perflowbackend.hr.command.application.dto.Appoint;
+package com.touchdown.perflowbackend.hr.query.dto;
+
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Type;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,13 +11,16 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @AllArgsConstructor
-public class AppointCreateDTO {
+@Builder
+public class AppointResponseDTO {
 
-    private String empId;
+    private String empName;
 
     private Type type;
 
-    private Long after;
+    private String before;
+
+    private String after;
 
     private LocalDate appointDate;
 }
