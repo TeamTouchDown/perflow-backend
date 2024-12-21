@@ -19,6 +19,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class Job extends BaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "job_id", nullable = false)
     private Long jobId;
 
@@ -39,11 +40,10 @@ public class Job extends BaseEntity {
     @Builder
     public Job(JobCreateDTO createDTO, Department dept) {
 
-        this.jobId = createDTO.getJobId();
         this.dept = dept;
         this.name = createDTO.getName();
         this.responsibility = createDTO.getResponsibility();
-        this.status = createDTO.getStatus();
+        this.status = Status.ACTIVE;
     }
 
     public void updateJob(JobUpdateDTO jobUpdateDTO, Department department) {

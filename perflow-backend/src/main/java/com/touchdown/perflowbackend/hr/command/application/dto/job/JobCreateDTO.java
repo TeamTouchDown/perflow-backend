@@ -12,8 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class JobCreateDTO {
 
-    private Long jobId;
-
     private Long deptId;
 
     private String name;

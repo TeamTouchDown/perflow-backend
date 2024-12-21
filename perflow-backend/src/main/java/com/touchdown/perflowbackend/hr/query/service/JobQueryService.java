@@ -23,15 +23,13 @@ public class JobQueryService {
 
         List<JobResponseDTO> jobResponseDTO = JobMapper.toJobResponseDTOList(pages.getContent());
 
-        JobResponseListDTO josResponseListDTO = JobResponseListDTO.builder()
+        return JobResponseListDTO.builder()
                 .jobResponseDTOList(jobResponseDTO)
                 .totalPages(pages.getTotalPages())
                 .totalItems((int) pages.getTotalElements())
                 .currentPage(pages.getNumber() + 1)
                 .pageSize(pages.getSize())
                 .build();
-
-        return josResponseListDTO;
     }
 
     private Page<Job> getJobList(Pageable pageable) {
