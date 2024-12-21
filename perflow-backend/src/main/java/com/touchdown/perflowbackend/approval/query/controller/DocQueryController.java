@@ -58,6 +58,15 @@ public class DocQueryController {
         return ResponseEntity.ok(docQueryService.getInboxDocList(pageable, empId, deptId, positionLevel));
     }
 
+    // 수신함 문서 상세 조회
+    @GetMapping("inbox/{docId}")
+    public ResponseEntity<InboxDocDetailResponseDTO> getInboxDoc(@PathVariable Long docId) {
+
+        String empId = EmployeeUtil.getEmpId();
+
+        return ResponseEntity.ok(docQueryService.getOneInboxDoc(docId, empId));
+    }
+
     // 대기 문서 목록 조회
     @GetMapping("/waiting-docs")
     public ResponseEntity<Page<WaitingDocListResponseDTO>> getWaitingDocs(Pageable pageable) {

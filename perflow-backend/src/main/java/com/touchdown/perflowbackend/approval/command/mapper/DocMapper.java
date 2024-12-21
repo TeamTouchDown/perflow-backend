@@ -4,11 +4,11 @@ import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRe
 import com.touchdown.perflowbackend.approval.command.application.dto.ShareDTO;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.approval.query.dto.*;
+import com.touchdown.perflowbackend.approval.query.repository.DocQueryRepository;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,26 +35,6 @@ public class DocMapper {
                 .approveLineOrder(approveLine.getApproveLineOrder())
                 .build();
     }
-
-//    public static MyApproveLineGroupResponseDTO toMyApproveLineGroupResponseDTO(
-//            Long groupId,
-//            String name,
-//            String description,
-//            LocalDateTime createDatetime,
-//            List<ApproveLine> lines
-//    ) {
-//        List<MyApproveLineResponseDTO> lineDTOs = lines.stream()
-//                .map(DocMapper::toMyApproveLineResponseDTO)
-//                .toList();
-//
-//        return MyApproveLineGroupResponseDTO.builder()
-//                .groupId(groupId)
-//                .name(name)
-//                .description(description)
-//                .createDatetime(createDatetime)
-//                .lines(lineDTOs)
-//                .build();
-//    }
 
     // 나의 결재선 상세 조회 시
     public static MyApproveLineDetailResponseDTO toMyApproveLineDetailResponseDTO(List<ApproveLine> lines, ApproveLine firstLine) {
@@ -274,4 +254,101 @@ public class DocMapper {
                 .build();
     }
 
+    // 수신함 문서 상세 조회 시
+    public static InboxDocDetailResponseDTO toInboxDocDetailResponseDTO(Doc doc, String empId) {
+
+        String myStatus = getMyStatus(doc, empId);
+        String docStatus = getDocStatus(doc.getStatus());
+        
+        return InboxDocDetailResponseDTO.builder()
+                .docId(doc.getDocId())
+                .title(doc.getTitle())
+                .fields(mapFields(doc.getDocFields())) // 문서 필드 매핑
+                .approveLines(mapApproveLines(doc.getApproveLines())) // 결재선 매핑
+                .shares(mapShares(doc.getShares())) // 공유 설정 매핑
+                .myStatus(myStatus) // 내 결재 상태
+                .docStatus(docStatus) // 문서 상태
+                .build();
+    }
+
+    private static List<InboxDocShareDTO> mapShares(List<DocShareObj> shares) {
+
+        return shares.stream()
+                .map(share -> InboxDocShareDTO.builder()
+                        .shareEmpDeptType(share.getShareEmpDeptType())
+                        .empIds(
+                                share.getShareEmpDeptType() == EmpDeptType.EMPLOYEE && share.getShareObjUser() != null
+                                        ? List.of(share.getShareObjUser().getEmpId())
+                                        : List.of()
+                        )
+                        .empNames(
+                                share.getShareEmpDeptType() == EmpDeptType.EMPLOYEE && share.getShareObjUser() != null
+                                        ? List.of(share.getShareObjUser().getName())
+                                        : List.of()
+                        )
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private static List<InboxDocApproveLineDTO> mapApproveLines(List<ApproveLine> approveLines) {
+
+        return approveLines.stream()
+                .map(line -> InboxDocApproveLineDTO.builder()
+                        .approveLineId(line.getApproveLineId())
+                        .groupId(line.getGroupId())
+                        .approveType(line.getApproveType())
+                        .approveLineOrder(line.getApproveLineOrder())
+                        .pllGroupId(line.getPllGroupId())
+                        .approveTemplateType(line.getApproveTemplateType())
+                        .approveSbjs(mapApproveSubjects(line.getApproveSbjs())) // 결재 주체 매핑
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private static List<InboxDocApproveSbjDTO> mapApproveSubjects(List<ApproveSbj> approveSbjs) {
+
+        return approveSbjs.stream()
+                .map(sbj -> InboxDocApproveSbjDTO.builder()
+                        .empDeptType(sbj.getEmpDeptType())
+                        .empId(sbj.getSbjUser() != null ? sbj.getSbjUser().getEmpId() : null)
+                        .empName(sbj.getSbjUser() != null ? sbj.getSbjUser().getName() : null)
+                        .approveLineId(sbj.getApproveLine().getApproveLineId())
+                        .approveSbjId(sbj.getApproveSbjId())
+                        .status(sbj.getStatus())
+                        .comment(sbj.getComment())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    // 문서 상태 표시
+    private static String getDocStatus(Status status) {
+        return switch (status) {
+            case APPROVED -> "승인";
+            case REJECTED -> "반려";
+            case ACTIVATED -> "진행";
+            default -> "알 수 없음";
+        };
+    }
+
+    // 내 결재 상태
+    private static String getMyStatus(Doc doc, String empId) {
+        for (ApproveLine line : doc.getApproveLines()) {
+            for (ApproveSbj sbj : line.getApproveSbjs()) {
+                if (sbj.getSbjUser() != null && sbj.getSbjUser().getEmpId().equals(empId)) {
+                    return myStatusToKor(sbj.getStatus()); // 예: "ACTIVATED", "APPROVED"
+                }
+            }
+        }
+        return "내가 결재선에 없음";  // 내가 결재 주체에 포함되지 않음
+    }
+
+    private static String myStatusToKor(Status status) {
+
+        return switch (status) {
+            case APPROVED -> "승인";
+            case REJECTED -> "반려";
+            case ACTIVATED -> "진행";
+            default -> "알 수 없음";
+        };
+    }
 }
