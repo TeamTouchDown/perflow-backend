@@ -69,6 +69,17 @@ public class DocQueryService {
         return docQueryRepository.findInboxDocs(pageable, empId, deptId, positionLevel);
     }
 
+    // 수신함 문서 상세 조회
+    public InboxDocDetailResponseDTO getOneInboxDoc(Long docId, String empId) {
+
+        // 문서 조회
+        Doc doc = docQueryRepository.findById(docId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DOC));
+
+        return DocMapper.toInboxDocDetailResponseDTO(doc, empId);
+
+    }
+
     // 대기 문서 상세 조회
     @Transactional(readOnly = true)
     public WaitingDocDetailResponseDTO getOneWaitingDoc(Long docId) {

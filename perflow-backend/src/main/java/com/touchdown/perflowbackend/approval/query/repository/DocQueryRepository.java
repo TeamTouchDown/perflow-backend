@@ -11,13 +11,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface DocQueryRepository extends JpaRepository<Doc, Long> {
 
-//    @Query("SELECT DISTINCT doc FROM Doc doc " +
-//            "JOIN doc.approveLines line " +
-//            "JOIN line.approveSbjs sbj " +
-//            "WHERE sbj.sbjUser.empId = :empId " +
-//            "AND sbj.status = 'ACTIVATED' " +
-//            "AND line.status = 'PENDING' " +
-//            "AND doc.status = 'ACTIVATED' ")
 @Query("SELECT DISTINCT new com.touchdown.perflowbackend.approval.query.dto.WaitingDocListResponseDTO(" +
         "doc.docId, doc.title, doc.createUser.name, doc.createUser.empId, " +
         "sbj.approveLine.approveLineId, sbj.approveSbjId, doc.createDatetime) " +
