@@ -63,6 +63,12 @@ public class DocQueryService {
 //        return docs.map(DocMapper::toWaitingDocListResponseDTO);
     }
 
+    // 수신함 문서 목록 조회
+    public Page<InboxDocListResponseDTO> getInboxDocList(Pageable pageable, String empId, Long deptId, Integer positionLevel) {
+
+        return docQueryRepository.findInboxDocs(pageable, empId, deptId, positionLevel);
+    }
+
     // 대기 문서 상세 조회
     @Transactional(readOnly = true)
     public WaitingDocDetailResponseDTO getOneWaitingDoc(Long docId) {

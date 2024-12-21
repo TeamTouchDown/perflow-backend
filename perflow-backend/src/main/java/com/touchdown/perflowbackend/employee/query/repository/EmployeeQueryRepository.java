@@ -34,4 +34,8 @@ public interface EmployeeQueryRepository extends JpaRepository<Employee, String>
 
     // 이름으로 사원 검색
     Page<Employee> findByNameContaining(@Param("name") String name, Pageable pageable);
+
+    // 사원의 부서 id 검색
+    @Query("SELECT e.dept.departmentId FROM Employee e WHERE e.empId = :empId")
+    Long findDeptIdByEmpId(String empId);
 }
