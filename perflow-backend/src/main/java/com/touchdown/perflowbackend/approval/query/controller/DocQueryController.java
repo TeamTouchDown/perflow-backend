@@ -8,11 +8,11 @@ import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -91,6 +91,21 @@ public class DocQueryController {
         String empId = EmployeeUtil.getEmpId();
 
         return ResponseEntity.ok(docQueryService.getWaitingDocList(pageable, empId));
+    }
+
+    // 대기 문서 목록 검색
+    @GetMapping("/waiting-docs/search")
+    public ResponseEntity<Page<WaitingDocListResponseDTO>> searchWaitingDocs(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String createUser,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            Pageable pageable
+    ) {
+
+        String empId = EmployeeUtil.getEmpId();
+
+        return ResponseEntity.ok(docQueryService.searchWaitingDocList(title, createUser, fromDate, toDate, pageable, empId));
     }
 
     // 대기 문서 상세 조회

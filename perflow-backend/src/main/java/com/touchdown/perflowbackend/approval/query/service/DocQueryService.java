@@ -1,21 +1,28 @@
 package com.touchdown.perflowbackend.approval.query.service;
 
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveLine;
+import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.Doc;
+import com.touchdown.perflowbackend.approval.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.approval.command.mapper.DocMapper;
 import com.touchdown.perflowbackend.approval.query.dto.*;
 import com.touchdown.perflowbackend.approval.query.repository.ApproveLineQueryRepository;
 import com.touchdown.perflowbackend.approval.query.repository.DocFieldQueryRepository;
 import com.touchdown.perflowbackend.approval.query.repository.DocQueryRepository;
+import com.touchdown.perflowbackend.approval.query.specification.DocSpecification;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -95,6 +102,62 @@ public class DocQueryService {
 
         // doc id 페이징 처리
         return docQueryRepository.findWaitingDocsByUser(empId, pageable);
+    }
+
+    // 대기 문서 목록 검색
+    @Transactional(readOnly = true)
+    public Page<WaitingDocListResponseDTO> searchWaitingDocList(
+            String title,
+            String createUser,
+            LocalDate fromDate,
+            LocalDate toDate,
+            Pageable pageable,
+            String empId
+    ) {
+
+        // LocalDate -> LocalDatetTime
+        LocalDateTime fromDateTime = fromDate != null ? fromDate.atStartOfDay() : null;
+        LocalDateTime toDateTime = toDate != null ? toDate.atTime(23, 59, 59) : null;
+
+        // 동적 검색 조건 생성
+        Specification<Doc> specification = Specification
+                .where(DocSpecification.titleContains(title))
+                .and(DocSpecification.createUserNameContains(createUser))
+                .and(DocSpecification.createDateBetween(fromDateTime, toDateTime))
+                .and(DocSpecification.hasActiveApproveSbjForUser(empId));
+
+        return docQueryRepository.findAll(specification, pageable)
+                .map(doc -> WaitingDocListResponseDTO.builder()
+                        .docId(doc.getDocId())
+                        .title(doc.getTitle())
+                        .createUserName(doc.getCreateUser().getName())  // 작성자 이름
+                        .empId(doc.getCreateUser().getEmpId())  // 작성자 id
+                        .approveLineId(getUserApproveLineId(doc, empId))
+                        .approveSbjId(getUserApproveSbjId(doc, empId))
+                        .createDatetime(doc.getCreateDatetime())
+                        .build());
+    }
+
+    // 현재 사용자가 속한 결재 주체 id
+    private Long getUserApproveSbjId(Doc doc, String empId) {
+
+        return doc.getApproveLines().stream()
+                .flatMap(line -> line.getApproveSbjs().stream())
+                .filter(sbj -> sbj.getSbjUser().getEmpId().equals(empId))
+                .findFirst()
+                .map(ApproveSbj::getApproveSbjId)
+                .orElse(null);
+    }
+
+    // 현재 사용자가 속한 결재선 id
+    private Long getUserApproveLineId(Doc doc, String empId) {
+
+        return doc.getApproveLines().stream()
+                .filter(line -> line.getApproveSbjs().stream()
+                        .anyMatch(sbj -> sbj.getSbjUser().getEmpId().equals(empId)))
+                .findFirst()
+                .map(ApproveLine::getApproveLineId)
+                .orElse(null);
     }
 
     // 대기 문서 상세 조회

@@ -8,12 +8,14 @@ import com.touchdown.perflowbackend.approval.query.dto.WaitingDocListResponseDTO
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface DocQueryRepository extends JpaRepository<Doc, Long> {
+public interface DocQueryRepository extends JpaRepository<Doc, Long>, JpaSpecificationExecutor<Doc> {
 
-@Query("SELECT DISTINCT new com.touchdown.perflowbackend.approval.query.dto.WaitingDocListResponseDTO(" +
+    // 대기 문서 목록 조회 시
+    @Query("SELECT DISTINCT new com.touchdown.perflowbackend.approval.query.dto.WaitingDocListResponseDTO(" +
         "doc.docId, doc.title, doc.createUser.name, doc.createUser.empId, " +
         "sbj.approveLine.approveLineId, sbj.approveSbjId, doc.createDatetime) " +
         "FROM Doc doc " +
@@ -99,4 +101,6 @@ public interface DocQueryRepository extends JpaRepository<Doc, Long> {
             "AND doc.status <> 'APPROVED' " +
             "ORDER BY sbj.completeDatetime DESC")
     Page<ProcessedDocListResponseDTO> findProcessedDocs(Pageable pageable, String empId);
+
+    // 대기 문서 목록 검색 시
 }
