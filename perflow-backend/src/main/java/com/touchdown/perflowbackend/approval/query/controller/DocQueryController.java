@@ -56,6 +56,8 @@ public class DocQueryController {
         return ResponseEntity.ok(docQueryService.getInboxDocList(pageable, empId, deptId, positionLevel));
     }
 
+    // 수신함 문서 목록 검색
+
     // 수신함 문서 상세 조회
     @GetMapping("/inbox/{docId}")
     public ResponseEntity<InboxDocDetailResponseDTO> getInboxDoc(@PathVariable Long docId) {
@@ -91,7 +93,6 @@ public class DocQueryController {
 
         return ResponseEntity.ok(docQueryService.searchOutboxDocList(title, fromDate, toDate, pageable, empId));
     }
-
 
     // 발신함 문서 상세 조회
     @GetMapping("/outbox/{docId}")
