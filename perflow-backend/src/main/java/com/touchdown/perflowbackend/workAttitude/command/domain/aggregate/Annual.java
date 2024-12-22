@@ -4,9 +4,7 @@ import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
@@ -41,11 +39,12 @@ public class Annual extends BaseEntity { //연차
 
     @Column(name = "annual_status", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
-    private Status annualStatus;
+    private AnnualType annualType;
 
     @Column(name = "annual_reject_reason")
     private String annualRejectReason;
 
+    @Setter
     @ColumnDefault("'ACTIVE'")
     @Column(name = "status", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
@@ -60,8 +59,69 @@ public class Annual extends BaseEntity { //연차
 
     @Column(name = "annual_retroactive_status", length = 30)
     @Enumerated(EnumType.STRING)
-    private Status annualRetroactiveStatus; // 소급 상태 (대기, 승인, 반려)
+    private AnnualRetroactiveStatus annualRetroactiveStatus; // 소급 상태 (대기, 승인, 반려)
 
 
+
+    // Annual 엔티티의 일부 추가 코드
+    @Builder
+    public Annual(Employee empId,
+                  ApproveSbj approveSbjId,
+                  LocalDateTime enrollAnnual,
+                  LocalDateTime annualStart,
+                  LocalDateTime annualEnd,
+                  AnnualType annualType,
+                  String annualRejectReason,
+                  Boolean isAnnualRetroactive,
+                  String annualRetroactiveReason,
+                  AnnualRetroactiveStatus annualRetroactiveStatus,
+                  Status status) {
+        this.empId = empId;
+        this.approveSbjId = approveSbjId;
+        this.enrollAnnual = enrollAnnual;
+        this.annualStart = annualStart;
+        this.annualEnd = annualEnd;
+        this.annualType = annualType;
+        this.annualRejectReason = annualRejectReason;
+        this.isAnnualRetroactive = isAnnualRetroactive;
+        this.annualRetroactiveReason = annualRetroactiveReason;
+        this.annualRetroactiveStatus = annualRetroactiveStatus;
+        this.status = Status.ACTIVATED; // 기본값 설정
+    }
+
+    // 연차 종료일 업데이트 메서드
+    public void updateAnnual(LocalDateTime annualStart,
+                             LocalDateTime annualEnd,
+                             AnnualType annualType) {
+        this.annualStart = annualStart;
+        this.annualEnd = annualEnd;
+        this.annualType = annualType;
+    }
+
+    // 연차 반려 사유 추가 메서드
+    public void rejectAnnual(String rejectReason) {
+        this.status = Status.REJECTED; // 상태 업데이트
+        this.annualRejectReason = rejectReason;
+    }
+
+    // 연차 승인 메서드
+    public void approveAnnual() {
+        this.status = Status.CONFIRMED; // 상태 업데이트
+    }
+
+
+    // 소급 신청 상태 업데이트 메서드
+    public void updateRetroactive(Boolean isRetroactive,
+                                  String retroactiveReason,
+                                  AnnualRetroactiveStatus retroactiveStatus) {
+        this.isAnnualRetroactive = isRetroactive;
+        this.annualRetroactiveReason = retroactiveReason;
+        this.annualRetroactiveStatus = retroactiveStatus;
+    }
+
+    // 연차 상태 삭제 처리 (소프트 삭제)
+    public void softDelete() {
+        this.status = Status.DELETED;
+    }
 
 }
