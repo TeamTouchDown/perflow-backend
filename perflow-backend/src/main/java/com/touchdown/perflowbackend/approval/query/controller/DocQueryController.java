@@ -3,15 +3,11 @@ package com.touchdown.perflowbackend.approval.query.controller;
 import com.touchdown.perflowbackend.approval.query.dto.*;
 import com.touchdown.perflowbackend.approval.query.service.DocQueryService;
 import com.touchdown.perflowbackend.employee.query.repository.EmployeeQueryRepository;
-import com.touchdown.perflowbackend.hr.command.domain.repository.DepartmentCommandRepository;
-import com.touchdown.perflowbackend.hr.command.domain.repository.PositionCommandRepository;
-import com.touchdown.perflowbackend.hr.query.repository.DepartmentQueryRepository;
 import com.touchdown.perflowbackend.hr.query.repository.PositionQueryRepository;
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -65,6 +61,27 @@ public class DocQueryController {
         String empId = EmployeeUtil.getEmpId();
 
         return ResponseEntity.ok(docQueryService.getOneInboxDoc(docId, empId));
+    }
+
+    // 발신함 문서 목록 조회
+    @GetMapping("outbox")
+    public ResponseEntity<Page<OutboxDocListResponseDTO>> getOutBoxDocs(Pageable pageable) {
+
+        // 로그인 한 사원
+        String empId = EmployeeUtil.getEmpId();
+
+        return ResponseEntity.ok(docQueryService.getOutBoxDocList(pageable, empId));
+    }
+
+    // 발신함 문서 상세 조회
+    @GetMapping("outbox/{docId}")
+    public ResponseEntity<OutboxDocDetailResponseDTO> getOutBoxDoc(@PathVariable Long docId) {
+
+        // 로그인 한 사원
+        String empId = EmployeeUtil.getEmpId();
+
+        return ResponseEntity.ok(docQueryService.getOneOutboxDoc(docId, empId));
+
     }
 
     // 대기 문서 목록 조회

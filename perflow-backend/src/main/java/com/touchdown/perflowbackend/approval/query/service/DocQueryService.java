@@ -2,7 +2,6 @@ package com.touchdown.perflowbackend.approval.query.service;
 
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveLine;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.Doc;
-import com.touchdown.perflowbackend.approval.command.domain.aggregate.DocField;
 import com.touchdown.perflowbackend.approval.command.mapper.DocMapper;
 import com.touchdown.perflowbackend.approval.query.dto.*;
 import com.touchdown.perflowbackend.approval.query.repository.ApproveLineQueryRepository;
@@ -16,10 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,23 +49,15 @@ public class DocQueryService {
         return DocMapper.toMyApproveLineDetailResponseDTO(lines, firstLine);
     }
 
-    // 대기 문서 목록 조회
-    @Transactional(readOnly = true)
-    public Page<WaitingDocListResponseDTO> getWaitingDocList(Pageable pageable, String empId) {
-
-        // doc id 페이징 처리
-        return docQueryRepository.findWaitingDocsByUser(empId, pageable);
-
-//        return docs.map(DocMapper::toWaitingDocListResponseDTO);
-    }
-
     // 수신함 문서 목록 조회
+    @Transactional(readOnly = true)
     public Page<InboxDocListResponseDTO> getInboxDocList(Pageable pageable, String empId, Long deptId, Integer positionLevel) {
 
         return docQueryRepository.findInboxDocs(pageable, empId, deptId, positionLevel);
     }
 
     // 수신함 문서 상세 조회
+    @Transactional(readOnly = true)
     public InboxDocDetailResponseDTO getOneInboxDoc(Long docId, String empId) {
 
         // 문서 조회
@@ -78,6 +66,35 @@ public class DocQueryService {
 
         return DocMapper.toInboxDocDetailResponseDTO(doc, empId);
 
+    }
+
+    // 발신함 문서 목록 조회
+    public Page<OutboxDocListResponseDTO> getOutBoxDocList(Pageable pageable, String empId) {
+
+        return docQueryRepository.findOutBoxDocs(pageable, empId);
+    }
+
+    // 발신함 문서 상세 조회
+    public OutboxDocDetailResponseDTO getOneOutboxDoc(Long docId, String empId) {
+
+        // 문서 조회
+        Doc doc = docQueryRepository.findById(docId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DOC));
+
+        // 작성자가 아닌 경우
+        if (!doc.getCreateUser().getEmpId().equals(empId)) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
+        }
+
+        return DocMapper.toOutboxDocDetailResponseDTO(doc);
+    }
+
+    // 대기 문서 목록 조회
+    @Transactional(readOnly = true)
+    public Page<WaitingDocListResponseDTO> getWaitingDocList(Pageable pageable, String empId) {
+
+        // doc id 페이징 처리
+        return docQueryRepository.findWaitingDocsByUser(empId, pageable);
     }
 
     // 대기 문서 상세 조회

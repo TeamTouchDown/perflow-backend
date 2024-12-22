@@ -20,4 +20,8 @@ public class InboxDocListResponseDTO {
     private final LocalDateTime processDatetime;
 
     private final String status;    // 문서 상태(진행, 반려, 승인)
+
+    private final Long approveLineId;
+
+    private final Long approveSbjId;
 }

@@ -64,6 +64,7 @@ public enum ErrorCode {
     NOT_FOUND_MANAGED_DEPARTMENT(HttpStatus.NOT_FOUND, "상위 부서 정보를 찾을 수 없습니다."),
     NOT_FOUND_APPROVE_LINE(HttpStatus.NOT_FOUND, "결재선 정보를 찾을 수 없습니다."),
     NOT_FOUND_DOC(HttpStatus.NOT_FOUND, "문서 정보를 찾을 수 없습니다."),
+    UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다."),
     NOT_FOUND_KPI(HttpStatus.NOT_FOUND,"KPI 정보를 찾을 수 없습니다."),
     NOT_FOUND_HRPERFO(HttpStatus.NOT_FOUND,"평가 점수 정보를 찾을 수 없습니다."),
     NOT_FOUND_HRPERFOINQUIRY(HttpStatus.NOT_FOUND,"인사 평가 의의제기 정보를 찾을 수 없습니다."),

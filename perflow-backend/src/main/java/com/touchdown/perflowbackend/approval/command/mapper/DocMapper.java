@@ -4,7 +4,6 @@ import com.touchdown.perflowbackend.approval.command.application.dto.DocCreateRe
 import com.touchdown.perflowbackend.approval.command.application.dto.ShareDTO;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.approval.query.dto.*;
-import com.touchdown.perflowbackend.approval.query.repository.DocQueryRepository;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
@@ -264,14 +263,14 @@ public class DocMapper {
                 .docId(doc.getDocId())
                 .title(doc.getTitle())
                 .fields(mapFields(doc.getDocFields())) // 문서 필드 매핑
-                .approveLines(mapApproveLines(doc.getApproveLines())) // 결재선 매핑
-                .shares(mapShares(doc.getShares())) // 공유 설정 매핑
+                .approveLines(mapInboxApproveLines(doc.getApproveLines())) // 결재선 매핑
+                .shares(mapInboxShares(doc.getShares())) // 공유 설정 매핑
                 .myStatus(myStatus) // 내 결재 상태
                 .docStatus(docStatus) // 문서 상태
                 .build();
     }
 
-    private static List<InboxDocShareDTO> mapShares(List<DocShareObj> shares) {
+    private static List<InboxDocShareDTO> mapInboxShares(List<DocShareObj> shares) {
 
         return shares.stream()
                 .map(share -> InboxDocShareDTO.builder()
@@ -290,7 +289,7 @@ public class DocMapper {
                 .collect(Collectors.toList());
     }
 
-    private static List<InboxDocApproveLineDTO> mapApproveLines(List<ApproveLine> approveLines) {
+    private static List<InboxDocApproveLineDTO> mapInboxApproveLines(List<ApproveLine> approveLines) {
 
         return approveLines.stream()
                 .map(line -> InboxDocApproveLineDTO.builder()
@@ -300,12 +299,12 @@ public class DocMapper {
                         .approveLineOrder(line.getApproveLineOrder())
                         .pllGroupId(line.getPllGroupId())
                         .approveTemplateType(line.getApproveTemplateType())
-                        .approveSbjs(mapApproveSubjects(line.getApproveSbjs())) // 결재 주체 매핑
+                        .approveSbjs(mapInboxApproveSubjects(line.getApproveSbjs())) // 결재 주체 매핑
                         .build())
                 .collect(Collectors.toList());
     }
 
-    private static List<InboxDocApproveSbjDTO> mapApproveSubjects(List<ApproveSbj> approveSbjs) {
+    private static List<InboxDocApproveSbjDTO> mapInboxApproveSubjects(List<ApproveSbj> approveSbjs) {
 
         return approveSbjs.stream()
                 .map(sbj -> InboxDocApproveSbjDTO.builder()
@@ -350,5 +349,62 @@ public class DocMapper {
             case ACTIVATED -> "진행";
             default -> "알 수 없음";
         };
+    }
+
+    // 발신함 문서 상세 조회 시
+    public static OutboxDocDetailResponseDTO toOutboxDocDetailResponseDTO(Doc doc) {
+
+        return OutboxDocDetailResponseDTO.builder()
+                .docId(doc.getDocId())
+                .title(doc.getTitle())
+                .fields(mapFields(doc.getDocFields())) // 필드 데이터 매핑
+                .approveLines(mapOutboxApproveLines(doc.getApproveLines())) // 결재선 정보 매핑
+                .shares(mapOutboxShares(doc.getShares())) // 공유 설정 정보 매핑
+                .status(getDocStatus(doc.getStatus())) // 문서 상태 매핑
+                .build();
+    }
+
+    private static List<OutboxDocApproveLineDTO> mapOutboxApproveLines(List<ApproveLine> approveLines) {
+
+        return approveLines.stream()
+                .map(line -> OutboxDocApproveLineDTO.builder()
+                        .approveLineId(line.getApproveLineId())
+                        .groupId(line.getGroupId())
+                        .approveType(line.getApproveType().toString())
+                        .approveLineOrder(line.getApproveLineOrder())
+                        .status(line.getStatus().toString())
+                        .approveSbjs(mapOutboxApproveSubjects(line.getApproveSbjs()))
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private static List<OutboxDocApproveSbjDTO> mapOutboxApproveSubjects(List<ApproveSbj> approveSbjs) {
+
+        return approveSbjs.stream()
+                .map(sbj -> OutboxDocApproveSbjDTO.builder()
+                        .empId(sbj.getSbjUser().getEmpId())
+                        .empName(sbj.getSbjUser().getName())
+                        .status(sbj.getStatus().toString())
+                        .comment(sbj.getComment())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    private static List<OutboxDocShareDTO> mapOutboxShares(List<DocShareObj> shares) {
+        return shares.stream()
+                .map(share -> OutboxDocShareDTO.builder()
+                        .shareEmpDeptType(share.getShareEmpDeptType())
+                        .empIds(
+                                share.getShareEmpDeptType() == EmpDeptType.EMPLOYEE && share.getShareObjUser() != null
+                                        ? List.of(share.getShareObjUser().getEmpId())
+                                        : List.of()
+                        )
+                        .empNames(
+                                share.getShareEmpDeptType() == EmpDeptType.EMPLOYEE && share.getShareObjUser() != null
+                                        ? List.of(share.getShareObjUser().getName())
+                                        : List.of()
+                        )
+                        .build())
+                .collect(Collectors.toList());
     }
 }
