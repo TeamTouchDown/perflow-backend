@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -78,9 +77,36 @@ public class DocQueryService {
     }
 
     // 발신함 문서 목록 조회
-    public Page<OutboxDocListResponseDTO> getOutBoxDocList(Pageable pageable, String empId) {
+    public Page<OutboxDocListResponseDTO> getOutboxDocList(Pageable pageable, String empId) {
 
         return docQueryRepository.findOutBoxDocs(pageable, empId);
+    }
+
+    // 발신함 문서 목록 검색
+    @Transactional(readOnly = true)
+    public Page<OutboxDocListResponseDTO> searchOutboxDocList(
+            String title,
+            LocalDate fromDate,
+            LocalDate toDate,
+            Pageable pageable,
+            String empId
+    ) {
+
+        LocalDateTime fromDateTime = fromDate != null ? fromDate.atStartOfDay() : null;
+        LocalDateTime toDateTime = toDate != null ? toDate.atTime(23, 59, 59) : null;
+
+        Specification<Doc> specification = Specification
+                .where(DocSpecification.createdBy(empId)) // 내가 생성한 문서
+                .and(DocSpecification.titleContains(title)) // 제목 조건
+                .and(DocSpecification.createDateBetween(fromDateTime, toDateTime)); // 날짜 조건
+
+        return docQueryRepository.findAll(specification, pageable)
+                .map(doc -> OutboxDocListResponseDTO.builder()
+                        .docId(doc.getDocId())
+                        .title(doc.getTitle())
+                        .createDatetime(doc.getCreateDatetime())
+                        .status(doc.getStatus())
+                        .build());
     }
 
     // 발신함 문서 상세 조회

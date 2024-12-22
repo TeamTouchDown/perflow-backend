@@ -21,13 +21,21 @@ public class DocSpecification {
                         : criteriaBuilder.like(root.get("title"), "%" + title + "%");
     }
 
-    // 작성자 검색
+    // 작성자 이름 검색
     public static Specification<Doc> createUserNameContains(String createUserName) {
 
         return (root, query, criteriaBuilder) ->
                 createUserName == null || createUserName.isEmpty()
                         ? criteriaBuilder.conjunction()
                         : criteriaBuilder.like(root.get("createUser").get("name"), "%" + createUserName + "%");
+    }
+
+    // 작성자 id 검색
+    public static Specification<Doc> createdBy(String empId) {
+        return (root, query, criteriaBuilder) ->
+                empId == null || empId.isEmpty()
+                        ? criteriaBuilder.conjunction() // 조건 없음
+                        : criteriaBuilder.equal(root.get("createUser").get("empId"), empId);
     }
 
     // 작성일 기간 검색

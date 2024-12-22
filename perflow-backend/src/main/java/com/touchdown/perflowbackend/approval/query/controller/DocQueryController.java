@@ -7,7 +7,9 @@ import com.touchdown.perflowbackend.hr.query.repository.PositionQueryRepository;
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,7 +57,7 @@ public class DocQueryController {
     }
 
     // 수신함 문서 상세 조회
-    @GetMapping("inbox/{docId}")
+    @GetMapping("/inbox/{docId}")
     public ResponseEntity<InboxDocDetailResponseDTO> getInboxDoc(@PathVariable Long docId) {
 
         String empId = EmployeeUtil.getEmpId();
@@ -64,24 +66,41 @@ public class DocQueryController {
     }
 
     // 발신함 문서 목록 조회
-    @GetMapping("outbox")
-    public ResponseEntity<Page<OutboxDocListResponseDTO>> getOutBoxDocs(Pageable pageable) {
+    @GetMapping("/outbox")
+    public ResponseEntity<Page<OutboxDocListResponseDTO>> getOutboxDocs(Pageable pageable) {
 
         // 로그인 한 사원
         String empId = EmployeeUtil.getEmpId();
 
-        return ResponseEntity.ok(docQueryService.getOutBoxDocList(pageable, empId));
+        return ResponseEntity.ok(docQueryService.getOutboxDocList(pageable, empId));
     }
 
+    // 발신함 문서 목록 검색
+    @GetMapping("/outbox/search")
+    public ResponseEntity<Page<OutboxDocListResponseDTO>> searchOutboxDocs(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            @RequestParam(defaultValue = "0") int page, // 기본 페이지 번호
+            @RequestParam(defaultValue = "10") int size // 기본 페이지 크기
+    ) {
+        String empId = EmployeeUtil.getEmpId();
+
+        // 정렬 주기
+        Pageable pageable = PageRequest.of(page, size, Sort.by("docId").descending());
+
+        return ResponseEntity.ok(docQueryService.searchOutboxDocList(title, fromDate, toDate, pageable, empId));
+    }
+
+
     // 발신함 문서 상세 조회
-    @GetMapping("outbox/{docId}")
+    @GetMapping("/outbox/{docId}")
     public ResponseEntity<OutboxDocDetailResponseDTO> getOutBoxDoc(@PathVariable Long docId) {
 
         // 로그인 한 사원
         String empId = EmployeeUtil.getEmpId();
 
         return ResponseEntity.ok(docQueryService.getOneOutboxDoc(docId, empId));
-
     }
 
     // 대기 문서 목록 조회
