@@ -88,17 +88,6 @@ public class DocMapper {
                 .build();
     }
 
-    // 처리 문서 목록 조회 시
-    public static ProcessedDocListResponseDTO toProcessedDocListResponseDTO(Doc doc) {
-
-        return ProcessedDocListResponseDTO.builder()
-                .docId(doc.getDocId())
-                .title(doc.getTitle())
-                .createUserName(doc.getCreateUser().getName())
-                .createDatetime(doc.getCreateDatetime())
-                .build();
-    }
-
     // 대기 문서 상세 조회 시
     public static WaitingDocDetailResponseDTO toWaitingDocDetailResponseDTO(Doc doc) {
         return WaitingDocDetailResponseDTO.builder()
@@ -110,6 +99,7 @@ public class DocMapper {
                 .build();
     }
 
+    // 처리 문서 상세 조회 시
     public static ProcessedDocDetailResponseDTO toProcessedDocDetailResponseDTO(Doc doc) {
 
         return ProcessedDocDetailResponseDTO.builder()
@@ -124,13 +114,20 @@ public class DocMapper {
     private static List<ProcessedDocShareDTO> mapProcessedShares(List<DocShareObj> shares) {
 
         return shares.stream()
-                .filter(share -> share.getShareEmpDeptType() == EmpDeptType.EMPLOYEE && share.getShareObjUser() != null)
-                .map(share -> new ProcessedDocShareDTO(
-                        EmpDeptType.EMPLOYEE,
-                        List.of(share.getShareObjUser().getEmpId()),
-                        List.of(share.getShareObjUser().getName())
-                ))
-                .toList();
+                .map(share -> ProcessedDocShareDTO.builder()
+                        .shareEmpDeptType(share.getShareEmpDeptType()) // 공유 대상 타입
+                        .empIds(
+                                share.getShareEmpDeptType() == EmpDeptType.EMPLOYEE && share.getShareObjUser() != null
+                                        ? List.of(share.getShareObjUser().getEmpId())
+                                        : List.of()
+                        ) // 사원 ID
+                        .empNames(
+                                share.getShareEmpDeptType() == EmpDeptType.EMPLOYEE && share.getShareObjUser() != null
+                                        ? List.of(share.getShareObjUser().getName())
+                                        : List.of()
+                        ) // 사원 이름
+                        .build())
+                .collect(Collectors.toList());
     }
 
     private static List<ProcessedDocApproveLineDTO> mapProcessedApproveLines(List<ApproveLine> approveLines) {

@@ -3,6 +3,7 @@ package com.touchdown.perflowbackend.approval.query.repository;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.Doc;
 import com.touchdown.perflowbackend.approval.query.dto.InboxDocListResponseDTO;
 import com.touchdown.perflowbackend.approval.query.dto.OutboxDocListResponseDTO;
+import com.touchdown.perflowbackend.approval.query.dto.ProcessedDocListResponseDTO;
 import com.touchdown.perflowbackend.approval.query.dto.WaitingDocListResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,14 +32,6 @@ public interface DocQueryRepository extends JpaRepository<Doc, Long> {
         ") " +
         "ORDER BY doc.docId ASC")  // 오래된 순 정렬
     Page<WaitingDocListResponseDTO> findWaitingDocsByUser(@Param("empId") String empId, Pageable pageable);
-
-    @Query("SELECT DISTINCT doc FROM Doc doc " +
-            "JOIN doc.approveLines line " +
-            "JOIN line.approveSbjs sbj " +
-            "WHERE sbj.sbjUser.empId = :empId " +
-            "AND ( sbj.status ='APPROVED' OR sbj.status = 'REJECTED') " +
-            "AND doc.status <> 'DELETED'")
-    Page<Doc> findProcessedDocsByUser(@Param("empId") String empId, Pageable pageable);
 
     // 수신함 문서 조회 시
     @Query("SELECT DISTINCT new com.touchdown.perflowbackend.approval.query.dto.InboxDocListResponseDTO(\n" +
@@ -86,4 +79,24 @@ public interface DocQueryRepository extends JpaRepository<Doc, Long> {
             "AND doc.status <> 'DELETED' " +
             "ORDER BY doc.createDatetime DESC")
     Page<OutboxDocListResponseDTO> findOutBoxDocs(Pageable pageable, String empId);
+
+    // 처리 문서 목록 조회 시
+    @Query("SELECT new com.touchdown.perflowbackend.approval.query.dto.ProcessedDocListResponseDTO( " +
+            "   doc.docId, " +
+            "   doc.title, " +
+            "   doc.createUser.name, " +
+            "   sbj.sbjUser.empId, " +
+            "   sbj.approveLine.approveLineId, " +
+            "   sbj.approveSbjId, " +
+            "   doc.createDatetime, " +
+            "   sbj.completeDatetime " +
+            ") " +
+            "FROM ApproveSbj sbj " +
+            "JOIN sbj.approveLine line " +
+            "JOIN line.doc doc " +
+            "WHERE sbj.sbjUser.empId = :empId " +
+            "AND ( sbj.status = 'APPROVED' OR sbj.status = 'REJECTED') " +
+            "AND doc.status <> 'APPROVED' " +
+            "ORDER BY sbj.completeDatetime DESC")
+    Page<ProcessedDocListResponseDTO> findProcessedDocs(Pageable pageable, String empId);
 }

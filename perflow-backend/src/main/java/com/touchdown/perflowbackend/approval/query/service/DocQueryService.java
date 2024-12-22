@@ -112,9 +112,7 @@ public class DocQueryService {
     @Transactional(readOnly = true)
     public Page<ProcessedDocListResponseDTO> getProcessedDocList(Pageable pageable, String empId) {
 
-        Page<Doc> docs = docQueryRepository.findProcessedDocsByUser(empId, pageable);
-
-        return docs.map(DocMapper::toProcessedDocListResponseDTO);
+        return docQueryRepository.findProcessedDocs(pageable, empId);
     }
 
     // 처리 문서 상세 조회
