@@ -23,5 +23,5 @@ public class ProcessedDocListResponseDTO {
 
     private final LocalDateTime createDatetime;
 
-    private final LocalDateTime processDatetime;
+    private final LocalDateTime processDatetime;    // 승인/반려한 시간
 }

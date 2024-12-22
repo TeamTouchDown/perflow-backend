@@ -7,8 +7,10 @@ import com.touchdown.perflowbackend.approval.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.approval.command.mapper.DocMapper;
 import com.touchdown.perflowbackend.approval.query.dto.*;
 import com.touchdown.perflowbackend.approval.query.repository.ApproveLineQueryRepository;
+import com.touchdown.perflowbackend.approval.query.repository.ApproveSbjQueryRepository;
 import com.touchdown.perflowbackend.approval.query.repository.DocFieldQueryRepository;
 import com.touchdown.perflowbackend.approval.query.repository.DocQueryRepository;
+import com.touchdown.perflowbackend.approval.query.specification.ApproveSbjSpecification;
 import com.touchdown.perflowbackend.approval.query.specification.DocSpecification;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
@@ -31,6 +33,7 @@ public class DocQueryService {
     private final ApproveLineQueryRepository approveLineQueryRepository;
     private final DocQueryRepository docQueryRepository;
     private final DocFieldQueryRepository docFieldQueryRepository;
+    private final ApproveSbjQueryRepository approveSbjQueryRepository;
 
     // 나의 결재선 목록 조회
     @Transactional(readOnly = true)
@@ -72,7 +75,6 @@ public class DocQueryService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DOC));
 
         return DocMapper.toInboxDocDetailResponseDTO(doc, empId);
-
     }
 
     // 발신함 문서 목록 조회
@@ -138,6 +140,82 @@ public class DocQueryService {
                         .build());
     }
 
+    // 대기 문서 상세 조회
+    @Transactional(readOnly = true)
+    public WaitingDocDetailResponseDTO getOneWaitingDoc(Long docId) {
+
+        // 문서 조회
+        Doc doc = docQueryRepository.findById(docId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DOC));
+
+        return DocMapper.toWaitingDocDetailResponseDTO(doc);
+    }
+
+    // 처리 문서 목록 조회
+    @Transactional(readOnly = true)
+    public Page<ProcessedDocListResponseDTO> getProcessedDocList(Pageable pageable, String empId) {
+
+        return docQueryRepository.findProcessedDocs(pageable, empId);
+    }
+
+    // 처리 문서 목록 검색
+    @Transactional(readOnly = true)
+    public Page<ProcessedDocListResponseDTO> searchProcessedDocList(
+            String title,
+            String createUser,
+            LocalDate fromDate,
+            LocalDate toDate,
+            Pageable pageable,
+            String empId
+    ) {
+
+        LocalDateTime fromDateTime = fromDate != null ? fromDate.atStartOfDay() : null;
+        LocalDateTime toDateTime = toDate != null ? toDate.atTime(23, 59, 59) : null;
+
+        Specification<ApproveSbj> specification = Specification
+                .where(ApproveSbjSpecification.belongsToUser(empId))    // 현재 사용자의 결재 주체
+                .and(ApproveSbjSpecification.hasApprovedOrRejectedStatus()) // APPROVED or REJECTED 상태
+                .and(ApproveSbjSpecification.titleContains(title))
+                .and(ApproveSbjSpecification.createUserNameContains(createUser))
+                .and(ApproveSbjSpecification.createDateBetween(fromDateTime, toDateTime))
+                .and(ApproveSbjSpecification.docStatusNotApproved());
+
+        return approveSbjQueryRepository.findAll(specification, pageable)
+                .map(sbj -> ProcessedDocListResponseDTO.builder()
+                        .docId(sbj.getApproveLine().getDoc().getDocId())
+                        .title(sbj.getApproveLine().getDoc().getTitle())
+                        .createUserName(sbj.getApproveLine().getDoc().getCreateUser().getName())
+                        .empId(sbj.getSbjUser().getEmpId())
+                        .approveLineId(sbj.getApproveLine().getApproveLineId())
+                        .approveSbjId(sbj.getApproveSbjId())
+                        .createDatetime(sbj.getApproveLine().getDoc().getCreateDatetime())
+                        .processDatetime(sbj.getUpdateDatetime()) // 처리 시간
+                        .build());
+    }
+
+    // 처리 시간 조회
+    private LocalDateTime getUserProcessDatetime(Doc doc, String empId) {
+
+        return doc.getApproveLines().stream()
+                .flatMap(line -> line.getApproveSbjs().stream())
+                .filter(sbj -> sbj.getSbjUser().getEmpId().equals(empId) // 현재 사용자가 결재 주체인지 확인
+                        && (sbj.getStatus() == Status.APPROVED || sbj.getStatus() == Status.REJECTED)) // 상태가 APPROVED 또는 REJECTED인지 확인
+                .findFirst()
+                .map(ApproveSbj::getUpdateDatetime) // update_datetime 반환
+                .orElse(null);
+    }
+
+    // 처리 문서 상세 조회
+    @Transactional(readOnly = true)
+    public ProcessedDocDetailResponseDTO getOneProcessedDoc(Long docId) {
+
+        // 문서 조회
+        Doc doc = docQueryRepository.findById(docId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DOC));
+
+        return DocMapper.toProcessedDocDetailResponseDTO(doc);
+    }
+
     // 현재 사용자가 속한 결재 주체 id
     private Long getUserApproveSbjId(Doc doc, String empId) {
 
@@ -158,34 +236,5 @@ public class DocQueryService {
                 .findFirst()
                 .map(ApproveLine::getApproveLineId)
                 .orElse(null);
-    }
-
-    // 대기 문서 상세 조회
-    @Transactional(readOnly = true)
-    public WaitingDocDetailResponseDTO getOneWaitingDoc(Long docId) {
-
-        // 문서 조회
-        Doc doc = docQueryRepository.findById(docId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DOC));
-
-        return DocMapper.toWaitingDocDetailResponseDTO(doc);
-    }
-
-    // 처리 문서 목록 조회
-    @Transactional(readOnly = true)
-    public Page<ProcessedDocListResponseDTO> getProcessedDocList(Pageable pageable, String empId) {
-
-        return docQueryRepository.findProcessedDocs(pageable, empId);
-    }
-
-    // 처리 문서 상세 조회
-    @Transactional(readOnly = true)
-    public ProcessedDocDetailResponseDTO getOneProcessedDoc(Long docId) {
-
-        // 문서 조회
-        Doc doc = docQueryRepository.findById(docId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DOC));
-
-        return DocMapper.toProcessedDocDetailResponseDTO(doc);
     }
 }

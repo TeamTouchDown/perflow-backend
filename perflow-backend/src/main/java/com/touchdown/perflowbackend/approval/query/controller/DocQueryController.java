@@ -124,6 +124,21 @@ public class DocQueryController {
         return ResponseEntity.ok(docQueryService.getProcessedDocList(pageable, empId));
     }
 
+    // 처리 문서 목록 검색
+    @GetMapping("/processed-docs/search")
+    public ResponseEntity<Page<ProcessedDocListResponseDTO>> searchProcessedDocs(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String createUser,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            Pageable pageable
+    ) {
+
+        String empId = EmployeeUtil.getEmpId();
+
+        return ResponseEntity.ok(docQueryService.searchProcessedDocList(title, createUser, fromDate, toDate, pageable, empId));
+    }
+
     // 처리 문서 상세 조회
     @GetMapping("/processed-docs/{docId}")
     public ResponseEntity<ProcessedDocDetailResponseDTO> getProcessedDoc(@PathVariable Long docId) {

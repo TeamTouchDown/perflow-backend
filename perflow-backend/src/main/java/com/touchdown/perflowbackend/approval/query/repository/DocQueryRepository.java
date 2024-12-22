@@ -91,15 +91,15 @@ public interface DocQueryRepository extends JpaRepository<Doc, Long>, JpaSpecifi
             "   sbj.approveLine.approveLineId, " +
             "   sbj.approveSbjId, " +
             "   doc.createDatetime, " +
-            "   sbj.completeDatetime " +
+            "   sbj.updateDatetime " +
             ") " +
             "FROM ApproveSbj sbj " +
             "JOIN sbj.approveLine line " +
             "JOIN line.doc doc " +
             "WHERE sbj.sbjUser.empId = :empId " +
             "AND ( sbj.status = 'APPROVED' OR sbj.status = 'REJECTED') " +
-            "AND doc.status <> 'APPROVED' " +
-            "ORDER BY sbj.completeDatetime DESC")
+            "AND doc.status <> 'APPROVED' " +   // 문서가 완전히 승인되지 않은 문서만 확인 가능
+            "ORDER BY doc.docId DESC")
     Page<ProcessedDocListResponseDTO> findProcessedDocs(Pageable pageable, String empId);
 
     // 대기 문서 목록 검색 시

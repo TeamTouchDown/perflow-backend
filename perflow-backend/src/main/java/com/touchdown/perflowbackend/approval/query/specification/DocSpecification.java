@@ -1,7 +1,10 @@
 package com.touchdown.perflowbackend.approval.query.specification;
 
+import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveLine;
+import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.Doc;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.Status;
+import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDateTime;
@@ -9,7 +12,7 @@ import java.time.LocalDateTime;
 // 다중 조건 검색을 위한 Specification 클래스
 public class DocSpecification {
 
-    // 제목
+    // 제목 검색
     public static Specification<Doc> titleContains(String title) {
 
         return (root, query, criteriaBuilder) ->
@@ -18,6 +21,7 @@ public class DocSpecification {
                         : criteriaBuilder.like(root.get("title"), "%" + title + "%");
     }
 
+    // 작성자 검색
     public static Specification<Doc> createUserNameContains(String createUserName) {
 
         return (root, query, criteriaBuilder) ->
@@ -26,6 +30,7 @@ public class DocSpecification {
                         : criteriaBuilder.like(root.get("createUser").get("name"), "%" + createUserName + "%");
     }
 
+    // 작성일 기간 검색
     public static Specification<Doc> createDateBetween(LocalDateTime fromDate, LocalDateTime toDate) {
 
         return (root, query, criteriaBuilder) -> {
@@ -42,6 +47,7 @@ public class DocSpecification {
         };
     }
 
+    // 유저가 결재 주체인지 확인
     public static Specification<Doc> hasActiveApproveSbjForUser(String empId) {
 
         return (root, query, criteriaBuilder) -> {
@@ -61,5 +67,18 @@ public class DocSpecification {
             );
         };
 
+    }
+
+    // 유저가 처리한 문서인지 확인
+    public static Specification<Doc> hasProcessedByUser(String empId) {
+
+        return (root, query, criteriaBuilder) -> {
+            Join<Doc, ApproveLine> approveLineJoin = root.join("approveLines");
+            Join<ApproveLine, ApproveSbj> approveSbjJoin = approveLineJoin.join("approveSbjs");
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(approveSbjJoin.get("sbjUser").get("empId"), empId),
+                    criteriaBuilder.notEqual(approveSbjJoin.get("status"), Status.ACTIVATED) // 활성화된 문서 제외
+            );
+        };
     }
 }
