@@ -43,7 +43,7 @@ public class Vacation extends BaseEntity {
 
     @Column(name = "vacation_status", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
-    private Status vacationStatus;
+    private VacationStatus vacationStatus;
 
     @Column(name = "vacation_reject_reason")
     private String vacationRejectReason;
