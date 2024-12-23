@@ -4,14 +4,15 @@ import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder // 빌더 어노테이션 추가
 @Entity
 @Table(name = "`vacation`", schema = "perflow")
 public class Vacation extends BaseEntity {
@@ -49,8 +50,33 @@ public class Vacation extends BaseEntity {
     @Column(name = "vacation_reject_reason")
     private String vacationRejectReason;
 
+    @Setter
+    @ColumnDefault("'ACTIVATED'")
     @Column(name = "status", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    // 빌더 패턴용 생성자
+    @Builder
+    public Vacation(Employee empId,
+                    ApproveSbj approveSbjId,
+                    LocalDateTime enrollVacation,
+                    LocalDateTime vacationStart,
+                    LocalDateTime vacationEnd,
+                    VacationType vacationType,
+                    String vacationRejectReason,
+                    VacationStatus vacationStatus,
+                    Status status) {
+        this.empId = empId;
+        this.approveSbjId = approveSbjId;
+        this.enrollVacation = enrollVacation;
+        this.vacationStart = vacationStart;
+        this.vacationEnd = vacationEnd;
+        this.vacationType = vacationType;
+        this.vacationRejectReason = vacationRejectReason;
+        this.vacationStatus = vacationStatus;
+        this.status = status != null ? status : Status.ACTIVATED; // 기본값 설정
+    }
+
 
 }
