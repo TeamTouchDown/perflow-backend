@@ -38,6 +38,7 @@ public class PerformanceMapper {
                 .status(KpiCurrentStatus.WAIT)                              // 아직 승인 대기중인 KPI이므로 상태는 대기
                 .personalType(personalType)                                 // 받아온 개인,팀 여부 설정
                 .goalDetail(kpiDetailRequestDTO.getGoalDetail())            // 받아온 목표 상세 설정
+                .period(kpiDetailRequestDTO.getPeriod())
                 .build();
     }
 
