@@ -47,13 +47,13 @@ public class KPIQueryService {
 
     // 개인 KPI 조건부 리스트 조회
     @Transactional(readOnly = true)
-    public KPIListResponseDTO getPersonalKPIsByYear(String empId, KPIPeriodRequestDTO kpiPeriodRequestDTO) {
+    public KPIListResponseDTO getPersonalKPIsByYear(String empId, String year, String quarter, String month) {
 
         // 유저가 존재하는지 체크하기
         Employee emp = findEmployeeByEmpId(empId);
 
         // 해당 유저의 개인 KPI 가져오기
-        List<KPIDetailResponseDTO> lists = kpiQueryRepository.findPersonalKPIsByEmpIdAndYear(empId ,kpiPeriodRequestDTO);
+        List<KPIDetailResponseDTO> lists = kpiQueryRepository.findPersonalKPIsByEmpIdAndYear(empId ,year, quarter, month);
 
         // 해당 유저의 부서의 KPI 제한치 가져오기
         KPILimitResponseDTO limit = kpiQueryRepository.findPersonalKPILimitByEmpId(empId)
@@ -85,13 +85,13 @@ public class KPIQueryService {
 
     // 개인 KPI 조건부 리스트 조회
     @Transactional(readOnly = true)
-    public KPIListResponseDTO getTeamKPIsByYear(String empId, KPIPeriodRequestDTO kpiPeriodRequestDTO) {
+    public KPIListResponseDTO getTeamKPIsByYear(String empId, String year, String quarter, String month) {
 
         // 유저가 존재하는지 체크하기
         Employee emp = findEmployeeByEmpId(empId);
 
         // 해당 유저의 개인 KPI 가져오기
-        List<KPIDetailResponseDTO> lists = kpiQueryRepository.findTeamKPIsByEmpIdAndYear(empId ,kpiPeriodRequestDTO);
+        List<KPIDetailResponseDTO> lists = kpiQueryRepository.findTeamKPIsByEmpIdAndYear(empId ,year, quarter, month);
 
         // 해당 유저의 부서의 KPI 제한치 가져오기
         KPILimitResponseDTO limit = kpiQueryRepository.findTeamKPILimitByEmpId(empId)
