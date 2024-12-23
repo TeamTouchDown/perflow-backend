@@ -34,4 +34,31 @@ public interface EmployeeQueryRepository extends JpaRepository<Employee, String>
 
     // 이름으로 사원 검색
     Page<Employee> findByNameContaining(@Param("name") String name, Pageable pageable);
+
+    // 입사년도 조회
+    @Query("SELECT YEAR(e.joinDate) FROM Employee e WHERE e.empId = :empId")
+    int findHireYearByEmpId(@Param("empId") String empId);
+
+    // 직원의 부서 ID 조회
+    @Query("SELECT e.dept.departmentId FROM Employee e WHERE e.empId = :loggedInEmpId")
+    Long findDeptIdByEmpId(@Param("loggedInEmpId") String loggedInEmpId);
+
+
+   /* // 직원의 부서 ID 조회
+    @Query("SELECT e.dept.departmentId FROM Employee e WHERE e.empId = :loggedInEmpId")
+    Long findDeptIdByEmpId(@Param("loggedInEmpId") String loggedInEmpId);
+
+
+    // 직원이 팀장인지 확인
+    @Query("SELECT CASE WHEN d.manageDeptId = e.dept.departmentId THEN true ELSE false END " +
+            "FROM Employee e JOIN e.dept d WHERE e.empId = :loggedInEmpId")
+    boolean isLeaderByEmpId(@Param("loggedInEmpId") String loggedInEmpId);
+
+
+    // 직원이 인사팀인지 확인
+    @Query("SELECT CASE WHEN e.dept.departmentId = 1 THEN true ELSE false END " +
+            "FROM Employee e WHERE e.empId = :loggedInEmpId")
+    boolean isHRByEmpId(@Param("loggedInEmpId") String loggedInEmpId);*/
+
+
 }
