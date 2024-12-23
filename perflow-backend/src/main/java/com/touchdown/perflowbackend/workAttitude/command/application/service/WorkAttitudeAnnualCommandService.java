@@ -10,6 +10,7 @@ import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeAnnualRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.workAttitude.command.domain.repository.WorkAttitudeAnnualCommandRepository;
+import com.touchdown.perflowbackend.workAttitude.command.mapper.WorkAttitudeAnnualMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -45,21 +46,7 @@ public class WorkAttitudeAnnualCommandService {
         ApproveSbj approveSbj = approveSbjRepository.findById(requestDTO.getApproveSbjId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APPROVE_SBJ));
 
-        // 연차 엔티티 생성
-        Annual annual = Annual.builder()
-                .empId(employee)
-                .approveSbjId(approveSbj)
-                .enrollAnnual(requestDTO.getEnrollAnnual())
-                .annualStart(requestDTO.getAnnualStart())
-                .annualEnd(requestDTO.getAnnualEnd())
-                .annualType(requestDTO.getAnnualType())
-                .annualRejectReason(requestDTO.getAnnualRejectReason())
-                .isAnnualRetroactive(requestDTO.getIsAnnualRetroactive())
-                .annualRetroactiveReason(requestDTO.getAnnualRetroactiveReason())
-                .annualRetroactiveStatus(requestDTO.getAnnualRetroactiveStatus())
-                .status(Status.ACTIVATED)
-                .build();
-
+        Annual annual = WorkAttitudeAnnualMapper.toEntity(requestDTO, employee, approveSbj);
         annualRepository.save(annual);
     }
 
@@ -70,9 +57,7 @@ public class WorkAttitudeAnnualCommandService {
 
         Annual annual = findAnnualById(annualId);
 
-        annual.updateAnnual(requestDTO.getAnnualStart(),
-                requestDTO.getAnnualEnd(),
-                requestDTO.getAnnualType());
+        WorkAttitudeAnnualMapper.updateEntityFromDto(requestDTO, annual);
         annual.setStatus(Status.UPDATED);
 
         annualRepository.save(annual);
