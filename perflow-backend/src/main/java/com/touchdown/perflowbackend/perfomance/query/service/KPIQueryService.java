@@ -7,10 +7,7 @@ import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeC
 import com.touchdown.perflowbackend.perfomance.command.application.service.KPICommandService;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.Kpi;
 import com.touchdown.perflowbackend.perfomance.command.domain.repository.KpiCommandRepository;
-import com.touchdown.perflowbackend.perfomance.query.dto.KPIDetailResponseDTO;
-import com.touchdown.perflowbackend.perfomance.query.dto.KPILimitResponseDTO;
-import com.touchdown.perflowbackend.perfomance.query.dto.KPIListResponseDTO;
-import com.touchdown.perflowbackend.perfomance.query.dto.KPIRejectReponseDTO;
+import com.touchdown.perflowbackend.perfomance.query.dto.*;
 import com.touchdown.perflowbackend.perfomance.query.repository.KPIQueryRepository;
 import com.touchdown.perflowbackend.perfomance.query.repository.KPIStatusQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +45,25 @@ public class KPIQueryService {
         return kpiListToDTO(lists,limit);
     }
 
+    // 개인 KPI 조건부 리스트 조회
+    @Transactional(readOnly = true)
+    public KPIListResponseDTO getPersonalKPIsByYear(String empId, KPIPeriodRequestDTO kpiPeriodRequestDTO) {
+
+        // 유저가 존재하는지 체크하기
+        Employee emp = findEmployeeByEmpId(empId);
+
+        // 해당 유저의 개인 KPI 가져오기
+        List<KPIDetailResponseDTO> lists = kpiQueryRepository.findPersonalKPIsByEmpIdAndYear(empId ,kpiPeriodRequestDTO);
+
+        // 해당 유저의 부서의 KPI 제한치 가져오기
+        KPILimitResponseDTO limit = kpiQueryRepository.findPersonalKPILimitByEmpId(empId)
+                .orElse(new KPILimitResponseDTO(2L, 5L)); // 기본값 설정
+
+
+        // 가져온 개인 KPI를 리스트에 넣어 처리하기
+        return kpiListToDTO(lists,limit);
+    }
+
     // 팀 KPI 리스트 조회
     @Transactional(readOnly = true)
     public KPIListResponseDTO getTeamKPIs(String empId) {
@@ -64,6 +80,25 @@ public class KPIQueryService {
 
 
         // 가져온 팀 KPI를 리스트에 넣어 처리하기
+        return kpiListToDTO(lists,limit);
+    }
+
+    // 개인 KPI 조건부 리스트 조회
+    @Transactional(readOnly = true)
+    public KPIListResponseDTO getTeamKPIsByYear(String empId, KPIPeriodRequestDTO kpiPeriodRequestDTO) {
+
+        // 유저가 존재하는지 체크하기
+        Employee emp = findEmployeeByEmpId(empId);
+
+        // 해당 유저의 개인 KPI 가져오기
+        List<KPIDetailResponseDTO> lists = kpiQueryRepository.findTeamKPIsByEmpIdAndYear(empId ,kpiPeriodRequestDTO);
+
+        // 해당 유저의 부서의 KPI 제한치 가져오기
+        KPILimitResponseDTO limit = kpiQueryRepository.findTeamKPILimitByEmpId(empId)
+                .orElse(new KPILimitResponseDTO(2L, 5L)); // 기본값 설정
+
+
+        // 가져온 개인 KPI를 리스트에 넣어 처리하기
         return kpiListToDTO(lists,limit);
     }
 
