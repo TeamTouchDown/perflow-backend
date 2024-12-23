@@ -98,6 +98,8 @@ public enum ErrorCode {
 
     NOT_FOUND_ANNUAL(HttpStatus.NOT_FOUND, "연차 정보를 찾을 수 없습니다."),
 
+    ACCESS_DENIED(HttpStatus.BAD_REQUEST, "올바르지 않은 접근입니다. "),
+
 
     DUPLICATE_JOB_REQUEST(HttpStatus.NOT_FOUND,"직책이 중복됩니다." );
 
