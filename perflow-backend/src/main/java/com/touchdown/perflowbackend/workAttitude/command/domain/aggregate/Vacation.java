@@ -79,4 +79,26 @@ public class Vacation extends BaseEntity {
     }
 
 
+    // 휴가 정보 업데이트 메서드
+    public void updateVacation(LocalDateTime start, LocalDateTime end, VacationType type) {
+        this.vacationStart = start;
+        this.vacationEnd = end;
+        this.vacationType = type;
+    }
+
+    // 휴가 반려 메서드
+    public void rejectVacation(String reason) {
+        this.vacationRejectReason = reason;
+        this.vacationStatus = VacationStatus.REJECTED;
+    }
+
+    // 휴가 승인 메서드
+    public void approveVacation() {
+        this.vacationStatus = VacationStatus.CONFIRMED;
+    }
+
+    // 휴가 소프트 삭제 처리
+    public void softDelete() {
+        this.status = Status.DELETED;
+    }
 }

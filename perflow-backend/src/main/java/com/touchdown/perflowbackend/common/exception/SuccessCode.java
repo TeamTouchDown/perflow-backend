@@ -132,7 +132,13 @@ public enum SuccessCode {
     WORK_ATTRIBUTE_ANNUAL_UPDATE_SUCCESS(HttpStatus.OK,"연차 수정 완료 되었습니다." ),
     WORK_ATTRIBUTE_ANNUAL_DELETE_SUCCESS(HttpStatus.OK,"연차 삭제 완료 되었습니다." ),
     WORK_ATTITUDE_ANNUAL_CHECK_IN_SUCCESS(HttpStatus.OK, "연차 반려 처리 완료 되었습니다."),
-    WORK_ATTITUDE_ANNUAL_CHECK_OUT_SUCCESS(HttpStatus.OK,"반려 사유 작성 완료 되었습니다." );
+    WORK_ATTITUDE_ANNUAL_CHECK_OUT_SUCCESS(HttpStatus.OK,"반려 사유 작성 완료 되었습니다." ),
+    WORK_ATTITUDE_VACATION_CHECK_OUT_SUCCESS(HttpStatus.OK, "반려 처리 완료 되었습니다."),
+    WORK_ATTITUDE_VACATION_CHECK_IN_SUCCESS(HttpStatus.OK,"승인 처리 완료 되었습니다."),
+    WORK_ATTRIBUTE_VACATION_DELETE_SUCCESS(HttpStatus.OK,"삭제 처리 완료 되었습니다."),
+    WORK_ATTRIBUTE_VACATION_UPDATE_SUCCESS(HttpStatus.OK,"업데이트 완료 되었습니다."),
+    WORK_ATTITUDE_VACATION_SUCCESS(HttpStatus.OK,"휴가 신청 완료 되었습니다."),
+    ;
 
 
 
