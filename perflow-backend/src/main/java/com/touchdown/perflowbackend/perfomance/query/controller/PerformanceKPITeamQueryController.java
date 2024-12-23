@@ -1,7 +1,6 @@
 package com.touchdown.perflowbackend.perfomance.query.controller;
 
 import com.touchdown.perflowbackend.perfomance.query.dto.KPIListResponseDTO;
-import com.touchdown.perflowbackend.perfomance.query.dto.KPIPeriodRequestDTO;
 import com.touchdown.perflowbackend.perfomance.query.service.KPIQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +26,16 @@ public class PerformanceKPITeamQueryController {
     }
 
     // 팀 KPI 리스트 년도별 조회
-    @GetMapping("/period/{empId}")
+    @GetMapping("/period/{empId}/{year}")
     public ResponseEntity<KPIListResponseDTO> getTeamKPIsByYear(
             @PathVariable(name = "empId") String empId,
-            @RequestBody KPIPeriodRequestDTO kpiPeriodRequestDTO
+            @PathVariable String year,
+            @RequestParam(required = false) String quarter,
+            @RequestParam(required = false) String month
     ) {
 
         // 유저 사번 이용하여 개인 KPI 목록 및 제한 호출
-        KPIListResponseDTO response = KPIQueryService.getTeamKPIsByYear(empId, kpiPeriodRequestDTO);
+        KPIListResponseDTO response = KPIQueryService.getTeamKPIsByYear(empId, year, quarter, month);
 
         return ResponseEntity.ok(response);
     }
