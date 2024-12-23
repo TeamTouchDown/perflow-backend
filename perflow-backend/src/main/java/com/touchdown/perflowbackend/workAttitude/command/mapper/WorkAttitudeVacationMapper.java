@@ -9,7 +9,7 @@ import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status
 public class WorkAttitudeVacationMapper {
 
     // DTO -> Entity 변환
-    public Vacation toEntity(WorkAttitudeVacationRequestDTO requestDTO, Employee employee, ApproveSbj approveSbj) {
+    public static Vacation toEntity(WorkAttitudeVacationRequestDTO requestDTO, Employee employee, ApproveSbj approveSbj) {
         return Vacation.builder()
                 .empId(employee) // 사원 정보
                 .approveSbjId(approveSbj) // 승인 정보
@@ -24,7 +24,7 @@ public class WorkAttitudeVacationMapper {
     }
 
     // DTO -> 기존 Entity 업데이트
-    public void updateEntityFromDto(WorkAttitudeVacationRequestDTO requestDTO, Vacation vacation) {
+    public static void updateEntityFromDto(WorkAttitudeVacationRequestDTO requestDTO, Vacation vacation) {
         vacation.updateVacation(
                 requestDTO.getVacationStart(),
                 requestDTO.getVacationEnd(),
