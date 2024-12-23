@@ -33,7 +33,8 @@ public class Vacation extends BaseEntity {
     private LocalDateTime enrollVacation;
 
     @Column(name = "vacation_type", nullable = false, length = 30)
-    private String vacationType;
+    @Enumerated(EnumType.STRING)
+    private VacationType vacationType;
 
     @Column(name = "vacation_start", nullable = false)
     private LocalDateTime vacationStart;
