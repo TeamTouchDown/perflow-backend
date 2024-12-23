@@ -4,6 +4,8 @@ spring:
     url: jdbc:mariadb://localhost:${db.port}/${db.name}
     username: ${db.user}
     password: ${db.password}
+  jooq:
+    sql-dialect: POSTGRES # 사용할 sql dialect
   redis:
     data:
       host: localhost # Redis 서버 호스트
