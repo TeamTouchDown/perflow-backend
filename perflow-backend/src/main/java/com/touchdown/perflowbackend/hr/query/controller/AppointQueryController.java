@@ -1,36 +1,35 @@
 package com.touchdown.perflowbackend.hr.query.controller;
 
-import com.touchdown.perflowbackend.hr.query.dto.PositionResponseDTO;
-import com.touchdown.perflowbackend.hr.query.dto.PositionResponseListDTO;
-import com.touchdown.perflowbackend.hr.query.service.PositionQueryService;
+import com.touchdown.perflowbackend.hr.query.dto.AppointResponseListDTO;
+import com.touchdown.perflowbackend.hr.query.service.AppointQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
-public class PositionQueryController {
+public class AppointQueryController {
 
-    private final PositionQueryService positionQueryService;
+    private final AppointQueryService appointQueryService;
 
-    @GetMapping("/position")
-    public ResponseEntity<PositionResponseListDTO> getPosition(
+    @GetMapping("/hr/appoint")
+    public ResponseEntity<AppointResponseListDTO> getAppointList(
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
     ) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "appointDate");
 
-        Pageable pageable = PageRequest.of(page - 1, size);
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
 
-        PositionResponseListDTO positionDTOList = positionQueryService.getAllPosition(pageable);
+        AppointResponseListDTO appointResponseListDTO = appointQueryService.getAppointList(pageable);
 
-        return ResponseEntity.ok(positionDTOList);
+        return ResponseEntity.ok(appointResponseListDTO);
     }
 }

@@ -61,7 +61,7 @@ public class EmployeeQueryController {
         return ResponseEntity.ok(employeeQueryService.getEmployeeDetail(empId));
     }
 
-    // 모든 사원 목록 조회
+
     @GetMapping("/employees/lists/search")
     public ResponseEntity<EmployeeResponseList> getEmployeesByName(
             @RequestParam(value = "page", defaultValue = "1") int page,

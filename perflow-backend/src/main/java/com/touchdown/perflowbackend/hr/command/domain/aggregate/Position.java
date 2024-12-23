@@ -17,6 +17,7 @@ import org.hibernate.annotations.SQLDelete;
 public class Position extends BaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "position_id", nullable = false)
     private Long positionId;
 
@@ -32,8 +33,6 @@ public class Position extends BaseEntity {
 
     @Builder
     public Position(PositionCreateDTO positionCreateDTO) {
-
-        this.positionId = positionCreateDTO.getPositionId();
         this.name = positionCreateDTO.getName();
         this.positionLevel = positionCreateDTO.getPositionLevel();
     }
