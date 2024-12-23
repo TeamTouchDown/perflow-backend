@@ -16,7 +16,7 @@ public interface DocQueryRepository extends JpaRepository<Doc, Long>, JpaSpecifi
 
     // 대기 문서 목록 조회 시
     @Query("SELECT DISTINCT new com.touchdown.perflowbackend.approval.query.dto.WaitingDocListResponseDTO(" +
-        "doc.docId, doc.title, doc.createUser.name, doc.createUser.empId, " +
+        "doc.docId, doc.template.templateId, doc.title, doc.createUser.name, doc.createUser.empId, " +
         "sbj.approveLine.approveLineId, sbj.approveSbjId, doc.createDatetime) " +
         "FROM Doc doc " +
         "JOIN doc.approveLines line " +
@@ -38,6 +38,7 @@ public interface DocQueryRepository extends JpaRepository<Doc, Long>, JpaSpecifi
     // 수신함 문서 조회 시
     @Query("SELECT DISTINCT new com.touchdown.perflowbackend.approval.query.dto.InboxDocListResponseDTO(\n" +
             "   doc.docId, " +
+            "   doc.template.templateId, " +
             "   doc.title, " +
             "   doc.createUser.name, " +
             "   doc.createDatetime, " +
@@ -72,6 +73,7 @@ public interface DocQueryRepository extends JpaRepository<Doc, Long>, JpaSpecifi
     // 발신함 문서 목록 조회 시
     @Query("SELECT new com.touchdown.perflowbackend.approval.query.dto.OutboxDocListResponseDTO( " +
             "   doc.docId," +
+            "   doc.template.templateId, " +
             "   doc.title," +
             "   doc.createDatetime," +
             "   doc.status" +
@@ -85,6 +87,7 @@ public interface DocQueryRepository extends JpaRepository<Doc, Long>, JpaSpecifi
     // 처리 문서 목록 조회 시
     @Query("SELECT new com.touchdown.perflowbackend.approval.query.dto.ProcessedDocListResponseDTO( " +
             "   doc.docId, " +
+            "   doc.template.templateId, " +
             "   doc.title, " +
             "   doc.createUser.name, " +
             "   sbj.sbjUser.empId, " +
@@ -102,5 +105,4 @@ public interface DocQueryRepository extends JpaRepository<Doc, Long>, JpaSpecifi
             "ORDER BY doc.docId DESC")
     Page<ProcessedDocListResponseDTO> findProcessedDocs(Pageable pageable, String empId);
 
-    // 대기 문서 목록 검색 시
 }

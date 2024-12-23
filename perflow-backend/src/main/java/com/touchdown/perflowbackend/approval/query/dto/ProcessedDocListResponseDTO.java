@@ -11,6 +11,8 @@ public class ProcessedDocListResponseDTO {
 
     private final Long docId;
 
+    private final Long templateId;
+
     private final String title;
 
     private final String createUserName;

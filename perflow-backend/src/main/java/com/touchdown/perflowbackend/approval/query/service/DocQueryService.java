@@ -103,6 +103,7 @@ public class DocQueryService {
         return docQueryRepository.findAll(specification, pageable)
                 .map(doc -> OutboxDocListResponseDTO.builder()
                         .docId(doc.getDocId())
+                        .templateId(doc.getTemplate().getTemplateId())
                         .title(doc.getTitle())
                         .createDatetime(doc.getCreateDatetime())
                         .status(doc.getStatus())
@@ -157,6 +158,7 @@ public class DocQueryService {
         return docQueryRepository.findAll(specification, pageable)
                 .map(doc -> WaitingDocListResponseDTO.builder()
                         .docId(doc.getDocId())
+                        .templateId(doc.getTemplate().getTemplateId())
                         .title(doc.getTitle())
                         .createUserName(doc.getCreateUser().getName())  // 작성자 이름
                         .empId(doc.getCreateUser().getEmpId())  // 작성자 id
@@ -209,6 +211,7 @@ public class DocQueryService {
         return approveSbjQueryRepository.findAll(specification, pageable)
                 .map(sbj -> ProcessedDocListResponseDTO.builder()
                         .docId(sbj.getApproveLine().getDoc().getDocId())
+                        .templateId(sbj.getApproveLine().getDoc().getTemplate().getTemplateId())
                         .title(sbj.getApproveLine().getDoc().getTitle())
                         .createUserName(sbj.getApproveLine().getDoc().getCreateUser().getName())
                         .empId(sbj.getSbjUser().getEmpId())

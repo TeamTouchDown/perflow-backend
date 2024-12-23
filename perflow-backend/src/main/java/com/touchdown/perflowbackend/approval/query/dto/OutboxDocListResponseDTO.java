@@ -12,6 +12,8 @@ public class OutboxDocListResponseDTO {
 
     private final Long docId; // 문서 ID
 
+    private final Long templateId;
+
     private final String title; // 문서 제목
 
     private final LocalDateTime createDatetime; // 생성일
