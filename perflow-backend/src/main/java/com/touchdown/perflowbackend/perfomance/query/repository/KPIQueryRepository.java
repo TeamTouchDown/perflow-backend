@@ -17,14 +17,30 @@ public interface KPIQueryRepository extends JpaRepository<Kpi, Long> {
              "AND r.personalType = com.touchdown.perflowbackend.perfomance.command.domain.aggregate.PersonalType.PERSONAL")
     List<KPIDetailResponseDTO> findPersonalKPIsByEmpId(String empId);
 
-    // 사번을 통해 개인 KPI 목록 조회
+    // 사번을 통해 개인 KPI 기간별 목록 조회(현재 진행형)
     @Query("SELECT new com.touchdown.perflowbackend.perfomance.query.dto.KPIDetailResponseDTO(r.kpiId, r.emp.empId, r.goal, r.goalValue,r.goalValueUnit,r.goalDetail, r.currentValue, r.status, r.personalType, r.period) " +
-            "FROM Kpi r JOIN Employee e ON e.empId = :empId WHERE (r.status != com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiCurrentStatus.EXPIRED AND r.status != com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiCurrentStatus.ACTIVE) " +
+            "FROM Kpi r JOIN r.emp e " +
+            "WHERE r.status = com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiCurrentStatus.ACTIVE " +
+            "AND r.personalType = com.touchdown.perflowbackend.perfomance.command.domain.aggregate.PersonalType.PERSONAL " +
+            "AND e.empId = :empId " +
+            "AND SUBSTRING(r.period, 1, 4) = :year " +
+            "AND (:quarter IS NULL OR SUBSTRING(r.period, 13) = :quarter ) " +
+            "AND (:month IS NULL OR SUBSTRING(r.period, 11) = :month )")
+    List<KPIDetailResponseDTO> findActivePersonalKPIsByEmpIdAndYear(
+            String empId,
+            String year,
+            String quarter,
+            String month);
+
+    // 사번을 통해 개인 KPI 기간별 목록 조회(과거)
+    @Query("SELECT new com.touchdown.perflowbackend.perfomance.query.dto.KPIDetailResponseDTO(r.kpiId, r.emp.empId, r.goal, r.goalValue,r.goalValueUnit,r.goalDetail, r.currentValue, r.status, r.personalType, r.period) " +
+            "FROM Kpi r JOIN Employee e ON e.empId = :empId " +
+            "WHERE (r.status = com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiCurrentStatus.EXPIRED) " +
             "AND r.personalType = com.touchdown.perflowbackend.perfomance.command.domain.aggregate.PersonalType.PERSONAL " +
             "AND SUBSTRING(r.period, 1, 4) = :year " +
             "AND (:quarter IS NULL OR SUBSTRING(r.period, 13) = :quarter ) " +
             "AND (:month IS NULL OR SUBSTRING(r.period, 11) = :month )")
-    List<KPIDetailResponseDTO> findPersonalKPIsByEmpIdAndYear(
+    List<KPIDetailResponseDTO> findExpiredPersonalKPIsByEmpIdAndYear(
             String empId,
             String year,
             String quarter,
@@ -44,14 +60,30 @@ public interface KPIQueryRepository extends JpaRepository<Kpi, Long> {
             "AND r.personalType = com.touchdown.perflowbackend.perfomance.command.domain.aggregate.PersonalType.TEAM")
     List<KPIDetailResponseDTO> findTeamKPIsByEmpId(String empId);
 
-    // 사번을 통해 개인 KPI 목록 조회
+    // 사번을 통해 팀 KPI 목록 조회 (현재 진행형)
     @Query("SELECT new com.touchdown.perflowbackend.perfomance.query.dto.KPIDetailResponseDTO(r.kpiId, r.emp.empId, r.goal, r.goalValue,r.goalValueUnit,r.goalDetail, r.currentValue, r.status, r.personalType, r.period) " +
-            "FROM Kpi r JOIN Employee e ON e.empId = :empId WHERE (r.status != com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiCurrentStatus.EXPIRED AND r.status != com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiCurrentStatus.ACTIVE) " +
+            "FROM Kpi r JOIN r.emp e " +
+            "WHERE (r.status = com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiCurrentStatus.ACTIVE) " +
+            "AND r.personalType = com.touchdown.perflowbackend.perfomance.command.domain.aggregate.PersonalType.TEAM " +
+            "AND e.empId = :empId " +
+            "AND SUBSTRING(r.period, 1, 4) = :year " +
+            "AND (:quarter IS NULL OR SUBSTRING(r.period, 13) = :quarter ) " +
+            "AND (:month IS NULL OR SUBSTRING(r.period, 11) = :month )")
+    List<KPIDetailResponseDTO> findActiveTeamKPIsByEmpIdAndYear(
+            String empId,
+            String year,
+            String quarter,
+            String month);
+
+    // 사번을 통해 팀 KPI 목록 조회 (과거)
+    @Query("SELECT new com.touchdown.perflowbackend.perfomance.query.dto.KPIDetailResponseDTO(r.kpiId, r.emp.empId, r.goal, r.goalValue,r.goalValueUnit,r.goalDetail, r.currentValue, r.status, r.personalType, r.period) " +
+            "FROM Kpi r JOIN Employee e ON e.empId = :empId " +
+            "WHERE (r.status = com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiCurrentStatus.EXPIRED) " +
             "AND r.personalType = com.touchdown.perflowbackend.perfomance.command.domain.aggregate.PersonalType.TEAM " +
             "AND SUBSTRING(r.period, 1, 4) = :year " +
             "AND (:quarter IS NULL OR SUBSTRING(r.period, 13) = :quarter ) " +
             "AND (:month IS NULL OR SUBSTRING(r.period, 11) = :month )")
-    List<KPIDetailResponseDTO> findTeamKPIsByEmpIdAndYear(
+    List<KPIDetailResponseDTO> findExpiredTeamKPIsByEmpIdAndYear(
             String empId,
             String year,
             String quarter,
