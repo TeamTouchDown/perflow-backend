@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/api/v1/perfomances/kpi/personal")
 @RequiredArgsConstructor
@@ -34,10 +36,23 @@ public class PerformanceKPIPersonalQueryController {
             @RequestParam(required = false) String month
 
     ) {
+        KPIListResponseDTO response;
 
-        // 유저 사번 이용하여 개인 KPI 목록 및 제한 호출
-        KPIListResponseDTO response = KPIQueryService.getCurrentPersonalKPIsByYear(empId, year, quarter, month);
+        if (Objects.equals(month, "")) {
+            month = null;
+        }
+        if (Objects.equals(quarter, "")) {
+            quarter = null;
+        }
 
+        // 조건: quarter와 month가 모두 null인 경우
+        if (quarter == null && month == null) {
+            // 년도별 조회 함수 호출
+            response = KPIQueryService.getCurrentPersonalKPIsByOnlyYear(empId, year);
+        } else {
+            // 기간별 조회 함수 호출
+            response = KPIQueryService.getCurrentPersonalKPIsByYear(empId, year, quarter, month);
+        }
         return ResponseEntity.ok(response);
     }
 
@@ -51,9 +66,24 @@ public class PerformanceKPIPersonalQueryController {
 
     ) {
 
-        // 유저 사번 이용하여 개인 KPI 목록 및 제한 호출
-        KPIListResponseDTO response = KPIQueryService.getPastPersonalKPIsByYear(empId, year, quarter, month);
+        KPIListResponseDTO response;
 
+        if (Objects.equals(month, "")) {
+            month = null;
+        }
+        if (Objects.equals(quarter, "")) {
+            quarter = null;
+        }
+
+        // 조건: quarter와 month가 모두 null인 경우
+        if (quarter == null && month == null) {
+            // 년도별 조회 함수 호출
+            response = KPIQueryService.getPastPersonalKPIsByOnlyYear(empId, year);
+        } else {
+            // 기간별 조회 함수 호출
+            response = KPIQueryService.getPastPersonalKPIsByYear(empId, year, quarter, month);
+        }
+        // 유저 사번 이용하여 개인 KPI 목록 및 제한 호출
         return ResponseEntity.ok(response);
     }
 }

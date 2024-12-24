@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/api/v1/perfomances/kpi/team")
 @RequiredArgsConstructor
@@ -34,8 +36,21 @@ public class PerformanceKPITeamQueryController {
             @RequestParam(required = false) String month
     ) {
 
-        // 유저 사번 이용하여 개인 KPI 목록 및 제한 호출
-        KPIListResponseDTO response = KPIQueryService.getTeamCurrentKPIsByYear(empId, year, quarter, month);
+        KPIListResponseDTO response;
+
+        if (Objects.equals(month, "")) {
+            month = null;
+        }
+        if (Objects.equals(quarter, "")) {
+            quarter = null;
+        }
+
+        if (quarter == null && month == null) {
+            // 유저 사번 이용하여 개인 KPI 목록 및 제한 호출
+            response = KPIQueryService.getTeamCurrentKPIsByOnlyYear(empId, year);
+        } else {
+            response = KPIQueryService.getTeamCurrentKPIsByYear(empId, year, quarter, month);
+        }
 
         return ResponseEntity.ok(response);
     }
@@ -49,8 +64,21 @@ public class PerformanceKPITeamQueryController {
             @RequestParam(required = false) String month
     ) {
 
-        // 유저 사번 이용하여 개인 KPI 목록 및 제한 호출
-        KPIListResponseDTO response = KPIQueryService.getTeamPastKPIsByYear(empId, year, quarter, month);
+        KPIListResponseDTO response;
+
+        if (Objects.equals(month, "")) {
+            month = null;
+        }
+        if (Objects.equals(quarter, "")) {
+            quarter = null;
+        }
+
+        if (quarter == null && month == null) {
+            // 유저 사번 이용하여 개인 KPI 목록 및 제한 호출
+            response = KPIQueryService.getTeamPastKPIsByOnlyYear(empId, year);
+        } else {
+            response = KPIQueryService.getTeamPastKPIsByYear(empId, year, quarter, month);
+        }
 
         return ResponseEntity.ok(response);
     }
