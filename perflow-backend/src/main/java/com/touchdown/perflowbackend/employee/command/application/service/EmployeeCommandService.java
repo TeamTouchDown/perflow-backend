@@ -35,6 +35,7 @@ import org.apache.commons.compress.utils.FileNameUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,10 +44,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -86,10 +84,7 @@ public class EmployeeCommandService {
 
         Authority auth = authorityRepository.findByType(AuthType.EMPLOYEE);
 
-        AuthorityEmployee authorityEmployee = AuthorityEmployee.builder()
-                .authority(auth)
-                .emp(newEmployee)
-                .build();
+        AuthorityEmployee authorityEmployee = new AuthorityEmployee(auth, newEmployee);
 
         authorityEmployeeRepository.save(authorityEmployee);
         entityManager.flush();
@@ -157,13 +152,18 @@ public class EmployeeCommandService {
         CustomEmployDetail customEmployDetail = (CustomEmployDetail) authentication.getPrincipal();
 
         String empId = customEmployDetail.getUsername();
+
         EmployeeStatus status = customEmployDetail.getStatus();
+
         String empName = customEmployDetail.getEmployeeName();
+
+        List<Long> authList = customEmployDetail.getAuthorityIds();
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("empId", empId);
         claims.put("status", status.name());
         claims.put("name", empName);
+        claims.put("authorities", authList);
 
         String accessToken = jwtTokenProvider.createAccessToken(customEmployDetail.getUsername(), claims);
         String refreshToken = jwtTokenProvider.createRefreshToken(customEmployDetail.getUsername(), claims);

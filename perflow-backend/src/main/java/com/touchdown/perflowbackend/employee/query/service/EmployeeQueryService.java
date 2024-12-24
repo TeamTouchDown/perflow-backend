@@ -1,5 +1,6 @@
 package com.touchdown.perflowbackend.employee.query.service;
 
+import com.touchdown.perflowbackend.authority.domain.aggregate.Authority;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.Mapper.EmployeeMapper;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -79,7 +81,6 @@ public class EmployeeQueryService {
         );
         employee.getAuthorities().size(); // 권한을 초기화
 
-        log.warn(employee.toString());
         return employee;
     }
 
@@ -97,4 +98,5 @@ public class EmployeeQueryService {
 
         return employeeQueryRepository.findByNameContaining(name, pageable);
     }
+
 }

@@ -34,7 +34,6 @@ public class AuthorityEmployee implements Serializable {
 
     }
     // 파라미터 있는 생성자
-    @Builder
     public AuthorityEmployee(Authority authority, Employee emp) {
         this.authority = authority;
         this.emp = emp;

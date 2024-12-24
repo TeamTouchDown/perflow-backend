@@ -24,7 +24,6 @@ import java.util.Set;
 @Getter
 @Entity
 @NoArgsConstructor
-@ToString
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "employee", schema = "perflow")
 public class Employee extends BaseEntity {
@@ -82,7 +81,7 @@ public class Employee extends BaseEntity {
     @Column(name = "resign_date")
     private LocalDate resignDate;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "authority_employee",
             joinColumns = @JoinColumn(name = "emp_id"),
             inverseJoinColumns = @JoinColumn(name = "authority_id"))

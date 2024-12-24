@@ -4,11 +4,13 @@ import com.touchdown.perflowbackend.employee.command.domain.aggregate.EmployeeSt
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
@@ -24,5 +26,7 @@ public class EmployeeQueryResponseDTO {
     private final String department;
 
     private final String name;
+
+    private final List<Long> authorities;
 
 }

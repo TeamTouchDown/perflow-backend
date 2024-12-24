@@ -13,7 +13,6 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@ToString
 @NoArgsConstructor
 @Table(name = "authority", schema = "perflow")
 public class Authority {

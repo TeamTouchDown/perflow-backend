@@ -94,8 +94,7 @@ public enum ErrorCode {
     INVALID_QR_CODE(HttpStatus.BAD_REQUEST,"올바르지 않은 인증입니다."),
     NOT_FOUND_TEAM(HttpStatus.BAD_REQUEST,"해당 팀을 찾을 수 없습니다."),
     NOT_FOUND_ATTENDANCE_DATA(HttpStatus.NOT_FOUND, "근무 시간 데이터를 찾을 수 없습니다."),
-
-
+    NOT_FOUND_AUTH(HttpStatus.NOT_FOUND, "권한을 찾을 수 없습니다." )
     ;
 
 
