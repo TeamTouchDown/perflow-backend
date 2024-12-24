@@ -5,6 +5,7 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.Mapper.EmployeeMapper;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.employee.command.domain.aggregate.EmployeeStatus;
 import com.touchdown.perflowbackend.employee.query.dto.EmployeeDetailResponseDTO;
 import com.touchdown.perflowbackend.employee.query.dto.EmployeeQueryResponseDTO;
 import com.touchdown.perflowbackend.employee.query.dto.EmployeeResponseList;
@@ -74,6 +75,22 @@ public class EmployeeQueryService {
         return EmployeeMapper.toDetailResponse(employee);
     }
 
+    @Transactional(readOnly = true)
+    public EmployeeResponseList getInvitedEmployees(Pageable pageable) {
+
+        Page<Employee> pages = employeeQueryRepository.findEmployeeByStatus(pageable, EmployeeStatus.PENDING);
+
+        List<EmployeeQueryResponseDTO> employees = EmployeeMapper.toResponseList(pages.getContent());
+
+        return EmployeeResponseList.builder()
+                .employeeList(employees)
+                .totalPages(pages.getTotalPages())
+                .totalItems((int) pages.getTotalElements())
+                .currentPage(pages.getNumber() + 1)
+                .pageSize(pages.getSize())
+                .build();
+    }
+
     private Employee findById(String empId) {
 
         Employee employee = employeeQueryRepository.findById(empId).orElseThrow(
@@ -98,5 +115,4 @@ public class EmployeeQueryService {
 
         return employeeQueryRepository.findByNameContaining(name, pageable);
     }
-
 }

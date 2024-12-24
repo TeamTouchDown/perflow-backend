@@ -1,6 +1,7 @@
 package com.touchdown.perflowbackend.employee.query.repository;
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.employee.command.domain.aggregate.EmployeeStatus;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,4 +35,6 @@ public interface EmployeeQueryRepository extends JpaRepository<Employee, String>
 
     // 이름으로 사원 검색
     Page<Employee> findByNameContaining(@Param("name") String name, Pageable pageable);
+
+    Page<Employee> findEmployeeByStatus(Pageable pageable, EmployeeStatus employeeStatus);
 }

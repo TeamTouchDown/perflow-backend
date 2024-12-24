@@ -53,7 +53,7 @@ public class EmployeeQueryController {
 
         Pageable pageable = PageRequest.of(page - 1, size);
 
-        return ResponseEntity.ok(employeeQueryService.getAllEmployees(pageable));
+        return ResponseEntity.ok(employeeQueryService.getInvitedEmployees(pageable));
     }
 
     @GetMapping("/hr/employees/{empId}") // 관리자의 사원 정보 조회
