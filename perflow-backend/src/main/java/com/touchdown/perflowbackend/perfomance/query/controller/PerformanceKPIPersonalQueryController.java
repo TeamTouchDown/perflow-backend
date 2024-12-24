@@ -25,9 +25,9 @@ public class PerformanceKPIPersonalQueryController {
         return ResponseEntity.ok(response);
     }
 
-    // 개인 KPI 리스트 년도별 조회
-    @GetMapping("/period/{empId}/{year}")
-    public ResponseEntity<KPIListResponseDTO> getPersonalKPIsByYear(
+    // 개인 KPI 리스트 기간별 조회 (현재)
+    @GetMapping("/period/current/{empId}/{year}")
+    public ResponseEntity<KPIListResponseDTO> getCurrentPersonalKPIsByYear(
             @PathVariable(name = "empId") String empId,
             @PathVariable String year,
             @RequestParam(required = false) String quarter,
@@ -36,7 +36,23 @@ public class PerformanceKPIPersonalQueryController {
     ) {
 
         // 유저 사번 이용하여 개인 KPI 목록 및 제한 호출
-        KPIListResponseDTO response = KPIQueryService.getPersonalKPIsByYear(empId, year, quarter, month);
+        KPIListResponseDTO response = KPIQueryService.getCurrentPersonalKPIsByYear(empId, year, quarter, month);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 개인 KPI 리스트 기간별 조회 (과거)
+    @GetMapping("/period/past/{empId}/{year}")
+    public ResponseEntity<KPIListResponseDTO> getPastPersonalKPIsByYear(
+            @PathVariable(name = "empId") String empId,
+            @PathVariable String year,
+            @RequestParam(required = false) String quarter,
+            @RequestParam(required = false) String month
+
+    ) {
+
+        // 유저 사번 이용하여 개인 KPI 목록 및 제한 호출
+        KPIListResponseDTO response = KPIQueryService.getPastPersonalKPIsByYear(empId, year, quarter, month);
 
         return ResponseEntity.ok(response);
     }

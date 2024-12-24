@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/leader/perfomances/kpi/team")
+@RequestMapping("/api/v1/perfomances/kpi/team")
 @RequiredArgsConstructor
 public class PerformanceKPITeamQueryController {
 
@@ -25,9 +25,9 @@ public class PerformanceKPITeamQueryController {
         return ResponseEntity.ok(response);
     }
 
-    // 팀 KPI 리스트 년도별 조회
-    @GetMapping("/period/{empId}/{year}")
-    public ResponseEntity<KPIListResponseDTO> getTeamKPIsByYear(
+    // 팀 KPI 리스트 년도별 조회(현재)
+    @GetMapping("/period/current/{empId}/{year}")
+    public ResponseEntity<KPIListResponseDTO> getCurrentTeamKPIsByYear(
             @PathVariable(name = "empId") String empId,
             @PathVariable String year,
             @RequestParam(required = false) String quarter,
@@ -35,7 +35,22 @@ public class PerformanceKPITeamQueryController {
     ) {
 
         // 유저 사번 이용하여 개인 KPI 목록 및 제한 호출
-        KPIListResponseDTO response = KPIQueryService.getTeamKPIsByYear(empId, year, quarter, month);
+        KPIListResponseDTO response = KPIQueryService.getTeamCurrentKPIsByYear(empId, year, quarter, month);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 팀 KPI 리스트 년도별 조회(과거)
+    @GetMapping("/period/past/{empId}/{year}")
+    public ResponseEntity<KPIListResponseDTO> getPastTeamKPIsByYear(
+            @PathVariable(name = "empId") String empId,
+            @PathVariable String year,
+            @RequestParam(required = false) String quarter,
+            @RequestParam(required = false) String month
+    ) {
+
+        // 유저 사번 이용하여 개인 KPI 목록 및 제한 호출
+        KPIListResponseDTO response = KPIQueryService.getTeamPastKPIsByYear(empId, year, quarter, month);
 
         return ResponseEntity.ok(response);
     }
