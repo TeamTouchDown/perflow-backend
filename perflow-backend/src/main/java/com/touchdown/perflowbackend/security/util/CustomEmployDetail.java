@@ -1,13 +1,19 @@
 package com.touchdown.perflowbackend.security.util;
 
+import com.touchdown.perflowbackend.authority.domain.aggregate.Authority;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.EmployeeStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+@Slf4j
 public class CustomEmployDetail implements UserDetails {
 
     private final Employee employee;
@@ -21,9 +27,22 @@ public class CustomEmployDetail implements UserDetails {
         return employee.getName();
     }
 
+    public List<Long> getAuthorityIds() {
+        List<Long> authorityIds = employee.getAuthorities().stream()
+                .map(Authority::getAuthorityId)
+                .collect(Collectors.toList());
+        log.info("Authority IDs: {}", authorityIds);
+        return authorityIds;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        Collection<? extends GrantedAuthority> authorities = employee.getAuthorities().stream()
+                .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority.getType().name()))
+                .collect(Collectors.toSet());
+        log.info("Authorities: {}", authorities);
+
+        return authorities;
     }
 
     @Override

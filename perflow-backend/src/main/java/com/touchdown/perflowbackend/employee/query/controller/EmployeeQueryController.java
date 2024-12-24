@@ -44,6 +44,17 @@ public class EmployeeQueryController {
 
         return ResponseEntity.ok(employeeQueryService.getAllEmployees(pageable));
     }
+    // 모든 사원 목록 조회
+    @GetMapping("/employees/lists/invited")
+    public ResponseEntity<EmployeeResponseList> getInvitedEmployees(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size
+    ) {
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+
+        return ResponseEntity.ok(employeeQueryService.getInvitedEmployees(pageable));
+    }
 
     @GetMapping("/hr/employees/{empId}") // 관리자의 사원 정보 조회
     public ResponseEntity<EmployeeDetailResponseDTO> getEmployeeDetail(
