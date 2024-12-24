@@ -37,10 +37,10 @@ public class WorkAttitudeVacationCommandService {
         String empId = EmployeeUtil.getEmpId();
         Employee employee = findEmployeeByEmpId(empId);
 
-        // 중복 검증
+        /*// 중복 검증
         if (isOverlappingLeave(empId, requestDTO.getVacationStart(), requestDTO.getVacationEnd())) {
             throw new CustomException(ErrorCode.DUPLICATE_VACATION);
-        }
+        }*/
 
         ApproveSbj approveSbj = approveSbjRepository.findById(requestDTO.getApproveSbjId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APPROVE_SBJ));
@@ -57,10 +57,15 @@ public class WorkAttitudeVacationCommandService {
 
         Vacation vacation = findVacationById(vacationId);
 
-        // 중복 검증
+        // 날짜 유효성 검증
+        if (requestDTO.getVacationStart().isAfter(requestDTO.getVacationEnd())) {
+            throw new CustomException(ErrorCode.INVALID_DATE_RANGE); // 예외 발생
+        }
+
+       /* // 중복 검증
         if (isOverlappingLeave(vacation.getEmpId().getEmpId(), requestDTO.getVacationStart(), requestDTO.getVacationEnd())) {
             throw new CustomException(ErrorCode.DUPLICATE_VACATION);
-        }
+        }*/
 
         WorkAttitudeVacationMapper.updateEntityFromDto(requestDTO, vacation);
         vacationRepository.save(vacation);
@@ -111,16 +116,15 @@ public class WorkAttitudeVacationCommandService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_VACATION));
     }
 
-    private boolean isOverlappingLeave(String empId, LocalDateTime start, LocalDateTime end) {
+    /*private boolean isOverlappingLeave(String empId, LocalDateTime start, LocalDateTime end) {
         // 휴가 중복 체크
         boolean vacationOverlap = vacationRepository.existsByEmpIdAndVacationStartBeforeAndVacationEndAfter(
                 empId, end, start);
 
         // 연차 중복 체크
-        boolean annualOverlap = workAttitudeAnnualCommandRepository.existsByEmpIdAndAnnualStartBeforeAndAnnualEndAfter(
-                empId, end, start);
+
 
         return vacationOverlap || annualOverlap; // 하나라도 겹치면 true 반환
-    }
+    }*/
 
 }

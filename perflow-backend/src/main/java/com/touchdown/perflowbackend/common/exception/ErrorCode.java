@@ -101,7 +101,9 @@ public enum ErrorCode {
     ACCESS_DENIED(HttpStatus.BAD_REQUEST, "올바르지 않은 접근입니다. "),
     NOT_FOUND_VACATION(HttpStatus.BAD_REQUEST, "휴가를 찾을 수 없습니다."),
     DUPLICATE_VACATION(HttpStatus.BAD_REQUEST, "중복된 일정으로 휴가 신청이 불가합니다."),
-    DUPLICATE_JOB_REQUEST(HttpStatus.NOT_FOUND,"직책이 중복됩니다." );
+    DUPLICATE_JOB_REQUEST(HttpStatus.NOT_FOUND,"직책이 중복됩니다." ),
+    INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST, "잘못된 날짜 형식입니다."),
+    DUPLICATE_ANNUAL(HttpStatus.BAD_REQUEST, "중복된 일정으로 연차 신청이 불가능합니다.");
 
 
 
