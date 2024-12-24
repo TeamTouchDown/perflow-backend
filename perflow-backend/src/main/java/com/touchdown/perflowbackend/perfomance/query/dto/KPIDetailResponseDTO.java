@@ -27,7 +27,9 @@ public class KPIDetailResponseDTO {
 
     private final PersonalType personalType;
 
-    public KPIDetailResponseDTO(Long kpiId, String empId, String goal, Long goalValue, String goalValueUnit, String goalDetail, double currentValue, KpiCurrentStatus status, PersonalType personalType) {
+    private final String period;
+
+    public KPIDetailResponseDTO(Long kpiId, String empId, String goal, Long goalValue, String goalValueUnit, String goalDetail, double currentValue, KpiCurrentStatus status, PersonalType personalType, String period) {
 
         this.kpiId = kpiId;
         this.empId = empId;
@@ -38,6 +40,7 @@ public class KPIDetailResponseDTO {
         this.currentValue = currentValue;
         this.kpiCurrentStatus = status;
         this.personalType = personalType;
+        this.period = period;
     }
 }
 

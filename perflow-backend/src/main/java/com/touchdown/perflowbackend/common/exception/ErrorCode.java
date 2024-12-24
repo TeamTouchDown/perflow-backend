@@ -40,7 +40,8 @@ public enum ErrorCode {
     ALREADY_CREATE_PIC(HttpStatus.BAD_REQUEST, "이미 존재하는 담당자 데이터입니다. 부서와 담당자를 확인해주세요."),
     TOO_MANY_PROMOTION_STEPS(HttpStatus.BAD_REQUEST,"승진과 강등은 한번에 한 단계씩만 가능합니다."),
     DUPLICATE_DEPT_REQUEST(HttpStatus.BAD_REQUEST, "이미 소속된 부서입니다. 다른 부서를 선택해주세요."),
-    DUPLICATE_JOB_REQUEST(HttpStatus.BAD_REQUEST,"이미 할당된 직책입니다. 다른 직책을 선택해주세요."),
+    INVALID_ANNUAL_REQUEST(HttpStatus.BAD_REQUEST, "유효하지 않은 연차 요청입니다."),
+
 
     // 401 에러
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "인증 실패"),
@@ -96,8 +97,15 @@ public enum ErrorCode {
     NOT_FOUND_TEAM(HttpStatus.BAD_REQUEST,"해당 팀을 찾을 수 없습니다."),
     NOT_FOUND_ATTENDANCE_DATA(HttpStatus.NOT_FOUND, "근무 시간 데이터를 찾을 수 없습니다."),
 
+    NOT_FOUND_ANNUAL(HttpStatus.NOT_FOUND, "연차 정보를 찾을 수 없습니다."),
 
-    ;
+    ACCESS_DENIED(HttpStatus.BAD_REQUEST, "올바르지 않은 접근입니다. "),
+    NOT_FOUND_VACATION(HttpStatus.BAD_REQUEST, "휴가를 찾을 수 없습니다."),
+    DUPLICATE_VACATION(HttpStatus.BAD_REQUEST, "중복된 일정으로 휴가 신청이 불가합니다."),
+    DUPLICATE_JOB_REQUEST(HttpStatus.NOT_FOUND,"직책이 중복됩니다." ),
+    INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST, "잘못된 날짜 형식입니다."),
+    DUPLICATE_ANNUAL(HttpStatus.BAD_REQUEST, "중복된 일정으로 연차 신청이 불가능합니다.");
+
 
 
     private final HttpStatus httpStatus;

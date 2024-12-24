@@ -15,13 +15,10 @@ public class PositionCommandController {
 
     private final PositionCommandService positionCommandService;
 
-    @PostMapping("/hr/position/{positionId}")
+    @PostMapping("/hr/position")
     public ResponseEntity<SuccessCode> createPosition(
-            @RequestBody PositionCreateDTO positionCreateDTO,
-            @PathVariable(name = "positionId") Long positionId
+            @RequestBody PositionCreateDTO positionCreateDTO
     ) {
-
-        positionCreateDTO.setPositionId(positionId);
 
         positionCommandService.createPosition(positionCreateDTO);
 

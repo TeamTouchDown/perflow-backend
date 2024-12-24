@@ -9,8 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PositionCreateDTO {
 
-    private Long positionId;
-
     private String name;
 
     private Integer positionLevel;
