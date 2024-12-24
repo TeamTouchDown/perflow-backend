@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/hr")
 public class PositionQueryController {
 
     private final PositionQueryService positionQueryService;

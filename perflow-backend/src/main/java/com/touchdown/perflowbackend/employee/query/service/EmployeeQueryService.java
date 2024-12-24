@@ -1,9 +1,11 @@
 package com.touchdown.perflowbackend.employee.query.service;
 
+import com.touchdown.perflowbackend.authority.domain.aggregate.Authority;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.Mapper.EmployeeMapper;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.employee.command.domain.aggregate.EmployeeStatus;
 import com.touchdown.perflowbackend.employee.query.dto.EmployeeDetailResponseDTO;
 import com.touchdown.perflowbackend.employee.query.dto.EmployeeQueryResponseDTO;
 import com.touchdown.perflowbackend.employee.query.dto.EmployeeResponseList;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -72,11 +75,30 @@ public class EmployeeQueryService {
         return EmployeeMapper.toDetailResponse(employee);
     }
 
+    @Transactional(readOnly = true)
+    public EmployeeResponseList getInvitedEmployees(Pageable pageable) {
+
+        Page<Employee> pages = employeeQueryRepository.findEmployeeByStatus(pageable, EmployeeStatus.PENDING);
+
+        List<EmployeeQueryResponseDTO> employees = EmployeeMapper.toResponseList(pages.getContent());
+
+        return EmployeeResponseList.builder()
+                .employeeList(employees)
+                .totalPages(pages.getTotalPages())
+                .totalItems((int) pages.getTotalElements())
+                .currentPage(pages.getNumber() + 1)
+                .pageSize(pages.getSize())
+                .build();
+    }
+
     private Employee findById(String empId) {
 
-        return employeeQueryRepository.findById(empId).orElseThrow(
+        Employee employee = employeeQueryRepository.findById(empId).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_EMP)
         );
+        employee.getAuthorities().size(); // 권한을 초기화
+
+        return employee;
     }
 
     private List<Employee> findEmployeesByDepartmentId(Long departmentId) {
