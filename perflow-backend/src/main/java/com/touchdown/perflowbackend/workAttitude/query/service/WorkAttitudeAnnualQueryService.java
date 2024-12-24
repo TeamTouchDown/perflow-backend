@@ -8,6 +8,7 @@ import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeAnnualRes
 import com.touchdown.perflowbackend.workAttitude.query.repository.WorkAttitudeAnnualQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,6 +22,7 @@ public class WorkAttitudeAnnualQueryService {
     private final EmployeeQueryRepository employeeRepository;
 
     // 직원: 연차 사용 횟수 조회 (종류별)
+    @Transactional
     public Object getAnnualUsage() {
 
         String empId = EmployeeUtil.getEmpId();
@@ -29,6 +31,7 @@ public class WorkAttitudeAnnualQueryService {
     }
 
     // 직원: 연차 잔여 횟수 조회 (반차 포함)
+    @Transactional
     public double getAnnualBalance() {
 
         String empId = EmployeeUtil.getEmpId();
@@ -43,6 +46,7 @@ public class WorkAttitudeAnnualQueryService {
     }
 
     // 직원: 연차 전체 조회
+    @Transactional
     public List<WorkAttitudeAnnualResponseDTO> getAnnualList() {
 
         String empId = EmployeeUtil.getEmpId();
@@ -50,6 +54,7 @@ public class WorkAttitudeAnnualQueryService {
     }
 
     // 팀장: 부서 내 연차 내역 조회
+    @Transactional
     public List<WorkAttitudeAnnualResponseDTO> getTeamAnnualList() {
         String loggedInEmpId = EmployeeUtil.getEmpId();
         Long deptId = employeeRepository.findDeptIdByEmpId(loggedInEmpId); // 팀장의 부서 ID 조회
@@ -58,6 +63,7 @@ public class WorkAttitudeAnnualQueryService {
     }
 
     // 인사팀: 모든 사원의 연차 내역 조회
+    @Transactional
     public List<WorkAttitudeAnnualResponseDTO> getAllAnnualList() {
         return annualRepository.findAllAnnualList();
     }

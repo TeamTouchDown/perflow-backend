@@ -11,7 +11,6 @@ public interface WorkAttitudeVacationCommandRepository {
 
     Optional<Vacation> findById(Long vacationId);
 
-    boolean existsByEmpIdAndVacationStartBeforeAndVacationEndAfter(
-            String empId, LocalDateTime end, LocalDateTime start);
+
 
 }

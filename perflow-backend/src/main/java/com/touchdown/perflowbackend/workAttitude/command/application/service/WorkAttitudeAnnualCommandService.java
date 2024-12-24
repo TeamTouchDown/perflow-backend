@@ -42,6 +42,15 @@ public class WorkAttitudeAnnualCommandService {
             throw new CustomException(ErrorCode.INVALID_RETROACTIVE_DECISION);
         }
 
+        /*// **중복 신청 검증 추가**
+        LocalDateTime startDate = requestDTO.getAnnualStart();
+        LocalDateTime endDate = requestDTO.getAnnualEnd();
+
+        if (annualRepository.existsByEmpId_EmpIdAndAnnualStartBeforeAndAnnualEndAfter(
+                empId, endDate, startDate)) { // 중복된 일정 검증
+            throw new CustomException(ErrorCode.DUPLICATE_ANNUAL); // 예외 처리
+        }*/
+
         // 기존 결재 주체 조회
         ApproveSbj approveSbj = approveSbjRepository.findById(requestDTO.getApproveSbjId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APPROVE_SBJ));
@@ -49,6 +58,7 @@ public class WorkAttitudeAnnualCommandService {
         Annual annual = WorkAttitudeAnnualMapper.toEntity(requestDTO, employee, approveSbj);
         annualRepository.save(annual);
     }
+
 
     // 연차 수정
     @Transactional
