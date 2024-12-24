@@ -1,5 +1,6 @@
 package com.touchdown.perflowbackend.employee.command.domain.aggregate;
 
+import com.touchdown.perflowbackend.authority.domain.aggregate.Authority;
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeCreateDTO;
 import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeUpdateRequestDTO;
@@ -16,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Slf4j
 @Getter
@@ -78,6 +81,12 @@ public class Employee extends BaseEntity {
 
     @Column(name = "resign_date")
     private LocalDate resignDate;
+
+    @ManyToMany
+    @JoinTable(name = "authority_employee",
+            joinColumns = @JoinColumn(name = "emp_id"),
+            inverseJoinColumns = @JoinColumn(name = "authority_id"))
+    private Set<Authority> authorities = new LinkedHashSet<>();
 
     @Builder
     public Employee(EmployeeCreateDTO registerDTO, Position position, Job job, Department department) {

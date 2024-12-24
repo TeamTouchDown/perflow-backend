@@ -17,6 +17,7 @@ public class EmployeeMapper {
                 .name(employee.getName())
                 .position(employee.getPosition().getName())
                 .job(employee.getJob().getName())
+                .department(employee.getDept().getName())
                 .build();
     }
 

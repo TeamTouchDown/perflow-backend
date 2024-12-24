@@ -3,7 +3,6 @@ package com.touchdown.perflowbackend.hr.command.application.service;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.file.command.application.service.FileService;
-import com.touchdown.perflowbackend.file.command.domain.aggregate.FileDirectory;
 import com.touchdown.perflowbackend.hr.command.application.dto.company.CompanyAnnualCountUpdateDTO;
 import com.touchdown.perflowbackend.hr.command.application.dto.company.CompanyPaymentDatetimeUpdateDTO;
 import com.touchdown.perflowbackend.hr.command.application.dto.company.CompanyCreateRequestDTO;
@@ -55,8 +54,8 @@ public class CompanyCommandService {
     @Transactional
     public void updateAnnualCount(CompanyAnnualCountUpdateDTO companyAnnualCountUpdateDTO) {
 
-        // 연차가 12일 이상인지 확인
-        if(!isAnnualOver12(companyAnnualCountUpdateDTO.getCompanyAnnualCount())) {
+        // 연차가 15일 이상인지 확인
+        if(!isAnnualOver15(companyAnnualCountUpdateDTO.getCompanyAnnualCount())) {
             throw new CustomException(ErrorCode.NOT_ENOUGH_ANNUAL);
         }
 
@@ -116,9 +115,9 @@ public class CompanyCommandService {
         return LocalDate.of(year, month, day);
     }
 
-    // 연차 12일 이상인지
-    public boolean isAnnualOver12(Integer annualCount) {
-        return annualCount >= 12;
+    // 연차 15일 이상인지
+    public boolean isAnnualOver15(Integer annualCount) {
+        return annualCount >= 15;
     }
 
     // 급여 지급일 1~28일 사이인지

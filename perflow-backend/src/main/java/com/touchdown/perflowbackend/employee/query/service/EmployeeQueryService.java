@@ -74,9 +74,13 @@ public class EmployeeQueryService {
 
     private Employee findById(String empId) {
 
-        return employeeQueryRepository.findById(empId).orElseThrow(
+        Employee employee = employeeQueryRepository.findById(empId).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_EMP)
         );
+        employee.getAuthorities().size(); // 권한을 초기화
+
+        log.warn(employee.toString());
+        return employee;
     }
 
     private List<Employee> findEmployeesByDepartmentId(Long departmentId) {

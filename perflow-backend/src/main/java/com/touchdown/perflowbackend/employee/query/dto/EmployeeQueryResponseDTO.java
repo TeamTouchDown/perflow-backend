@@ -21,6 +21,8 @@ public class EmployeeQueryResponseDTO {
 
     private final String job;
 
+    private final String department;
+
     private final String name;
 
 }

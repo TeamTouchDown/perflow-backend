@@ -2,6 +2,11 @@ package com.touchdown.perflowbackend.employee.command.application.service;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
+import com.touchdown.perflowbackend.authority.domain.aggregate.AuthType;
+import com.touchdown.perflowbackend.authority.domain.aggregate.Authority;
+import com.touchdown.perflowbackend.authority.domain.aggregate.AuthorityEmployee;
+import com.touchdown.perflowbackend.authority.domain.repository.AuthorityEmployeeRepository;
+import com.touchdown.perflowbackend.authority.domain.repository.AuthorityRepository;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.application.dto.*;
@@ -54,6 +59,8 @@ public class EmployeeCommandService {
     private final DepartmentCommandRepository departmentCommandRepository;
     private final WhiteRefreshTokenRepository whiteRefreshTokenRepository;
     private final BlackAccessTokenRepository blackAccessTokenRepository;
+    private final AuthorityRepository authorityRepository;
+    private final AuthorityEmployeeRepository authorityEmployeeRepository;
     private final FileService fileService;
 
     private final AuthenticationManager authenticationManager;
@@ -76,6 +83,15 @@ public class EmployeeCommandService {
 
         entityManager.persist(newEmployee);
         employeeCommandRepository.save(newEmployee);
+
+        Authority auth = authorityRepository.findByType(AuthType.EMPLOYEE);
+
+        AuthorityEmployee authorityEmployee = AuthorityEmployee.builder()
+                .authority(auth)
+                .emp(newEmployee)
+                .build();
+
+        authorityEmployeeRepository.save(authorityEmployee);
         entityManager.flush();
 
         sendInvitationEmail(newEmployee);

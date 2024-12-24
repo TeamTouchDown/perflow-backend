@@ -66,8 +66,6 @@ public class Company {
 
     public void updateCompany(CompanyUpdateRequestDTO companyUpdateRequestDTO) {
 
-        this.name = companyUpdateRequestDTO.getName();
-        this.chairman = companyUpdateRequestDTO.getChairman();
         this.establish = companyUpdateRequestDTO.getEstablish();
         this.address = companyUpdateRequestDTO.getAddress();
         this.contact = companyUpdateRequestDTO.getContact();
