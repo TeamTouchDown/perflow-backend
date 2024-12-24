@@ -16,4 +16,6 @@ public class KPIDetailRequestDTO {
     private final String goalValueUnit;
 
     private final String goalDetail;
+
+    private final String period;
 }

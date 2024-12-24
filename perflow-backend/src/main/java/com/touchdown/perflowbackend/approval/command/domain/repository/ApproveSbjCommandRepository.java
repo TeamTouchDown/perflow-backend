@@ -24,6 +24,8 @@ public interface ApproveSbjCommandRepository {
             @Param("approveLineId") Long approveLineId,
             @Param("approveSbjId") Long approveSbjId
         );
+
+    //ApproveSbj save(ApproveSbj approveSbj);
 //        @Query("SELECT sbj FROM ApproveSbj sbj " +
 //            "JOIN sbj.approveLine line " +
 //            "JOIN line.doc doc " +

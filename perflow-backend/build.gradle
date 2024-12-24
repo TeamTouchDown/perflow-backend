@@ -74,6 +74,13 @@ dependencies {
     implementation 'com.google.zxing:core:3.4.1'
     implementation 'com.google.zxing:javase:3.4.1'
 
+    //jooq 환경 설정
+    implementation 'org.jooq:jooq:3.17.6' // JOOQ Core
+    implementation 'org.jooq:jooq-meta:3.17.6' // JOOQ Meta (코드 생성 도구)
+    implementation 'org.jooq:jooq-codegen:3.17.6' // 코드 생성
+    runtimeOnly 'org.postgresql:postgresql' // PostgreSQL 드라이버 예시
+    implementation 'org.springframework.boot:spring-boot-starter-jooq' // 스프링 JOOQ 통합
+
 
 }
 

@@ -50,8 +50,11 @@ public class Kpi extends BaseEntity {
     @Column(name = "goal_detail", nullable = false)
     private String goalDetail;
 
+    @Column(name = "period", nullable = false)
+    private String period;
+
     @Builder
-    public Kpi(Employee emp, String goal, Long goalValue, String goalValueUnit, Double currentValue, KpiCurrentStatus status, PersonalType personalType, String goalDetail ){
+    public Kpi(Employee emp, String goal, Long goalValue, String goalValueUnit, Double currentValue, KpiCurrentStatus status, PersonalType personalType, String goalDetail, String period ){
         this.emp = emp;
         this.goal = goal;
         this.goalValue = goalValue;
@@ -60,6 +63,7 @@ public class Kpi extends BaseEntity {
         this.status = status;
         this.personalType = personalType;
         this.goalDetail = goalDetail;
+        this.period = period;
     }
 
     // kpi 수정
@@ -70,6 +74,7 @@ public class Kpi extends BaseEntity {
         this.goalValue = kpiDetailRequestDTO.getGoalValue();
         this.goalValueUnit = kpiDetailRequestDTO.getGoalValueUnit();
         this.goalDetail = kpiDetailRequestDTO.getGoalDetail();
+        this.period = kpiDetailRequestDTO.getPeriod();
     }
 
     // kpi 진척도 업데이트

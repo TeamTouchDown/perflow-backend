@@ -200,9 +200,19 @@ public class PayrollQueryService {
     public PayrollDetailResponseDTO searchPayroll(Long payrollId, String empName, String empId, String deptName) {
         // Specification 동적 쿼리 생성
         Specification<PayrollDetail> spec = Specification.where(null);
-        if (empName != null) spec = spec.and(PayrollSpecifications.hasEmpName(empName));
-        if (empId != null) spec = spec.and(PayrollSpecifications.hasEmpId(empId));
-        if (deptName != null) spec = spec.and(PayrollSpecifications.hasDeptName(deptName));
+        // payrollId가 null이 아니면 조건 추가
+        if (payrollId != null) {
+            spec = spec.and(PayrollSpecifications.hasPayrollId(payrollId));  // 이 부분을 추가
+        }
+//        if (empName != null) {
+//            spec = spec.and(PayrollSpecifications.hasEmpName(empName));
+//        }
+        if (empId != null) {
+            spec = spec.and(PayrollSpecifications.hasEmpId(empId));
+        }
+//        if (deptName != null) {
+//            spec = spec.and(PayrollSpecifications.hasDeptName(deptName));
+//        }
 
         // PayrollDetailRepository를 통해 데이터 조회
         List<PayrollDetail> payrollDetails = payrollDetailQueryRepository.findAll(spec);
