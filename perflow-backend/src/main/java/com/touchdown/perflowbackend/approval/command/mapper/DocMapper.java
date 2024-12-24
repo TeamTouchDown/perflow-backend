@@ -93,6 +93,10 @@ public class DocMapper {
         return WaitingDocDetailResponseDTO.builder()
                 .docId(doc.getDocId())
                 .title(doc.getTitle())
+                .createUserName(doc.getCreateUser().getName())
+                .createUserDept(doc.getCreateUser().getDept().getName())
+                .createUserPosition(doc.getCreateUser().getPosition().getName())
+                .createDatetime(doc.getCreateDatetime())
                 .fields(mapFields(doc.getDocFields())) // 필드 데이터 매핑
                 .approveLines(mapWaitingApproveLines(doc.getApproveLines())) // 결재선 매핑
                 .shares(mapWaitingShares(doc.getShares())) // 공유 설정 매핑
@@ -104,6 +108,10 @@ public class DocMapper {
 
         return ProcessedDocDetailResponseDTO.builder()
                 .docId(doc.getDocId())
+                .createUserName(doc.getCreateUser().getName())
+                .createUserDept(doc.getCreateUser().getDept().getName())
+                .createUserPosition(doc.getCreateUser().getPosition().getName())
+                .createDatetime(doc.getCreateDatetime())
                 .title(doc.getTitle())
                 .fields(mapFields(doc.getDocFields())) // 필드 데이터 매핑
                 .approveLines(mapProcessedApproveLines(doc.getApproveLines())) // 결재선 매핑
@@ -258,6 +266,10 @@ public class DocMapper {
         
         return InboxDocDetailResponseDTO.builder()
                 .docId(doc.getDocId())
+                .createUserName(doc.getCreateUser().getName())
+                .createUserDept(doc.getCreateUser().getDept().getName())
+                .createUserPosition(doc.getCreateUser().getPosition().getName())
+                .createDatetime(doc.getCreateDatetime())
                 .title(doc.getTitle())
                 .fields(mapFields(doc.getDocFields())) // 문서 필드 매핑
                 .approveLines(mapInboxApproveLines(doc.getApproveLines())) // 결재선 매핑
@@ -353,6 +365,10 @@ public class DocMapper {
 
         return OutboxDocDetailResponseDTO.builder()
                 .docId(doc.getDocId())
+                .createUserName(doc.getCreateUser().getName())
+                .createUserDept(doc.getCreateUser().getDept().getName())
+                .createUserPosition(doc.getCreateUser().getPosition().getName())
+                .createDatetime(doc.getCreateDatetime())
                 .title(doc.getTitle())
                 .fields(mapFields(doc.getDocFields())) // 필드 데이터 매핑
                 .approveLines(mapOutboxApproveLines(doc.getApproveLines())) // 결재선 정보 매핑
