@@ -168,11 +168,11 @@ public class SeverancePayQueryService {
                         toLocalDate(result[4]),
                         (String) result[5],
                         (String) result[6],
-                        (Long) result[7],
-                        (Long) result[8],
-                        (Long) result[9],
-                        (Long) result[10],
-                        (Long) result[11],
+                        toLong(result[7]),  // 수정
+                        toLong(result[8]),  // 수정
+                        toLong(result[9]),  // 수정
+                        toLong(result[10]), // 수정
+                        toLong(result[11]),
                         Status.valueOf((String) result[12])
 
                 ))
@@ -202,6 +202,18 @@ public class SeverancePayQueryService {
 
             throw new IllegalArgumentException("Unexpected date type: " + date);
 
+        }
+    }
+
+    private Long toLong(Object value) {
+        if (value == null) {
+            return null;
+        } else if (value instanceof Long) {
+            return (Long) value;
+        } else if (value instanceof Integer) {
+            return ((Integer) value).longValue();
+        } else {
+            throw new IllegalArgumentException("Unexpected type for Long field: " + value.getClass().getName());
         }
     }
 
