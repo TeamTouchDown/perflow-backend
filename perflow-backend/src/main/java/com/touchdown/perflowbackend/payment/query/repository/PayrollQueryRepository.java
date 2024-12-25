@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,8 +74,8 @@ public interface PayrollQueryRepository extends JpaRepository<Payroll, Long> {
             "FROM Payroll p " +
             "JOIN PayrollDetail pd ON pd.payroll.payrollId = p.payrollId " +
             "WHERE pd.emp.status = 'ACTIVE' AND pd.emp.empId = :empId " +
-            "AND FUNCTION('YEAR', p.createDatetime) = FUNCTION('YEAR', CURRENT_DATE) " +
-            "AND FUNCTION('MONTH', p.createDatetime) = FUNCTION('MONTH', CURRENT_DATE)")
-    Optional<PayrollDTO> findByEmpId(String empId);
+            "AND FUNCTION('YEAR', p.createDatetime) = FUNCTION('YEAR', :dateTime) " +
+            "AND FUNCTION('MONTH', p.createDatetime) = FUNCTION('MONTH', :dateTime)")
+    Optional<PayrollDTO> findByEmpId(String empId, LocalDateTime dateTime);
 
 }

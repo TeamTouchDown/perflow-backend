@@ -15,6 +15,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -339,9 +342,11 @@ public class PayrollQueryService {
 
     // 사원 자신의 급여명세서 조회
     @Transactional(readOnly = true)
-    public PayStubDTO getPayStub(String empId) {
+    public PayStubDTO getPayStub(String empId, int preMonth) {
 
-        PayrollDTO payStub = payrollQueryRepository.findByEmpId(empId)
+        LocalDateTime dateTime = LocalDateTime.now().minus(Period.ofMonths(preMonth));
+
+        PayrollDTO payStub = payrollQueryRepository.findByEmpId(empId, dateTime)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));
 
         return new PayStubDTO(payStub);
