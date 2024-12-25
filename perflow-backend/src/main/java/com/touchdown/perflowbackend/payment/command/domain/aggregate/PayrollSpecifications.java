@@ -17,8 +17,10 @@ public class PayrollSpecifications {
 
     public static Specification<PayrollDetail> hasEmpId(String empId) {
 
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(root.get("emp").get("empId"), "%" + empId + "%");
+        return (root, query, criteriaBuilder) -> criteriaBuilder.and(
+                criteriaBuilder.like(root.get("emp").get("empId"), "%" + empId + "%"),
+                criteriaBuilder.equal(root.get("emp").get("status"), "ACTIVE")
+        );
 
     }
 
