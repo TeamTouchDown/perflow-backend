@@ -218,6 +218,7 @@ public class DocQueryService {
                         .approveLineId(sbj.getApproveLine().getApproveLineId())
                         .approveSbjId(sbj.getApproveSbjId())
                         .createDatetime(sbj.getApproveLine().getDoc().getCreateDatetime())
+                        .approveSbjStatus(sbj.getStatus())
                         .processDatetime(sbj.getUpdateDatetime()) // 처리 시간
                         .build());
     }
