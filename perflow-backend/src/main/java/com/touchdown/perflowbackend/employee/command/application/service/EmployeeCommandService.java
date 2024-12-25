@@ -2,6 +2,11 @@ package com.touchdown.perflowbackend.employee.command.application.service;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
+import com.touchdown.perflowbackend.authority.domain.aggregate.AuthType;
+import com.touchdown.perflowbackend.authority.domain.aggregate.Authority;
+import com.touchdown.perflowbackend.authority.domain.aggregate.AuthorityEmployee;
+import com.touchdown.perflowbackend.authority.domain.repository.AuthorityEmployeeRepository;
+import com.touchdown.perflowbackend.authority.domain.repository.AuthorityRepository;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.application.dto.*;
@@ -30,6 +35,7 @@ import org.apache.commons.compress.utils.FileNameUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,10 +44,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -54,6 +57,8 @@ public class EmployeeCommandService {
     private final DepartmentCommandRepository departmentCommandRepository;
     private final WhiteRefreshTokenRepository whiteRefreshTokenRepository;
     private final BlackAccessTokenRepository blackAccessTokenRepository;
+    private final AuthorityRepository authorityRepository;
+    private final AuthorityEmployeeRepository authorityEmployeeRepository;
     private final FileService fileService;
 
     private final AuthenticationManager authenticationManager;
@@ -76,6 +81,12 @@ public class EmployeeCommandService {
 
         entityManager.persist(newEmployee);
         employeeCommandRepository.save(newEmployee);
+
+        Authority auth = authorityRepository.findByType(AuthType.EMPLOYEE);
+
+        AuthorityEmployee authorityEmployee = new AuthorityEmployee(auth, newEmployee);
+
+        authorityEmployeeRepository.save(authorityEmployee);
         entityManager.flush();
 
         sendInvitationEmail(newEmployee);
@@ -141,13 +152,18 @@ public class EmployeeCommandService {
         CustomEmployDetail customEmployDetail = (CustomEmployDetail) authentication.getPrincipal();
 
         String empId = customEmployDetail.getUsername();
+
         EmployeeStatus status = customEmployDetail.getStatus();
+
         String empName = customEmployDetail.getEmployeeName();
+
+        List<Long> authList = customEmployDetail.getAuthorityIds();
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("empId", empId);
         claims.put("status", status.name());
         claims.put("name", empName);
+        claims.put("authorities", authList);
 
         String accessToken = jwtTokenProvider.createAccessToken(customEmployDetail.getUsername(), claims);
         String refreshToken = jwtTokenProvider.createRefreshToken(customEmployDetail.getUsername(), claims);

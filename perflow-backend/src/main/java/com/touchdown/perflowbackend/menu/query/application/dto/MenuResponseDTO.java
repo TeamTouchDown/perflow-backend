@@ -19,6 +19,8 @@ public class MenuResponseDTO {
 
     private String url;
 
+    private Long authorityId;
+
     @Builder
     public MenuResponseDTO(Menu menu) {
 
@@ -28,5 +30,6 @@ public class MenuResponseDTO {
         }
         this.name = menu.getName();
         this.url = menu.getUrl();
+        this.authorityId = menu.getAuthority().getAuthorityId();
     }
 }
