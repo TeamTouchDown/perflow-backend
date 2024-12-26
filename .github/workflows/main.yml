@@ -28,8 +28,7 @@ jobs:
       # 3. Gradle Wrapper 실행 권한 부여
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-        # 프로젝트가 서브디렉토리에 있는 경우 'working-directory' 추가
-        # working-directory: ./backend
+        working-directory: ./perflow-backend
 
       # 4. Gradle 빌드
       - name: Build with Gradle
