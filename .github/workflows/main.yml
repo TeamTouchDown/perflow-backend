@@ -37,14 +37,20 @@ jobs:
         # Gradle wrapper가 없는 경우 아래 명령을 사용하세요:
         # run: gradle clean build
 
-      # 5. AWS ECR 로그인
+      # 5. AWS 자격 증명 및 리전 설정
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # 6. AWS ECR 로그인
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-        with:
-          region: ${{ secrets.AWS_REGION }}
 
-      # 6. Docker 이미지 빌드 및 태깅
+      # 7. Docker 이미지 빌드 및 태깅
       - name: Build and Tag Docker image
         run: |
           IMAGE_TAG=latest
@@ -53,7 +59,7 @@ jobs:
           docker build -t $ECR_URI:$IMAGE_TAG .
           docker tag $ECR_URI:$IMAGE_TAG $ECR_URI:$COMMIT_SHA
         working-directory: ./perflow-backend
-      # 7. Docker 이미지 ECR에 푸시
+      # 8. Docker 이미지 ECR에 푸시
       - name: Push Docker images to ECR
         run: |
           ECR_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}
