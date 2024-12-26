@@ -25,21 +25,27 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # 3. Gradle 빌드
+      # 3. Gradle Wrapper 실행 권한 부여
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+        # 프로젝트가 서브디렉토리에 있는 경우 'working-directory' 추가
+        # working-directory: ./backend
+
+      # 4. Gradle 빌드
       - name: Build with Gradle
         run: ./gradlew clean build
         working-directory: ./perflow-backend
         # Gradle wrapper가 없는 경우 아래 명령을 사용하세요:
         # run: gradle clean build
 
-      # 4. AWS ECR 로그인
+      # 5. AWS ECR 로그인
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
         with:
           region: ${{ secrets.AWS_REGION }}
 
-      # 5. Docker 이미지 빌드 및 태깅
+      # 6. Docker 이미지 빌드 및 태깅
       - name: Build and Tag Docker image
         run: |
           IMAGE_TAG=latest
@@ -48,7 +54,7 @@ jobs:
           docker build -t $ECR_URI:$IMAGE_TAG .
           docker tag $ECR_URI:$IMAGE_TAG $ECR_URI:$COMMIT_SHA
         working-directory: ./perflow-backend
-      # 6. Docker 이미지 ECR에 푸시
+      # 7. Docker 이미지 ECR에 푸시
       - name: Push Docker images to ECR
         run: |
           ECR_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}
