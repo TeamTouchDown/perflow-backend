@@ -26,8 +26,8 @@ public class Travel extends BaseEntity {
     @JoinColumn(name = "emp_id", nullable = false)
     private Employee employee;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "approve_sbj_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "approve_sbj_id")
     private ApproveSbj approveSbj;
 
     @Column(name = "enroll_travel", nullable = false)

@@ -24,8 +24,8 @@
         @JoinColumn(name = "emp_id", nullable = false)
         private Employee empId;
 
-        @ManyToOne(fetch = FetchType.LAZY, optional = false)
-        @JoinColumn(name = "approve_sbj_id", nullable = false)
+        @ManyToOne(fetch = FetchType.LAZY, optional = true)
+        @JoinColumn(name = "approve_sbj_id")
         private ApproveSbj approveSbjId;
 
         @Column(name = "enroll_annual", nullable = false)
