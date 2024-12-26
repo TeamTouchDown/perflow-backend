@@ -95,7 +95,8 @@ public interface DocQueryRepository extends JpaRepository<Doc, Long>, JpaSpecifi
             "   sbj.approveSbjId, " +
             "   doc.createDatetime, " +
             "   sbj.status, " +
-            "   sbj.updateDatetime " +
+            "   sbj.updateDatetime, " +
+            "   sbj.comment " +
             ") " +
             "FROM ApproveSbj sbj " +
             "JOIN sbj.approveLine line " +
