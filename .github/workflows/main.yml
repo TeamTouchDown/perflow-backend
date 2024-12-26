@@ -28,6 +28,7 @@ jobs:
       # 3. Gradle 빌드
       - name: Build with Gradle
         run: ./gradlew clean build
+        working-directory: ./perflow-backend
         # Gradle wrapper가 없는 경우 아래 명령을 사용하세요:
         # run: gradle clean build
 
@@ -46,9 +47,11 @@ jobs:
           ECR_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}
           docker build -t $ECR_URI:$IMAGE_TAG .
           docker tag $ECR_URI:$IMAGE_TAG $ECR_URI:$COMMIT_SHA
+        working-directory: ./perflow-backend
       # 6. Docker 이미지 ECR에 푸시
       - name: Push Docker images to ECR
         run: |
           ECR_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}
           docker push $ECR_URI:latest
           docker push $ECR_URI:${GITHUB_SHA::8}
+        working-directory: ./perflow-backend
