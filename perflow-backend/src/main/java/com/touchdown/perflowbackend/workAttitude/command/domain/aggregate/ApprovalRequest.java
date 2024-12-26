@@ -8,10 +8,10 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Table(name = "approval_request")
+@Table(name = "approval_request", schema = "perflow")
 public class ApprovalRequest {
 
     @Id
