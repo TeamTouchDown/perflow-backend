@@ -1,8 +1,7 @@
 package com.touchdown.perflowbackend.workAttitude.command.application.dto;
 
-import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.DeleteStatus;
-import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.RequestType;
-import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.*;
+import jakarta.annotation.Nullable;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -10,21 +9,65 @@ import java.time.LocalDateTime;
 @Data
 public class WorkAttitudeApprovalRequestDTO {
 
-    private String empId;                 // 신청자 ID
+    private String empId;              // 결재자 사원 ID
 
-    private String approverId;            // 결재자 ID
+    private Long approveSbjId;         // 결재 항목의 승인자 ID
 
-    private Long relatedId;               // 관련 요청 ID (연차, 휴가, 출장 등 PK)
+    private String rejectReason;       // 반려 사유
 
-    private RequestType requestType;           // 요청 타입 ('ANNUAL', 'VACATION', 'OVERTIME', 'TRAVEL')
+    private String status;             // 승인/반려 상태
 
-    private Status status;                // 상태 ('PENDING', 'APPROVED', 'REJECTED')
+    // ------------------------- 연차 관련 필드 -------------------------
+    private LocalDateTime annualStart; // 연차 시작 날짜
 
-    private String rejectReason;          // 반려 사유 (NULL 가능)
+    private LocalDateTime annualEnd;   // 연차 종료 날짜
 
-    private DeleteStatus deleteStatus;          // 삭제 상태 ('ACTIVATED', 'DELETED')
+    private AnnualType annualType;     // 연차 유형 (FULLDAY, MORNING_HALF, AFTERNOON_HALF)
 
-    private LocalDateTime createDatetime; // 생성 일시
+    private String annualRejectReason; // 반려 사유
 
-    private LocalDateTime updateDatetime; // 업데이트 일시
+    private Boolean isAnnualRetroactive; // 소급 여부
+
+    private String annualRetroactiveReason; // 소급 사유
+
+    // ------------------------- 초과근무 관련 필드 -------------------------
+
+    private OvertimeType overtimeType; // 초과근무 유형
+
+    private LocalDateTime overtimeStart; // 초과근무 시작 날짜
+
+    private LocalDateTime overtimeEnd;   // 초과근무 종료 날짜
+
+    private Boolean isOvertimeRetroactive; // 초과근무 소급 여부
+
+    private String overtimeRetroactiveReason; // 소급 사유
+
+    private LocalDateTime enrollOvertime; // 초과근무 등록 일시
+
+    private Status overtimeStatus;       // 초과근무 상태
+
+    // ------------------------- 휴가 관련 필드 -------------------------
+
+    private VacationType vacationType;   // 휴가 유형 (출산, 배우자 출산, 생리 휴가, 가족 돌봄 등)
+
+    private LocalDateTime vacationStart; // 휴가 시작 날짜
+
+    private LocalDateTime vacationEnd;   // 휴가 종료 날짜
+
+    private String vacationRejectReason; // 반려 사유
+
+    private VacationStatus vacationStatus; // 휴가 상태 (CONFIRMED, REJECTED, PENDING)
+
+    // ------------------------- 출장 관련 필드 -------------------------
+
+    private String travelReason;       // 출장 사유
+
+    private LocalDateTime travelStart;  // 출장 시작일
+
+    private LocalDateTime travelEnd;    // 출장 종료일
+
+    private String travelRejectReason;  // 반려 사유
+
+    private String travelDivision;      // 출장 구분 (해외, 국내)
+
 }
