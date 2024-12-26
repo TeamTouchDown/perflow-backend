@@ -9,9 +9,9 @@ import java.util.Map;
 
 @Getter
 @Builder
-public class WaitingDocDetailResponseDTO {
+public class OutboxDocDetailResponseDTO {
 
-    private final Long docId;   // 문서 id
+    private final Long docId;
 
     private final String createUserName;
 
@@ -21,12 +21,13 @@ public class WaitingDocDetailResponseDTO {
 
     private final LocalDateTime createDatetime;
 
-    private final String title; // 문서 제목
+    private final String title;
 
-    private final Map<String, Object> fields;   // 필드 데이터 (키 - 값)
+    private final Map<String, Object> fields;
 
-    private final List<WaitingDocApproveLineDTO> approveLines;    // 결재선 정보
+    private final List<OutboxDocApproveLineDTO> approveLines;
 
-    private final List<WaitingDocShareDTO> shares;    // 공유 설정 정보
+    private final List<OutboxDocShareDTO> shares;
 
+    private final String status;
 }
