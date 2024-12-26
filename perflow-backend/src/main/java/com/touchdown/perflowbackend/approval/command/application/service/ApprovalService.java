@@ -163,7 +163,7 @@ public class ApprovalService {
 
         if (nextLineOpt.isPresent()) {
             ApproveLine nextLine = nextLineOpt.get();
-            nextLine.getApproveSbjs().forEach(sbj -> sbj.updateStatus(Status.PENDING));
+            nextLine.getApproveSbjs().forEach(sbj -> sbj.updateStatus(Status.ACTIVATED));
             approveLineCommandRepository.save(nextLine);
 
         } else {
@@ -187,7 +187,7 @@ public class ApprovalService {
         if (nextSbjOpt.isPresent()) {
             // 다음 결재 주체가 있다면 상태를 PENDING 으로 변경
             ApproveSbj nextSbj = nextSbjOpt.get();
-            nextSbj.updateStatus(Status.PENDING);
+            nextSbj.updateStatus(Status.ACTIVATED);
             jpaApproveSbjCommandRepository.save(nextSbj);
         } else {
             // 다음 결재 주체가 없다면 다음 결재선으로 이동

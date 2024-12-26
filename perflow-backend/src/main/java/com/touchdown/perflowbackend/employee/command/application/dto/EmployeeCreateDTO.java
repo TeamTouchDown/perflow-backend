@@ -33,7 +33,5 @@ public class EmployeeCreateDTO {
 
     private String email;
 
-    private EmployeeStatus Status;
-
     private LocalDate joinDate;
 }

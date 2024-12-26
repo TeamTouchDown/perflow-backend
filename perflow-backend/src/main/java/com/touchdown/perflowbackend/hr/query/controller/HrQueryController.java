@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/hr")
+@RequestMapping("/api/v1")
 public class HrQueryController {
 
     private final HrQueryService hrQueryService;

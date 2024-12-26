@@ -174,13 +174,13 @@ public class ExcelTemplateQueryService {
         healthInsuranceCell.setCellStyle(numberCellStyle);
 
         // 고용 보험
-        long hireInsurance = Math.round(employee.getPay() * 0.004591);
+        long hireInsurance = Math.round(employee.getPay() * 0.009);
         Cell hireInsuranceCell = row.createCell(14);
         hireInsuranceCell.setCellValue(hireInsurance);
         hireInsuranceCell.setCellStyle(numberCellStyle);
 
         // 장기 요양 보험
-        long longTermCareInsurance = Math.round(employee.getPay() * 0.009);
+        long longTermCareInsurance = Math.round(employee.getPay() * 0.004591);
         Cell longTermCareInsuranceCell = row.createCell(15);
         longTermCareInsuranceCell.setCellValue(longTermCareInsurance);
         longTermCareInsuranceCell.setCellStyle(numberCellStyle);

@@ -11,7 +11,8 @@ public interface ApproveSbjCommandRepository {
 
     Optional<ApproveSbj> findById(Long approveSbjId);
 
-    @Query("SELECT sbj FROM ApproveSbj sbj " +
+    // todo: DISTINCT 추가 해도 어떤 경우에는 자꾸 2개 이상의 결과를 반환해서 문서 승인을 못하는 경우가 생김
+    @Query("SELECT DISTINCT sbj FROM ApproveSbj sbj " +
             "JOIN sbj.approveLine line " +
             "JOIN line.doc doc " +
             "WHERE doc.docId = :docId " +
@@ -24,6 +25,8 @@ public interface ApproveSbjCommandRepository {
             @Param("approveLineId") Long approveLineId,
             @Param("approveSbjId") Long approveSbjId
         );
+
+    //ApproveSbj save(ApproveSbj approveSbj);
 //        @Query("SELECT sbj FROM ApproveSbj sbj " +
 //            "JOIN sbj.approveLine line " +
 //            "JOIN line.doc doc " +

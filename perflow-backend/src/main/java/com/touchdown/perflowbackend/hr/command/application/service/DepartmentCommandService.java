@@ -11,6 +11,7 @@ import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Pic;
 import com.touchdown.perflowbackend.hr.command.domain.repository.DepartmentCommandRepository;
 import com.touchdown.perflowbackend.hr.command.domain.repository.PicCommandRepository;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ public class DepartmentCommandService {
     private final DepartmentCommandRepository departmentCommandRepository;
     private final PicCommandRepository picCommandRepository;
     private final EmployeeCommandRepository employeeCommandRepository;
+    private final EntityManager entityManager;
 
     @Transactional
     public void createDepartment(DepartmentCreateDTO departmentCreateDTO) {
@@ -42,7 +44,6 @@ public class DepartmentCommandService {
         Pic pic = DepartmentMapper.toPic(newDepartment, picEmployee);
 
         newDepartment.addPic(pic);
-
         departmentCommandRepository.save(newDepartment);
     }
 

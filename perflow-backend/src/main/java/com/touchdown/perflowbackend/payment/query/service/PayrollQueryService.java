@@ -15,8 +15,11 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -143,7 +148,11 @@ public class PayrollQueryService {
     @Transactional(readOnly = true)
     public PayrollListResponseDTO getPayrolls(Pageable pageable) {
 
-        Page<Payroll> page = payrollQueryRepository.findAll(pageable);
+        // Pageable 객체에 정렬 조건 추가 (createDatetime 기준 내림차순 정렬)
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Order.desc("createDatetime")));
+
+        // 기존 pageable을 정렬된 pageable로 변경하여 사용
+        Page<Payroll> page = payrollQueryRepository.findAll(sortedPageable);
 
         List<PayrollResponseDTO> payrolls = page.getContent().stream()
                 .map(payroll -> {
@@ -194,9 +203,19 @@ public class PayrollQueryService {
     public PayrollDetailResponseDTO searchPayroll(Long payrollId, String empName, String empId, String deptName) {
         // Specification 동적 쿼리 생성
         Specification<PayrollDetail> spec = Specification.where(null);
-        if (empName != null) spec = spec.and(PayrollSpecifications.hasEmpName(empName));
-        if (empId != null) spec = spec.and(PayrollSpecifications.hasEmpId(empId));
-        if (deptName != null) spec = spec.and(PayrollSpecifications.hasDeptName(deptName));
+        // payrollId가 null이 아니면 조건 추가
+        if (payrollId != null) {
+            spec = spec.and(PayrollSpecifications.hasPayrollId(payrollId));  // 이 부분을 추가
+        }
+//        if (empName != null) {
+//            spec = spec.and(PayrollSpecifications.hasEmpName(empName));
+//        }
+        if (empId != null) {
+            spec = spec.and(PayrollSpecifications.hasEmpId(empId));
+        }
+//        if (deptName != null) {
+//            spec = spec.and(PayrollSpecifications.hasDeptName(deptName));
+//        }
 
         // PayrollDetailRepository를 통해 데이터 조회
         List<PayrollDetail> payrollDetails = payrollDetailQueryRepository.findAll(spec);
@@ -323,9 +342,11 @@ public class PayrollQueryService {
 
     // 사원 자신의 급여명세서 조회
     @Transactional(readOnly = true)
-    public PayStubDTO getPayStub(String empId) {
+    public PayStubDTO getPayStub(String empId, int preMonth) {
 
-        PayrollDTO payStub = payrollQueryRepository.findByEmpId(empId)
+        LocalDateTime dateTime = LocalDateTime.now().minus(Period.ofMonths(preMonth));
+
+        PayrollDTO payStub = payrollQueryRepository.findByEmpId(empId, dateTime)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));
 
         return new PayStubDTO(payStub);

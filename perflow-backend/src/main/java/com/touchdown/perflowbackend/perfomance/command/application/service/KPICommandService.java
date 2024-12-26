@@ -5,13 +5,12 @@ import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
 import com.touchdown.perflowbackend.perfomance.command.application.dto.CreateKpiPassDTO;
+import com.touchdown.perflowbackend.perfomance.command.application.dto.CreateKpiProgressDTO;
 import com.touchdown.perflowbackend.perfomance.command.application.dto.KPIDetailRequestDTO;
-import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.Kpi;
-import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.KpiProgressStatus;
-import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.PersonalType;
+import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.perfomance.command.domain.repository.KpiCommandRepository;
 import com.touchdown.perflowbackend.perfomance.command.domain.repository.KpiProgressCommandRepository;
-import com.touchdown.perflowbackend.perfomance.command.infrastructure.repository.KpiProgressRepository;
+import com.touchdown.perflowbackend.perfomance.command.domain.repository.KpiStatusCommandRepository;
 import com.touchdown.perflowbackend.perfomance.command.mapper.PerformanceMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +23,7 @@ public class KPICommandService {
     private final KpiCommandRepository kpiCommandRepository;
     private final EmployeeCommandRepository employeeCommandRepository;
     private final KpiProgressCommandRepository kpiProgressCommandRepository;
+    private final KpiStatusCommandRepository kpiStatusCommandRepository;
 
     // 개인 KPI 생성
     @Transactional
@@ -115,7 +115,7 @@ public class KPICommandService {
 
     // KPI 최신화
     @Transactional
-    public void createKpiProgress(String empId, Long kpiId, CreateKpiPassDTO createKpiPassDTO){
+    public void createKpiProgress(String empId, Long kpiId, CreateKpiProgressDTO createKpiProgressDTO){
 
         // empId를 통해 사원 정보 가져오기
         Employee emp = findEmployeeByEmpId(empId);
@@ -124,15 +124,38 @@ public class KPICommandService {
         Kpi kpi = findKpiByKpiId(kpiId);
 
         // kpi 최신화 기록 생성
-        KpiProgressStatus kpiProgressStatus = PerformanceMapper.kpipassDTOtokpiProgress(emp, kpi, createKpiPassDTO);
+        KpiProgressStatus kpiProgressStatus = PerformanceMapper.kpipassDTOtokpiProgress(emp, kpi, createKpiProgressDTO);
 
         // 최신화 기록 저장
         kpiProgressCommandRepository.save(kpiProgressStatus);
 
         // kpi 진척도 업데이트
-        kpi.updateProgress(createKpiPassDTO.getProgress());
+        kpi.updateProgress(createKpiProgressDTO.getProgress());
 
         // kpi 진척도 저장
+        kpiCommandRepository.save(kpi);
+    }
+
+    // KPI 처리
+    @Transactional
+    public void createKpiPass(String empId, Long kpiId, CreateKpiPassDTO createKpiPassDTO){
+
+        // empId를 통해 사원 정보 가져오기
+        Employee emp = findEmployeeByEmpId(empId);
+
+        // 받아온 KPI id를 통해 기존 KPI 정보 받아오기
+        Kpi kpi = findKpiByKpiId(kpiId);
+
+        // KPI 처리하기
+        KpiStatus kpiStatus = PerformanceMapper.createKpiStatus(emp, kpi, createKpiPassDTO);
+
+        // KPI 처리 내용 저장하기
+        kpi.updateStatus(KpiCurrentStatus.valueOf(createKpiPassDTO.getStatus()));
+
+        // KPI 처리 기록 저장하기
+        kpiStatusCommandRepository.save(kpiStatus);
+
+        // KPI 상태 저장
         kpiCommandRepository.save(kpi);
     }
 

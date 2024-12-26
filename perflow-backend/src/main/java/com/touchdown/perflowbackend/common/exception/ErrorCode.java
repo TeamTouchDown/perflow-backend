@@ -12,6 +12,7 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버에러 발생"),
     SEND_EMAIL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "이메일 전송에 실패 했습니다."),
     FAIL_READ_FILE(HttpStatus.INTERNAL_SERVER_ERROR, "파일 읽기에 실패 했습니다."),
+    FAIL_CREAT_FILE(HttpStatus.INTERNAL_SERVER_ERROR, "파일 생성에 실패 했습니다."),
 
     // 토큰 관련 에러
     NOT_VALID_REFRESH_TOKEN(HttpStatus.FORBIDDEN, "유효하지 않은 refresh token입니다."),
@@ -34,12 +35,13 @@ public enum ErrorCode {
     INVALID_APPROVE_TEMPLATE_TYPE(HttpStatus.BAD_REQUEST, "잘못된 결재선 형식입니다."),
     INVALID_APPROVE_TYPE(HttpStatus.BAD_REQUEST, "잘못된 결재 방식입니다."),
     NOT_MATCHED_CSV(HttpStatus.BAD_REQUEST, "CSV파일 로드에 실패했습니다."),
-    NOT_ENOUGH_ANNUAL(HttpStatus.BAD_REQUEST, "연차는 12일 이상의 데이터를 입력해야 합니다."),
+    NOT_ENOUGH_ANNUAL(HttpStatus.BAD_REQUEST, "연차는 15일 이상의 데이터를 입력해야 합니다."),
     NOT_MATCHED_PAYMENT_DATE(HttpStatus.BAD_REQUEST, "급여 지급일은 1일에서 28일 사이의 데이터를 등록해야합니다."),
     ALREADY_CREATE_PIC(HttpStatus.BAD_REQUEST, "이미 존재하는 담당자 데이터입니다. 부서와 담당자를 확인해주세요."),
     TOO_MANY_PROMOTION_STEPS(HttpStatus.BAD_REQUEST,"승진과 강등은 한번에 한 단계씩만 가능합니다."),
     DUPLICATE_DEPT_REQUEST(HttpStatus.BAD_REQUEST, "이미 소속된 부서입니다. 다른 부서를 선택해주세요."),
-    DUPLICATE_JOB_REQUEST(HttpStatus.BAD_REQUEST,"이미 할당된 직책입니다. 다른 직책을 선택해주세요."),
+    INVALID_ANNUAL_REQUEST(HttpStatus.BAD_REQUEST, "유효하지 않은 연차 요청입니다."),
+
 
     // 401 에러
     AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "인증 실패"),
@@ -63,6 +65,7 @@ public enum ErrorCode {
     NOT_FOUND_MANAGED_DEPARTMENT(HttpStatus.NOT_FOUND, "상위 부서 정보를 찾을 수 없습니다."),
     NOT_FOUND_APPROVE_LINE(HttpStatus.NOT_FOUND, "결재선 정보를 찾을 수 없습니다."),
     NOT_FOUND_DOC(HttpStatus.NOT_FOUND, "문서 정보를 찾을 수 없습니다."),
+    UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, "접근 권한이 없습니다."),
     NOT_FOUND_KPI(HttpStatus.NOT_FOUND,"KPI 정보를 찾을 수 없습니다."),
     NOT_FOUND_HRPERFO(HttpStatus.NOT_FOUND,"평가 점수 정보를 찾을 수 없습니다."),
     NOT_FOUND_HRPERFOINQUIRY(HttpStatus.NOT_FOUND,"인사 평가 의의제기 정보를 찾을 수 없습니다."),
@@ -93,9 +96,17 @@ public enum ErrorCode {
     INVALID_QR_CODE(HttpStatus.BAD_REQUEST,"올바르지 않은 인증입니다."),
     NOT_FOUND_TEAM(HttpStatus.BAD_REQUEST,"해당 팀을 찾을 수 없습니다."),
     NOT_FOUND_ATTENDANCE_DATA(HttpStatus.NOT_FOUND, "근무 시간 데이터를 찾을 수 없습니다."),
+    NOT_FOUND_AUTH(HttpStatus.NOT_FOUND, "권한을 찾을 수 없습니다." ),
 
+    NOT_FOUND_ANNUAL(HttpStatus.NOT_FOUND, "연차 정보를 찾을 수 없습니다."),
 
-    ;
+    ACCESS_DENIED(HttpStatus.BAD_REQUEST, "올바르지 않은 접근입니다. "),
+    NOT_FOUND_VACATION(HttpStatus.BAD_REQUEST, "휴가를 찾을 수 없습니다."),
+    DUPLICATE_VACATION(HttpStatus.BAD_REQUEST, "중복된 일정으로 휴가 신청이 불가합니다."),
+    DUPLICATE_JOB_REQUEST(HttpStatus.NOT_FOUND,"직책이 중복됩니다." ),
+    INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST, "잘못된 날짜 형식입니다."),
+    DUPLICATE_ANNUAL(HttpStatus.BAD_REQUEST, "중복된 일정으로 연차 신청이 불가능합니다.");
+;
 
 
     private final HttpStatus httpStatus;

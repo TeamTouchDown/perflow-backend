@@ -13,9 +13,17 @@ public class WaitingDocListResponseDTO {
 
     private final Long docId;
 
+    private final Long templateId;
+
     private final String title;
 
     private final String createUserName;
+
+    private final String empId;
+
+    private final Long approveLineId;
+
+    private final Long approveSbjId;
 
     private final LocalDateTime createDatetime;
 }

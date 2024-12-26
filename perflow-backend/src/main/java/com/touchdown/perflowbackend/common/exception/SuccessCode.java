@@ -62,6 +62,9 @@ public enum SuccessCode {
     // KPI 최신화
     KPI_PROGRESS_UPLOAD_SUCCESS(HttpStatus.OK,"KPI를 성공적으로 최신화하였습니다."),
 
+    // KPI 처리
+    KPI_PASS_UPLOAD_SUCCESS(HttpStatus.OK,"KPI를 성공적으로 처리하였습니다."),
+
     // 동료 평가
     EVALUTION_COL_UPLOAD_SUCCESS(HttpStatus.OK, "동료 평가가 성공적으로 작성되었습니다."),
     EVALUTION_COL_UPDATE_SUCCESS(HttpStatus.OK, "동료 평가가 성공적으로 수정되었습니다."),
@@ -124,7 +127,23 @@ public enum SuccessCode {
     WORK_ATTITUDE_ATTENDANCE_CHECK_OUT_SUCCESS(HttpStatus.OK,"퇴근 처리가 완료 되었습니다." ),
 
 
-    QR_CODE_VALIDATION_SUCCESS(HttpStatus.OK,"인증이 완료 되었습니다." );
+    QR_CODE_VALIDATION_SUCCESS(HttpStatus.OK,"인증이 완료 되었습니다." ),
+    WORK_ATTITUDE_ANNUAL_SUCCESS(HttpStatus.OK, "연차 신청 완료되었습니다."),
+    WORK_ATTRIBUTE_ANNUAL_UPDATE_SUCCESS(HttpStatus.OK,"연차 수정 완료 되었습니다." ),
+    WORK_ATTRIBUTE_ANNUAL_DELETE_SUCCESS(HttpStatus.OK,"연차 삭제 완료 되었습니다." ),
+    WORK_ATTITUDE_ANNUAL_CHECK_IN_SUCCESS(HttpStatus.OK, "연차 반려 처리 완료 되었습니다."),
+    WORK_ATTITUDE_ANNUAL_CHECK_OUT_SUCCESS(HttpStatus.OK,"반려 사유 작성 완료 되었습니다." ),
+    WORK_ATTITUDE_VACATION_CHECK_OUT_SUCCESS(HttpStatus.OK, "반려 처리 완료 되었습니다."),
+    WORK_ATTITUDE_VACATION_CHECK_IN_SUCCESS(HttpStatus.OK,"승인 처리 완료 되었습니다."),
+    WORK_ATTRIBUTE_VACATION_DELETE_SUCCESS(HttpStatus.OK,"삭제 처리 완료 되었습니다."),
+    WORK_ATTRIBUTE_VACATION_UPDATE_SUCCESS(HttpStatus.OK,"업데이트 완료 되었습니다."),
+    WORK_ATTITUDE_VACATION_SUCCESS(HttpStatus.OK,"휴가 신청 완료 되었습니다."),
+    ;
+
+
+
+
+
 
     private final HttpStatus httpStatus;
     private final String message;

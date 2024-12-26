@@ -1,5 +1,6 @@
 package com.touchdown.perflowbackend.security.config;
 
+import com.touchdown.perflowbackend.authority.domain.aggregate.AuthType;
 import com.touchdown.perflowbackend.security.filter.JwtFilter;
 import com.touchdown.perflowbackend.security.handler.JwtAccessDeniedHandler;
 import com.touchdown.perflowbackend.security.handler.JwtAuthenticationEntryPoint;
@@ -31,7 +32,11 @@ public class SecurityConfig {
 
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**", "/api/v1/**").permitAll()
+                        authorize.requestMatchers("/swagger-ui/**", "/v3/api-docs/**","/api/v1/employee/pwd","/api/v1/login", "/api/v1/logout").permitAll()
+                                .requestMatchers("/api/v1/emp/**").hasAnyRole("EMPLOYEE","MASTER")
+                                .requestMatchers("/api/v1/hr/**").hasAnyRole("HR","MASTER")
+                                .requestMatchers("/api/v1/leader/**").hasAnyRole("LEADER","MASTER")
+                                .requestMatchers("/api/v1/master/**").hasAnyRole("MASTER")
                                 .anyRequest().authenticated()
                 )
                 /* session 로그인 방식을 사용하지 않음 (JWT Token 방식을 사용할 예정) */

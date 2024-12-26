@@ -34,13 +34,15 @@ public class AnnouncementQueryService {
 
     @Transactional(readOnly = true)
     public Page<AnnouncementResponseDTO> searchAnnouncementsByTitle(String title, Pageable pageable) {
+
         return announcementQueryRepository.findByTitleContainingIgnoreCase(title, pageable)
                 .map(AnnouncementMapper::toDTO);
     }
 
     @Transactional(readOnly = true)
-    public Page<AnnouncementResponseDTO> searchAnnouncementsByEmpName(String empName, Pageable pageable) {
-        return announcementQueryRepository.findByEmpName(empName, pageable)
+    public Page<AnnouncementResponseDTO> getAnnouncementByDeptName(String deptName, Pageable pageable) {
+
+        return announcementQueryRepository.findByDeptName(deptName, pageable)
                 .map(AnnouncementMapper::toDTO);
     }
 }

@@ -6,13 +6,9 @@ import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.query.repository.EmployeeQueryRepository;
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Attendance;
-import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeAttendancePageResponseDTO;
 import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeAttendanceSummaryResponseDTO;
 import com.touchdown.perflowbackend.workAttitude.query.repository.WorkAttitudeAttendanceQueryRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class WorkAttitudeAttendanceQueryService {
 
     private final WorkAttitudeAttendanceQueryRepository attendanceRepository;
@@ -33,67 +29,65 @@ public class WorkAttitudeAttendanceQueryService {
 
     // 사원 주차별 조회
     @Transactional
-    public List<WorkAttitudeAttendanceSummaryResponseDTO> getWeeklySummaryForEmployee(Pageable pageable) {
+    public List<WorkAttitudeAttendanceSummaryResponseDTO> getWeeklySummaryForEmployee() {
 
         String empId = EmployeeUtil.getEmpId();
         Employee employee = employeeRepository.findById(empId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP));
-
-        Page<Attendance> page = attendanceRepository.findByEmpId(empId,pageable);
-        /*List<Attendance> records = page.getContent();
-
-        List<WorkAttitudeAttendanceSummaryResponseDTO> summaries = calculateWeeklySummaryWithNames(records);*/
-
-        return calculateWeeklySummaryWithNames(page.getContent());
+        List<Attendance> records = attendanceRepository.findByEmpId(empId);
+        return calculateWeeklySummaryWithNames(records);
     }
+
     // 사원 월별 조회
     @Transactional
-    public List<WorkAttitudeAttendanceSummaryResponseDTO> getMonthlySummaryForEmployee(Pageable pageable) {
-        String empId = EmployeeUtil.getEmpId();
-        employeeRepository.findById(empId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP));
+    public List<WorkAttitudeAttendanceSummaryResponseDTO> getMonthlySummaryForEmployee() {
 
-        Page<Attendance> page = attendanceRepository.findByEmpId(empId, pageable);
-        return calculateMonthlySummaryWithNames(page.getContent());
+        String empId = EmployeeUtil.getEmpId();
+        Employee employee = employeeRepository.findById(empId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP));
+        List<Attendance> records = attendanceRepository.findByEmpId(empId);
+        return calculateMonthlySummaryWithNames(records);
     }
 
     // 팀장 주차별 조회
     @Transactional
-    public List<WorkAttitudeAttendanceSummaryResponseDTO> getWeeklySummaryForTeam(Pageable pageable) {
-        String leaderEmpId = EmployeeUtil.getEmpId();
-        Long deptId = employeeRepository.findDeptIdByLeaderEmpId(leaderEmpId);
-        List<String> teamEmpIds = employeeRepository.findEmpIdsByDeptId(deptId);
+    public List<WorkAttitudeAttendanceSummaryResponseDTO> getWeeklySummaryForTeam() {
 
-        Page<Attendance> page = attendanceRepository.findByEmpIds(teamEmpIds, pageable);
-        return calculateWeeklySummaryWithNames(page.getContent());
+        String leaderEmpId = EmployeeUtil.getEmpId();
+        Long deptId = employeeRepository.findDeptIdByLeaderEmpId(leaderEmpId); // 팀장 부서 ID 조회
+        List<String> teamEmpIds = employeeRepository.findEmpIdsByDeptId(deptId); // 팀원들 조회
+        List<Attendance> records = attendanceRepository.findByEmpIds(teamEmpIds);
+        return calculateWeeklySummaryWithNames(records);
     }
 
     // 팀장 월별 조회
     @Transactional
-    public List<WorkAttitudeAttendanceSummaryResponseDTO> getMonthlySummaryForTeam(Pageable pageable) {
+    public List<WorkAttitudeAttendanceSummaryResponseDTO> getMonthlySummaryForTeam() {
+
         String leaderEmpId = EmployeeUtil.getEmpId();
         Long deptId = employeeRepository.findDeptIdByLeaderEmpId(leaderEmpId);
         List<String> teamEmpIds = employeeRepository.findEmpIdsByDeptId(deptId);
-
-        Page<Attendance> page = attendanceRepository.findByEmpIds(teamEmpIds, pageable);
-        return calculateMonthlySummaryWithNames(page.getContent());
+        List<Attendance> records = attendanceRepository.findByEmpIds(teamEmpIds);
+        return calculateMonthlySummaryWithNames(records);
     }
 
     // 인사팀 주차별 조회
     @Transactional
-    public List<WorkAttitudeAttendanceSummaryResponseDTO> getWeeklySummaryForAllEmployees(Pageable pageable) {
-        Page<Attendance> page = attendanceRepository.findAll(pageable);
-        return calculateWeeklySummaryWithNames(page.getContent());
+    public List<WorkAttitudeAttendanceSummaryResponseDTO> getWeeklySummaryForAllEmployees() {
+
+        List<Attendance> records = attendanceRepository.findAll();
+        return calculateWeeklySummaryWithNames(records);
     }
 
     // 인사팀 월별 조회
     @Transactional
-    public List<WorkAttitudeAttendanceSummaryResponseDTO> getMonthlySummaryForAllEmployees(Pageable pageable) {
-        Page<Attendance> page = attendanceRepository.findAll(pageable);
-        return calculateMonthlySummaryWithNames(page.getContent());
+    public List<WorkAttitudeAttendanceSummaryResponseDTO> getMonthlySummaryForAllEmployees() {
+
+        List<Attendance> records = attendanceRepository.findAll();
+        return calculateMonthlySummaryWithNames(records);
     }
 
-    // 주차별 근무 시간 계산 (점심시간 1시간 제외, 각 사원의 이름 포함)
+    // 주차별 근무 시간 계산 (점심시간 1시간 제외,각 사원의 이름 포함)
     private List<WorkAttitudeAttendanceSummaryResponseDTO> calculateWeeklySummaryWithNames(List<Attendance> records) {
         List<WorkAttitudeAttendanceSummaryResponseDTO> summaries = new ArrayList<>();
 
@@ -115,30 +109,39 @@ public class WorkAttitudeAttendanceQueryService {
             final LocalDate startOfWeek = currentStart;
             final LocalDate endOfWeek = currentEnd;
 
-            log.info("주차 범위: {} ~ {}", startOfWeek, endOfWeek);
-
+            // 근무 시간을 합산하고 각 사원 정보도 포함
             Map<String, Long> employeeMinutes = records.stream()
                     .filter(a ->
                             !a.getCheckInDateTime().toLocalDate().isBefore(startOfWeek) &&
-                                    !a.getCheckInDateTime().toLocalDate().isAfter(endOfWeek)
-                    )
-                    .collect(Collectors.groupingBy(a -> a.getEmpId().getEmpId(),
-                            Collectors.summingLong(a -> ChronoUnit.MINUTES.between(a.getCheckInDateTime(), a.getCheckOutDateTime()) - 60)));
-
+                                    !a.getCheckInDateTime().toLocalDate().isAfter(endOfWeek))
+                    .collect(Collectors.groupingBy(
+                            a-> a.getEmpId().getEmpId(),
+                            Collectors.summingLong(a ->{
+                                long workDuration =
+                                        ChronoUnit.MINUTES.between(
+                                                a.getCheckInDateTime(),
+                                                a.getCheckOutDateTime()
+                                        );
+                                return workDuration -60;
+                            })
+                    ));
             employeeMinutes.forEach((empId, totalMinutes) -> {
                 String empName = employeeRepository.findById(empId)
-                        .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP))
+                        .orElseThrow(() ->
+                                new CustomException(ErrorCode.NOT_FOUND_EMP))
                         .getName();
+                int year = startOfWeek.getYear();
                 summaries.add(new WorkAttitudeAttendanceSummaryResponseDTO(
                         weekIndex[0] + "주차",
                         (int) (totalMinutes / 60),
                         (int) (totalMinutes % 60),
                         empId,
-                        empName
+                        empName,
+                        year
                 ));
             });
             weekIndex[0]++;
-            currentStart = currentEnd.plusDays(1);
+            currentStart = currentEnd.plusDays(1);  // 다음 주차로 넘어가기
         }
         return summaries;
     }
@@ -146,75 +149,42 @@ public class WorkAttitudeAttendanceQueryService {
     // 월별 근무 시간 계산 (각 사원의 이름 포함)
     private List<WorkAttitudeAttendanceSummaryResponseDTO> calculateMonthlySummaryWithNames(List<Attendance> records) {
         return records.stream()
-                .collect(Collectors.groupingBy(a -> a.getCheckInDateTime().getMonth()))
-                .entrySet().stream()
-                .flatMap(entry -> entry.getValue().stream()
-                        .collect(Collectors.groupingBy(a -> a.getEmpId().getEmpId()))
-                        .entrySet().stream()
-                        .map(empEntry -> {
-                            long totalMinutes = empEntry.getValue().stream()
-                                    .mapToLong(a -> ChronoUnit.MINUTES.between(a.getCheckInDateTime(), a.getCheckOutDateTime()) - 60)
-                                    .sum();
-                            String empId = empEntry.getKey();
-                            String empName = empEntry.getValue().get(0).getEmpId().getName();
-
-                            return new WorkAttitudeAttendanceSummaryResponseDTO(
-                                    entry.getKey().name(),
-                                    (int) (totalMinutes / 60),
-                                    (int) (totalMinutes % 60),
-                                    empId,
-                                    empName
-                            );
-                        }))
-                .collect(Collectors.toList());
-    }
-
-    // 공통 로직: Page<Attendance>를 WorkAttitudeAttendancePageResponseDTO로 변환
-    private WorkAttitudeAttendancePageResponseDTO mapToPageResponseDTO(Page<Attendance> page, String periodLabel) {
-        List<WorkAttitudeAttendanceSummaryResponseDTO> summaries = page.getContent().stream()
-                .collect(Collectors.groupingBy(a -> a.getEmpId().getEmpId()))
+                .collect(Collectors.groupingBy(a -> a.getCheckInDateTime().getMonth())) // 월별로 그룹화
                 .entrySet()
                 .stream()
-                .map(entry -> {
-                    long totalMinutes = entry.getValue().stream()
-                            .mapToLong(a -> ChronoUnit.MINUTES.between(a.getCheckInDateTime(), a.getCheckOutDateTime()) - 60)
-                            .sum();
-                    String empId = entry.getKey();
-                    String empName = employeeRepository.findById(empId)
-                            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMP))
-                            .getName();
+                .flatMap(entry -> {
+                    // 각 월에 대해 사원별로 계산
+                    return entry.getValue().stream()
+                            .collect(Collectors.groupingBy(a -> a.getEmpId().getEmpId())) // empId로 그룹화 (사원별로 그룹화)
+                            .entrySet()
+                            .stream()
+                            .map(empEntry -> {
+                                long totalMinutes = empEntry.getValue().stream()
+                                        .mapToLong(a -> {
+                                            long workDuration = ChronoUnit.MINUTES.between(a.getCheckInDateTime(), a.getCheckOutDateTime());
+                                            // 점심시간 1시간 제외
+                                            return workDuration - 60;
+                                        })
+                                        .sum();
+                                String empId = empEntry.getKey(); // 사원의 empId
+                                String empName = empEntry.getValue().get(0).getEmpId().getName(); // 사원의 이름
 
-                    return new WorkAttitudeAttendanceSummaryResponseDTO(
-                            periodLabel,  // 주차 정보 또는 월 정보
-                            (int) (totalMinutes / 60),  // 총 시간
-                            (int) (totalMinutes % 60),  // 총 분
-                            empId,  // 사원 ID
-                            empName // 사원 이름
-                    );
-                }).collect(Collectors.toList());
+                                int year = empEntry.getValue().get(0).getCheckInDateTime().getYear();
 
-        return WorkAttitudeAttendancePageResponseDTO.builder()
-                .summaries(summaries)
-                .totalPages(page.getTotalPages())
-                .totalItems((int) page.getTotalElements())
-                .currentPage(page.getNumber() + 1)
-                .pageSize(page.getSize())
-                .build();
+
+                                // DTO 생성하여 반환
+                                return new WorkAttitudeAttendanceSummaryResponseDTO(
+                                        entry.getKey().name(), // 월
+                                        (int) (totalMinutes / 60), // 총 시간
+                                        (int) (totalMinutes % 60), // 총 분
+                                        empId, // empId
+                                        empName, // empName
+                                        year
+
+                                );
+                            });
+                })
+                .collect(Collectors.toList());
     }
-
-    private WorkAttitudeAttendancePageResponseDTO buildPageResponseDTO(
-            Page<Attendance> page,
-            List<WorkAttitudeAttendanceSummaryResponseDTO> summaries
-    ) {
-
-        return WorkAttitudeAttendancePageResponseDTO.builder()
-                .summaries(summaries)                 // 계산된 요약 데이터 리스트
-                .totalPages(page.getTotalPages())     // 전체 페이지 수
-                .totalItems((int) page.getTotalElements()) // 전체 항목 수
-                .currentPage(page.getNumber() + 1)    // 현재 페이지 (0부터 시작하므로 +1)
-                .pageSize(page.getSize())             // 페이지 크기
-                .build();
-    }
-
 
 }

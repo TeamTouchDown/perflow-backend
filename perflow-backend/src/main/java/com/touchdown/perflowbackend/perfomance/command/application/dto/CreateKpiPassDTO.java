@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CreateKpiPassDTO {
 
-    private final Double progress;
-
     private final String reason;
+
+    private final String status;
 }

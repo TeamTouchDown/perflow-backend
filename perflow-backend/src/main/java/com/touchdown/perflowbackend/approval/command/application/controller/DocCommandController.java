@@ -7,11 +7,13 @@ import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import io.netty.util.concurrent.SucceededFuture;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/approval")
@@ -45,6 +47,7 @@ public class DocCommandController {
     @PutMapping("/docs/bulk")
     public ResponseEntity<SuccessCode> bulkApproveDocs(@RequestBody BulkApproveRequestDTO request) {
 
+        log.info("일괄 승인 요청 데이터: {}", request);
         approvalService.processBulkApproval(request);
 
         return ResponseEntity.ok(SuccessCode.DOC_APPROVE_SUCCESS);
