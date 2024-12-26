@@ -156,7 +156,7 @@ public class SeveranceExcelTemplateQueryService {
         if (LocalDate.now().getMonthValue() == 12) {
             annualAllowance = calculateResignedAnnualAllowance(hourlyPay);
         }
-        Cell annualAllowanceCell = row.createCell(9);
+        Cell annualAllowanceCell = row.createCell(10);
         annualAllowanceCell.setCellValue(annualAllowance);
         annualAllowanceCell.setCellStyle(numberCellStyle);
 
