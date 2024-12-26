@@ -27,9 +27,9 @@ jobs:
 
       # 3. Gradle 빌드
       - name: Build with Gradle
-        run: ./gradlew clean build
+        # run: ./gradlew clean build
         # Gradle wrapper가 없는 경우 아래 명령을 사용하세요:
-        # run: gradle clean build
+        run: gradle clean build
 
       # 4. AWS ECR 로그인
       - name: Login to Amazon ECR
