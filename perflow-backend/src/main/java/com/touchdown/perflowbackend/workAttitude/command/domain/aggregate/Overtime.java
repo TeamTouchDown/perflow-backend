@@ -84,7 +84,7 @@ public class Overtime extends BaseEntity {
         this.overtimeEnd = overtimeEnd;
         this.overtimeStatus  = overtimeStatus != null ? overtimeStatus : Status.PENDING;
         this.overtimeRejectReason = overtimeRejectReason;
-        this.isOvertimeRetroactive = isOvertimeRetroactive;
+        this.isOvertimeRetroactive = isOvertimeRetroactive!= null ? isOvertimeRetroactive : false;
         this.overtimeRetroactiveReason = overtimeRetroactiveReason ;
         this.overtimeRetroactiveStatus = overtimeRetroactiveStatus;
         this.status = status != null ? status : Status.ACTIVATED;
