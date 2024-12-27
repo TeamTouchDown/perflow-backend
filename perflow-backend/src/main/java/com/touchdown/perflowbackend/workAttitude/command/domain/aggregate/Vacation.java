@@ -1,7 +1,6 @@
 package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
-import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.*;
@@ -74,7 +73,7 @@ public class Vacation extends BaseEntity {
         this.vacationEnd = vacationEnd;
         this.vacationType = vacationType;
         this.vacationRejectReason = vacationRejectReason;
-        this.vacationStatus = vacationStatus;
+        this.vacationStatus = vacationStatus != null ? vacationStatus : VacationStatus.PENDING;
         this.status = status != null ? status : Status.ACTIVATED; // 기본값 설정
     }
 

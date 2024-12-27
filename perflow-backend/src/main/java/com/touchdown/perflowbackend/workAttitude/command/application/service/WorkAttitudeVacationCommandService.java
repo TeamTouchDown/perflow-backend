@@ -1,7 +1,5 @@
 package com.touchdown.perflowbackend.workAttitude.command.application.service;
 
-import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
-import com.touchdown.perflowbackend.approval.command.domain.repository.ApproveSbjCommandRepository;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
@@ -9,7 +7,6 @@ import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeC
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeVacationRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.*;
-import com.touchdown.perflowbackend.workAttitude.command.domain.repository.WorkAttitudeAnnualCommandRepository;
 import com.touchdown.perflowbackend.workAttitude.command.domain.repository.WorkAttitudeVacationCommandRepository;
 import com.touchdown.perflowbackend.workAttitude.command.mapper.WorkAttitudeVacationMapper;
 import lombok.RequiredArgsConstructor;
@@ -26,105 +23,102 @@ public class WorkAttitudeVacationCommandService {
 
     private final WorkAttitudeVacationCommandRepository vacationRepository;
     private final EmployeeCommandRepository employeeRepository;
-    private final ApproveSbjCommandRepository approveSbjRepository;
-    private final WorkAttitudeAnnualCommandRepository workAttitudeAnnualCommandRepository;
+
+    // 현재 로그인한 사용자 조회
+    private Employee getCurrentEmployee() {
+        String empId = EmployeeUtil.getEmpId();
+        return employeeRepository.findById(empId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));
+    }
 
     // 휴가 신청
     @Transactional
     public void registerVacation(WorkAttitudeVacationRequestDTO requestDTO) {
-        log.info("휴가 신청 등록: {}", requestDTO);
+        Employee employee = getCurrentEmployee();
+        Employee approver = employeeRepository.findById(requestDTO.getApprover())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));
 
-        String empId = EmployeeUtil.getEmpId();
-        Employee employee = findEmployeeByEmpId(empId);
+        // 날짜 중복 검증
+        validateDateOverlap(employee.getEmpId(), requestDTO.getVacationStart(), requestDTO.getVacationEnd());
 
-        /*// 중복 검증
-        if (isOverlappingLeave(empId, requestDTO.getVacationStart(), requestDTO.getVacationEnd())) {
-            throw new CustomException(ErrorCode.DUPLICATE_VACATION);
-        }*/
-
-        ApproveSbj approveSbj = approveSbjRepository.findById(requestDTO.getApproveSbjId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APPROVE_SBJ));
-
-        Vacation vacation = WorkAttitudeVacationMapper.toEntity(requestDTO, employee, approveSbj);
+        // 휴가 엔티티 생성 및 저장
+        Vacation vacation = WorkAttitudeVacationMapper.toEntity(requestDTO, employee, approver);
         vacationRepository.save(vacation);
+        log.info("휴가 신청 완료: {}", vacation);
     }
-
 
     // 휴가 수정
     @Transactional
     public void updateVacation(Long vacationId, WorkAttitudeVacationRequestDTO requestDTO) {
-        log.info("휴가 수정: {}, {}", vacationId, requestDTO);
+        Employee employee = getCurrentEmployee();
+        Vacation vacation = vacationRepository.findById(vacationId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_VACATION));
 
-        Vacation vacation = findVacationById(vacationId);
-
-        // 날짜 유효성 검증
-        if (requestDTO.getVacationStart().isAfter(requestDTO.getVacationEnd())) {
-            throw new CustomException(ErrorCode.INVALID_DATE_RANGE); // 예외 발생
+        if (!vacation.getEmpId().getEmpId().equals(employee.getEmpId())) {
+            throw new CustomException(ErrorCode.NOT_MATCH_WRITER);
         }
-
-       /* // 중복 검증
-        if (isOverlappingLeave(vacation.getEmpId().getEmpId(), requestDTO.getVacationStart(), requestDTO.getVacationEnd())) {
-            throw new CustomException(ErrorCode.DUPLICATE_VACATION);
-        }*/
 
         WorkAttitudeVacationMapper.updateEntityFromDto(requestDTO, vacation);
         vacationRepository.save(vacation);
+        log.info("휴가 수정 완료: {}", vacation);
     }
-
 
     // 휴가 삭제 (소프트 삭제)
     @Transactional
-    public void deleteVacation(Long vacationId) {
-        log.info("휴가 삭제: {}", vacationId);
+    public void softDeleteVacation(Long vacationId) {
+        Employee employee = getCurrentEmployee();
+        Vacation vacation = vacationRepository.findById(vacationId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_VACATION));
 
-        Vacation vacation = findVacationById(vacationId);
+        if (!vacation.getEmpId().getEmpId().equals(employee.getEmpId())) {
+            throw new CustomException(ErrorCode.NOT_MATCH_WRITER);
+        }
+
         vacation.softDelete();
         vacationRepository.save(vacation);
+        log.info("휴가 삭제 완료: {}", vacation);
     }
 
     // 휴가 승인
     @Transactional
     public void approveVacation(Long vacationId) {
-        log.info("휴가 승인: {}", vacationId);
+        Employee approver = getCurrentEmployee();
+        Vacation vacation = vacationRepository.findById(vacationId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_VACATION));
 
-        Vacation vacation = findVacationById(vacationId);
+        if (!vacation.getApprover().getEmpId().equals(approver.getEmpId())) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED); // 권한 없음 예외 발생
+        }
+
         vacation.approveVacation();
+        vacation.setUpdateDatetime(LocalDateTime.now());
         vacationRepository.save(vacation);
+        log.info("휴가 승인 완료: {}", vacation);
     }
 
     // 휴가 반려
     @Transactional
     public void rejectVacation(Long vacationId, String rejectReason) {
-        log.info("휴가 반려: {}, 사유: {}", vacationId, rejectReason);
-
-        Vacation vacation = findVacationById(vacationId);
-        vacation.rejectVacation(rejectReason);
-        vacationRepository.save(vacation);
-    }
-
-
-
-    // 사원 조회
-    private Employee findEmployeeByEmpId(String empId) {
-        return employeeRepository.findById(empId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));
-    }
-
-    // 휴가 조회
-    private Vacation findVacationById(Long vacationId) {
-        return vacationRepository.findById(vacationId)
+        Employee approver = getCurrentEmployee();
+        Vacation vacation = vacationRepository.findById(vacationId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_VACATION));
+
+        if (!vacation.getApprover().getEmpId().equals(approver.getEmpId())) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED); // 권한 없음 예외 발생
+        }
+
+        vacation.rejectVacation(rejectReason);
+        vacation.setUpdateDatetime(LocalDateTime.now());
+        vacationRepository.save(vacation);
+        log.info("휴가 반려 완료: {}", vacation);
     }
 
-    /*private boolean isOverlappingLeave(String empId, LocalDateTime start, LocalDateTime end) {
-        // 휴가 중복 체크
-        boolean vacationOverlap = vacationRepository.existsByEmpIdAndVacationStartBeforeAndVacationEndAfter(
-                empId, end, start);
-
-        // 연차 중복 체크
-
-
-        return vacationOverlap || annualOverlap; // 하나라도 겹치면 true 반환
-    }*/
-
+    // 날짜 중복 검증
+    private void validateDateOverlap(String empId, LocalDateTime startDate, LocalDateTime endDate) {
+        boolean overlap = vacationRepository.existsByEmpIdAndStatusAndVacationStartAndVacationEnd(
+                empId, Status.ACTIVATED, endDate, startDate);
+        if (overlap) {
+            throw new CustomException(ErrorCode.DUPLICATE_VACATION);
+        }
+    }
 }
