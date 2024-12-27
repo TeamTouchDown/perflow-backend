@@ -15,7 +15,7 @@ public class WorkAttitudeTravelResponseDTO {
 
     private String empId;
 
-    private Long approveSbjId;
+    private String approver;
 
     private String travelReason;
 
