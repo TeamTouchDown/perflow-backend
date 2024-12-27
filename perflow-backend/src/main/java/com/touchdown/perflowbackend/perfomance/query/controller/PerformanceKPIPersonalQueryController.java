@@ -27,6 +27,34 @@ public class PerformanceKPIPersonalQueryController {
         return ResponseEntity.ok(response);
     }
 
+    // 개인 KPI 리스트 기간별 조회 (생성)
+    @GetMapping("/period/new/{empId}/{year}")
+    public ResponseEntity<KPIListResponseDTO> getNewPersonalKPIs(
+            @PathVariable(name = "empId") String empId,
+            @PathVariable(name = "year") String year,
+            @RequestParam(required = false) String quarter,
+            @RequestParam(required = false) String month
+    ) {
+        KPIListResponseDTO response;
+
+        if (Objects.equals(month, "")) {
+            month = null;
+        }
+        if (Objects.equals(quarter, "")) {
+            quarter = null;
+        }
+
+        // 조건: quarter와 month가 모두 null인 경우
+        if (quarter == null && month == null) {
+            // 년도별 조회 함수 호출
+            response = KPIQueryService.getNewPersonalKPIsByempId(empId, year);
+        } else {
+            // 기간별 조회 함수 호출
+            response = KPIQueryService.getNewPersonalKPIsempId(empId, year, quarter, month);
+        }
+        return ResponseEntity.ok(response);
+    }
+
     // 개인 KPI 리스트 기간별 조회 (현재)
     @GetMapping("/period/current/{empId}/{year}")
     public ResponseEntity<KPIListResponseDTO> getCurrentPersonalKPIsByYear(
