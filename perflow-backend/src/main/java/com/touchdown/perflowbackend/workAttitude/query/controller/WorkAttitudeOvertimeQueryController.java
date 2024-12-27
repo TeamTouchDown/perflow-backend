@@ -1,16 +1,13 @@
 package com.touchdown.perflowbackend.workAttitude.query.controller;
 
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
-import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeForEmployeeSummaryDTO;
-import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeForTeamLeaderSummaryDTO;
+import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeResponseDTO;
 import com.touchdown.perflowbackend.workAttitude.query.service.WorkAttitudeOvertimeQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,24 +19,36 @@ public class WorkAttitudeOvertimeQueryController {
 
     private final WorkAttitudeOvertimeQueryService workAttitudeOvertimeQueryService;
 
-    // 팀장 전체 조회
-    @Operation(summary = "팀장 전체 조회", description = "팀장이 모든 직원의 초과근무 요약 정보를 조회합니다.")
-    @GetMapping("/leader/overtime/summary")
-    public ResponseEntity<List<WorkAttitudeOvertimeForTeamLeaderSummaryDTO>> getOvertimeSummaryForAllEmployees() {
-        List<WorkAttitudeOvertimeForTeamLeaderSummaryDTO> summaries = workAttitudeOvertimeQueryService.getOvertimeSummaryForAllEmployees();
-        return ResponseEntity.ok(summaries);
-    }
-
-    // 사원 본인 조회
-
-    @Operation(summary = "사원 본인 조회", description = "사원이 자신의 초과근무 요약 정보를 조회")
-    @GetMapping("/emp/overtime/summary")
-    public ResponseEntity<WorkAttitudeOvertimeForEmployeeSummaryDTO> getOvertimeSummaryForEmployee() {
+    // 사원 본인 초과근무 내역 조회
+    @Operation(summary = "사원 본인 조회", description = "사원이 자신의 초과근무 내역을 조회")
+    @GetMapping("/emp/overtimes")
+    public ResponseEntity<List<WorkAttitudeOvertimeResponseDTO>> getOvertimeForEmployee() {
         String empId = EmployeeUtil.getEmpId(); // 인증된 사원 ID 가져오기
-        WorkAttitudeOvertimeForEmployeeSummaryDTO summary = workAttitudeOvertimeQueryService.getOvertimeSummaryForEmployee(empId);
+        List<WorkAttitudeOvertimeResponseDTO> response = workAttitudeOvertimeQueryService.getOvertimeForEmployee(empId);
+        return ResponseEntity.ok(response);
+    }
+    // 사원 본인의 초과근무 유형별 요약 조회
+    @Operation(summary = "사원 초과근무 요약 조회", description = "사원이 자신의 초과근무 유형별 요약 정보를 조회")
+    @GetMapping("/emp/overtimes/summary")
+    public ResponseEntity<WorkAttitudeOvertimeResponseDTO> getOvertimeSummaryForEmployee() {
+        String empId = EmployeeUtil.getEmpId();
+        WorkAttitudeOvertimeResponseDTO summary = workAttitudeOvertimeQueryService.getOvertimeSummaryForEmployee(empId);
         return ResponseEntity.ok(summary);
     }
 
+    // 팀장의 팀원 초과근무 내역 조회
+    @Operation(summary = "팀원 초과근무 조회", description = "팀장이 팀원의 초과근무 내역을 조회")
+    @GetMapping("/leader/overtimes/team")
+    public ResponseEntity<List<WorkAttitudeOvertimeResponseDTO>> getOvertimeForTeam() {
+        List<WorkAttitudeOvertimeResponseDTO> response = workAttitudeOvertimeQueryService.getOvertimeForTeam();
+        return ResponseEntity.ok(response);
+    }
 
-
+    // 인사팀의 전체 초과근무 내역 조회
+    @Operation(summary = "전체 초과근무 조회", description = "인사팀이 전체 직원의 초과근무 내역을 조회")
+    @GetMapping("/hr/overtimes/all")
+    public ResponseEntity<List<WorkAttitudeOvertimeResponseDTO>> getAllOvertimes() {
+        List<WorkAttitudeOvertimeResponseDTO> response = workAttitudeOvertimeQueryService.getAllOvertimes();
+        return ResponseEntity.ok(response);
+    }
 }

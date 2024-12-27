@@ -2,6 +2,7 @@ package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeResponseDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -133,6 +134,26 @@ public class Overtime extends BaseEntity {
 
     public void updateOvertimeRetroactive(Boolean isOvertimeRetroactive) {
         this.isOvertimeRetroactive = isOvertimeRetroactive;
+    }
+
+    public WorkAttitudeOvertimeResponseDTO toResponseDTO() {
+        return WorkAttitudeOvertimeResponseDTO.builder()
+                .overtimeId(this.overtimeId)
+                .empId(this.empId.getEmpId())
+                .empName(this.empId.getName())
+                .approverId(this.approver.getEmpId())
+                .approverName(this.approver.getName())
+                .overtimeType(this.overtimeType)
+                .enrollOvertime(this.enrollOvertime)
+                .overtimeStart(this.overtimeStart)
+                .overtimeEnd(this.overtimeEnd)
+                .overtimeStatus(this.overtimeStatus)
+                .overtimeRejectReason(this.overtimeRejectReason)
+                .isOvertimeRetroactive(this.isOvertimeRetroactive)
+                .overtimeRetroactiveReason(this.overtimeRetroactiveReason)
+                .overtimeRetroactiveStatus(this.overtimeRetroactiveStatus)
+                .status(this.status)
+                .build();
     }
 
 }
