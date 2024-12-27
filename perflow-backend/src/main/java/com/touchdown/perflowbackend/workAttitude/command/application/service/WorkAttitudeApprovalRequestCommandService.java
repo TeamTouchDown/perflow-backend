@@ -1,3 +1,4 @@
+/*
 package com.touchdown.perflowbackend.workAttitude.command.application.service;
 
 import com.touchdown.perflowbackend.common.exception.CustomException;
@@ -146,6 +147,7 @@ public class WorkAttitudeApprovalRequestCommandService {
         log.info("연차 승인 완료: {}", approvalRequest);
     }
 
+*/
 /*    @Transactional
     public void rejectAnnual(Long annualId, String rejectReason) {
         ApprovalRequest approvalRequest = approvalRequestRepository.findById(annualId)
@@ -155,7 +157,8 @@ public class WorkAttitudeApprovalRequestCommandService {
         approvalRequest.setUpdateDatetime(LocalDateTime.now());
         approvalRequestRepository.save(approvalRequest);
         log.info("연차 반려 완료: {}", approvalRequest);
-    }*/
+    }*//*
+
 
     // -------------------------- 초과근무 API --------------------------
     @Transactional
@@ -306,3 +309,4 @@ public class WorkAttitudeApprovalRequestCommandService {
         log.info(" 결재, 반려 변경 완료: {}", approvalRequest);
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package com.touchdown.perflowbackend.workAttitude.command.application.dto;
 
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.*;
@@ -75,3 +76,4 @@ public class WorkAttitudeApprovalRequestDTO {
     private String travelDivision;      // 출장 구분 (해외, 국내)
 
 }
+*/

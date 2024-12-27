@@ -1,3 +1,4 @@
+/*
 package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
@@ -51,3 +52,4 @@ public class ApprovalRequest {
     private DeleteStatus deleteStatus = DeleteStatus.ACTIVATED; // 소프트 딜리트 상태 (기본값: 활성화)
 
 }
+*/
