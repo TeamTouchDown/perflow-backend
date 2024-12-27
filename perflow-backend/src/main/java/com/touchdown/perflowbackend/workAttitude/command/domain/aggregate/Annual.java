@@ -116,4 +116,10 @@
             this.annualRetroactiveReason = annualRetroactiveReason;
             this.annualRetroactiveStatus = annualRetroactiveStatus;
         }
+
+        public void softDelete() {
+            this.status = Status.DELETED;
+            this.setUpdateDatetime(LocalDateTime.now());
+        }
+
     }

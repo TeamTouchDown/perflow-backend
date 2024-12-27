@@ -50,8 +50,13 @@ public class WorkAttitudeAnnualCommandService {
     // 연차 수정
     @Transactional
     public void updateAnnual(Long annualId, WorkAttitudeAnnualRequestDTO requestDTO) {
+        Employee employee = getCurrentEmployee();
         Annual annual = annualRepository.findById(annualId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ANNUAL));
+
+        if (!annual.getEmpId().getEmpId().equals(employee.getEmpId())) {
+            throw new CustomException(ErrorCode.NOT_MATCH_WRITER);
+        }
 
         WorkAttitudeAnnualMapper.updateEntityFromDto(requestDTO, annual);
         annualRepository.save(annual);
@@ -61,11 +66,15 @@ public class WorkAttitudeAnnualCommandService {
     // 연차 삭제 (소프트 삭제)
     @Transactional
     public void softDeleteAnnual(Long annualId) {
+        Employee employee = getCurrentEmployee();
         Annual annual = annualRepository.findById(annualId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ANNUAL));
 
-        annual.setStatus(Status.DELETED);
-        annual.setUpdateDatetime(LocalDateTime.now());
+        if (!annual.getEmpId().getEmpId().equals(employee.getEmpId())) {
+            throw new CustomException(ErrorCode.NOT_MATCH_WRITER);
+        }
+
+        annual.softDelete();
         annualRepository.save(annual);
         log.info("연차 삭제 완료: {}", annual);
     }
@@ -73,9 +82,13 @@ public class WorkAttitudeAnnualCommandService {
     // 연차 승인
     @Transactional
     public void approveAnnual(Long annualId) {
+        Employee approver = getCurrentEmployee();
         Annual annual = annualRepository.findById(annualId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ANNUAL));
 
+        if (!annual.getApprover().getEmpId().equals(approver.getEmpId())) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED); // 권한 없음 예외 발생
+        }
         annual.setAnnualStatus(Status.CONFIRMED);
         annual.setUpdateDatetime(LocalDateTime.now());
         annualRepository.save(annual);
@@ -85,8 +98,13 @@ public class WorkAttitudeAnnualCommandService {
     // 연차 반려
     @Transactional
     public void rejectAnnual(Long annualId, String rejectReason) {
+        Employee approver = getCurrentEmployee();
         Annual annual = annualRepository.findById(annualId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ANNUAL));
+
+        if (!annual.getApprover().getEmpId().equals(approver.getEmpId())) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED); // 권한 없음 예외 발생
+        }
 
         annual.setAnnualStatus(Status.REJECTED);
         annual.setAnnualRejectReason(rejectReason);
