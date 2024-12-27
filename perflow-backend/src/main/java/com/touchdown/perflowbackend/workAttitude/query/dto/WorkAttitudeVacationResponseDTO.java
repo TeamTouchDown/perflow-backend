@@ -6,6 +6,7 @@ import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Vacati
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Getter
 @Builder
@@ -20,7 +21,7 @@ public class WorkAttitudeVacationResponseDTO {
 
     private String empName;               // 사원 이름
 
-    private Long approveSbjId;            // 결재 주제 ID
+    private String approveSbjId;            // 결재 주제 ID
 
     private String approverName;          // 결재자 이름
 
@@ -37,4 +38,10 @@ public class WorkAttitudeVacationResponseDTO {
     private String vacationRejectReason;  // 반려 사유 (있으면)
 
     private Status status;
+
+    public OffsetDateTime getStartDate() {
+        // LocalDateTime → OffsetDateTime 변환
+        return vacationStart != null ? vacationStart.atOffset(OffsetDateTime.now().getOffset()) : null;
+    }
+
 }
