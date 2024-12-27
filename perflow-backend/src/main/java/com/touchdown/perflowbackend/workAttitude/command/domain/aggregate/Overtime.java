@@ -1,7 +1,6 @@
 package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
-import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -47,8 +46,8 @@ public class Overtime extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status overtimeStatus;
 
-    @Column(name = "travel_reject_time")
-    private String travelRejectTime;
+    @Column(name = "overtime_reject_reason")
+    private String overtimeRejectReason;
 
     @Column(name = "status", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
@@ -65,22 +64,30 @@ public class Overtime extends BaseEntity {
     private Status overtimeRetroactiveStatus; // 소급 상태 (대기, 승인, 반려)
 
     @Builder
-    public Overtime(Employee empId, Employee approver, OvertimeType overtimeType, LocalDateTime enrollOvertime,
-                    LocalDateTime overtimeStart, LocalDateTime overtimeEnd, Status overtimeStatus,
-                    String travelRejectTime, Boolean isOvertimeRetroactive, String overtimeRetroactiveReason,
-                    Status overtimeRetroactiveStatus, Status status) {
+    public Overtime(Employee empId,
+                    Employee approver,
+                    OvertimeType overtimeType,
+                    LocalDateTime enrollOvertime,
+                    LocalDateTime overtimeStart,
+                    LocalDateTime overtimeEnd,
+                    Status overtimeStatus,
+                    String overtimeRejectReason,
+                    Boolean isOvertimeRetroactive,
+                    String overtimeRetroactiveReason,
+                    Status overtimeRetroactiveStatus,
+                    Status status) {
         this.empId = empId;
         this.approver = approver;
         this.overtimeType = overtimeType;
         this.enrollOvertime = enrollOvertime;
         this.overtimeStart = overtimeStart;
         this.overtimeEnd = overtimeEnd;
-        this.overtimeStatus = overtimeStatus;
-        this.travelRejectTime = travelRejectTime;
+        this.overtimeStatus  = overtimeStatus != null ? overtimeStatus : Status.PENDING;
+        this.overtimeRejectReason = overtimeRejectReason;
         this.isOvertimeRetroactive = isOvertimeRetroactive;
-        this.overtimeRetroactiveReason = overtimeRetroactiveReason;
+        this.overtimeRetroactiveReason = overtimeRetroactiveReason ;
         this.overtimeRetroactiveStatus = overtimeRetroactiveStatus;
-        this.status = status;
+        this.status = status != null ? status : Status.ACTIVATED;
     }
 
     public void updateOvertime(OvertimeType overtimeType, LocalDateTime overtimeStart, LocalDateTime overtimeEnd,
@@ -92,29 +99,37 @@ public class Overtime extends BaseEntity {
         this.isOvertimeRetroactive = isOvertimeRetroactive;
     }
 
-    public void updateOvertimeStatus(Status overtimeStatus, String overtimeRetroactiveReason) {
+    public void updateOvertimeStatus(Status overtimeStatus, String overtimeRejectReason) {
         this.overtimeStatus = overtimeStatus;
-        if (overtimeStatus == Status.REJECTED) {
-            this.overtimeRetroactiveReason = overtimeRetroactiveReason;
-        } else {
-            this.overtimeRetroactiveReason = null; // 승인일 경우 반려 사유를 초기화
-        }
+        resetRejectReason(overtimeStatus);
     }
 
     public void deleteOvertime() {
         this.status = Status.DELETED;
+        this.setUpdateDatetime(LocalDateTime.now());
     }
 
     public void updateRetroactiveStatus(
             Status overtimeRetroactiveStatus,
-            String overtimeRetroactiveReason){
+            String overtimeRetroactiveReason) {
+        // NULL 체크 추가
+        if (overtimeRetroactiveStatus == null) {
+            throw new IllegalArgumentException("Retroactive status cannot be null.");
+        }
+
         this.overtimeRetroactiveStatus = overtimeRetroactiveStatus;
-        if (overtimeRetroactiveStatus == Status.REJECTED){
+        if (overtimeRetroactiveStatus == Status.REJECTED) {
             this.overtimeRetroactiveReason = overtimeRetroactiveReason;
-        }else {
-            this.overtimeRetroactiveReason = null;
+        } else {
+            this.overtimeRetroactiveReason = null; // 승인 시 반려 사유 초기화
         }
     }
+
+
+    private void resetRejectReason(Status status) {
+        this.overtimeRejectReason = (status == Status.REJECTED) ? this.overtimeRejectReason : null;
+    }
+
 
     public void updateOvertimeRetroactive(Boolean isOvertimeRetroactive) {
         this.isOvertimeRetroactive = isOvertimeRetroactive;
