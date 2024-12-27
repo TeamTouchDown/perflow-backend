@@ -26,15 +26,15 @@ public class WorkAttitudeTravelCommandService {
     private final ApproveSbjCommandRepository approveSbjCommandRepository;
 
 
-    @Transactional
+   /* @Transactional
     public void createTravel(WorkAttitudeTravelRequestDTO workAttitudeTravelRequestDTO) {
         String empId = EmployeeUtil.getEmpId();
         Employee employee = findEmployeeByEmpId(empId);
         ApproveSbj approveSbj = findApproveSbjById(workAttitudeTravelRequestDTO.getApproveSbjId());
 
-        Travel travel = WorkAttitudeTravelMapper.toEntity(workAttitudeTravelRequestDTO, employee, approveSbj);
+        *//*Travel travel = WorkAttitudeTravelMapper.toEntity(workAttitudeTravelRequestDTO, employee, approver*//*);
         workAttitudeTravelCommandRepository.save(travel);
-    }
+    }*/
 
     @Transactional
     public void updateTravel(Long travelId, WorkAttitudeTravelRequestDTO workAttitudeTravelRequestDTO) {

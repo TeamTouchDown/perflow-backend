@@ -18,13 +18,13 @@ public class WorkAttitudeTravelCommandController {
 
     private final WorkAttitudeTravelCommandService workAttitudeTravelCommandService;
 
-    @Operation(summary = "사원이 출장 등록", description = "사원이 자신의 출장 요청을 등록")
+/*    @Operation(summary = "사원이 출장 등록", description = "사원이 자신의 출장 요청을 등록")
     @PostMapping("/emp/travels")
     public ResponseEntity<SuccessCode> requestTravel(
             @RequestBody WorkAttitudeTravelRequestDTO workAttitudeTravelRequestDTO) {
         workAttitudeTravelCommandService.createTravel(workAttitudeTravelRequestDTO);
         return ResponseEntity.ok(SuccessCode.WORK_ATTITUDE_TRAVEL_SUCCESS);
-    }
+    }*/
 
     @Operation(summary = "사원이 출장 수정", description = "사원이 자신의 출장 요청을 수정")
     @PutMapping("/emp/travel/{travelId}")
