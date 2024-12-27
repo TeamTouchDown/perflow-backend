@@ -24,4 +24,7 @@ public abstract class BaseEntity {
     @Column(name = "update_datetime")
     private LocalDateTime updateDatetime;
 
+    protected void setUpdateDatetime(LocalDateTime now) {
+        this.updateDatetime = now;
+    }
 }

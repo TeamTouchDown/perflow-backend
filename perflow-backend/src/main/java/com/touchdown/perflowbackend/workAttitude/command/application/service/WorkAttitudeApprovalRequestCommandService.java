@@ -146,7 +146,7 @@ public class WorkAttitudeApprovalRequestCommandService {
         log.info("연차 승인 완료: {}", approvalRequest);
     }
 
-    @Transactional
+/*    @Transactional
     public void rejectAnnual(Long annualId, String rejectReason) {
         ApprovalRequest approvalRequest = approvalRequestRepository.findById(annualId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid annual ID"));
@@ -155,7 +155,7 @@ public class WorkAttitudeApprovalRequestCommandService {
         approvalRequest.setUpdateDatetime(LocalDateTime.now());
         approvalRequestRepository.save(approvalRequest);
         log.info("연차 반려 완료: {}", approvalRequest);
-    }
+    }*/
 
     // -------------------------- 초과근무 API --------------------------
     @Transactional
