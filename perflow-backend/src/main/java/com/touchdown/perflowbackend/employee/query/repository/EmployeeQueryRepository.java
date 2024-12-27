@@ -8,7 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface EmployeeQueryRepository extends JpaRepository<Employee, String> {
 
@@ -45,6 +47,10 @@ public interface EmployeeQueryRepository extends JpaRepository<Employee, String>
     // 입사년도 조회
     @Query("SELECT YEAR(e.joinDate) FROM Employee e WHERE e.empId = :empId")
     int findHireYearByEmpId(@Param("empId") String empId);
+
+    @Query("SELECT e.joinDate FROM Employee e WHERE e.empId = :empId")
+    Optional<LocalDate> findJoinDateByEmpId(@Param("empId") String empId);
+
 
    /* // 직원의 부서 ID 조회
     @Query("SELECT e.dept.departmentId FROM Employee e WHERE e.empId = :loggedInEmpId")

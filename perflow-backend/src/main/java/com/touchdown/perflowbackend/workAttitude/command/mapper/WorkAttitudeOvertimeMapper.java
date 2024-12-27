@@ -14,10 +14,10 @@ import java.util.List;
 
 public class WorkAttitudeOvertimeMapper {
 
-    public static Overtime toEntity(WorkAttitudeOvertimeForEmployeeRequestDTO requestDTO, Employee employee, ApproveSbj approveSbj) {
+    public static Overtime toEntity(WorkAttitudeOvertimeForEmployeeRequestDTO requestDTO, Employee employee, Employee approver) {
         return Overtime.builder()
                 .empId(employee) // 사원 정보
-                .approveSbjId(approveSbj) // 승인자 정보
+                .approver(approver) // 승인자 정보
                 .overtimeType(requestDTO.getOvertimeType()) // 초과 근무 유형
                 .enrollOvertime(requestDTO.getEnrollOvertime()) // 신청 일자
                 .overtimeStart(requestDTO.getOvertimeStart()) // 초과 근무 시작 시간
