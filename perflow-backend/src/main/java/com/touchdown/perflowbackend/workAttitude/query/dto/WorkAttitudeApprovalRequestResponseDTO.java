@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class WorkAttitudeApprovalResponseDTO {
+public class WorkAttitudeApprovalRequestResponseDTO {
 
     private Long requestId;               // 요청 ID
 
