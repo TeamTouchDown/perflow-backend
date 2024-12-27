@@ -3,22 +3,22 @@ package com.touchdown.perflowbackend.workAttitude.query.repository;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Travel;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
+@Repository
 public interface WorkAttitudeTravelQueryRepository extends JpaRepository<Travel, Long> {
 
-    // 직원용: 삭제되지 않은 내역 조회
-    @Query("SELECT t FROM Travel t WHERE t.employee.empId = :empId AND t.status != 'DELETED'")
-    List<Travel> findAllByEmployeeAndNotDeleted(@Param("empId") String empId);
+    // 특정 사원이 신청한 출장 중 소프트 삭제 되지 않은 것 조회
+    List<Travel> findByEmployee_EmpIdAndStatusNot(String currentEmpId, Status status);
 
-    // 팀장용: 모든 상태의 내역 조회
-    @Query("SELECT t FROM Travel t WHERE t.employee = :employee")
-    List<Travel> findAllByEmployee(@Param("empId") String empId);
+    // 특정 팀장(approver)에게 결재 요청된 출장 중 소프트 삭제 되지 않은 것 조회
+    List<Travel> findByApprover_EmpIdAndStatusNot(String currentApproverId, Status status);
 
-    @Query("SELECT t FROM Travel t WHERE t.employee = :travelId AND t.status != :status")
-    Optional<Object> findById(Long travelId, Status status);
+    // 특정 팀장(approver)에게 결재 요청된 출장 중, 상태가 PENDING이고 소프트 삭제 되지 않은 것 조회
+    List<Travel> findByApprover_EmpIdAndTravelStatusAndStatusNot(String currentApproverId, Status travelStatus, Status status);
+
+    // 모든 출장 중 소프트 삭제 되지 않은 것 조회
+    List<Travel> findByStatusNot(Status status);
 }

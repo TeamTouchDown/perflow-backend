@@ -29,11 +29,15 @@ public class WorkAttitudeTravelMapper {
     }
 
 
-    public static WorkAttitudeTravelResponseDTO toResponseDTO(Travel travel){
+    public static WorkAttitudeTravelResponseDTO toResponseDTO(Travel travel) {
         return WorkAttitudeTravelResponseDTO.builder()
                 .travelId(travel.getTravelId())
+                // 신청자
                 .empId(travel.getEmployee().getEmpId())
-                .approver(travel.getApprover().getEmpId())
+
+                // 결재자
+                .approverId(travel.getApprover().getEmpId())
+                .approverName(travel.getApprover().getName())
                 .travelReason(travel.getTravelReason())
                 .travelStart(travel.getTravelStart())
                 .travelEnd(travel.getTravelEnd())
@@ -41,9 +45,10 @@ public class WorkAttitudeTravelMapper {
                 .travelDivision(travel.getTravelDivision())
                 .travelRejectReason(travel.getTravelRejectReason())
                 .createDatetime(travel.getCreateDatetime())
-                .updateDatetime(travel.getCreateDatetime())
+                .updateDatetime(travel.getUpdateDatetime())
                 .status(travel.getStatus())
                 .build();
     }
+
 
 }
