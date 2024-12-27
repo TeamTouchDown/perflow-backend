@@ -73,7 +73,7 @@ public class ApprovalService {
 
     // 결재선 상태 업데이트
     private void updateApproveLineStatus(ApproveLine line) {
-
+        log.info("updateApproveLineStatus 실행");
         List<ApproveSbj> sbjs = line.getApproveSbjs();
 
         if (isRejectedAny(sbjs)) {
@@ -88,7 +88,7 @@ public class ApprovalService {
 
     // 문서 상태 업데이트
     private void updateDocStatus(Doc doc) {
-
+        log.info("updateDocStatus 실행");
         // 모든 결재선 상태를 최신으로 갱신
         doc.getApproveLines().forEach(this::updateApproveLineStatus);
 
@@ -108,6 +108,7 @@ public class ApprovalService {
 
     // 결재 방식 처리
     private void handleApproval(Doc doc, ApproveSbj approveSbj) {
+        log.info("handleApproval 실행");
 
         ApproveType approveType = approveSbj.getApproveLine().getApproveType();
 
@@ -137,6 +138,7 @@ public class ApprovalService {
 
     // 병렬, 병렬 합의 처리
     private void handlePllApproval(Doc doc, ApproveSbj approveSbj) {
+        log.info("handlePllApproval 실행");
 
         ApproveLine currentLine = approveSbj.getApproveLine();
 
@@ -155,14 +157,15 @@ public class ApprovalService {
 
     // 다음 결재선으로 이동
     private void moveToNextApproveLine(Doc doc, ApproveLine currentLine) {
-
-        Optional<ApproveLine> nextLineOpt = approveLineCommandRepository.findNextApproveLineAsc(
+        log.info("moveToNextApproveLine 실행");
+        // ApproveLineOrder > currentOrder 인 여러 개의 결재선 받기
+        List<ApproveLine> nextLineOpt = approveLineCommandRepository.findNextApproveLineAsc(
                 doc.getDocId(),
                 currentLine.getApproveLineOrder()
         );
 
-        if (nextLineOpt.isPresent()) {
-            ApproveLine nextLine = nextLineOpt.get();
+        if (nextLineOpt.isEmpty()) {
+            ApproveLine nextLine = nextLineOpt.get(0);  // 첫 번째 결과 선택
             nextLine.getApproveSbjs().forEach(sbj -> sbj.updateStatus(Status.ACTIVATED));
             approveLineCommandRepository.save(nextLine);
 
@@ -175,7 +178,7 @@ public class ApprovalService {
 
     // 동의, 합의 처리
     private void handleSeqApproval(Doc doc, ApproveSbj approveSbj) {
-
+        log.info("handleSeqApproval 실행");
         // 현재 결재선의 모든 결재 주체의 상태
         List<ApproveSbj> subjects = approveSbj.getApproveLine().getApproveSbjs();
 
@@ -197,6 +200,7 @@ public class ApprovalService {
 
     // 결제 주체 상태 변경
     private void updateApproveSbjStatus(ApproveSbj approveSbj, Status status, String comment) {
+        log.info("updateApproveSbjStatus 실행");
 
         approveSbj.updateStatus(status);
 
@@ -221,12 +225,12 @@ public class ApprovalService {
     }
 
     private Doc findDocById(Long docId) {
-
+        log.info("findDocById 실행");
         return docCommandRepository.findById(docId).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DOC));
     }
 
     private ApproveSbj findApproveSbjById(Long docId, EmpDeptType empDeptType, Long approveLineId, Long approveSbjId) {
-
+        log.info("findApproveSbjById 실행");
         return approveSbjCommandRepository.findByDocIdAndApproveSbjIdAndType(docId, empDeptType, approveLineId, approveSbjId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APPROVE_SBJ));
     }

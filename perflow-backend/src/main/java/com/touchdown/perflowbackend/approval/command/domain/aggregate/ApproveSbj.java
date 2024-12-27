@@ -8,10 +8,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -69,7 +71,7 @@ public class ApproveSbj extends BaseEntity {
     }
 
     public void updateStatus(Status status) {
-
+        log.info("approveSbj - updateStatus 실행");
         this.status = status;
     }
 
