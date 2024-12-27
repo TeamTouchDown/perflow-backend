@@ -175,7 +175,7 @@ public class WorkAttitudeApprovalRequestCommandController {
     @Operation(summary = "출장 상태 변경 결재", description = "팀장이 사원의 출장 신청을 승인/반려합니다.")
     @PutMapping("/leader/approval/travel/{travelId}")
     public ResponseEntity<SuccessCode> updateTravelStatus(@PathVariable Long travelId,
-                                                          @RequestBody WorkAttitudeTravelCommandForTeamLeaderRequestDTO requestDTO) {
+                                                          @RequestBody WorkAttitudeApprovalRequestDTO requestDTO) {
         approvalRequestCommandService.updateTravelStatus(travelId, requestDTO);
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }

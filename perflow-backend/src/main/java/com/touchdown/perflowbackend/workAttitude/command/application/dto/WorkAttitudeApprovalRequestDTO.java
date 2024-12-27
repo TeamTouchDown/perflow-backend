@@ -11,11 +11,15 @@ public class WorkAttitudeApprovalRequestDTO {
 
     private String empId;              // 결재자 사원 ID
 
-    private Long approveSbjId;         // 결재 항목의 승인자 ID
+    private String approverId;         // 결재 항목의 승인자 ID
 
     private String rejectReason;       // 반려 사유
 
-    private String status;             // 승인/반려 상태
+    private Status status;             // 승인/반려 상태
+
+    private Long relatedId;
+
+    private RequestType requestType;
 
     // ------------------------- 연차 관련 필드 -------------------------
     private LocalDateTime annualStart; // 연차 시작 날짜

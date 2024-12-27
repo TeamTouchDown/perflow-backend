@@ -11,5 +11,14 @@ public interface WorkAttitudeApprovalRequestCommandRepository {
 
     ApprovalRequest save(ApprovalRequest approvalRequest);
 
-    boolean existsByEmpIdAndRequestTypeAndStatusAndDeleteStatusAndCreateDatetimeBetween(String empId, RequestType requestType, Status status, DeleteStatus deleteStatus, LocalDateTime startDate, LocalDateTime endDate);
+    //날짜 중복 검증
+    boolean existsByEmpId_EmpIdAndRequestTypeAndStatusAndDeleteStatusAndCreateDatetimeBetween(
+            String empId, RequestType requestType, Status status, DeleteStatus deleteStatus,
+            LocalDateTime startDate, LocalDateTime endDate
+    );
+    //연차 개수 조회
+    long countByEmpId_EmpIdAndRequestTypeAndStatus(
+            String empId, RequestType requestType, Status status
+    );
+
 }

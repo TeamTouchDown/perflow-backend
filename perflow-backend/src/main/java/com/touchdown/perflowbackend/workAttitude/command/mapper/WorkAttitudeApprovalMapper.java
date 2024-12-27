@@ -5,7 +5,7 @@ import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAtt
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.ApprovalRequest;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.DeleteStatus;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
-import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeApprovalResponseDTO;
+import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeApprovalRequestResponseDTO;
 
 import java.time.LocalDateTime;
 
@@ -14,8 +14,8 @@ public class WorkAttitudeApprovalMapper {
     // DTO → Entity 변환
     public static ApprovalRequest toEntity(WorkAttitudeApprovalRequestDTO dto, Employee employee, Employee approver) {
         return ApprovalRequest.builder()
-                .empId(employee)                           // 신청자 정보
-                .approverId(approver)                      // 결재자 정보
+                .empId(employee)                           // 신청자 정보 (Employee 객체)
+                .approverId(approver)                      // 결재자 정보 (Employee 객체)
                 .relatedId(dto.getRelatedId())             // 관련 요청 ID
                 .requestType(dto.getRequestType())         // 요청 타입
                 .status(dto.getStatus() != null ? dto.getStatus() : Status.PENDING) // 기본 상태 설정
@@ -25,6 +25,7 @@ public class WorkAttitudeApprovalMapper {
                 .updateDatetime(LocalDateTime.now())       // 업데이트 시간
                 .build();
     }
+
 
     // **DTO → 기존 Entity 업데이트**
     public static void updateEntityFromDto(WorkAttitudeApprovalRequestDTO dto, ApprovalRequest approvalRequest) {
@@ -46,8 +47,8 @@ public class WorkAttitudeApprovalMapper {
 
 
     // **Entity → DTO 변환**
-    public static WorkAttitudeApprovalResponseDTO toDto(ApprovalRequest approvalRequest) {
-        return WorkAttitudeApprovalResponseDTO.builder()
+    public static WorkAttitudeApprovalRequestResponseDTO toDto(ApprovalRequest approvalRequest) {
+        return WorkAttitudeApprovalRequestResponseDTO.builder()
                 .empId(approvalRequest.getEmpId().getEmpId())               // 신청자 ID
                 .approverId(approvalRequest.getApproverId().getEmpId())     // 결재자 ID
                 .relatedId(approvalRequest.getRelatedId())                  // 관련 ID
