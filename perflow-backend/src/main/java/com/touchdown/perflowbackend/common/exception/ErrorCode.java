@@ -105,7 +105,8 @@ public enum ErrorCode {
     DUPLICATE_VACATION(HttpStatus.BAD_REQUEST, "중복된 일정으로 휴가 신청이 불가합니다."),
     DUPLICATE_JOB_REQUEST(HttpStatus.NOT_FOUND,"직책이 중복됩니다." ),
     INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST, "잘못된 날짜 형식입니다."),
-    DUPLICATE_ANNUAL(HttpStatus.BAD_REQUEST, "중복된 일정으로 연차 신청이 불가능합니다.");
+    DUPLICATE_ANNUAL(HttpStatus.BAD_REQUEST, "중복된 일정으로 연차 신청이 불가능합니다."),
+    UNAUTHORIZED(HttpStatus.BAD_REQUEST,"결재권자가 아닙니다." );
 ;
 
 

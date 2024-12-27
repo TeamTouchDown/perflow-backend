@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 
 public class WorkAttitudeTravelMapper {
 
-    public static Travel toEntity(WorkAttitudeTravelRequestDTO requestDTO, Employee employee, ApproveSbj approveSbj) {
+    public static Travel toEntity(WorkAttitudeTravelRequestDTO requestDTO, Employee employee, Employee approver) {
         return Travel.builder()
                 .empId(employee) // Employee 객체 설정 (@ManyToOne 관계)
-                .approveSbj(approveSbj) // ApproveSbj 객체 설정 (@ManyToOne 관계)
+                .approver(approver) // ApproveSbj 객체 설정 (@ManyToOne 관계)
                 .enrollTravel(requestDTO.getEnrollTravel()) // 신청 일자
                 .travelReason(requestDTO.getTravelReason()) // 출장 사유
                 .travelStart(requestDTO.getTravelStart()) // 출장 시작일
@@ -30,7 +30,7 @@ public class WorkAttitudeTravelMapper {
         return WorkAttitudeTravelResponseDTO.builder()
                 .travelId(travel.getTravelId())
                 .empId(travel.getEmployee().getEmpId())
-                .approveSbjId(travel.getApproveSbj().getApproveSbjId())
+                .approver(travel.getApprover().getEmpId())
                 .travelReason(travel.getTravelReason())
                 .travelStart(travel.getTravelStart())
                 .travelEnd(travel.getTravelEnd())
