@@ -1,3 +1,4 @@
+/*
 package com.touchdown.perflowbackend.workAttitude.command.application.controller;
 
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
@@ -17,6 +18,7 @@ public class WorkAttitudeApprovalRequestCommandController {
 
     private final WorkAttitudeApprovalRequestCommandService approvalRequestCommandService;
 
+*/
 /*    // -------------------------- 연차 API --------------------------
 
     // 사원 연차 신청
@@ -58,7 +60,8 @@ public class WorkAttitudeApprovalRequestCommandController {
     public ResponseEntity<String> rejectAnnual(@PathVariable Long annualId, @RequestBody String rejectReason) {
         approvalRequestCommandService.rejectAnnual(annualId, rejectReason);
         return ResponseEntity.ok(SuccessCode.WORK_ATTITUDE_ANNUAL_CHECK_OUT_SUCCESS.getMessage());
-    }*/
+    }*//*
+
 
     // -------------------------- 초과근무 API --------------------------
 
@@ -180,3 +183,4 @@ public class WorkAttitudeApprovalRequestCommandController {
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
 }
+*/
