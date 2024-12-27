@@ -68,25 +68,33 @@ public class Travel extends BaseEntity {
                   String travelRejectReason,
                   String travelDivision,
                   Status status) {
+        if (travelEnd.isBefore(travelStart)) {
+            throw new IllegalArgumentException("출장 종료일이 시작일보다 앞에 있을 수 없습니다.");
+        }
+
         this.employee = empId;
         this.approver = approver;
         this.enrollTravel = enrollTravel;
         this.travelReason = travelReason;
         this.travelStart = travelStart;
         this.travelEnd = travelEnd;
-        this.travelStatus = travelStatus;
+        this.travelStatus = travelStatus != null ? travelStatus : Status.PENDING;
         this.travelRejectReason = travelRejectReason;
         this.travelDivision = travelDivision;
-        this.status = status;
+        this.status = status!= null ? status : Status.ACTIVATED;
     }
 
 
     public void updateTravel(String travelReason, LocalDateTime travelStart, LocalDateTime travelEnd, String travelDivision) {
+        if (travelStart != null && travelEnd != null && travelEnd.isBefore(travelStart)) {
+            throw new IllegalArgumentException("출장 종료일이 시작일보다 앞에 있을 수 없습니다.");
+        }
         if (travelReason != null) this.travelReason = travelReason;
         if (travelStart != null) this.travelStart = travelStart;
         if (travelEnd != null) this.travelEnd = travelEnd;
         if (travelDivision != null) this.travelDivision = travelDivision;
     }
+
 
     public void updateTravelStatus(Status travelStatus, String travelRejectReason) {
         this.travelStatus = travelStatus;
