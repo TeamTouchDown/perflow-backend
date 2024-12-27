@@ -24,9 +24,9 @@
         @JoinColumn(name = "emp_id", nullable = false)
         private Employee empId;
 
-        @ManyToOne(fetch = FetchType.LAZY, optional = true)
-        @JoinColumn(name = "approve_sbj_id")
-        private ApproveSbj approveSbjId;
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "approver_id", nullable = false)
+        private Employee approver; // 결재자 ID
 
         @Column(name = "enroll_annual", nullable = false)
         private LocalDateTime enrollAnnual;
@@ -66,7 +66,7 @@
         // Annual 엔티티의 일부 추가 코드
         @Builder
         public Annual(Employee empId,
-                      ApproveSbj approveSbjId,
+                      Employee approver,
                       LocalDateTime enrollAnnual,
                       LocalDateTime annualStart,
                       LocalDateTime annualEnd,
@@ -77,7 +77,7 @@
                       AnnualRetroactiveStatus annualRetroactiveStatus,
                       Status status) {
             this.empId = empId;
-            this.approveSbjId = approveSbjId;
+            this.approver = approver;
             this.enrollAnnual = enrollAnnual;
             this.annualStart = annualStart;
             this.annualEnd = annualEnd;
