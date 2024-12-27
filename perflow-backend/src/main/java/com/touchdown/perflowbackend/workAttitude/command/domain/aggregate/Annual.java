@@ -88,7 +88,7 @@
             this.annualRetroactiveStatus = annualRetroactiveStatus != null
                     ? annualRetroactiveStatus : AnnualRetroactiveStatus.NOTRETROACTIVATED; // 기본값 설정
             this.status = status != null
-                    ? status : Status.ACTIVATED;
+                    ? status : Status.PENDING;
         }
 
 
