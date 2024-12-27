@@ -108,6 +108,8 @@ public enum ErrorCode {
     DUPLICATE_ANNUAL(HttpStatus.BAD_REQUEST, "중복된 일정으로 연차 신청이 불가능합니다."),
     UNAUTHORIZED(HttpStatus.BAD_REQUEST,"결재권자가 아닙니다." ),
     INVALID_OVERTIME_REQUEST(HttpStatus.BAD_REQUEST, "초과근무 신청시간이 아닙니다."),
+    NO_AUTHORITY(HttpStatus.NOT_FOUND, " 권한이 없습니다."),
+    DUPLICATE_TRAVEL(HttpStatus.BAD_REQUEST, "중복된 출장 신청입니다."),
     DUPLICATE_OVERTIME(HttpStatus.BAD_REQUEST,"이미 신청된 초과근무가 있습니다.");
 ;
 

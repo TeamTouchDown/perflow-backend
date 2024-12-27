@@ -1,7 +1,9 @@
 package com.touchdown.perflowbackend.workAttitude.command.domain.repository;
 
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Travel;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface WorkAttitudeTravelCommandRepository {
@@ -11,4 +13,11 @@ public interface WorkAttitudeTravelCommandRepository {
     Travel save(Travel travel);
     // Travel 삭제
     void deleteById(Long id);
+
+    boolean existsByEmployee_EmpIdAndStatusNotAndTravelEndGreaterThanEqualAndTravelStartLessThanEqual(
+            String empId,
+            Status status,
+            LocalDateTime start,
+            LocalDateTime end
+    );
 }
