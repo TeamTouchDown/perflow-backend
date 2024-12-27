@@ -26,9 +26,9 @@ public class Overtime extends BaseEntity {
     @JoinColumn(name = "emp_id", nullable = false)
     private Employee empId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "approve_sbj_id")
-    private ApproveSbj approveSbjId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approver_id", nullable = false)
+    private Employee approver; // 결재자 ID
 
     @Column(name = "overtime_type", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
@@ -65,12 +65,12 @@ public class Overtime extends BaseEntity {
     private Status overtimeRetroactiveStatus; // 소급 상태 (대기, 승인, 반려)
 
     @Builder
-    public Overtime(Employee empId, ApproveSbj approveSbjId, OvertimeType overtimeType, LocalDateTime enrollOvertime,
+    public Overtime(Employee empId, Employee approver, OvertimeType overtimeType, LocalDateTime enrollOvertime,
                     LocalDateTime overtimeStart, LocalDateTime overtimeEnd, Status overtimeStatus,
                     String travelRejectTime, Boolean isOvertimeRetroactive, String overtimeRetroactiveReason,
                     Status overtimeRetroactiveStatus, Status status) {
         this.empId = empId;
-        this.approveSbjId = approveSbjId;
+        this.approver = approver;
         this.overtimeType = overtimeType;
         this.enrollOvertime = enrollOvertime;
         this.overtimeStart = overtimeStart;

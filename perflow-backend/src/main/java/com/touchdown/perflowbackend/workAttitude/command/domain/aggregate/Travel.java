@@ -26,9 +26,9 @@ public class Travel extends BaseEntity {
     @JoinColumn(name = "emp_id", nullable = false)
     private Employee employee;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "approve_sbj_id")
-    private ApproveSbj approveSbj;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approver_id", nullable = false)
+    private Employee approver; // 결재자 ID
 
     @Column(name = "enroll_travel", nullable = false)
     private LocalDateTime enrollTravel;
@@ -58,11 +58,18 @@ public class Travel extends BaseEntity {
     private Status status;
 
     @Builder
-    public Travel(Employee empId, ApproveSbj approveSbj, LocalDateTime enrollTravel,
-                  String travelReason, LocalDateTime travelStart, LocalDateTime travelEnd,
-                  Status travelStatus, String travelRejectReason, String travelDivision, Status status) {
+    public Travel(Employee empId,
+                  Employee approver,
+                  LocalDateTime enrollTravel,
+                  String travelReason,
+                  LocalDateTime travelStart,
+                  LocalDateTime travelEnd,
+                  Status travelStatus,
+                  String travelRejectReason,
+                  String travelDivision,
+                  Status status) {
         this.employee = empId;
-        this.approveSbj = approveSbj;
+        this.approver = approver;
         this.enrollTravel = enrollTravel;
         this.travelReason = travelReason;
         this.travelStart = travelStart;
