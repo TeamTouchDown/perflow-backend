@@ -1,7 +1,6 @@
 package com.touchdown.perflowbackend.workAttitude.query.dto;
 
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
-import jakarta.annotation.Nullable;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,7 +14,9 @@ public class WorkAttitudeTravelResponseDTO {
 
     private String empId;
 
-    private String approver;
+    private String approverId;
+
+    private String approverName;
 
     private String travelReason;
 
@@ -23,21 +24,16 @@ public class WorkAttitudeTravelResponseDTO {
 
     private LocalDateTime travelEnd;
 
-    private String travelStatus;
+    private String travelStatus;    // PENDING, CONFIRMED 등
 
     private String travelDivision;
 
-    @Nullable
     private String travelRejectReason;
 
-    private LocalDateTime createDatetime; // 생성 일시
+    private LocalDateTime createDatetime;
 
-    @Nullable
-    private LocalDateTime updateDatetime; // 수정 일시
+    private LocalDateTime updateDatetime;
 
-    private Status status;
-
-
-
-
+    private Status status;          // 소프트 딜리트 등
 }
+
