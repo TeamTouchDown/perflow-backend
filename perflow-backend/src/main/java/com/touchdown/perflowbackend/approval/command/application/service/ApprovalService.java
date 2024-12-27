@@ -164,7 +164,7 @@ public class ApprovalService {
                 currentLine.getApproveLineOrder()
         );
 
-        if (nextLineOpt.isEmpty()) {
+        if (!nextLineOpt.isEmpty()) {
             ApproveLine nextLine = nextLineOpt.get(0);  // 첫 번째 결과 선택
             nextLine.getApproveSbjs().forEach(sbj -> sbj.updateStatus(Status.ACTIVATED));
             approveLineCommandRepository.save(nextLine);
