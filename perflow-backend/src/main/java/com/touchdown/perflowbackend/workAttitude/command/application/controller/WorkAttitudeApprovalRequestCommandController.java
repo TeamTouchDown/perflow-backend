@@ -17,7 +17,7 @@ public class WorkAttitudeApprovalRequestCommandController {
 
     private final WorkAttitudeApprovalRequestCommandService approvalRequestCommandService;
 
-    // -------------------------- 연차 API --------------------------
+/*    // -------------------------- 연차 API --------------------------
 
     // 사원 연차 신청
     @Operation(summary = "연차 신청", description = "사원이 연차를 신청합니다. 전체 연차 개수를 초과하지 않도록 검증합니다.")
@@ -58,7 +58,7 @@ public class WorkAttitudeApprovalRequestCommandController {
     public ResponseEntity<String> rejectAnnual(@PathVariable Long annualId, @RequestBody String rejectReason) {
         approvalRequestCommandService.rejectAnnual(annualId, rejectReason);
         return ResponseEntity.ok(SuccessCode.WORK_ATTITUDE_ANNUAL_CHECK_OUT_SUCCESS.getMessage());
-    }
+    }*/
 
     // -------------------------- 초과근무 API --------------------------
 

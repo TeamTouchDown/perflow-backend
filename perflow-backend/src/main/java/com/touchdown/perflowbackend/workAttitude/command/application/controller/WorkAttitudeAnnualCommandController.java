@@ -17,50 +17,43 @@ public class WorkAttitudeAnnualCommandController {
 
     private final WorkAttitudeAnnualCommandService annualCommandService;
 
-    // 사원 연차 관련 API
-    @Operation(summary = "연차 신청", description = "사원이 연차 신청합니다. 사후 신청 여부 포함.")
-    @PostMapping("/emp/annual")
-    public ResponseEntity<String> registerAnnual(@RequestBody WorkAttitudeAnnualRequestDTO requestDTO,
-                                                 @RequestParam Boolean isAnnualRetroactive) {
-        requestDTO.setIsAnnualRetroactive(isAnnualRetroactive);
+    // 사원 연차 신청
+    @Operation(summary = "연차 신청", description = "사원이 연차를 신청합니다. 전체 연차 개수를 초과하지 않도록 검증합니다.")
+    @PostMapping("/emp/approval/annual")
+    public ResponseEntity<String> registerAnnual(@RequestBody WorkAttitudeAnnualRequestDTO requestDTO) {
         annualCommandService.registerAnnual(requestDTO);
         return ResponseEntity.ok(SuccessCode.WORK_ATTITUDE_ANNUAL_SUCCESS.getMessage());
     }
 
-    @Operation(summary = "연차 수정", description = "사원이 연차를 수정합니다.")
-    @PutMapping("/emp/annual/{annualId}")
+    // 사원 연차 수정
+    @Operation(summary = "연차 수정", description = "사원이 본인의 연차 신청을 수정합니다.")
+    @PutMapping("/emp/approval/annual/{annualId}")
     public ResponseEntity<String> updateAnnual(@PathVariable Long annualId,
                                                @RequestBody WorkAttitudeAnnualRequestDTO requestDTO) {
         annualCommandService.updateAnnual(annualId, requestDTO);
-        return ResponseEntity.ok(SuccessCode.WORK_ATTRIBUTE_ANNUAL_UPDATE_SUCCESS.getMessage());
+        return ResponseEntity.ok(SuccessCode.SUCCESS.getMessage());
     }
 
-    @Operation(summary = "연차 삭제", description = "사원이 연차를 삭제합니다.")
-    @DeleteMapping("/emp/annual/{annualId}")
+    // 사원 연차 삭제
+    @Operation(summary = "연차 삭제", description = "사원이 본인의 연차 신청을 삭제합니다.")
+    @DeleteMapping("/emp/approval/annual/{annualId}")
     public ResponseEntity<String> deleteAnnual(@PathVariable Long annualId) {
         annualCommandService.softDeleteAnnual(annualId);
-        return ResponseEntity.ok(SuccessCode.WORK_ATTRIBUTE_ANNUAL_DELETE_SUCCESS.getMessage());
-
+        return ResponseEntity.ok(SuccessCode.SUCCESS.getMessage());
     }
 
-    // 팀장 연차 관련 API
-    @Operation(summary = "연차 승인", description = "팀장이 연차를 승인합니다.")
-    @PutMapping("/leader/annual/{annualId}/approve")
+    // 팀장 연차 승인
+    @Operation(summary = "연차 승인", description = "팀장이 사원의 연차 신청을 승인합니다.")
+    @PutMapping("/leader/approval/annual/{annualId}/approve")
     public ResponseEntity<String> approveAnnual(@PathVariable Long annualId) {
         annualCommandService.approveAnnual(annualId);
         return ResponseEntity.ok(SuccessCode.WORK_ATTITUDE_ANNUAL_CHECK_IN_SUCCESS.getMessage());
     }
 
-    @Operation(summary = "연차 반려", description = "팀장이 연차를 반려합니다.")
-    @PutMapping("/leader/annual/{annualId}/reject")
+    // 팀장 연차 반려
+    @Operation(summary = "연차 반려", description = "팀장이 사원의 연차 신청을 반려합니다. 반려 사유를 작성해야 합니다.")
+    @PutMapping("/leader/approval/annual/{annualId}/reject")
     public ResponseEntity<String> rejectAnnual(@PathVariable Long annualId, @RequestBody String rejectReason) {
-        annualCommandService.rejectAnnual(annualId, rejectReason);
-        return ResponseEntity.ok(SuccessCode.WORK_ATTITUDE_ANNUAL_CHECK_OUT_SUCCESS.getMessage());
-    }
-
-    @Operation(summary = "연차 반려 사유 작성", description = "팀장이 연차 반려 사유를 작성합니다.")
-    @PostMapping("/leader/annual/{annualId}/reject-reason")
-    public ResponseEntity<String> writeRejectReason(@PathVariable Long annualId, @RequestBody String rejectReason) {
         annualCommandService.rejectAnnual(annualId, rejectReason);
         return ResponseEntity.ok(SuccessCode.WORK_ATTITUDE_ANNUAL_CHECK_OUT_SUCCESS.getMessage());
     }

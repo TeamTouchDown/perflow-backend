@@ -1,7 +1,5 @@
 package com.touchdown.perflowbackend.workAttitude.command.application.service;
 
-import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
-import com.touchdown.perflowbackend.approval.command.domain.repository.ApproveSbjCommandRepository;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
@@ -17,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -25,93 +24,110 @@ public class WorkAttitudeAnnualCommandService {
 
     private final WorkAttitudeAnnualCommandRepository annualRepository;
     private final EmployeeCommandRepository employeeRepository;
-    private final ApproveSbjCommandRepository approveSbjRepository;
+
+    // 현재 로그인한 사용자 조회
+    private Employee getCurrentEmployee() {
+        String empId = EmployeeUtil.getEmpId();
+        return employeeRepository.findById(empId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));
+    }
 
     // 연차 신청
     @Transactional
     public void registerAnnual(WorkAttitudeAnnualRequestDTO requestDTO) {
-        log.info("연차 신청 등록: {}", requestDTO);
+        Employee employee = getCurrentEmployee();
+        Employee approver = employeeRepository.findById(requestDTO.getApprover())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));
 
-        String empId = EmployeeUtil.getEmpId(); // 로그인 사용자 ID 가져오기
-        Employee employee = findEmployeeByEmpId(empId);
+        validateDateOverlap(employee.getEmpId(), requestDTO.getAnnualStart(), requestDTO.getAnnualEnd());
+        validateAnnualCount(employee, requestDTO.getAnnualStart(), requestDTO.getAnnualEnd(), requestDTO.getAnnualType());
 
-        // 소급 여부 검증
-        boolean isRetroactive = requestDTO.getIsAnnualRetroactive();
-        LocalDateTime now = LocalDateTime.now();
-        if (requestDTO.getAnnualStart().isBefore(now) && !isRetroactive) {
-            throw new CustomException(ErrorCode.INVALID_RETROACTIVE_DECISION);
-        }
-
-        /*// **중복 신청 검증 추가**
-        LocalDateTime startDate = requestDTO.getAnnualStart();
-        LocalDateTime endDate = requestDTO.getAnnualEnd();
-
-        if (annualRepository.existsByEmpId_EmpIdAndAnnualStartBeforeAndAnnualEndAfter(
-                empId, endDate, startDate)) { // 중복된 일정 검증
-            throw new CustomException(ErrorCode.DUPLICATE_ANNUAL); // 예외 처리
-        }*/
-
-        // 기존 결재 주체 조회
-        ApproveSbj approveSbj = approveSbjRepository.findById(requestDTO.getApproveSbjId())
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APPROVE_SBJ));
-
-        Annual annual = WorkAttitudeAnnualMapper.toEntity(requestDTO, employee, approveSbj);
+        Annual annual = WorkAttitudeAnnualMapper.toEntity(requestDTO, employee, approver);
         annualRepository.save(annual);
+        log.info("연차 신청 완료: {}", annual);
     }
-
 
     // 연차 수정
     @Transactional
     public void updateAnnual(Long annualId, WorkAttitudeAnnualRequestDTO requestDTO) {
-        log.info("연차 수정: {}, {}", annualId, requestDTO);
-
-        Annual annual = findAnnualById(annualId);
+        Annual annual = annualRepository.findById(annualId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ANNUAL));
 
         WorkAttitudeAnnualMapper.updateEntityFromDto(requestDTO, annual);
-        annual.setStatus(Status.UPDATED);
-
         annualRepository.save(annual);
+        log.info("연차 수정 완료: {}", annual);
     }
 
     // 연차 삭제 (소프트 삭제)
     @Transactional
     public void softDeleteAnnual(Long annualId) {
-        log.info("연차 삭제: {}", annualId);
+        Annual annual = annualRepository.findById(annualId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ANNUAL));
 
-        Annual annual = findAnnualById(annualId);
-        annual.softDelete();
+        annual.setStatus(Status.DELETED);
+        annual.setUpdateDatetime(LocalDateTime.now());
         annualRepository.save(annual);
+        log.info("연차 삭제 완료: {}", annual);
     }
 
     // 연차 승인
     @Transactional
     public void approveAnnual(Long annualId) {
-        log.info("연차 승인: {}", annualId);
+        Annual annual = annualRepository.findById(annualId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ANNUAL));
 
-        Annual annual = findAnnualById(annualId);
-        annual.approveAnnual();
+        annual.setAnnualStatus(Status.CONFIRMED);
+        annual.setUpdateDatetime(LocalDateTime.now());
         annualRepository.save(annual);
+        log.info("연차 승인 완료: {}", annual);
     }
 
     // 연차 반려
     @Transactional
     public void rejectAnnual(Long annualId, String rejectReason) {
-        log.info("연차 반려: {}, 사유: {}", annualId, rejectReason);
+        Annual annual = annualRepository.findById(annualId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ANNUAL));
 
-        Annual annual = findAnnualById(annualId);
-        annual.rejectAnnual(rejectReason);
+        annual.setAnnualStatus(Status.REJECTED);
+        annual.setAnnualRejectReason(rejectReason);
+        annual.setUpdateDatetime(LocalDateTime.now());
         annualRepository.save(annual);
+        log.info("연차 반려 완료: {}", annual);
     }
 
-    // 사원 조회
-    private Employee findEmployeeByEmpId(String empId) {
-        return employeeRepository.findById(empId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));
+    // 날짜 중복 검증
+    private void validateDateOverlap(String empId, LocalDateTime startDate, LocalDateTime endDate) {
+        boolean overlap = annualRepository.existsByEmpId_EmpIdAndStatusAndAnnualStartLessThanEqualAndAnnualEndGreaterThanEqual(
+                empId, Status.ACTIVATED, endDate, startDate);
+        if (overlap) {
+            throw new CustomException(ErrorCode.DUPLICATE_ANNUAL);
+        }
     }
 
-    // 연차 조회
-    private Annual findAnnualById(Long annualId) {
-        return annualRepository.findById(annualId)
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_APPROVE_SBJ));
+    // 연차 개수 검증
+    private void validateAnnualCount(Employee employee, LocalDateTime start, LocalDateTime endDate, AnnualType annualType) {
+        int providedAnnualCount = calculateProvidedAnnualCount(employee.getJoinDate());
+        long usedAnnualCount = annualRepository.countByEmpId_EmpIdAndAnnualStatus(employee.getEmpId(), Status.CONFIRMED);
+        double requestedDays = calculateDaysBetween(start, endDate, annualType);
+
+        if ((usedAnnualCount + requestedDays) > providedAnnualCount) {
+            throw new CustomException(ErrorCode.NOT_ENOUGH_ANNUAL);
+        }
+    }
+
+    private int calculateProvidedAnnualCount(LocalDate joinDate) {
+        int baseAnnual = 15;
+        int maxAnnual = 25;
+        int years = LocalDate.now().getYear() - joinDate.getYear();
+        int additionalAnnual = (years / 3);
+        return Math.min(baseAnnual + additionalAnnual, maxAnnual);
+    }
+
+    private double calculateDaysBetween(LocalDateTime startDate, LocalDateTime endDate, AnnualType type) {
+        long days = java.time.Duration.between(startDate.toLocalDate().atStartOfDay(), endDate.toLocalDate().atStartOfDay()).toDays() + 1;
+        if (type == AnnualType.MORNINGHALF || type == AnnualType.AFTERNOONHALF) {
+            return days - 0.5;
+        }
+        return days;
     }
 }

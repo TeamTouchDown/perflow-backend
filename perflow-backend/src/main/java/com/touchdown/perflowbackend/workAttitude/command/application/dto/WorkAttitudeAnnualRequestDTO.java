@@ -12,7 +12,7 @@ public class WorkAttitudeAnnualRequestDTO {
 
     private String empId; // 사원 ID
 
-    private Long approveSbjId; // 결재 주제 ID
+    private String approver; // 결재 주제 ID
 
     private LocalDateTime enrollAnnual; // 연차 등록 날짜
 
