@@ -19,7 +19,7 @@ public class WorkAttitudeAnnualCommandController {
 
     // 사원 연차 신청
     @Operation(summary = "연차 신청", description = "사원이 연차를 신청합니다. 전체 연차 개수를 초과하지 않도록 검증합니다.")
-    @PostMapping("/emp/approval/annual")
+    @PostMapping("/emp/annual")
     public ResponseEntity<String> registerAnnual(@RequestBody WorkAttitudeAnnualRequestDTO requestDTO) {
         annualCommandService.registerAnnual(requestDTO);
         return ResponseEntity.ok(SuccessCode.WORK_ATTITUDE_ANNUAL_SUCCESS.getMessage());
@@ -27,7 +27,7 @@ public class WorkAttitudeAnnualCommandController {
 
     // 사원 연차 수정
     @Operation(summary = "연차 수정", description = "사원이 본인의 연차 신청을 수정합니다.")
-    @PutMapping("/emp/approval/annual/{annualId}")
+    @PutMapping("/emp/annual/{annualId}")
     public ResponseEntity<String> updateAnnual(@PathVariable Long annualId,
                                                @RequestBody WorkAttitudeAnnualRequestDTO requestDTO) {
         annualCommandService.updateAnnual(annualId, requestDTO);
@@ -36,7 +36,7 @@ public class WorkAttitudeAnnualCommandController {
 
     // 사원 연차 삭제
     @Operation(summary = "연차 삭제", description = "사원이 본인의 연차 신청을 삭제합니다.")
-    @DeleteMapping("/emp/approval/annual/{annualId}")
+    @DeleteMapping("/emp/annual/{annualId}")
     public ResponseEntity<String> deleteAnnual(@PathVariable Long annualId) {
         annualCommandService.softDeleteAnnual(annualId);
         return ResponseEntity.ok(SuccessCode.SUCCESS.getMessage());
@@ -44,7 +44,7 @@ public class WorkAttitudeAnnualCommandController {
 
     // 팀장 연차 승인
     @Operation(summary = "연차 승인", description = "팀장이 사원의 연차 신청을 승인합니다.")
-    @PutMapping("/leader/approval/annual/{annualId}/approve")
+    @PutMapping("/leader/annual/{annualId}/approve")
     public ResponseEntity<String> approveAnnual(@PathVariable Long annualId) {
         annualCommandService.approveAnnual(annualId);
         return ResponseEntity.ok(SuccessCode.WORK_ATTITUDE_ANNUAL_CHECK_IN_SUCCESS.getMessage());
@@ -52,7 +52,7 @@ public class WorkAttitudeAnnualCommandController {
 
     // 팀장 연차 반려
     @Operation(summary = "연차 반려", description = "팀장이 사원의 연차 신청을 반려합니다. 반려 사유를 작성해야 합니다.")
-    @PutMapping("/leader/approval/annual/{annualId}/reject")
+    @PutMapping("/leader/annual/{annualId}/reject")
     public ResponseEntity<String> rejectAnnual(@PathVariable Long annualId, @RequestBody String rejectReason) {
         annualCommandService.rejectAnnual(annualId, rejectReason);
         return ResponseEntity.ok(SuccessCode.WORK_ATTITUDE_ANNUAL_CHECK_OUT_SUCCESS.getMessage());
