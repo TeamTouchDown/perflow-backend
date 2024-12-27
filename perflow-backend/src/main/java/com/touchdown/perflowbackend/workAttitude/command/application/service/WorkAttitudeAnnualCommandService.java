@@ -125,7 +125,7 @@ public class WorkAttitudeAnnualCommandService {
     // 연차 개수 검증
     private void validateAnnualCount(Employee employee, LocalDateTime start, LocalDateTime endDate, AnnualType annualType) {
         int providedAnnualCount = calculateProvidedAnnualCount(employee.getJoinDate());
-        long usedAnnualCount = annualRepository.countByEmpId_EmpIdAndAnnualStatus(employee.getEmpId(), Status.CONFIRMED);
+        long usedAnnualCount = annualRepository.countByEmpId_EmpIdAndStatus(employee.getEmpId(), Status.CONFIRMED);
         double requestedDays = calculateDaysBetween(start, endDate, annualType);
 
         if ((usedAnnualCount + requestedDays) > providedAnnualCount) {
