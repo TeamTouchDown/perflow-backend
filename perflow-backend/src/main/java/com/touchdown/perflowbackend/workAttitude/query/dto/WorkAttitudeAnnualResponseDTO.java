@@ -18,7 +18,9 @@ public class WorkAttitudeAnnualResponseDTO {
 
     private String empName;
 
-    private Long approveSbjId;
+    private String approverId;
+
+    private String approverName;
 
     private LocalDateTime enrollAnnual;
 
@@ -37,7 +39,5 @@ public class WorkAttitudeAnnualResponseDTO {
     private String annualRetroactiveReason;
 
     private AnnualRetroactiveStatus annualRetroactiveStatus;
-
-    private String approverName;
 
 }

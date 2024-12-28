@@ -1,7 +1,6 @@
 package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
-import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,9 +25,9 @@ public class Vacation extends BaseEntity {
     @JoinColumn(name = "emp_id", nullable = false)
     private Employee empId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "approve_sbj_id", nullable = false)
-    private ApproveSbj approveSbjId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approver_id", nullable = false)
+    private Employee approver; // 결재자 ID
 
     @Column(name = "enroll_vacation", nullable = false)
     private LocalDateTime enrollVacation;
@@ -59,7 +58,7 @@ public class Vacation extends BaseEntity {
     // 빌더 패턴용 생성자
     @Builder
     public Vacation(Employee empId,
-                    ApproveSbj approveSbjId,
+                    Employee approver,
                     LocalDateTime enrollVacation,
                     LocalDateTime vacationStart,
                     LocalDateTime vacationEnd,
@@ -68,13 +67,13 @@ public class Vacation extends BaseEntity {
                     VacationStatus vacationStatus,
                     Status status) {
         this.empId = empId;
-        this.approveSbjId = approveSbjId;
+        this.approver = approver;
         this.enrollVacation = enrollVacation;
         this.vacationStart = vacationStart;
         this.vacationEnd = vacationEnd;
         this.vacationType = vacationType;
         this.vacationRejectReason = vacationRejectReason;
-        this.vacationStatus = vacationStatus;
+        this.vacationStatus = vacationStatus != null ? vacationStatus : VacationStatus.PENDING;
         this.status = status != null ? status : Status.ACTIVATED; // 기본값 설정
     }
 

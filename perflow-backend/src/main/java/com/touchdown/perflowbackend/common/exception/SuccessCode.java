@@ -138,7 +138,9 @@ public enum SuccessCode {
     WORK_ATTRIBUTE_VACATION_DELETE_SUCCESS(HttpStatus.OK,"삭제 처리 완료 되었습니다."),
     WORK_ATTRIBUTE_VACATION_UPDATE_SUCCESS(HttpStatus.OK,"업데이트 완료 되었습니다."),
     WORK_ATTITUDE_VACATION_SUCCESS(HttpStatus.OK,"휴가 신청 완료 되었습니다."),
-    ;
+    WORK_ATTRIBUTE_OVERTIME_APPROVED(HttpStatus.OK,"초과근무 승인이 완료 되었습니다." ),
+    WORK_ATTRIBUTE_OVERTIME_REJECTED(HttpStatus.OK, "초과근무 반려가 완료 되었습니다."),
+    WORK_ATTRIBUTE_VACATION_SUCCESS(HttpStatus.OK,"휴가 신청이 완료되었습니다." );
 
 
 

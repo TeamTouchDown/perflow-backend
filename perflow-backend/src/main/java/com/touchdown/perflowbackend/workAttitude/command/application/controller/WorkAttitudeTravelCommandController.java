@@ -1,7 +1,6 @@
 package com.touchdown.perflowbackend.workAttitude.command.application.controller;
 
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
-import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeTravelCommandForTeamLeaderRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeTravelRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.application.service.WorkAttitudeTravelCommandService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,53 +9,54 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "WorkAttitude-Controller", description = "출장 관련 API")
+
+@Tag(name = "WorkAttitude-Travel-Controller", description = "출장 관련 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class WorkAttitudeTravelCommandController {
 
-    private final WorkAttitudeTravelCommandService workAttitudeTravelCommandService;
+    private final WorkAttitudeTravelCommandService travelCommandService;
 
-    @Operation(summary = "사원이 출장 등록", description = "사원이 자신의 출장 요청을 등록")
-    @PostMapping("/emp/travels")
-    public ResponseEntity<SuccessCode> requestTravel(
-            @RequestBody WorkAttitudeTravelRequestDTO workAttitudeTravelRequestDTO) {
-        workAttitudeTravelCommandService.createTravel(workAttitudeTravelRequestDTO);
+
+    @Operation(summary = "출장 신청", description = "사원이 출장 신청을 합니다.")
+    @PostMapping("/emp/approval/travels")
+    public ResponseEntity<SuccessCode> requestTravel(@RequestBody WorkAttitudeTravelRequestDTO requestDTO) {
+        travelCommandService.requestTravel(requestDTO);
         return ResponseEntity.ok(SuccessCode.WORK_ATTITUDE_TRAVEL_SUCCESS);
     }
 
-    @Operation(summary = "사원이 출장 수정", description = "사원이 자신의 출장 요청을 수정")
-    @PutMapping("/emp/travel/{travelId}")
-    public ResponseEntity<SuccessCode> updateTravel(
-            @PathVariable Long travelId,
-            @RequestBody WorkAttitudeTravelRequestDTO workAttitudeTravelRequestDTO) {
-        workAttitudeTravelCommandService.updateTravel(travelId, workAttitudeTravelRequestDTO);
+
+    @Operation(summary = "출장 수정", description = "사원이 본인의 출장 신청을 수정합니다.")
+    @PutMapping("/emp/approval/travel/{travelId}")
+    public ResponseEntity<SuccessCode> updateTravel(@PathVariable Long travelId,
+                                                    @RequestBody WorkAttitudeTravelRequestDTO requestDTO) {
+        travelCommandService.updateTravel(travelId, requestDTO);
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
 
-    @Operation(summary = "사원이 출장 삭제", description = "사원이 자신의 출장 요청을 삭제")
-    @DeleteMapping("/emp/travel/{travelId}")
-    public ResponseEntity<SuccessCode> deleteTravel(
-            @PathVariable(name = "travelId") Long travelId) {
-        workAttitudeTravelCommandService.deleteTravel(travelId);
+    @Operation(summary = "출장 삭제", description = "사원이 본인의 출장 신청을 삭제합니다.")
+    @DeleteMapping("/emp/approval/travel/{travelId}")
+    public ResponseEntity<SuccessCode> deleteTravel(@PathVariable Long travelId) {
+        travelCommandService.deleteTravel(travelId);
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
 
-    @Operation(summary = "팀장이 출장 상태 변경", description = "팀장이 사원의 출장 요청 상태를 승인, 반려함 반려시 반려사유도 작성 가능")
-    @PutMapping("/leader/travel/{travelId}")
-    public ResponseEntity<SuccessCode> updateTravelStatus(
-            @PathVariable(name = "travelId") Long travelId,
-            @RequestBody WorkAttitudeTravelCommandForTeamLeaderRequestDTO requestDTO) {
-        workAttitudeTravelCommandService.updateTravelStatus(travelId, requestDTO);
+
+    @Operation(summary = "출장 승인", description = "팀장이 사원의 출장 신청을 승인합니다.")
+    @PutMapping("/leader/approval/travel/{travelId}/approve")
+    public ResponseEntity<SuccessCode> approveTravel(@PathVariable Long travelId) {
+        // 팀장이 승인할 때 따로 DTO가 필요 없다면, travelId만 받음
+        travelCommandService.approveTravel(travelId);
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
 
-    @Operation(summary = "팀장이 출장 삭제", description = "팀장이 사원의 출장 요청을 삭제")
-    @DeleteMapping("/leader/travel/{travelId}")
-    public ResponseEntity<SuccessCode> deleteEmployeeTravel(
-            @PathVariable(name = "travelId") Long travelId) {
-        workAttitudeTravelCommandService.deleteTravel(travelId);
+
+    @Operation(summary = "출장 반려", description = "팀장이 사원의 출장 신청을 반려합니다. 반려 사유를 작성해야 합니다.")
+    @PutMapping("/leader/approval/travel/{travelId}/reject")
+    public ResponseEntity<SuccessCode> rejectTravel(@PathVariable Long travelId,
+                                                    @RequestBody String rejectReason) {
+        travelCommandService.rejectTravel(travelId, rejectReason);
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
 }

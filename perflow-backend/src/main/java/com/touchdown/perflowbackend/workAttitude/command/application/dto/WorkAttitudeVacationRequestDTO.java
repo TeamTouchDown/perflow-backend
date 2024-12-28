@@ -12,7 +12,7 @@ public class WorkAttitudeVacationRequestDTO {
 
     private String empId; // 사원 ID
 
-    private Long approveSbjId; // 결재 주제 ID
+    private String approver; // 결재자 ID
 
     private LocalDateTime enrollVacation; // 휴가 등록 날짜
 

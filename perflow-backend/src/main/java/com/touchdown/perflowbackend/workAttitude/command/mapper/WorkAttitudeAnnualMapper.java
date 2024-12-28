@@ -11,10 +11,10 @@ import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Annual
 public class WorkAttitudeAnnualMapper {
 
     // DTO -> Entity 변환
-    public static Annual toEntity(WorkAttitudeAnnualRequestDTO requestDTO, Employee employee, ApproveSbj approveSbj) {
+    public static Annual toEntity(WorkAttitudeAnnualRequestDTO requestDTO, Employee employee, Employee approver) {
         return Annual.builder()
                 .empId(employee) // 사원 정보
-                .approveSbjId(approveSbj) // 승인 정보
+                .approver(approver) // 승인 정보
                 .enrollAnnual(requestDTO.getEnrollAnnual()) // 연차 등록일
                 .annualStart(requestDTO.getAnnualStart()) // 연차 시작일
                 .annualEnd(requestDTO.getAnnualEnd()) // 연차 종료일

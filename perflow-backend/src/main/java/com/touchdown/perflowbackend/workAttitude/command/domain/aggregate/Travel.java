@@ -26,9 +26,9 @@ public class Travel extends BaseEntity {
     @JoinColumn(name = "emp_id", nullable = false)
     private Employee employee;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "approve_sbj_id", nullable = false)
-    private ApproveSbj approveSbj;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approver_id", nullable = false)
+    private Employee approver; // 결재자 ID
 
     @Column(name = "enroll_travel", nullable = false)
     private LocalDateTime enrollTravel;
@@ -58,28 +58,43 @@ public class Travel extends BaseEntity {
     private Status status;
 
     @Builder
-    public Travel(Employee empId, ApproveSbj approveSbj, LocalDateTime enrollTravel,
-                  String travelReason, LocalDateTime travelStart, LocalDateTime travelEnd,
-                  Status travelStatus, String travelRejectReason, String travelDivision, Status status) {
+    public Travel(Employee empId,
+                  Employee approver,
+                  LocalDateTime enrollTravel,
+                  String travelReason,
+                  LocalDateTime travelStart,
+                  LocalDateTime travelEnd,
+                  Status travelStatus,
+                  String travelRejectReason,
+                  String travelDivision,
+                  Status status) {
+        if (travelEnd.isBefore(travelStart)) {
+            throw new IllegalArgumentException("출장 종료일이 시작일보다 앞에 있을 수 없습니다.");
+        }
+
         this.employee = empId;
-        this.approveSbj = approveSbj;
+        this.approver = approver;
         this.enrollTravel = enrollTravel;
         this.travelReason = travelReason;
         this.travelStart = travelStart;
         this.travelEnd = travelEnd;
-        this.travelStatus = travelStatus;
+        this.travelStatus = travelStatus != null ? travelStatus : Status.PENDING;
         this.travelRejectReason = travelRejectReason;
         this.travelDivision = travelDivision;
-        this.status = status;
+        this.status = status!= null ? status : Status.ACTIVATED;
     }
 
 
     public void updateTravel(String travelReason, LocalDateTime travelStart, LocalDateTime travelEnd, String travelDivision) {
+        if (travelStart != null && travelEnd != null && travelEnd.isBefore(travelStart)) {
+            throw new IllegalArgumentException("출장 종료일이 시작일보다 앞에 있을 수 없습니다.");
+        }
         if (travelReason != null) this.travelReason = travelReason;
         if (travelStart != null) this.travelStart = travelStart;
         if (travelEnd != null) this.travelEnd = travelEnd;
         if (travelDivision != null) this.travelDivision = travelDivision;
     }
+
 
     public void updateTravelStatus(Status travelStatus, String travelRejectReason) {
         this.travelStatus = travelStatus;

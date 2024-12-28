@@ -5,20 +5,21 @@ import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Vacati
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.VacationStatus;
 
 public class WorkAttitudeVacationMapper {
 
     // DTO -> Entity 변환
-    public static Vacation toEntity(WorkAttitudeVacationRequestDTO requestDTO, Employee employee, ApproveSbj approveSbj) {
+    public static Vacation toEntity(WorkAttitudeVacationRequestDTO requestDTO, Employee employee, Employee approver) {
         return Vacation.builder()
                 .empId(employee) // 사원 정보
-                .approveSbjId(approveSbj) // 승인 정보
+                .approver(approver) // 승인 정보
                 .enrollVacation(requestDTO.getEnrollVacation()) // 휴가 등록일
                 .vacationStart(requestDTO.getVacationStart()) // 휴가 시작일
                 .vacationEnd(requestDTO.getVacationEnd()) // 휴가 종료일
                 .vacationType(requestDTO.getVacationType()) // 휴가 유형
                 .vacationRejectReason(requestDTO.getVacationRejectReason()) // 반려 사유
-                .vacationStatus(requestDTO.getVacationStatus()) // 휴가 상태
+                .vacationStatus(VacationStatus.PENDING) // 휴가 상태
                 .status(Status.ACTIVATED) // 기본 상태 (활성화)
                 .build();
     }

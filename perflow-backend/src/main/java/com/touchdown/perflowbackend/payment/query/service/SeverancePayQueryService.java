@@ -251,15 +251,15 @@ public class SeverancePayQueryService {
         LocalDate resignDate = toLocalDate(result[3]);
         String departmentName = result[4] instanceof String ? (String) result[4] : null;
         String positionName = result[5] instanceof String ? (String) result[5] : null;
-        Long totalLaborDays = result[6] instanceof Long ? (Long) result[6] : null;
-        Long threeMonthTotalPay = result[7] instanceof Long ? (Long) result[7] : null;
-        Long threeMonthTotalAllowance = result[8] instanceof Long ? (Long) result[8] : null;
-        Long annualAllowance = result[9] instanceof Long ? (Long) result[9] : null;
-        Long totalAllowance = result[10] instanceof Long ? (Long) result[10] : null;
-        Long extendLaborAllowance = result[11] instanceof Long ? (Long) result[11] : null;
-        Long nightLaborAllowance = result[12] instanceof Long ? (Long) result[12] : null;
-        Long holidayLaborAllowance = result[13] instanceof Long ? (Long) result[13] : null;
-        Long totalAmount = result[14] instanceof Long ? (Long) result[14] : null;
+        Long totalLaborDays = toLong(result[6]);
+        Long threeMonthTotalPay = toLong(result[7]);
+        Long threeMonthTotalAllowance = toLong(result[8]);
+        Long annualAllowance = toLong(result[9]);
+        Long totalAllowance = toLong(result[10]);
+        Long extendLaborAllowance = toLong(result[11]);
+        Long nightLaborAllowance = toLong(result[12]);
+        Long holidayLaborAllowance = toLong(result[13]);
+        Long totalAmount = toLong(result[14]);
 
         // DTO 생성
         SeverancePayStubDTO severancePay = new SeverancePayStubDTO(
