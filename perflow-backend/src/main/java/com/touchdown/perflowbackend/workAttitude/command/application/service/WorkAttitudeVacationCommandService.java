@@ -61,6 +61,10 @@ public class WorkAttitudeVacationCommandService {
             throw new CustomException(ErrorCode.NOT_MATCH_WRITER);
         }
 
+        // 수정 요청 날짜 중복 검증 추가 (휴가 + 연차 일정 검증)
+        validateDateOverlap(employee.getEmpId(), requestDTO.getVacationStart(), requestDTO.getVacationEnd());
+
+
         WorkAttitudeVacationMapper.updateEntityFromDto(requestDTO, vacation);
         vacationRepository.save(vacation);
         log.info("휴가 수정 완료: {}", vacation);

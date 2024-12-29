@@ -53,6 +53,7 @@ public class WorkAttitudeAnnualCommandService {
     // 연차 수정
     @Transactional
     public void updateAnnual(Long annualId, WorkAttitudeAnnualRequestDTO requestDTO) {
+
         Employee employee = getCurrentEmployee();
         Annual annual = annualRepository.findById(annualId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ANNUAL));
@@ -60,6 +61,10 @@ public class WorkAttitudeAnnualCommandService {
         if (!annual.getEmpId().getEmpId().equals(employee.getEmpId())) {
             throw new CustomException(ErrorCode.NOT_MATCH_WRITER);
         }
+
+        // 수정 요청 날짜 중복 검증 추가 (연차 + 휴가 일정 검증)
+        validateDateOverlap(employee.getEmpId(), requestDTO.getAnnualStart(), requestDTO.getAnnualEnd());
+
 
         WorkAttitudeAnnualMapper.updateEntityFromDto(requestDTO, annual);
         annualRepository.save(annual);
