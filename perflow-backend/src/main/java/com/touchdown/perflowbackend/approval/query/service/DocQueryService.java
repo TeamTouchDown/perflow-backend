@@ -65,6 +65,49 @@ public class DocQueryService {
         return docQueryRepository.findInboxDocs(pageable, empId, deptId, positionLevel);
     }
 
+    // 수신함 문서 목록 검색
+    @Transactional(readOnly = true)
+    public Page<InboxDocListResponseDTO> searchInboxDocList(
+            String title,
+            String createUser,
+            LocalDate fromDate,
+            LocalDate toDate,
+            Pageable pageable,
+            String empId,
+            Long deptId,
+            Integer positionLevel
+    ) {
+        // LocalDate -> LocalDateTime 변환
+        LocalDateTime fromDateTime = fromDate != null ? fromDate.atStartOfDay() : null;
+        LocalDateTime toDateTime = toDate != null ? toDate.atTime(23, 59, 59) : null;
+
+        // Specification 조합
+        Specification<Doc> specification = Specification
+                .where(DocSpecification.titleContains(title))
+                .and(DocSpecification.createUserNameContains(createUser))
+                .and(DocSpecification.createDateBetween(fromDateTime, toDateTime))
+                .and(DocSpecification.hasActiveApproveSbjForUser(empId)) // 결재선에 포함 여부
+                .or(DocSpecification.hasActiveApproveSbjForDept(deptId, positionLevel)); // 부서 및 직위 조건
+
+        return docQueryRepository.findAll(specification, pageable)
+                .map(doc -> InboxDocListResponseDTO.builder()
+                        .docId(doc.getDocId())
+                        .templateId(doc.getTemplate().getTemplateId())
+                        .title(doc.getTitle())
+                        .createUserName(doc.getCreateUser().getName())
+                        .createDatetime(doc.getCreateDatetime())
+                        .processDatetime(doc.getUpdateDatetime())
+                        .status(doc.getStatus().name()) // Enum -> String
+                        .approveLineId(doc.getApproveLines().stream().findFirst().map(ApproveLine::getApproveLineId).orElse(null))
+                        .approveSbjId(doc.getApproveLines().stream()
+                                .flatMap(line -> line.getApproveSbjs().stream())
+                                .findFirst()
+                                .map(ApproveSbj::getApproveSbjId)
+                                .orElse(null))
+                        .build());
+    }
+
+
     // 수신함 문서 상세 조회
     @Transactional(readOnly = true)
     public InboxDocDetailResponseDTO getOneInboxDoc(Long docId, String empId) {
