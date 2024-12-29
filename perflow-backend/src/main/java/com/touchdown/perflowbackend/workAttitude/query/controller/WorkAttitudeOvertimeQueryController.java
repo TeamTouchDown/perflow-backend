@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "WorkAttitude-OverTime-Controller", description = "초과근무 관련 API")
 @RestController
@@ -27,14 +28,17 @@ public class WorkAttitudeOvertimeQueryController {
         List<WorkAttitudeOvertimeResponseDTO> response = workAttitudeOvertimeQueryService.getOvertimeForEmployee(empId);
         return ResponseEntity.ok(response);
     }
+
     // 사원 본인의 초과근무 유형별 요약 조회
-    @Operation(summary = "사원 초과근무 요약 조회", description = "사원이 자신의 초과근무 유형별 요약 정보를 조회")
-    @GetMapping("/emp/overtimes/summary")
-    public ResponseEntity<WorkAttitudeOvertimeResponseDTO> getOvertimeSummaryForEmployee() {
-        String empId = EmployeeUtil.getEmpId();
-        WorkAttitudeOvertimeResponseDTO summary = workAttitudeOvertimeQueryService.getOvertimeSummaryForEmployee(empId);
-        return ResponseEntity.ok(summary);
+    @Operation(summary = "사원 월별 초과근무 요약 조회", description = "사원이 자신의 월별 초과근무 유형별 요약 정보를 조회")
+    @GetMapping("/emp/overtimes/monthly-summary")
+    public ResponseEntity<Map<String, Map<String, String>>> getMonthlyOvertimeSummaryForEmployee() {
+        String empId = EmployeeUtil.getEmpId(); // 현재 로그인된 사원 ID 조회
+        Map<String, Map<String, String>> summary = workAttitudeOvertimeQueryService.getMonthlyOvertimeSummary(empId); // 서비스 호출
+        return ResponseEntity.ok(summary); // 결과 반환
     }
+
+
 
     // 팀장의 팀원 초과근무 내역 조회
     @Operation(summary = "팀원 초과근무 조회", description = "팀장이 팀원의 초과근무 내역을 조회")

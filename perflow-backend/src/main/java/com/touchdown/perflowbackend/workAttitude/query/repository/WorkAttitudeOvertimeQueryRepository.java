@@ -42,4 +42,15 @@ public interface WorkAttitudeOvertimeQueryRepository extends JpaRepository<Overt
     @Query("SELECT o FROM Overtime o " +
             "WHERE o.approver.empId = :approverId AND o.status != 'DELETED' AND o.overtimeStatus = 'PENDING'")
     List<Overtime> findPendingApprovalByApproverId(@Param("approverId") String approverId);
+
+    @Query(value = "SELECT DATE_FORMAT(o.overtime_start, '%Y-%m') AS month, " +
+            "o.overtime_type AS type, " +
+            "SUM(TIMESTAMPDIFF(HOUR, o.overtime_start, o.overtime_end)) AS hours " +
+            "FROM overtime o " +
+            "WHERE o.emp_id = :empId " +
+            "AND o.overtime_status = 'CONFIRMED' " + // 승인된 초과근무만 계산
+            "GROUP BY month, o.overtime_type " +
+            "ORDER BY month ASC", nativeQuery = true)
+    List<Object[]> findMonthlyOvertimeSummary(@Param("empId") String empId);
+
 }

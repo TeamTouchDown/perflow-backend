@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -128,4 +129,26 @@ public class WorkAttitudeOvertimeQueryService {
                 .map(Overtime::toResponseDTO)
                 .toList();
     }
+    @Transactional
+    public Map<String, Map<String, String>> getMonthlyOvertimeSummary(String empId) {
+        // 레포지토리에서 월별 초과근무 데이터 조회
+        List<Object[]> summaryData = repository.findMonthlyOvertimeSummary(empId);
+
+        // 결과 가공
+        Map<String, Map<String, String>> result = new LinkedHashMap<>();
+
+        for (Object[] data : summaryData) {
+            // 데이터 매핑
+            String month = (String) data[0];           // 월 (YYYY-MM)
+            String type = (String) data[1];            // 초과근무 유형
+            long hours = ((Number) data[2]).longValue(); // 초과근무 시간 (합계)
+
+            // 월별 데이터 추가
+            result.putIfAbsent(month, new LinkedHashMap<>()); // 월별 그룹화
+            result.get(month).put(type, hours + "시간");       // 유형별 시간 추가
+        }
+
+        return result; // 최종 결과 반환
+    }
+
 }
