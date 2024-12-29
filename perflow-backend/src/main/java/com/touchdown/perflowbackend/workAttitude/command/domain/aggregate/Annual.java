@@ -45,7 +45,7 @@
         private String annualRejectReason;
 
         @Setter
-        @ColumnDefault("'ACTIVE'")
+        //@ColumnDefault("'ACTIVE'")
         @Column(name = "status", nullable = false, length = 30)
         @Enumerated(EnumType.STRING)
         private Status status;
