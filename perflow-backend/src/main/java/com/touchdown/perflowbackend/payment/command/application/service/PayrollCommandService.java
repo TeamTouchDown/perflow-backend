@@ -4,7 +4,6 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.Payroll;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.PayrollDetail;
-import com.touchdown.perflowbackend.payment.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.payment.command.domain.repository.PayrollCommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;

@@ -3,6 +3,7 @@ package com.touchdown.perflowbackend.payment.query.service;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.query.repository.EmployeeQueryRepository;
 import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeForTeamLeaderSummaryDTO;
+import com.touchdown.perflowbackend.workAttitude.query.service.WorkAttitudeAnnualQueryService;
 import com.touchdown.perflowbackend.workAttitude.query.service.WorkAttitudeOvertimeQueryService;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
@@ -21,6 +22,7 @@ public class ExcelTemplateQueryService {
 
     private final EmployeeQueryRepository employeeQueryRepository;
     private final WorkAttitudeOvertimeQueryService workAttitudeOvertimeQueryService;
+    private final WorkAttitudeAnnualQueryService workAttitudeAnnualQueryService;
 
     // 급여대장 엑셀 템플릿 생성 메서드
     public byte[] generatePayrollTemplate() throws IOException {
@@ -224,7 +226,7 @@ public class ExcelTemplateQueryService {
 
     private Long calculateAnnualAllowance(Long hourlyPay) {
 
-        return (long) Math.round(hourlyPay * 8);
+        return (long) Math.round(hourlyPay * 8 * (long) workAttitudeAnnualQueryService.getAnnualBalance());
 
     }
 

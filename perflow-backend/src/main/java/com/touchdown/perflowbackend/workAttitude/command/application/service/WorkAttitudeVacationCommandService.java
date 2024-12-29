@@ -7,6 +7,7 @@ import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeC
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeVacationRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.*;
+import com.touchdown.perflowbackend.workAttitude.command.domain.repository.WorkAttitudeAnnualCommandRepository;
 import com.touchdown.perflowbackend.workAttitude.command.domain.repository.WorkAttitudeVacationCommandRepository;
 import com.touchdown.perflowbackend.workAttitude.command.mapper.WorkAttitudeVacationMapper;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,8 @@ public class WorkAttitudeVacationCommandService {
 
     private final WorkAttitudeVacationCommandRepository vacationRepository;
     private final EmployeeCommandRepository employeeRepository;
+    private final WorkAttitudeAnnualCommandRepository annualRepository;
+
 
     // 현재 로그인한 사용자 조회
     private Employee getCurrentEmployee() {
@@ -30,6 +33,7 @@ public class WorkAttitudeVacationCommandService {
         return employeeRepository.findById(empId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));
     }
+
 
     // 휴가 신청
     @Transactional
@@ -57,6 +61,12 @@ public class WorkAttitudeVacationCommandService {
         if (!vacation.getEmpId().getEmpId().equals(employee.getEmpId())) {
             throw new CustomException(ErrorCode.NOT_MATCH_WRITER);
         }
+
+
+        // 수정 요청 날짜 중복 검증 추가 (휴가 + 연차 일정 검증)
+        validateDateOverlap(employee.getEmpId(), requestDTO.getVacationStart(), requestDTO.getVacationEnd());
+
+
 
         WorkAttitudeVacationMapper.updateEntityFromDto(requestDTO, vacation);
         vacationRepository.save(vacation);
@@ -117,7 +127,13 @@ public class WorkAttitudeVacationCommandService {
     private void validateDateOverlap(String empId, LocalDateTime startDate, LocalDateTime endDate) {
         boolean overlap = vacationRepository.existsByEmpIdAndStatusAndVacationStartAndVacationEnd(
                 empId, Status.ACTIVATED, endDate, startDate);
-        if (overlap) {
+
+
+        // 연차 중복 체크 추가
+        boolean annualOverlap = annualRepository.existsByEmpId_EmpIdAndStatusAndAnnualStartLessThanEqualAndAnnualEndGreaterThanEqual(
+                empId, Status.ACTIVATED, endDate, startDate);
+        if (overlap || annualOverlap) {
+
             throw new CustomException(ErrorCode.DUPLICATE_VACATION);
         }
     }
