@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/hr/appoint")
 public class AppointQueryController {
 
     private final AppointQueryService appointQueryService;
 
-    @GetMapping("/hr/appoint")
+    @GetMapping
     public ResponseEntity<AppointResponseListDTO> getAppointList(
             @RequestParam(value = "page", defaultValue = "1") int page,
             @RequestParam(value = "size", defaultValue = "10") int size
