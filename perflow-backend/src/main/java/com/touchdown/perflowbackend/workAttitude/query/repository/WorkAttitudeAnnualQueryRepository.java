@@ -71,8 +71,4 @@ public interface WorkAttitudeAnnualQueryRepository extends JpaRepository<Annual,
             @Param("year") int year
     );
 
-
-
-
-
 }

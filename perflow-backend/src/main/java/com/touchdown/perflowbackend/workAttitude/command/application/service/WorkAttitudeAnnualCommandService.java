@@ -28,6 +28,7 @@ public class WorkAttitudeAnnualCommandService {
     private final WorkAttitudeVacationCommandRepository vacationRepository;
 
 
+
     // 현재 로그인한 사용자 조회
     private Employee getCurrentEmployee() {
         String empId = EmployeeUtil.getEmpId();
@@ -64,6 +65,7 @@ public class WorkAttitudeAnnualCommandService {
 
         // 수정 요청 날짜 중복 검증 추가 (연차 + 휴가 일정 검증)
         validateDateOverlap(employee.getEmpId(), requestDTO.getAnnualStart(), requestDTO.getAnnualEnd());
+
 
 
         WorkAttitudeAnnualMapper.updateEntityFromDto(requestDTO, annual);
@@ -110,9 +112,11 @@ public class WorkAttitudeAnnualCommandService {
         Annual annual = annualRepository.findById(annualId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ANNUAL));
 
+
         if (!annual.getApprover().getEmpId().equals(approver.getEmpId())) {
             throw new CustomException(ErrorCode.UNAUTHORIZED); // 권한 없음 예외 발생
         }
+
 
         annual.setAnnualStatus(Status.REJECTED);
         annual.setAnnualRejectReason(rejectReason);
@@ -125,6 +129,7 @@ public class WorkAttitudeAnnualCommandService {
     private void validateDateOverlap(String empId, LocalDateTime startDate, LocalDateTime endDate) {
         boolean overlap = annualRepository.existsByEmpId_EmpIdAndStatusAndAnnualStartLessThanEqualAndAnnualEndGreaterThanEqual(
                 empId, Status.ACTIVATED, endDate, startDate);
+
         // 휴가 중복 체크 추가
         boolean vacationOverlap = vacationRepository.existsByEmpIdAndStatusAndVacationStartAndVacationEnd(
                 empId, Status.ACTIVATED, endDate, startDate);
@@ -151,6 +156,7 @@ public class WorkAttitudeAnnualCommandService {
         int additionalAnnual = (years / 3);
         return Math.min(baseAnnual + additionalAnnual, maxAnnual);
     }
+
 
     private double calculateDaysBetween(LocalDateTime startDate, LocalDateTime endDate, AnnualType type) {
         long days = java.time.Duration.between(startDate.toLocalDate().atStartOfDay(), endDate.toLocalDate().atStartOfDay()).toDays() + 1;

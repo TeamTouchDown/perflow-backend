@@ -28,6 +28,7 @@ public class WorkAttitudeAnnualQueryService {
 
     // 연차 잔여 횟수 조회
     @Transactional
+
     public double getAnnualBalance() {
 
         String empId = EmployeeUtil.getEmpId();
@@ -64,6 +65,7 @@ public class WorkAttitudeAnnualQueryService {
 
     // 연차 사용 내역 조회 (종류별 사용량 포함)
     @Transactional
+
     public Map<String, Object> getAnnualUsageDetails() {
         String empId = EmployeeUtil.getEmpId();
         List<WorkAttitudeAnnualResponseDTO> usageList = annualRepository.findByEmpId(empId);
@@ -89,10 +91,12 @@ public class WorkAttitudeAnnualQueryService {
         int years = year - joinDate.getYear();
         int additionalAnnual = (years / 3);
 
+
         return Math.min(baseAnnual + additionalAnnual, maxAnnual);
     }
 
     // 사용한 연차 개수 계산
+
     private double calculateUsedAnnualCount(String empId, int year) {
 
         List<Annual> usedAnnuals = annualRepository.findConfirmedAnnualsByYearAndEndDate(empId, year);
@@ -121,6 +125,7 @@ public class WorkAttitudeAnnualQueryService {
         }
         return totalUsedDays;// 사용한 연차 반환
     }
+
 
 
 

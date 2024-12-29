@@ -1,21 +1,20 @@
 # 빌드 단계: Gradle을 사용해 JAR 파일을 생성
 FROM eclipse-temurin:17-jdk-alpine AS build
 
-# 필요한 패키지 설치 (Gradle 사용 시)
+# 필요한 패키지 설치
 RUN apk add --no-cache bash git
 
 # 작업 디렉토리 설정
 WORKDIR /app
 
-# Gradle 캐시를 활용하기 위해 build 파일 복사
-COPY gradle gradle
-COPY build.gradle settings.gradle ./
-
-# 의존성 캐싱을 위해 Gradle 래퍼 복사 및 의존성 다운로드
-COPY gradlew ./
+# Gradle Wrapper 파일 및 설정 파일 복사
+COPY gradlew .
+COPY build.gradle .
+COPY settings.gradle .
 COPY gradle/wrapper gradle/wrapper
 
-RUN chmod +x gradlew && ./gradlew build --no-daemon
+# Gradle Wrapper 실행 권한 부여 및 의존성 다운로드
+RUN chmod +x gradlew && ./gradlew build --no-daemon || return 0
 
 # 전체 소스 코드 복사
 COPY src src
@@ -34,12 +33,12 @@ RUN apk add --no-cache tzdata && \
     echo $TZ > /etc/timezone && \
     apk del tzdata
 
-# 애플리케이션 JAR 파일 복사
-COPY --from=build /app/build/libs/myapp-0.0.1-SNAPSHOT.jar /app/app.jar
-
 # 비루트 사용자 생성 및 권한 설정 (보안 강화)
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
+
+# 애플리케이션 JAR 파일 복사
+COPY --from=build /app/build/libs/perflow-backend-0.0.1-SNAPSHOT.jar /app/app.jar
 
 # 컨테이너 시작 시 실행할 명령어
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

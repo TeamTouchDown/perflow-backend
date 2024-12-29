@@ -115,6 +115,7 @@ public class WorkAttitudeOvertimeQueryService {
         String currentEmpId = EmployeeUtil.getEmpId();
         Long deptId = employeeQueryRepository.findDeptIdByEmpId(currentEmpId);
 
+
         return repository.findTeamOvertimes(deptId).stream()
                 .map(Overtime::toResponseDTO)
                 .toList();
@@ -129,6 +130,7 @@ public class WorkAttitudeOvertimeQueryService {
                 .map(Overtime::toResponseDTO)
                 .toList();
     }
+
     @Transactional
     public Map<String, Map<String, String>> getMonthlyOvertimeSummary(String empId) {
         // 레포지토리에서 월별 초과근무 데이터 조회
@@ -150,5 +152,6 @@ public class WorkAttitudeOvertimeQueryService {
 
         return result; // 최종 결과 반환
     }
+
 
 }

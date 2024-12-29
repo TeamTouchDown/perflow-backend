@@ -53,4 +53,5 @@ public interface WorkAttitudeOvertimeQueryRepository extends JpaRepository<Overt
             "ORDER BY month ASC", nativeQuery = true)
     List<Object[]> findMonthlyOvertimeSummary(@Param("empId") String empId);
 
+
 }
