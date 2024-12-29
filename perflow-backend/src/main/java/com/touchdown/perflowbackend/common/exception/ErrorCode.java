@@ -35,7 +35,7 @@ public enum ErrorCode {
     INVALID_APPROVE_TEMPLATE_TYPE(HttpStatus.BAD_REQUEST, "잘못된 결재선 형식입니다."),
     INVALID_APPROVE_TYPE(HttpStatus.BAD_REQUEST, "잘못된 결재 방식입니다."),
     NOT_MATCHED_CSV(HttpStatus.BAD_REQUEST, "CSV파일 로드에 실패했습니다."),
-    NOT_ENOUGH_ANNUAL(HttpStatus.BAD_REQUEST, "연차는 15일 이상의 데이터를 입력해야 합니다."),
+    NOT_ENOUGH_ANNUAL(HttpStatus.BAD_REQUEST, "잔여 연차가 없습니다."),
     NOT_MATCHED_PAYMENT_DATE(HttpStatus.BAD_REQUEST, "급여 지급일은 1일에서 28일 사이의 데이터를 등록해야합니다."),
     ALREADY_CREATE_PIC(HttpStatus.BAD_REQUEST, "이미 존재하는 담당자 데이터입니다. 부서와 담당자를 확인해주세요."),
     TOO_MANY_PROMOTION_STEPS(HttpStatus.BAD_REQUEST,"승진과 강등은 한번에 한 단계씩만 가능합니다."),

@@ -33,12 +33,12 @@ public class WorkAttitudeVacationQueryController {
         return ResponseEntity.ok(workAttitudeVacationQueryService.getVacationDetails());
     }
 
-    // 가장 가까운 다가오는 휴가일 조회
+    /*// 가장 가까운 다가오는 휴가일 조회
     @Operation(summary = "다가오는 휴가일 조회", description = "현재 날짜 기준 가장 가까운 휴가일과 남은 일수를 조회합니다.")
     @GetMapping("/emp/vacation/nearest")
     public ResponseEntity<Map<String, Object>> getNearestVacation() {
         return ResponseEntity.ok(workAttitudeVacationQueryService.getNearestVacation());
-    }
+    }*/
 
     // 팀장의 팀원 휴가 조회 (본인 포함)
     @Operation(summary = "팀원 휴가 조회", description = "팀장이 팀원의 휴가 내역을 조회합니다.")
