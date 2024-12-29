@@ -48,14 +48,6 @@ public class WorkAttitudeOvertimeQueryController {
     }
 
 
-    // 팀장의 팀원 초과근무 내역 조회
-    @Operation(summary = "팀원 초과근무 조회", description = "팀장이 팀원의 초과근무 내역을 조회")
-    @GetMapping("/leader/overtimes/team")
-    public ResponseEntity<List<WorkAttitudeOvertimeResponseDTO>> getOvertimeForTeam() {
-        List<WorkAttitudeOvertimeResponseDTO> response = workAttitudeOvertimeQueryService.getOvertimeForTeam();
-        return ResponseEntity.ok(response);
-    }
-
 
     // 인사팀의 전체 초과근무 내역 조회
     @Operation(summary = "전체 초과근무 조회", description = "인사팀이 전체 직원의 초과근무 내역을 조회")
