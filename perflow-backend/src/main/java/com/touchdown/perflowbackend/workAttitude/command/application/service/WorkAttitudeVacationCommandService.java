@@ -7,6 +7,7 @@ import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeC
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeVacationRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.*;
+import com.touchdown.perflowbackend.workAttitude.command.domain.repository.WorkAttitudeAnnualCommandRepository;
 import com.touchdown.perflowbackend.workAttitude.command.domain.repository.WorkAttitudeVacationCommandRepository;
 import com.touchdown.perflowbackend.workAttitude.command.mapper.WorkAttitudeVacationMapper;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,8 @@ public class WorkAttitudeVacationCommandService {
 
     private final WorkAttitudeVacationCommandRepository vacationRepository;
     private final EmployeeCommandRepository employeeRepository;
+    private final WorkAttitudeAnnualCommandRepository annualRepository;
+
 
     // 현재 로그인한 사용자 조회
     private Employee getCurrentEmployee() {
@@ -117,7 +120,11 @@ public class WorkAttitudeVacationCommandService {
     private void validateDateOverlap(String empId, LocalDateTime startDate, LocalDateTime endDate) {
         boolean overlap = vacationRepository.existsByEmpIdAndStatusAndVacationStartAndVacationEnd(
                 empId, Status.ACTIVATED, endDate, startDate);
-        if (overlap) {
+
+        // 연차 중복 체크 추가
+        boolean annualOverlap = annualRepository.existsByEmpId_EmpIdAndStatusAndAnnualStartLessThanEqualAndAnnualEndGreaterThanEqual(
+                empId, Status.ACTIVATED, endDate, startDate);
+        if (overlap || annualOverlap) {
             throw new CustomException(ErrorCode.DUPLICATE_VACATION);
         }
     }
