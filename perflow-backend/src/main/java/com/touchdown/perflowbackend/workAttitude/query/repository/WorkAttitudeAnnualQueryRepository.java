@@ -36,9 +36,43 @@ public interface WorkAttitudeAnnualQueryRepository extends JpaRepository<Annual,
     List<WorkAttitudeAnnualResponseDTO> findAllAnnuals();
 
     // 특정 직원의 사용한 연차 개수 조회
-    @Query("SELECT COUNT(a) FROM Annual a " +
+    @Query("SELECT a FROM Annual a " +
             "WHERE a.empId.empId = :empId " +
             "AND a.status = 'CONFIRMED' " +
             "AND a.annualEnd <= CURRENT_DATE")
-    int countUsedAnnuals(@Param("empId") String empId);
+    List<Annual> findUsedAnnuals(@Param("empId") String empId);
+
+
+    @Query(value = "SELECT SUM(CASE " +
+            "WHEN a.annual_status = 'MORNINGHALF' OR a.annual_status = 'AFTERNOONHALF' THEN 0.5 " +
+            "ELSE DATEDIFF(a.annual_end, a.annual_start) + 1 END) " +
+            "FROM annual a " +
+            "WHERE a.emp_id = :empId " +
+            "AND a.status = 'CONFIRMED' " + // 여기서는 승인된 연차만 체크
+            "AND a.annual_end <= CURRENT_DATE", nativeQuery = true)
+    Double countUsedAnnualDays(@Param("empId") String empId);
+
+    @Query("SELECT a FROM Annual a " +
+            "WHERE a.empId.empId = :empId " +
+            "AND a.status = 'CONFIRMED' " +
+            "AND a.annualEnd <= CURRENT_DATE") // 오늘까지 종료된 연차만
+    List<Annual> findByEmpIdAndStatus(
+            @Param("empId") String empId,
+            @Param("status") Status status
+    );
+
+    @Query("SELECT a FROM Annual a " +
+            "WHERE a.empId.empId = :empId " +
+            "AND a.status = 'CONFIRMED' " +                // 승인된 연차
+            "AND YEAR(a.annualStart) = :year " +           // 올해 연차만
+            "AND a.annualEnd <= CURRENT_DATE")             // 종료일 기준 오늘 포함 이전
+    List<Annual> findConfirmedAnnualsByYearAndEndDate(
+            @Param("empId") String empId,
+            @Param("year") int year
+    );
+
+
+
+
+
 }

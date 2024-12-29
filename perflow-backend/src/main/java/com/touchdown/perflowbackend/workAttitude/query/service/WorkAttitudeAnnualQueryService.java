@@ -4,6 +4,9 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.query.repository.EmployeeQueryRepository;
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Annual;
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.AnnualType;
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeAnnualResponseDTO;
 import com.touchdown.perflowbackend.workAttitude.query.repository.WorkAttitudeAnnualQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +28,15 @@ public class WorkAttitudeAnnualQueryService {
 
     // 연차 잔여 횟수 조회
     @Transactional
-    public int getAnnualBalance() {
+    public double getAnnualBalance() {
+
         String empId = EmployeeUtil.getEmpId();
-        int providedAnnual = calculateProvidedAnnualCount(empId);
-        int usedAnnual = calculateUsedAnnualCount(empId);
-        return providedAnnual - usedAnnual;
+        int currentYear = LocalDate.now().getYear();
+
+        double providedAnnual = calculateProvidedAnnualCount(empId, currentYear);
+        double usedAnnual = calculateUsedAnnualCount(empId, currentYear);
+
+        return  (providedAnnual - usedAnnual);
     }
 
     // 직원 연차 전체 조회
@@ -71,20 +78,51 @@ public class WorkAttitudeAnnualQueryService {
     }
 
     // 제공된 연차 개수 계산
-    private int calculateProvidedAnnualCount(String empId) {
+    private double calculateProvidedAnnualCount(String empId, int year) {
+
         LocalDate joinDate = employeeRepository.findJoinDateByEmpId(empId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));
+
         int baseAnnual = 15;
         int maxAnnual = 25;
-        int years = LocalDate.now().getYear() - joinDate.getYear();
+
+        int years = year - joinDate.getYear();
         int additionalAnnual = (years / 3);
+
         return Math.min(baseAnnual + additionalAnnual, maxAnnual);
     }
 
     // 사용한 연차 개수 계산
-    private int calculateUsedAnnualCount(String empId) {
-        return annualRepository.countUsedAnnuals(empId);
+    private double calculateUsedAnnualCount(String empId, int year) {
+
+        List<Annual> usedAnnuals = annualRepository.findConfirmedAnnualsByYearAndEndDate(empId, year);
+
+        double totalUsedDays = 0.0;
+
+        LocalDate today = LocalDate.now(); // 오늘 날짜
+
+        for (Annual annual : usedAnnuals) {
+            if (annual.getAnnualType() == AnnualType.MORNINGHALF || annual.getAnnualType() == AnnualType.AFTERNOONHALF) {
+                // 반차는 무조건 0.5일 처리
+                totalUsedDays += 0.5;
+            } else {
+                // 시작일과 종료일이 같으면 1일로 처리
+                if (annual.getAnnualStart().toLocalDate().isEqual(annual.getAnnualEnd().toLocalDate())) {
+                    totalUsedDays += 1; // 같은 날이면 무조건 1일
+                } else {
+                    // 시작일부터 종료일까지 계산
+                    long days = java.time.temporal.ChronoUnit.DAYS.between(
+                            annual.getAnnualStart().toLocalDate(),
+                            annual.getAnnualEnd().toLocalDate()
+                    ) + 1; // 하루 추가 계산
+                    totalUsedDays += days;
+                }
+            }
+        }
+        return totalUsedDays;// 사용한 연차 반환
     }
+
+
 
 
     // 연차 사용 내역 조회 (종류별 사용량 포함)
@@ -98,3 +136,4 @@ public class WorkAttitudeAnnualQueryService {
     }
 
 }
+// 테스트 코드 작성시 연도가 달라질 경우 잔여 연차 개수가 제대로 바뀌어서 나오는지 확인
