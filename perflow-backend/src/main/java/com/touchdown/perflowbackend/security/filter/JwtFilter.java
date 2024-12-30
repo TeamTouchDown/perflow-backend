@@ -23,6 +23,14 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+        log.warn(path);
+        // 헬스 체크 엔드포인트는 필터링 건너뛰기
+        if (path.equals("/actuator/health") || path.equals("/health")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         /* 요청 헤더에 담긴 토큰의 유효성 판별 및 인증 객체 저장 */
         String authorizationHeader = request.getHeader("Authorization");
         log.info("Authorization header: {}", authorizationHeader);
