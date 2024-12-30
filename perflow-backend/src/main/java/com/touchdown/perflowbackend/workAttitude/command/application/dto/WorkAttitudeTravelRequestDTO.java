@@ -1,7 +1,7 @@
 package com.touchdown.perflowbackend.workAttitude.command.application.dto;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +11,7 @@ public class WorkAttitudeTravelRequestDTO {
 
     private String approverId;
 
-    private LocalDateTime enrollTravel;
+    private LocalDateTime enrollTravel = LocalDateTime.now();
 
     private String travelReason;
 
@@ -20,5 +20,9 @@ public class WorkAttitudeTravelRequestDTO {
     private LocalDateTime travelEnd;
 
     private String travelDivision;
+
+    private Status travelStatus = Status.PENDING;
+
+    private String travelRejectReason = null;
 
 }

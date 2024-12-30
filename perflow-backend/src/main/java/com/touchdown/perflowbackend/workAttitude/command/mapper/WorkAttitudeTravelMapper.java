@@ -6,6 +6,8 @@ import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Travel;
 import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeTravelResponseDTO;
 
+import java.time.LocalDateTime;
+
 public class WorkAttitudeTravelMapper {
 
     public static Travel toEntity(WorkAttitudeTravelRequestDTO requestDTO, Employee employee, Employee approver) {
@@ -17,11 +19,11 @@ public class WorkAttitudeTravelMapper {
         return Travel.builder()
                 .empId(employee) // Employee 객체 설정 (@ManyToOne 관계)
                 .approver(approver) // ApproveSbj 객체 설정 (@ManyToOne 관계)
-                .enrollTravel(requestDTO.getEnrollTravel()) // 신청 일자
+                .enrollTravel(requestDTO.getEnrollTravel() != null ? requestDTO.getEnrollTravel() : LocalDateTime.now()) // 신청 일자
                 .travelReason(requestDTO.getTravelReason()) // 출장 사유
                 .travelStart(requestDTO.getTravelStart()) // 출장 시작일
                 .travelEnd(requestDTO.getTravelEnd()) // 출장 종료일
-                .travelStatus(Status.PENDING) // 초기 상태
+                .travelStatus(requestDTO.getTravelStatus() != null ? requestDTO.getTravelStatus() : Status.PENDING)
                 .travelDivision(requestDTO.getTravelDivision()) // 출장 구분 (해외, 국내)
                 .status(Status.ACTIVATED) // 기본 상태
                 .travelRejectReason(null) // 초기에는 반려 사유 없음
