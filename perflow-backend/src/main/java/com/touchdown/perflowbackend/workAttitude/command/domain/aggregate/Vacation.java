@@ -44,7 +44,7 @@ public class Vacation extends BaseEntity {
 
     @Column(name = "vacation_status", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
-    private VacationStatus vacationStatus;
+    private VacationStatus vacationStatus = VacationStatus.PENDING;
 
     @Column(name = "vacation_reject_reason")
     private String vacationRejectReason;
@@ -84,6 +84,12 @@ public class Vacation extends BaseEntity {
         this.vacationEnd = end;
         this.vacationType = type;
     }
+    // 상태 업데이트 메서드
+    public void updateStatus(VacationStatus status) {
+        this.vacationStatus = status;
+        this.setUpdateDatetime(LocalDateTime.now()); // 업데이트 시간 동기화
+    }
+
 
     // 휴가 반려 메서드
     public void rejectVacation(String reason) {
