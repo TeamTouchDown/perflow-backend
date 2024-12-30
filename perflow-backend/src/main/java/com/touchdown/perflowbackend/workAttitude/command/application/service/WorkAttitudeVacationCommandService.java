@@ -56,15 +56,28 @@ public class WorkAttitudeVacationCommandService {
     @Transactional
     public void updateVacation(Long vacationId, WorkAttitudeVacationRequestDTO requestDTO) {
 
-        Employee employee = getCurrentEmployee();
+
         Vacation vacation = vacationRepository.findById(vacationId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_VACATION));
+        Employee employee = getCurrentEmployee();
         if (!vacation.getEmpId().getEmpId().equals(employee.getEmpId())) {
             throw new CustomException(ErrorCode.NOT_MATCH_WRITER);
         }
-        WorkAttitudeVacationMapper.updateEntityFromDto(requestDTO, vacation);
+        if (vacation.getVacationStatus() == VacationStatus.CONFIRMED) {
+            throw new CustomException(ErrorCode.ALREADY_CONFIRMED);
+        }
+
         // 수정 요청 날짜 중복 검증 추가 (휴가 + 연차 일정 검증)
         validateDateOverlap(employee.getEmpId(), requestDTO.getVacationStart(), requestDTO.getVacationEnd());
+
+        WorkAttitudeVacationMapper.updateEntityFromDto(requestDTO, vacation);
+
+        Employee approver = employeeRepository.findById(requestDTO.getApprover())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));
+        vacation.updateApprover(approver); // 결재자 재지정
+        vacation.updateVacationStatus(VacationStatus.PENDING, null);
+
+
         vacationRepository.save(vacation);
         log.info("휴가 수정 완료: {}", vacation);
     }
