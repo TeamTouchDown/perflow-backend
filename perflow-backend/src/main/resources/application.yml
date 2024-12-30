@@ -62,13 +62,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, info
-  health:
-    mail:
-      enabled: false
-    diskspace:
-      enabled: false
-    db:
-      enabled: true
-    redis:
-      enabled: true
+        include: health
