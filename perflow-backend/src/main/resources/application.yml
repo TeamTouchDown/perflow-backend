@@ -8,7 +8,7 @@ spring:
     sql-dialect: POSTGRES # 사용할 sql dialect
   redis:
     data:
-      host: localhost # Redis 서버 호스트
+      host: redis-service.perflow.svc.cluster.local # Redis 서버 호스트
       port: 6379      # Redis 포트
   jpa:
     properties:
