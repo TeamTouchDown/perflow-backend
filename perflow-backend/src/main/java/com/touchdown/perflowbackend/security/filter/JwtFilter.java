@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -20,13 +21,18 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
 
+    private static final AntPathMatcher pathMatcher = new AntPathMatcher();
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String path = request.getRequestURI();
-        log.warn(path);
+        String method = request.getMethod();
+        log.warn("Request Method: {}, Path: {}", method, path);
+
         // 헬스 체크 엔드포인트는 필터링 건너뛰기
-        if (path.equals("/actuator/health") || path.equals("/health")) {
+        if (pathMatcher.match("/actuator/health/**", path) || pathMatcher.match("/health/**", path)) {
+            log.info("Skipping JwtFilter for path: {}", path);
             filterChain.doFilter(request, response);
             return;
         }
