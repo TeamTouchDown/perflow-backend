@@ -28,11 +28,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
         String method = request.getMethod();
-        log.warn("Request Method: {}, Path: {}", method, path);
 
         // 헬스 체크 엔드포인트는 필터링 건너뛰기
         if (pathMatcher.match("/actuator/health/**", path) || pathMatcher.match("/health/**", path)) {
-            log.info("Skipping JwtFilter for path: {}", path);
             filterChain.doFilter(request, response);
             return;
         }
