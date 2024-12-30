@@ -99,11 +99,22 @@ public class Overtime extends BaseEntity {
         this.overtimeRetroactiveReason = overtimeRetroactiveReason;
         this.isOvertimeRetroactive = isOvertimeRetroactive;
     }
+    public void updateApprover(Employee approver) {
+        this.approver = approver;
+    }
+
 
     public void updateOvertimeStatus(Status overtimeStatus, String overtimeRejectReason) {
         this.overtimeStatus = overtimeStatus;
         resetRejectReason(overtimeStatus);
     }
+
+    public void resetStatusToPending() {
+        this.overtimeStatus = Status.PENDING;
+        this.overtimeRejectReason = null; // 반려 사유 초기화
+        this.overtimeRetroactiveStatus = Status.PENDING; // 소급 상태 초기화
+    }
+
 
     public void deleteOvertime() {
         this.status = Status.DELETED;

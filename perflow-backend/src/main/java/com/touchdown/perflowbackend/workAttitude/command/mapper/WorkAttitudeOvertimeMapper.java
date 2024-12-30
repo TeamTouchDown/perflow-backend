@@ -10,6 +10,7 @@ import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeF
 import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeForTeamLeaderSummaryDTO;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class WorkAttitudeOvertimeMapper {
@@ -19,7 +20,7 @@ public class WorkAttitudeOvertimeMapper {
                 .empId(employee) // 사원 정보
                 .approver(approver) // 승인자 정보
                 .overtimeType(requestDTO.getOvertimeType()) // 초과 근무 유형
-                .enrollOvertime(requestDTO.getEnrollOvertime()) // 신청 일자
+                .enrollOvertime(requestDTO.getEnrollOvertime() != null ? requestDTO.getEnrollOvertime() : LocalDateTime.now())
                 .overtimeStart(requestDTO.getOvertimeStart()) // 초과 근무 시작 시간
                 .overtimeEnd(requestDTO.getOvertimeEnd()) // 초과 근무 종료 시간
                 .overtimeStatus(Status.PENDING) // 초기 상태
