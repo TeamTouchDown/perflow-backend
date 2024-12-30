@@ -53,8 +53,11 @@ public class WorkAttitudeTravelCommandService {
 
     @Transactional
     public void updateTravel(Long travelId, WorkAttitudeTravelRequestDTO requestDTO) {
+
         Travel travel = travelRepository.findById(travelId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_TRAVEL));
+
+        Employee employee = getCurrentEmployee();
 
         if (!travel.getEmployee().getEmpId().equals(getCurrentEmployee().getEmpId())) {
             throw new CustomException(ErrorCode.NO_AUTHORITY);
@@ -68,6 +71,10 @@ public class WorkAttitudeTravelCommandService {
                 requestDTO.getTravelEnd().isBefore(requestDTO.getTravelStart())) {
             throw new CustomException(ErrorCode.INVALID_DATE_RANGE);
         }
+
+        validateDateOverlap(employee.getEmpId(),
+                requestDTO.getTravelStart() != null ? requestDTO.getTravelStart() : travel.getTravelStart(),
+                requestDTO.getTravelEnd() != null ? requestDTO.getTravelEnd() : travel.getTravelEnd());
 
         Employee approver = employeeRepository.findById(requestDTO.getApproverId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));

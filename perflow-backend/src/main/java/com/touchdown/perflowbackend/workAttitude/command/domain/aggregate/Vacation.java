@@ -84,6 +84,22 @@ public class Vacation extends BaseEntity {
         this.vacationEnd = end;
         this.vacationType = type;
     }
+    public void updateApprover(Employee approver) {
+        if (approver == null) {
+            throw new IllegalArgumentException("결재자는 null일 수 없습니다.");
+        }
+        this.approver = approver;
+    }
+    public void updateVacationStatus(VacationStatus status, String rejectReason) {
+        this.vacationStatus = status;
+        if (status == VacationStatus.REJECTED) {
+            this.vacationRejectReason = rejectReason;
+        } else {
+            this.vacationRejectReason = null; // 승인 시 반려 사유 초기화
+        }
+    }
+
+
     // 상태 업데이트 메서드
     public void updateStatus(VacationStatus status) {
         this.vacationStatus = status;
