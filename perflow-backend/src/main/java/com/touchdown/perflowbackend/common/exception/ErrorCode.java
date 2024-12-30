@@ -111,7 +111,8 @@ public enum ErrorCode {
     NO_AUTHORITY(HttpStatus.NOT_FOUND, " 권한이 없습니다."),
     DUPLICATE_TRAVEL(HttpStatus.BAD_REQUEST, "중복된 출장 신청입니다."),
     DUPLICATE_OVERTIME(HttpStatus.BAD_REQUEST,"이미 신청된 초과근무가 있습니다."),
-    ALREADY_CONFIRMED(HttpStatus.BAD_REQUEST,"승인된 상태에서는 수정할 수 없습니다." );
+    ALREADY_CONFIRMED(HttpStatus.BAD_REQUEST,"승인된 상태에서는 수정할 수 없습니다." ),
+    INVALID_RETROACTIVE_REASON(HttpStatus.BAD_REQUEST ,"올바르지 않은 요청입니다.");
 ;
 
 
