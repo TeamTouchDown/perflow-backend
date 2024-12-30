@@ -84,12 +84,18 @@ public class DocQueryService {
         LocalDateTime toDateTime = toDate != null ? toDate.atTime(23, 59, 59) : null;
 
         // Specification 조합
-        Specification<Doc> specification = Specification
+        Specification<Doc> userSpecification = Specification.where(
+                Specification.where(DocSpecification.hasActiveApproveSbjForUser(empId))
+                        .or(DocSpecification.hasActiveApproveSbjForDept(deptId, positionLevel))
+        );
+
+        Specification<Doc> searchSpecification = Specification
                 .where(DocSpecification.titleContains(title))
                 .and(DocSpecification.createUserNameContains(createUser))
-                .and(DocSpecification.createDateBetween(fromDateTime, toDateTime))
-                .and(DocSpecification.hasActiveApproveSbjForUser(empId)) // 결재선에 포함 여부
-                .or(DocSpecification.hasActiveApproveSbjForDept(deptId, positionLevel)); // 부서 및 직위 조건
+                .and(DocSpecification.createDateBetween(fromDateTime, toDateTime));
+
+        // 최종 Specification 조합
+        Specification<Doc> finalSpecification = userSpecification.and(searchSpecification);
 
         // pageable 에 정렬 조건 추가
         Pageable sortedPageable = PageRequest.of(
@@ -98,7 +104,7 @@ public class DocQueryService {
                 Sort.by("createDatetime").descending()  // 작성일 기준 내림차순
         );
 
-        return docQueryRepository.findAll(specification, sortedPageable)
+        return docQueryRepository.findAll(finalSpecification, sortedPageable)
                 .map(doc -> InboxDocListResponseDTO.builder()
                         .docId(doc.getDocId())
                         .templateId(doc.getTemplate().getTemplateId())
