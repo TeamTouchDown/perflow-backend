@@ -15,6 +15,4 @@ public class JobUpdateDTO {
     private String name;
 
     private String responsibility;
-
-    private Status status;
 }

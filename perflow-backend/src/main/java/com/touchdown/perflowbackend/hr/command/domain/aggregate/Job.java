@@ -51,6 +51,5 @@ public class Job extends BaseEntity {
         this.dept = department;
         this.name = jobUpdateDTO.getName();
         this.responsibility = jobUpdateDTO.getResponsibility();
-        this.status = jobUpdateDTO.getStatus();
     }
 }
