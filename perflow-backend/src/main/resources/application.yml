@@ -58,3 +58,10 @@ gemini:
     key: ${GEMINI_API_KEY}
     url: ${GEMINI_API_URL}
     model: ${GEMINI_MODEL_NAME}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  health:
+    show-details: always
