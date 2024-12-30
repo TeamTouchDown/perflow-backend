@@ -55,15 +55,33 @@ public class WorkAttitudeTravelCommandService {
     public void updateTravel(Long travelId, WorkAttitudeTravelRequestDTO requestDTO) {
         Travel travel = travelRepository.findById(travelId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_TRAVEL));
+
         if (!travel.getEmployee().getEmpId().equals(getCurrentEmployee().getEmpId())) {
             throw new CustomException(ErrorCode.NO_AUTHORITY);
         }
+
+        if (travel.getTravelStatus() == Status.CONFIRMED) {
+            throw new CustomException(ErrorCode.ALREADY_CONFIRMED);
+        }
+
+        if (requestDTO.getTravelStart() != null && requestDTO.getTravelEnd() != null &&
+                requestDTO.getTravelEnd().isBefore(requestDTO.getTravelStart())) {
+            throw new CustomException(ErrorCode.INVALID_DATE_RANGE);
+        }
+
+        Employee approver = employeeRepository.findById(requestDTO.getApproverId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));
+        travel.updateApprover(approver);
+
+        travel.updateTravelStatus(Status.PENDING, null);
+
         travel.updateTravel(
-                requestDTO.getTravelReason(),
-                requestDTO.getTravelStart(),
-                requestDTO.getTravelEnd(),
-                requestDTO.getTravelDivision()
+                requestDTO.getTravelReason() != null ? requestDTO.getTravelReason() : travel.getTravelReason(),
+                requestDTO.getTravelStart() != null ? requestDTO.getTravelStart() : travel.getTravelStart(),
+                requestDTO.getTravelEnd() != null ? requestDTO.getTravelEnd() : travel.getTravelEnd(),
+                requestDTO.getTravelDivision() != null ? requestDTO.getTravelDivision() : travel.getTravelDivision()
         );
+
         travelRepository.save(travel);
         log.info("출장 수정 완료: {}", travel);
     }
