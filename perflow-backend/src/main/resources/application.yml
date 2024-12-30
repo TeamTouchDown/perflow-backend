@@ -64,4 +64,11 @@ management:
       exposure:
         include: health, info
   health:
-    show-details: always
+    mail:
+      enabled: false
+    diskspace:
+      enabled: false
+    db:
+      enabled: true
+    redis:
+      enabled: true
