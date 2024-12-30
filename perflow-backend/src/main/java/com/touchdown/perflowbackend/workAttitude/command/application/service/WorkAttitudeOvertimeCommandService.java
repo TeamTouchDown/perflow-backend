@@ -80,20 +80,34 @@ public class WorkAttitudeOvertimeCommandService {
     // 초과근무 수정
     @Transactional
     public void updateOvertime(Long overtimeId, WorkAttitudeOvertimeRequestDTO requestDTO) {
+
         Overtime overtime = overtimeRepository.findById(overtimeId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_OVERTIME));
+
+        Employee employee = getCurrentEmployee();
 
         if (!overtime.getEmpId().getEmpId().equals(EmployeeUtil.getEmpId())) {
             throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
 
+        if (overtime.getOvertimeStatus() == Status.CONFIRMED) {
+            throw new CustomException(ErrorCode.ALREADY_CONFIRMED);
+        }
+
+        Employee approver = employeeRepository.findById(requestDTO.getApproverId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));
+        overtime.updateApprover(approver); // 결재자 재지정
+        overtime.resetStatusToPending();  // 상태 초기화
+
+
         overtime.updateOvertime(
-                requestDTO.getOvertimeType(),
-                requestDTO.getOvertimeStart(),
-                requestDTO.getOvertimeEnd(),
-                requestDTO.getOvertimeRetroactiveReason(),
-                requestDTO.getIsOvertimeRetroactive()
+                requestDTO.getOvertimeType() != null ? requestDTO.getOvertimeType() : overtime.getOvertimeType(),
+                requestDTO.getOvertimeStart() != null ? requestDTO.getOvertimeStart() : overtime.getOvertimeStart(),
+                requestDTO.getOvertimeEnd() != null ? requestDTO.getOvertimeEnd() : overtime.getOvertimeEnd(),
+                requestDTO.getOvertimeRetroactiveReason() != null ? requestDTO.getOvertimeRetroactiveReason() : overtime.getOvertimeRetroactiveReason(),
+                requestDTO.getIsOvertimeRetroactive() != null ? requestDTO.getIsOvertimeRetroactive() : overtime.getIsOvertimeRetroactive()
         );
+
         overtimeRepository.save(overtime);
         log.info("초과근무 수정 완료: {}", overtime);
     }
