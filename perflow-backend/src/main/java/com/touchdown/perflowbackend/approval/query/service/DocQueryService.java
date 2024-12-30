@@ -16,7 +16,9 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,7 +91,14 @@ public class DocQueryService {
                 .and(DocSpecification.hasActiveApproveSbjForUser(empId)) // 결재선에 포함 여부
                 .or(DocSpecification.hasActiveApproveSbjForDept(deptId, positionLevel)); // 부서 및 직위 조건
 
-        return docQueryRepository.findAll(specification, pageable)
+        // pageable 에 정렬 조건 추가
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by("createDatetime").descending()  // 작성일 기준 내림차순
+        );
+
+        return docQueryRepository.findAll(specification, sortedPageable)
                 .map(doc -> InboxDocListResponseDTO.builder()
                         .docId(doc.getDocId())
                         .templateId(doc.getTemplate().getTemplateId())
@@ -97,7 +106,7 @@ public class DocQueryService {
                         .createUserName(doc.getCreateUser().getName())
                         .createDatetime(doc.getCreateDatetime())
                         .processDatetime(doc.getUpdateDatetime())
-                        .status(doc.getStatus().name()) // Enum -> String
+                        .status(formatStatus(doc.getStatus())) // Enum -> String
                         .approveLineId(doc.getApproveLines().stream().findFirst().map(ApproveLine::getApproveLineId).orElse(null))
                         .approveSbjId(doc.getApproveLines().stream()
                                 .flatMap(line -> line.getApproveSbjs().stream())
@@ -107,6 +116,16 @@ public class DocQueryService {
                         .build());
     }
 
+    private String formatStatus(Status status) {
+        if (status == Status.ACTIVATED) {
+            return "진행";
+        } else if (status == Status.APPROVED) {
+            return "승인";
+        } else if (status == Status.REJECTED) {
+            return "반려";
+        }
+        return "기타";    // 오류, 예외
+    }
 
     // 수신함 문서 상세 조회
     @Transactional(readOnly = true)
