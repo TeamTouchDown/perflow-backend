@@ -38,14 +38,15 @@ public class WorkAttitudeVacationCommandService {
     // 휴가 신청
     @Transactional
     public void registerVacation(WorkAttitudeVacationRequestDTO requestDTO) {
+
         Employee employee = getCurrentEmployee();
         Employee approver = employeeRepository.findById(requestDTO.getApprover())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));
 
-        // 날짜 중복 검증
+// 날짜 중복 검증
         validateDateOverlap(employee.getEmpId(), requestDTO.getVacationStart(), requestDTO.getVacationEnd());
 
-        // 휴가 엔티티 생성 및 저장
+// 매퍼 호출 및 저장
         Vacation vacation = WorkAttitudeVacationMapper.toEntity(requestDTO, employee, approver);
         vacationRepository.save(vacation);
         log.info("휴가 신청 완료: {}", vacation);
@@ -54,21 +55,16 @@ public class WorkAttitudeVacationCommandService {
     // 휴가 수정
     @Transactional
     public void updateVacation(Long vacationId, WorkAttitudeVacationRequestDTO requestDTO) {
+
         Employee employee = getCurrentEmployee();
         Vacation vacation = vacationRepository.findById(vacationId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_VACATION));
-
         if (!vacation.getEmpId().getEmpId().equals(employee.getEmpId())) {
             throw new CustomException(ErrorCode.NOT_MATCH_WRITER);
         }
-
-
+        WorkAttitudeVacationMapper.updateEntityFromDto(requestDTO, vacation);
         // 수정 요청 날짜 중복 검증 추가 (휴가 + 연차 일정 검증)
         validateDateOverlap(employee.getEmpId(), requestDTO.getVacationStart(), requestDTO.getVacationEnd());
-
-
-
-        WorkAttitudeVacationMapper.updateEntityFromDto(requestDTO, vacation);
         vacationRepository.save(vacation);
         log.info("휴가 수정 완료: {}", vacation);
     }
