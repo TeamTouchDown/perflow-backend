@@ -17,7 +17,15 @@
 
 ## 1. 프로젝트 개요
 
+### Perflow | 핵심성과지표(KPI)를 활용한 성과 관리 인사 프로그램
+
+### 1-1. KPI란?
+
 **핵심 성과 지표 KPI(Key Performance Indicator)는 조직의 목표 달성 여부를 평가하고 관리하기 위해 도입**된 개념으로 현재 수많은 기업에서 전략적 목표 설정을 위해 사용하고 있습니다. 특히 Amazon에서는 경험 향상을 위해 고객 리뷰 점수와 배송 시간을 주요 KPI로 삼아 서비스 개선과 물류 최적화를 추진하고 있습니다.
+
+### 1-2. 왜 KPI인가?
+**Perflow**의 목표는 **투명한 개인의 성과** 입니다. KPI는 정량적 데이터에 기반하여 **객관적인 성과 측정**이 가능합니다.
+Perflow를 통해 실시간으로 KPI를 관리/추적하고, 시스템에서 **자체 제작한 성과 측정 알고리즘**을 통해. 개인의 성과가 보다 투명하게 관리되는 것을 목표로 하고있습니다.
 
 저희 프로젝트는 효율적인 인사 관리와 체계적인 회사의 목표 관리, 객관적인 사원의 성과 관리를 필요로 하는 회사를 대상으로,  KPI를  적극 활용하여 실시간으로 추적, 관리하고 더 나아가 KPI달성률과 팀원 평가를 종합하여 보다 객관적이고 체계적으로 사원의 성과를 관리하는 프로그램을 설계하였습니다.
 
@@ -86,7 +94,7 @@
 ## 4. 프로젝트 설계 문서
 
 ### 1. 시스템 아키텍처
-![image](https://github.com/user-attachments/assets/28e31237-c385-447d-80e3-bb8c90efeb92)
+![아키텍처](https://github.com/user-attachments/assets/52631ca2-7649-4262-95c2-c156cb3a4bed)
 
 ### 2. WBS
 [🔗WBS](https://docs.google.com/spreadsheets/d/1HEOPvMKUxjkFZVP_lD5nUrCPCD1RWVHZ1MAPrYw7X9c/edit?gid=769873244#gid=769873244)
@@ -118,7 +126,11 @@
 
 ![Perflow - ERD](https://github.com/user-attachments/assets/bf83e003-8d23-4f24-9c41-c249760659fe)
 
+### 7. API 단위테스트 보고서
+[🔗테스트 보고서 링크](https://docs.google.com/spreadsheets/d/1HEOPvMKUxjkFZVP_lD5nUrCPCD1RWVHZ1MAPrYw7X9c/edit?usp=sharing)
 
+### 8. UI/UX 단위테스트 보고서
+[🔗테스트 보고서 링크](https://docs.google.com/spreadsheets/d/1HEOPvMKUxjkFZVP_lD5nUrCPCD1RWVHZ1MAPrYw7X9c/edit?usp=sharing)
 
-
-
+### 9. CI/CD 계획서
+![cicd 계획서](https://github.com/user-attachments/assets/8eda45a3-f2c5-4146-b4ab-daff0c1855aa)
