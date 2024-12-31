@@ -91,7 +91,44 @@ public class PayrollQueryServiceTest {
         Mockito.verify(payrollQueryRepository).findPayrollsByMonths(12, 2, 2023);
     }
 
-    
+    @Test
+    @DisplayName("3년간 데이터")
+    void testGetLastThreeYearsPayrolls() {
+        // Given
+        PayrollChartDTO latestPayroll = new PayrollChartDTO(1L, 5000L, LocalDateTime.of(2024, 12, 1, 0, 0));
+        List<PayrollChartWithYearDTO> expectedPayrolls = List.of(
+                new PayrollChartWithYearDTO(1L, 2024, 5000L),
+                new PayrollChartWithYearDTO(2L, 2023, 4500L),
+                new PayrollChartWithYearDTO(3L, 2022, 4000L)
+        );
+
+        Mockito.when(payrollQueryRepository.findLatestPayroll()).thenReturn(latestPayroll);
+        Mockito.when(payrollQueryRepository.findPayrollsByYears(2022, 2024)).thenReturn(expectedPayrolls);
+
+        // When
+        List<PayrollChartWithYearDTO> result = payrollQueryService.getLastThreeYearsPayrolls();
+
+        // Then
+        assertEquals(3, result.size());
+        assertEquals(2024, result.get(0).getYear());
+        assertEquals(5000L, result.get(0).getTotalAmount());
+
+        Mockito.verify(payrollQueryRepository).findLatestPayroll();
+        Mockito.verify(payrollQueryRepository).findPayrollsByYears(2022, 2024);
+    }
+
+    @Test
+    @DisplayName("급여대장 404 오류")
+    void testGetPayrolls_NotFoundPayroll() {
+        // Given
+        Mockito.when(payrollQueryRepository.findLatestPayroll()).thenReturn(null);
+
+        // Then
+        CustomException exception = assertThrows(CustomException.class, () -> payrollQueryService.getPayrollsByMonthAndThreeYears());
+        assertEquals(ErrorCode.NOT_FOUND_PAYROLL, exception.getErrorCode());
+
+        Mockito.verify(payrollQueryRepository).findLatestPayroll();
+    }
 
     @Test
     @DisplayName("급여대장 상세조회")
