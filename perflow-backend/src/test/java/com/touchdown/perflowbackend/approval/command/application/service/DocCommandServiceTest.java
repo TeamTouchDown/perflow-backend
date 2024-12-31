@@ -6,6 +6,7 @@ import com.touchdown.perflowbackend.approval.command.application.dto.ShareDTO;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.approval.command.domain.repository.DocCommandRepository;
 import com.touchdown.perflowbackend.approval.command.domain.repository.DocFieldCommandRepository;
+import com.touchdown.perflowbackend.approval.command.domain.repository.DocShareObjCommandRepository;
 import com.touchdown.perflowbackend.approval.command.domain.repository.TemplateCommandRepository;
 import com.touchdown.perflowbackend.approval.query.dto.ApproveSbjDTO;
 import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeCreateDTO;
@@ -47,6 +48,8 @@ class DocCommandServiceTest {
     private TemplateCommandRepository templateCommandRepository;
     @Mock
     private DocFieldCommandRepository docFieldCommandRepository;
+    @Mock
+    private DocShareObjCommandRepository docShareObjCommandRepository;
 
     @Test
     @DisplayName("결재 문서 생성 테스트")
