@@ -29,4 +29,6 @@ public class ProcessedDocListResponseDTO {
     private final Status approveSbjStatus;  // 승인/반려 여부
 
     private final LocalDateTime processDatetime;    // 승인/반려한 시간
+
+    private final String comment;
 }

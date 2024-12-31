@@ -89,4 +89,24 @@ public class DocSpecification {
             );
         };
     }
+
+    public static Specification<Doc> hasActiveApproveSbjForDept(Long deptId, Integer positionLevel) {
+
+        return (root, query, criteriaBuilder) -> {
+            if (deptId == null || positionLevel == null) {
+                return criteriaBuilder.conjunction();
+            }
+
+            // 중복 제거
+            query.distinct(true);
+
+            // 결재선 및 부서/직위 조건
+            var approveLines = root.join("approveLines");
+            var approveSbjs = approveLines.join("approveSbjs");
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(approveSbjs.get("sbjUser").get("dept").get("departmentId"), deptId),
+                    criteriaBuilder.lessThanOrEqualTo(approveSbjs.get("sbjUser").get("position").get("positionLevel"), positionLevel)
+            );
+        };
+    }
 }

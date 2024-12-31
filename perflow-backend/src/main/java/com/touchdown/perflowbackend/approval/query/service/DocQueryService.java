@@ -16,7 +16,9 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,6 +65,72 @@ public class DocQueryService {
     public Page<InboxDocListResponseDTO> getInboxDocList(Pageable pageable, String empId, Long deptId, Integer positionLevel) {
 
         return docQueryRepository.findInboxDocs(pageable, empId, deptId, positionLevel);
+    }
+
+    // 수신함 문서 목록 검색
+    @Transactional(readOnly = true)
+    public Page<InboxDocListResponseDTO> searchInboxDocList(
+            String title,
+            String createUser,
+            LocalDate fromDate,
+            LocalDate toDate,
+            Pageable pageable,
+            String empId,
+            Long deptId,
+            Integer positionLevel
+    ) {
+        // LocalDate -> LocalDateTime 변환
+        LocalDateTime fromDateTime = fromDate != null ? fromDate.atStartOfDay() : null;
+        LocalDateTime toDateTime = toDate != null ? toDate.atTime(23, 59, 59) : null;
+
+        // Specification 조합
+        Specification<Doc> userSpecification = Specification.where(
+                Specification.where(DocSpecification.hasActiveApproveSbjForUser(empId))
+                        .or(DocSpecification.hasActiveApproveSbjForDept(deptId, positionLevel))
+        );
+
+        Specification<Doc> searchSpecification = Specification
+                .where(DocSpecification.titleContains(title))
+                .and(DocSpecification.createUserNameContains(createUser))
+                .and(DocSpecification.createDateBetween(fromDateTime, toDateTime));
+
+        // 최종 Specification 조합
+        Specification<Doc> finalSpecification = userSpecification.and(searchSpecification);
+
+        // pageable 에 정렬 조건 추가
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by("createDatetime").descending()  // 작성일 기준 내림차순
+        );
+
+        return docQueryRepository.findAll(finalSpecification, sortedPageable)
+                .map(doc -> InboxDocListResponseDTO.builder()
+                        .docId(doc.getDocId())
+                        .templateId(doc.getTemplate().getTemplateId())
+                        .title(doc.getTitle())
+                        .createUserName(doc.getCreateUser().getName())
+                        .createDatetime(doc.getCreateDatetime())
+                        .processDatetime(doc.getUpdateDatetime())
+                        .status(formatStatus(doc.getStatus())) // Enum -> String
+                        .approveLineId(doc.getApproveLines().stream().findFirst().map(ApproveLine::getApproveLineId).orElse(null))
+                        .approveSbjId(doc.getApproveLines().stream()
+                                .flatMap(line -> line.getApproveSbjs().stream())
+                                .findFirst()
+                                .map(ApproveSbj::getApproveSbjId)
+                                .orElse(null))
+                        .build());
+    }
+
+    private String formatStatus(Status status) {
+        if (status == Status.ACTIVATED) {
+            return "진행";
+        } else if (status == Status.APPROVED) {
+            return "승인";
+        } else if (status == Status.REJECTED) {
+            return "반려";
+        }
+        return "기타";    // 오류, 예외
     }
 
     // 수신함 문서 상세 조회
