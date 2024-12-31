@@ -1,5 +1,6 @@
 package com.touchdown.perflowbackend.notification.command.domain.aggregate;
 
+import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -29,26 +30,27 @@ public class Notification {
     @Enumerated(EnumType.STRING)
     private RefType refType;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "emp_id", nullable = false)
+    private Employee employee;
+
     @Column(name = "content", nullable = false, length = 50)
     private String content;
 
     @Column(name = "url", nullable = false)
     private String url;
 
-    @Column(name = "target_token", nullable = false)
-    private String targetToken;
-
     @Column(name = "create_datetime", nullable = false)
     @CreatedDate
     private LocalDateTime createDatetime;
 
     @Builder
-    public Notification(Long notiId, Long refId, RefType refType, String content, String url, String targetToken) {
+    public Notification(Long notiId, Long refId, RefType refType, Employee employee, String content, String url) {
         this.notiId = notiId;
         this.refId = refId;
         this.refType = refType;
+        this.employee = employee;
         this.content = content;
         this.url = url;
-        this.targetToken = targetToken;
     }
 }

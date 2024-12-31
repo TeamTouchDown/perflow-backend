@@ -1,4 +1,4 @@
-package com.touchdown.perflowbackend.notification.command.infrastructure;
+package com.touchdown.perflowbackend.notification.command.infrastructure.repository;
 
 import com.touchdown.perflowbackend.notification.command.domain.aggregate.Notification;
 import com.touchdown.perflowbackend.notification.command.domain.repository.NotificationCommandRepository;
