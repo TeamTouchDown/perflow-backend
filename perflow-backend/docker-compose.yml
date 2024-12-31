@@ -13,8 +13,8 @@ services:
       - "5672:5672"   # RabbitMQ communication port
       - "15672:15672" # RabbitMQ Management UI
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_USER: touchdown
+      RABBITMQ_DEFAULT_PASS: touchdown
     networks:
       - rabbitmq-net
 
