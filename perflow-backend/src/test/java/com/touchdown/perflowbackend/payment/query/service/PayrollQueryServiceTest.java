@@ -1,12 +1,11 @@
 package com.touchdown.perflowbackend.payment.query.service;
 
 import com.touchdown.perflowbackend.common.exception.CustomException;
+import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.EmployeeStatus;
 import com.touchdown.perflowbackend.employee.query.repository.EmployeeQueryRepository;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.Status;
-import com.touchdown.perflowbackend.payment.query.dto.PayStubDTO;
-import com.touchdown.perflowbackend.payment.query.dto.PayrollDTO;
-import com.touchdown.perflowbackend.payment.query.dto.PayrollDetailResponseDTO;
+import com.touchdown.perflowbackend.payment.query.dto.*;
 import com.touchdown.perflowbackend.payment.query.repository.PayrollQueryRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,6 +37,31 @@ public class PayrollQueryServiceTest {
 
     @InjectMocks
     private PayrollQueryService payrollQueryService; // 테스트할 서비스 클래스
+
+    @Test
+    @DisplayName("가장 최근 월을 기준으로 3년간 데이터 조회")
+    void testGetPayrollsByMonthAndThreeYears() {
+        // Given
+        PayrollChartDTO latestPayroll = new PayrollChartDTO(1L, 5000L, LocalDateTime.of(2024, 12, 1, 0, 0));
+        List<PayrollChartDTO> expectedPayrolls = List.of(
+                new PayrollChartDTO(1L, 5000L, LocalDateTime.of(2024, 12, 1, 0, 0)),
+                new PayrollChartDTO(2L, 4500L, LocalDateTime.of(2023, 12, 1, 0, 0))
+        );
+
+        Mockito.when(payrollQueryRepository.findLatestPayroll()).thenReturn(latestPayroll);
+        Mockito.when(payrollQueryRepository.findPayrollsByMonthAndYears(12, 2022, 2024)).thenReturn(expectedPayrolls);
+
+        // When
+        List<PayrollChartDTO> result = payrollQueryService.getPayrollsByMonthAndThreeYears();
+
+        // Then
+        assertEquals(2, result.size());
+        assertEquals(5000L, result.get(0).getTotalAmount());
+        assertEquals(4500L, result.get(1).getTotalAmount());
+
+        Mockito.verify(payrollQueryRepository).findLatestPayroll();
+        Mockito.verify(payrollQueryRepository).findPayrollsByMonthAndYears(12, 2022, 2024);
+    }
 
     @Test
     @DisplayName("급여대장 상세조회")
