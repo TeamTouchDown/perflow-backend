@@ -1,25 +1,24 @@
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:${db.port}/${db.name}
-    username: ${db.user}
-    password: ${db.password}
+    url: jdbc:mariadb://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
   jooq:
     sql-dialect: POSTGRES # 사용할 sql dialect
   redis:
     data:
-      host: localhost # Redis 서버 호스트
+      host: redis-service.perflow.svc.cluster.local # Redis 서버 호스트
       port: 6379      # Redis 포트
   jpa:
     properties:
       hibernate:
         ddl-auto: update
-        show_sql: true
   mail:
     host: smtp.gmail.com
-    port: ${spring.mail.port}
-    username: ${spring.mail.username}
-    password: ${spring.mail.password}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -27,8 +26,7 @@ spring:
             enable: true
             required: true
           auth: true
-  config:
-    import: "classpath:API-KEY.yml"
+
   data:
     web:
       pageable:
@@ -37,33 +35,48 @@ spring:
   rabbitmq:
     host: localhost
     port: 5672
-    username: ${spring.rabbitmq.username}
-    password: ${spring.rabbitmq.password}
+    username: ${RABBIT_MQ_USERNAME}
+    password: ${RABBIT_MQ_PASSWORD}
 
 token:
-  secret: ${token.secret}
-  access_token_expiration_time: ${token.access_token_expiration_time}
-  refresh_token_expiration_time: ${token.refresh_token_expiration_time}
+  secret: ${JWT_SECRET}
+  access_token_expiration_time: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
+  refresh_token_expiration_time: ${JWT_REFRESH_TOKEN_EXPIRATION_TIME}
+  email_token_expiration_time: ${JWT_EMAIL_TOKEN_EXPIRATION_TIME}
 
 springdoc:
   swagger-ui:
-    path: /
+    path: /swagger-ui.html
 
 cloud:
   aws:
     credentials:
-      accessKey: ${aws.access}
-      secretKey: ${aws.secret}
+      accessKey: ${AWS_ACCESS_KEY}
+      secretKey: ${AWS_SECRET_KEY}
     region:
       static: ap-northeast-2
     s3:
-      bucket: ${aws.bucket}
+      bucket: perflow-bucket
 
 gemini:
   api:
-    key: ${gemini.api.key}
-    url: ${gemini.api.url}
-    model: ${gemini.api.model}
+    key: ${GEMINI_API_KEY}
+    url: ${GEMINI_API_URL}
+    model: ${GEMINI_MODEL_NAME}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  health:
+    mail:
+      enabled: false
+    diskspace:
+      enabled: false
+    db:
+      enabled: true
+    redis:
+      enabled: true
 
 fcm:
-  service-account-file: src/main/resources/${fcm.account-key}
+  service-account-file: ${FCM_ACCOUNT_KEY}

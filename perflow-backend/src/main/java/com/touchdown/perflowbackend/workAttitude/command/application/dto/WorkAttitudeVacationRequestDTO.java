@@ -12,7 +12,7 @@ public class WorkAttitudeVacationRequestDTO {
 
     private String empId; // 사원 ID
 
-    private Long approveSbjId; // 결재 주제 ID
+    private String approver; // 결재자 ID
 
     private LocalDateTime enrollVacation; // 휴가 등록 날짜
 
@@ -22,9 +22,9 @@ public class WorkAttitudeVacationRequestDTO {
 
     private LocalDateTime vacationEnd; // 휴가 종료 날짜
 
-    private VacationStatus vacationStatus; // 휴가 상태 (CONFIRMED, REJECTED, PENDING)
+    private VacationStatus vacationStatus = VacationStatus.PENDING; // 휴가 상태 (CONFIRMED, REJECTED, PENDING)
 
-    private String vacationRejectReason; // 반려 사유
+    private String vacationRejectReason = null; // 반려 사유
 
     private Status status; // 상태 (ACTIVATED, DELETED, UPDATED)
 

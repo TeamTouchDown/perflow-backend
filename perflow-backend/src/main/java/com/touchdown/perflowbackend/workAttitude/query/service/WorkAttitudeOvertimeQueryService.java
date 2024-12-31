@@ -1,17 +1,22 @@
 package com.touchdown.perflowbackend.workAttitude.query.service;
 
+import com.touchdown.perflowbackend.common.exception.CustomException;
+import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.query.repository.EmployeeQueryRepository;
+import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Overtime;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.OvertimeType;
 import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeForEmployeeSummaryDTO;
 import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeForTeamLeaderSummaryDTO;
+import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeResponseDTO;
 import com.touchdown.perflowbackend.workAttitude.query.repository.WorkAttitudeOvertimeQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -19,22 +24,26 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class WorkAttitudeOvertimeQueryService {
-    //각 초과근무별 업무 시간 계산 로직 만들기
-
     private final WorkAttitudeOvertimeQueryRepository repository;
     private final EmployeeQueryRepository employeeQueryRepository;
+
+    private void verifyCurrentUser(String empId) {
+        String currentUserId = EmployeeUtil.getEmpId();
+        if (!currentUserId.equals(empId)) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED_ACCESS);
+        }
+    }
 
     @Transactional
     public List<WorkAttitudeOvertimeForTeamLeaderSummaryDTO> getOvertimeSummaryForAllEmployees() {
         List<Overtime> overtimes = repository.findAllNotDeleted();
 
-        // 사원별로 그룹화 후 시간 계산
         Map<String, List<Overtime>> groupedByEmployee = overtimes.stream()
                 .collect(Collectors.groupingBy(overtime -> overtime.getEmpId().getEmpId()));
 
         List<Employee> employees = employeeQueryRepository.findActiveEmployees();
 
-        Map<String, String> employee = employees.stream()
+        Map<String, String> employeeMap = employees.stream()
                 .collect(Collectors.toMap(Employee::getEmpId, Employee::getName));
 
         return groupedByEmployee.entrySet().stream()
@@ -47,8 +56,7 @@ public class WorkAttitudeOvertimeQueryService {
                     long extendedHours = calculateTotalHours(employeeOvertimes, OvertimeType.EXTENDED);
                     long totalHours = nightHours + holidayHours + extendedHours;
 
-                    // 사원 이름 가져오기
-                    String employeeName = employee.get(empId);  // empId로 이름을 가져옴
+                    String employeeName = employeeMap.get(empId);
 
                     return WorkAttitudeOvertimeForTeamLeaderSummaryDTO.builder()
                             .empId(empId)
@@ -60,6 +68,7 @@ public class WorkAttitudeOvertimeQueryService {
                             .build();
                 }).toList();
     }
+
     private long calculateTotalHours(List<Overtime> overtimes, OvertimeType type) {
         return overtimes.stream()
                 .filter(overtime -> overtime.getOvertimeType() == type)
@@ -67,25 +76,81 @@ public class WorkAttitudeOvertimeQueryService {
                 .sum();
     }
 
+    @Transactional
+    public WorkAttitudeOvertimeResponseDTO getOvertimeSummaryForEmployee(String empId) {
+        verifyCurrentUser(empId);
+
+        List<Overtime> overtimes = repository.findByEmpIdNotDeleted(empId);
+
+        Overtime overtime = overtimes.get(0);
+
+        return WorkAttitudeOvertimeResponseDTO.builder()
+                .overtimeId(overtime.getOvertimeId())
+                .empId(overtime.getEmpId().getEmpId())
+                .empName(overtime.getEmpId().getName())
+                .approverId(overtime.getApprover().getEmpId())
+                .approverName(overtime.getApprover().getName())
+                .overtimeType(overtime.getOvertimeType())
+                .enrollOvertime(overtime.getEnrollOvertime())
+                .overtimeStart(overtime.getOvertimeStart())
+                .overtimeEnd(overtime.getOvertimeEnd())
+                .overtimeStatus(overtime.getOvertimeStatus())
+                .overtimeRejectReason(overtime.getOvertimeRejectReason())
+                .isOvertimeRetroactive(overtime.getIsOvertimeRetroactive())
+                .overtimeRetroactiveReason(overtime.getOvertimeRetroactiveReason())
+                .overtimeRetroactiveStatus(overtime.getOvertimeRetroactiveStatus())
+                .status(overtime.getStatus())
+                .build();
+    }
+
+    @Transactional
+    public List<WorkAttitudeOvertimeResponseDTO> getAllOvertimes() {
+        return repository.findAllNotDeleted().stream()
+                .map(Overtime::toResponseDTO)
+                .toList();
+    }
+
+    @Transactional
+    public List<WorkAttitudeOvertimeResponseDTO> getOvertimeForTeam() {
+        String currentEmpId = EmployeeUtil.getEmpId();
+        Long deptId = employeeQueryRepository.findDeptIdByEmpId(currentEmpId);
+
+
+        return repository.findTeamOvertimes(deptId).stream()
+                .map(Overtime::toResponseDTO)
+                .toList();
+    }
 
 
 
     @Transactional
-    public WorkAttitudeOvertimeForEmployeeSummaryDTO getOvertimeSummaryForEmployee(String empId) {
-        List<Overtime> overtimes = repository.findByEmpIdNotDeleted(empId);
+    public List<WorkAttitudeOvertimeResponseDTO> getOvertimeForEmployee(String empId) {
+        verifyCurrentUser(empId);
+        return repository.findByEmpIdNotDeleted(empId).stream()
+                .map(Overtime::toResponseDTO)
+                .toList();
+    }
 
-        long nightHours = calculateTotalHours(overtimes, OvertimeType.NIGHT);
-        long holidayHours = calculateTotalHours(overtimes, OvertimeType.HOLIDAY);
-        long extendedHours = calculateTotalHours(overtimes, OvertimeType.EXTENDED);
-        long totalHours = nightHours + holidayHours + extendedHours;
+    @Transactional
+    public Map<String, Map<String, String>> getMonthlyOvertimeSummary(String empId) {
+        // 레포지토리에서 월별 초과근무 데이터 조회
+        List<Object[]> summaryData = repository.findMonthlyOvertimeSummary(empId);
 
-        return WorkAttitudeOvertimeForEmployeeSummaryDTO.builder()
-                .employeeName(overtimes.get(0).getEmpId().getName())
-                .nightHours(nightHours)
-                .holidayHours(holidayHours)
-                .extendedHours(extendedHours)
-                .totalHours(totalHours)
-                .build();
+        // 결과 가공
+        Map<String, Map<String, String>> result = new LinkedHashMap<>();
+
+        for (Object[] data : summaryData) {
+            // 데이터 매핑
+            String month = (String) data[0];           // 월 (YYYY-MM)
+            String type = (String) data[1];            // 초과근무 유형
+            long hours = ((Number) data[2]).longValue(); // 초과근무 시간 (합계)
+
+            // 월별 데이터 추가
+            result.putIfAbsent(month, new LinkedHashMap<>()); // 월별 그룹화
+            result.get(month).put(type, hours + "시간");       // 유형별 시간 추가
+        }
+
+        return result; // 최종 결과 반환
     }
 
 

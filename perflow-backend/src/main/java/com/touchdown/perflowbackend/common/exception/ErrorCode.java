@@ -35,7 +35,7 @@ public enum ErrorCode {
     INVALID_APPROVE_TEMPLATE_TYPE(HttpStatus.BAD_REQUEST, "잘못된 결재선 형식입니다."),
     INVALID_APPROVE_TYPE(HttpStatus.BAD_REQUEST, "잘못된 결재 방식입니다."),
     NOT_MATCHED_CSV(HttpStatus.BAD_REQUEST, "CSV파일 로드에 실패했습니다."),
-    NOT_ENOUGH_ANNUAL(HttpStatus.BAD_REQUEST, "연차는 15일 이상의 데이터를 입력해야 합니다."),
+    NOT_ENOUGH_ANNUAL(HttpStatus.BAD_REQUEST, "잔여 연차가 없습니다."),
     NOT_MATCHED_PAYMENT_DATE(HttpStatus.BAD_REQUEST, "급여 지급일은 1일에서 28일 사이의 데이터를 등록해야합니다."),
     ALREADY_CREATE_PIC(HttpStatus.BAD_REQUEST, "이미 존재하는 담당자 데이터입니다. 부서와 담당자를 확인해주세요."),
     TOO_MANY_PROMOTION_STEPS(HttpStatus.BAD_REQUEST,"승진과 강등은 한번에 한 단계씩만 가능합니다."),
@@ -105,7 +105,15 @@ public enum ErrorCode {
     DUPLICATE_VACATION(HttpStatus.BAD_REQUEST, "중복된 일정으로 휴가 신청이 불가합니다."),
     DUPLICATE_JOB_REQUEST(HttpStatus.NOT_FOUND,"직책이 중복됩니다." ),
     INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST, "잘못된 날짜 형식입니다."),
-    DUPLICATE_ANNUAL(HttpStatus.BAD_REQUEST, "중복된 일정으로 연차 신청이 불가능합니다.");
+    DUPLICATE_ANNUAL(HttpStatus.BAD_REQUEST, "중복된 일정으로 연차 신청이 불가능합니다."),
+    UNAUTHORIZED(HttpStatus.BAD_REQUEST,"결재권자가 아닙니다." ),
+    INVALID_OVERTIME_REQUEST(HttpStatus.BAD_REQUEST, "초과근무 신청시간이 아닙니다."),
+    NO_AUTHORITY(HttpStatus.NOT_FOUND, " 권한이 없습니다."),
+    DUPLICATE_TRAVEL(HttpStatus.BAD_REQUEST, "중복된 출장 신청입니다."),
+    DUPLICATE_OVERTIME(HttpStatus.BAD_REQUEST,"이미 신청된 초과근무가 있습니다."),
+    ALREADY_CONFIRMED(HttpStatus.BAD_REQUEST,"승인된 상태에서는 수정할 수 없습니다." ),
+    INVALID_RETROACTIVE_REASON(HttpStatus.BAD_REQUEST ,"올바르지 않은 요청입니다.");
+
 ;
 
 

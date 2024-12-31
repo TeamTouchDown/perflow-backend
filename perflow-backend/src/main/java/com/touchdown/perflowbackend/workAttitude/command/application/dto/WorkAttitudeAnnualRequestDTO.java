@@ -3,16 +3,18 @@ package com.touchdown.perflowbackend.workAttitude.command.application.dto;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.AnnualRetroactiveStatus;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.AnnualType;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
+@Builder
 @Data
 public class WorkAttitudeAnnualRequestDTO {
 
     private String empId; // 사원 ID
 
-    private Long approveSbjId; // 결재 주제 ID
+    private String approver; // 결재 주제 ID
 
     private LocalDateTime enrollAnnual; // 연차 등록 날짜
 

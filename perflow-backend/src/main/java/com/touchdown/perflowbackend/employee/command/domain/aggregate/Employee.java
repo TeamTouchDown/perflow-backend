@@ -107,8 +107,6 @@ public class Employee extends BaseEntity {
     public void updateEmployee(EmployeeUpdateRequestDTO updateRequestDTO) {
 
         this.name = updateRequestDTO.getName();
-        this.gender = updateRequestDTO.getGender();
-        this.rrn = updateRequestDTO.getRrn();
         this.pay = updateRequestDTO.getPay();
         this.address = updateRequestDTO.getAddress();
         this.contact = updateRequestDTO.getContact();

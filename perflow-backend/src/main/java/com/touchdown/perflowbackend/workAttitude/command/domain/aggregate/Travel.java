@@ -5,10 +5,8 @@ import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeTravelRequestDTO;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Getter
@@ -26,9 +24,10 @@ public class Travel extends BaseEntity {
     @JoinColumn(name = "emp_id", nullable = false)
     private Employee employee;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "approve_sbj_id", nullable = false)
-    private ApproveSbj approveSbj;
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approver_id", nullable = false)
+    private Employee approver; // 결재자 ID
 
     @Column(name = "enroll_travel", nullable = false)
     private LocalDateTime enrollTravel;
@@ -44,7 +43,7 @@ public class Travel extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "travel_status", nullable = false, length = 30)
-    private Status travelStatus;
+    private Status travelStatus = Status.PENDING;;
 
     @Column(name = "travel_reject_reason")
     private String travelRejectReason;
@@ -58,28 +57,43 @@ public class Travel extends BaseEntity {
     private Status status;
 
     @Builder
-    public Travel(Employee empId, ApproveSbj approveSbj, LocalDateTime enrollTravel,
-                  String travelReason, LocalDateTime travelStart, LocalDateTime travelEnd,
-                  Status travelStatus, String travelRejectReason, String travelDivision, Status status) {
+    public Travel(Employee empId,
+                  Employee approver,
+                  LocalDateTime enrollTravel,
+                  String travelReason,
+                  LocalDateTime travelStart,
+                  LocalDateTime travelEnd,
+                  Status travelStatus,
+                  String travelRejectReason,
+                  String travelDivision,
+                  Status status) {
+        if (travelEnd.isBefore(travelStart)) {
+            throw new IllegalArgumentException("출장 종료일이 시작일보다 앞에 있을 수 없습니다.");
+        }
+
         this.employee = empId;
-        this.approveSbj = approveSbj;
+        this.approver = approver;
         this.enrollTravel = enrollTravel;
         this.travelReason = travelReason;
         this.travelStart = travelStart;
         this.travelEnd = travelEnd;
-        this.travelStatus = travelStatus;
+        this.travelStatus = travelStatus != null ? travelStatus : Status.PENDING;
         this.travelRejectReason = travelRejectReason;
         this.travelDivision = travelDivision;
-        this.status = status;
+        this.status = status!= null ? status : Status.ACTIVATED;
     }
 
 
     public void updateTravel(String travelReason, LocalDateTime travelStart, LocalDateTime travelEnd, String travelDivision) {
-        if (travelReason != null) this.travelReason = travelReason;
-        if (travelStart != null) this.travelStart = travelStart;
-        if (travelEnd != null) this.travelEnd = travelEnd;
-        if (travelDivision != null) this.travelDivision = travelDivision;
+        if (travelStart != null && travelEnd != null && travelEnd.isBefore(travelStart)) {
+            throw new IllegalArgumentException("출장 종료일이 시작일보다 앞에 있을 수 없습니다.");
+        }
+        this.travelReason = travelReason != null ? travelReason : this.travelReason;
+        this.travelStart = travelStart != null ? travelStart : this.travelStart;
+        this.travelEnd = travelEnd != null ? travelEnd : this.travelEnd;
+        this.travelDivision = travelDivision != null ? travelDivision : this.travelDivision;
     }
+
 
     public void updateTravelStatus(Status travelStatus, String travelRejectReason) {
         this.travelStatus = travelStatus;
@@ -93,4 +107,13 @@ public class Travel extends BaseEntity {
     public void deleteTravel() {
         this.status = Status.DELETED;
     }
+
+    public void updateApprover(Employee approver) {
+        if (approver == null) {
+            throw new IllegalArgumentException("결재자를 반드시 입력해야 합니다.");
+        }
+        this.approver = approver;
+    }
+
+
 }

@@ -1,8 +1,8 @@
 package com.touchdown.perflowbackend.workAttitude.command.domain.aggregate;
 
 import com.touchdown.perflowbackend.common.BaseEntity;
-import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
+import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeResponseDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -26,9 +26,9 @@ public class Overtime extends BaseEntity {
     @JoinColumn(name = "emp_id", nullable = false)
     private Employee empId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "approve_sbj_id", nullable = false)
-    private ApproveSbj approveSbjId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "approver_id", nullable = false)
+    private Employee approver; // 결재자 ID
 
     @Column(name = "overtime_type", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
@@ -47,8 +47,8 @@ public class Overtime extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status overtimeStatus;
 
-    @Column(name = "travel_reject_time")
-    private String travelRejectTime;
+    @Column(name = "overtime_reject_reason")
+    private String overtimeRejectReason;
 
     @Column(name = "status", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
@@ -65,22 +65,30 @@ public class Overtime extends BaseEntity {
     private Status overtimeRetroactiveStatus; // 소급 상태 (대기, 승인, 반려)
 
     @Builder
-    public Overtime(Employee empId, ApproveSbj approveSbjId, OvertimeType overtimeType, LocalDateTime enrollOvertime,
-                    LocalDateTime overtimeStart, LocalDateTime overtimeEnd, Status overtimeStatus,
-                    String travelRejectTime, Boolean isOvertimeRetroactive, String overtimeRetroactiveReason,
-                    Status overtimeRetroactiveStatus, Status status) {
+    public Overtime(Employee empId,
+                    Employee approver,
+                    OvertimeType overtimeType,
+                    LocalDateTime enrollOvertime,
+                    LocalDateTime overtimeStart,
+                    LocalDateTime overtimeEnd,
+                    Status overtimeStatus,
+                    String overtimeRejectReason,
+                    Boolean isOvertimeRetroactive,
+                    String overtimeRetroactiveReason,
+                    Status overtimeRetroactiveStatus,
+                    Status status) {
         this.empId = empId;
-        this.approveSbjId = approveSbjId;
+        this.approver = approver;
         this.overtimeType = overtimeType;
         this.enrollOvertime = enrollOvertime;
         this.overtimeStart = overtimeStart;
         this.overtimeEnd = overtimeEnd;
-        this.overtimeStatus = overtimeStatus;
-        this.travelRejectTime = travelRejectTime;
-        this.isOvertimeRetroactive = isOvertimeRetroactive;
-        this.overtimeRetroactiveReason = overtimeRetroactiveReason;
+        this.overtimeStatus  = overtimeStatus != null ? overtimeStatus : Status.PENDING;
+        this.overtimeRejectReason = overtimeRejectReason;
+        this.isOvertimeRetroactive = isOvertimeRetroactive!= null ? isOvertimeRetroactive : false;
+        this.overtimeRetroactiveReason = overtimeRetroactiveReason ;
         this.overtimeRetroactiveStatus = overtimeRetroactiveStatus;
-        this.status = status;
+        this.status = status != null ? status : Status.ACTIVATED;
     }
 
     public void updateOvertime(OvertimeType overtimeType, LocalDateTime overtimeStart, LocalDateTime overtimeEnd,
@@ -91,33 +99,72 @@ public class Overtime extends BaseEntity {
         this.overtimeRetroactiveReason = overtimeRetroactiveReason;
         this.isOvertimeRetroactive = isOvertimeRetroactive;
     }
-
-    public void updateOvertimeStatus(Status overtimeStatus, String overtimeRetroactiveReason) {
-        this.overtimeStatus = overtimeStatus;
-        if (overtimeStatus == Status.REJECTED) {
-            this.overtimeRetroactiveReason = overtimeRetroactiveReason;
-        } else {
-            this.overtimeRetroactiveReason = null; // 승인일 경우 반려 사유를 초기화
-        }
+    public void updateApprover(Employee approver) {
+        this.approver = approver;
     }
+
+
+    public void updateOvertimeStatus(Status overtimeStatus, String overtimeRejectReason) {
+        this.overtimeStatus = overtimeStatus;
+        resetRejectReason(overtimeStatus);
+    }
+
+    public void resetStatusToPending() {
+        this.overtimeStatus = Status.PENDING;
+        this.overtimeRejectReason = null; // 반려 사유 초기화
+        this.overtimeRetroactiveStatus = Status.PENDING; // 소급 상태 초기화
+    }
+
 
     public void deleteOvertime() {
         this.status = Status.DELETED;
+        this.setUpdateDatetime(LocalDateTime.now());
     }
 
     public void updateRetroactiveStatus(
             Status overtimeRetroactiveStatus,
-            String overtimeRetroactiveReason){
+            String overtimeRetroactiveReason) {
+        // NULL 체크 추가
+        if (overtimeRetroactiveStatus == null) {
+            throw new IllegalArgumentException("Retroactive status cannot be null.");
+        }
+
         this.overtimeRetroactiveStatus = overtimeRetroactiveStatus;
-        if (overtimeRetroactiveStatus == Status.REJECTED){
+        if (overtimeRetroactiveStatus == Status.REJECTED) {
             this.overtimeRetroactiveReason = overtimeRetroactiveReason;
-        }else {
-            this.overtimeRetroactiveReason = null;
+        } else {
+            this.overtimeRetroactiveReason = null; // 승인 시 반려 사유 초기화
         }
     }
 
+
+    private void resetRejectReason(Status status) {
+        this.overtimeRejectReason = (status == Status.REJECTED) ? this.overtimeRejectReason : null;
+    }
+
+
     public void updateOvertimeRetroactive(Boolean isOvertimeRetroactive) {
         this.isOvertimeRetroactive = isOvertimeRetroactive;
+    }
+
+    public WorkAttitudeOvertimeResponseDTO toResponseDTO() {
+        return WorkAttitudeOvertimeResponseDTO.builder()
+                .overtimeId(this.overtimeId)
+                .empId(this.empId.getEmpId())
+                .empName(this.empId.getName())
+                .approverId(this.approver.getEmpId())
+                .approverName(this.approver.getName())
+                .overtimeType(this.overtimeType)
+                .enrollOvertime(this.enrollOvertime)
+                .overtimeStart(this.overtimeStart)
+                .overtimeEnd(this.overtimeEnd)
+                .overtimeStatus(this.overtimeStatus)
+                .overtimeRejectReason(this.overtimeRejectReason)
+                .isOvertimeRetroactive(this.isOvertimeRetroactive)
+                .overtimeRetroactiveReason(this.overtimeRetroactiveReason)
+                .overtimeRetroactiveStatus(this.overtimeRetroactiveStatus)
+                .status(this.status)
+                .build();
     }
 
 }

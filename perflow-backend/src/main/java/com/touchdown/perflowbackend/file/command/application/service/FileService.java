@@ -34,7 +34,7 @@ public class FileService {
     private static final String DOC_DIR = "docs/";
     private static final String ANN_DIR = "announcements/";
 
-    @Value("${aws.bucket}")
+    @Value("${AWS_BUCKET_NAME}")
     private String bucketName;
 
     // 여러 파일 업로드 메서드

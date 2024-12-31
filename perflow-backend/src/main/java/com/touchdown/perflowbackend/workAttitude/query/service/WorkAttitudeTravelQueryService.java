@@ -1,6 +1,7 @@
 package com.touchdown.perflowbackend.workAttitude.query.service;
 
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Travel;
 import com.touchdown.perflowbackend.workAttitude.command.mapper.WorkAttitudeTravelMapper;
 import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeTravelResponseDTO;
@@ -18,9 +19,10 @@ public class WorkAttitudeTravelQueryService {
     private final WorkAttitudeTravelQueryRepository workAttitudeTravelQueryRepository;
 
     @Transactional
-    public List<WorkAttitudeTravelResponseDTO> getTravelsForEmployee(){
-        String empId = EmployeeUtil.getEmpId();
-        List<Travel> travels = workAttitudeTravelQueryRepository.findAllByEmployeeAndNotDeleted(empId);
+    public List<WorkAttitudeTravelResponseDTO> getTravelsForEmployee() {
+        String currentEmpId = EmployeeUtil.getEmpId();
+        List<Travel> travels = workAttitudeTravelQueryRepository
+                .findByEmployee_EmpIdAndStatusNot(currentEmpId, Status.DELETED);
         return travels.stream()
                 .map(WorkAttitudeTravelMapper::toResponseDTO)
                 .toList();
@@ -28,11 +30,30 @@ public class WorkAttitudeTravelQueryService {
 
     @Transactional
     public List<WorkAttitudeTravelResponseDTO> getAllTravelsForLeader() {
-
-        List<Travel> travels = workAttitudeTravelQueryRepository.findAll();
-                return travels.stream()
-                        .map(WorkAttitudeTravelMapper::toResponseDTO)
-                        .toList();
+        String currentApproverId = EmployeeUtil.getEmpId();
+        List<Travel> travels = workAttitudeTravelQueryRepository
+                .findByApprover_EmpIdAndStatusNot(currentApproverId, Status.DELETED);
+        return travels.stream()
+                .map(WorkAttitudeTravelMapper::toResponseDTO)
+                .toList();
     }
-}// 조회도 deleted 된게 아닌 조회만 될 수 있게 직원은
-// 팀장은 삭제된 조회도 같이 볼 수 있게 만들어ㅑ됨
+
+    @Transactional
+    public List<WorkAttitudeTravelResponseDTO> getPendingTravelsForLeader() {
+        String currentApproverId = EmployeeUtil.getEmpId();
+        List<Travel> travels = workAttitudeTravelQueryRepository
+                .findByApprover_EmpIdAndTravelStatusAndStatusNot(currentApproverId, Status.PENDING, Status.DELETED);
+        return travels.stream()
+                .map(WorkAttitudeTravelMapper::toResponseDTO)
+                .toList();
+    }
+
+    @Transactional
+    public List<WorkAttitudeTravelResponseDTO> getAllTravelsForHR() {
+        List<Travel> travels = workAttitudeTravelQueryRepository
+                .findByStatusNot(Status.DELETED);
+        return travels.stream()
+                .map(WorkAttitudeTravelMapper::toResponseDTO)
+                .toList();
+    }
+}

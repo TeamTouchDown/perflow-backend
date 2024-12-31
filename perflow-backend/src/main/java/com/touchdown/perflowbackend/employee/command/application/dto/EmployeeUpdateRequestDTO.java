@@ -15,10 +15,6 @@ public class EmployeeUpdateRequestDTO {
 
     private String name;
 
-    private String gender;
-
-    private String rrn; // 주민등록번호
-
     private Long pay;
 
     private String address;
