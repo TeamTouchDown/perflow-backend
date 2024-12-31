@@ -3,7 +3,9 @@ package com.touchdown.perflowbackend.payment.query.service;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.Status;
 import com.touchdown.perflowbackend.payment.query.dto.SeverancePayDTO;
 import com.touchdown.perflowbackend.payment.query.dto.SeverancePayDetailResponseDTO;
+import com.touchdown.perflowbackend.payment.query.dto.SeverancePayStubDTO;
 import com.touchdown.perflowbackend.payment.query.repository.SeverancePayQueryRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -151,4 +153,81 @@ class SeverancePayQueryServiceTest {
             throw new IllegalArgumentException("Unexpected type for Long field: " + value.getClass().getName());
         }
     }
+
+    @Test
+    @DisplayName("퇴직 명세서 조회 성공")
+    void testGetSeverancePayStub_Success() {
+        // Given
+        String empId = "EMP001";
+        Object[] mockResult = {
+                "EMP001", "John Doe", LocalDate.of(2010, 5, 15), LocalDate.of(2023, 5, 15),
+                "IT Department", "Manager", 3650L, 3000000L, 500000L,
+                60000L, 3500000L, 40000L, 30000L, 20000L, 5000000L
+        };
+
+        lenient().when(severancePayQueryRepository.findByEmpId(empId)).thenReturn(new Object[]{mockResult});
+
+        System.out.println("Test empId: " + empId);
+
+        // When
+//        SeverancePayStubDetailDTO stub = severancePayQueryService.getSeverancePayStub(empId);
+
+        Object[] rawResult = severancePayQueryRepository.findByEmpId(empId);
+
+        System.out.println("Test empId: " + empId);
+
+        Object[] result = (Object[]) rawResult[0];
+
+        // 각 인덱스의 값을 안전하게 캐스팅
+        String empIdResult = result[0] instanceof String ? (String) result[0] : null;
+        String name = result[1] instanceof String ? (String) result[1] : null;
+        LocalDate joinDate = toLocalDate(result[2]);
+        LocalDate resignDate = toLocalDate(result[3]);
+        String departmentName = result[4] instanceof String ? (String) result[4] : null;
+        String positionName = result[5] instanceof String ? (String) result[5] : null;
+        Long totalLaborDays = toLong(result[6]);
+        Long threeMonthTotalPay = toLong(result[7]);
+        Long threeMonthTotalAllowance = toLong(result[8]);
+        Long annualAllowance = toLong(result[9]);
+        Long totalAllowance = toLong(result[10]);
+        Long extendLaborAllowance = toLong(result[11]);
+        Long nightLaborAllowance = toLong(result[12]);
+        Long holidayLaborAllowance = toLong(result[13]);
+        Long totalAmount = toLong(result[14]);
+
+        // DTO 생성
+        SeverancePayStubDTO severancePay = new SeverancePayStubDTO(
+
+                empIdResult, name, joinDate, resignDate, departmentName,
+                positionName, totalLaborDays, threeMonthTotalPay,
+                threeMonthTotalAllowance, annualAllowance, totalAllowance,
+                extendLaborAllowance, nightLaborAllowance, holidayLaborAllowance, totalAmount
+
+        );
+
+        // Then
+        Assertions.assertNotNull(rawResult);
+        Assertions.assertEquals("EMP001", severancePay.getEmpId());
+        Assertions.assertEquals("John Doe", severancePay.getEmpName());
+        Assertions.assertEquals(LocalDate.of(2010, 5, 15), severancePay.getJoinDate());
+        Assertions.assertEquals(LocalDate.of(2023, 5, 15), severancePay.getResignDate());
+        Assertions.assertEquals("IT Department", severancePay.getDeptName());
+        Assertions.assertEquals("Manager", severancePay.getPositionName());
+        Assertions.assertEquals(3650L, severancePay.getTotalLaborDays());
+        Assertions.assertEquals(5000000L, severancePay.getTotalAmount());
+    }
+
+    @Test
+    @DisplayName("퇴직 명세서 조회 실패 - NULL")
+    void testGetSeverancePayStub_EmptyResult() {
+        // Given
+        String empId = "EMP002";
+        lenient().when(severancePayQueryRepository.findByEmpId(empId)).thenReturn(null);
+
+        // When & Then
+        Assertions.assertThrows(NullPointerException.class,
+                () -> severancePayQueryService.getSeverancePayStub(empId),
+                "Unexpected result structure or empty result.");
+    }
+
 }
