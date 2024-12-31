@@ -41,7 +41,7 @@ token:
 
 springdoc:
   swagger-ui:
-    path: /
+    path: /swagger-ui.html
 
 cloud:
   aws:
