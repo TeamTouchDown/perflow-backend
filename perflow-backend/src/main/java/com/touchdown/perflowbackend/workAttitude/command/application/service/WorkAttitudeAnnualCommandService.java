@@ -43,10 +43,12 @@ public class WorkAttitudeAnnualCommandService {
         Employee approver = employeeRepository.findById(requestDTO.getApprover())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_EMPLOYEE));
 
+        // 매퍼를 통한 기본값 처리 적용
+        Annual annual = WorkAttitudeAnnualMapper.toEntity(requestDTO, employee, approver);
+
         validateDateOverlap(employee.getEmpId(), requestDTO.getAnnualStart(), requestDTO.getAnnualEnd());
         validateAnnualCount(employee, requestDTO.getAnnualStart(), requestDTO.getAnnualEnd(), requestDTO.getAnnualType());
 
-        Annual annual = WorkAttitudeAnnualMapper.toEntity(requestDTO, employee, approver);
         annualRepository.save(annual);
         log.info("연차 신청 완료: {}", annual);
     }
@@ -65,6 +67,7 @@ public class WorkAttitudeAnnualCommandService {
 
         // 수정 요청 날짜 중복 검증 추가 (연차 + 휴가 일정 검증)
         validateDateOverlap(employee.getEmpId(), requestDTO.getAnnualStart(), requestDTO.getAnnualEnd());
+        annual.resetStausToPending();
 
 
 
@@ -92,6 +95,7 @@ public class WorkAttitudeAnnualCommandService {
     // 연차 승인
     @Transactional
     public void approveAnnual(Long annualId) {
+
         Employee approver = getCurrentEmployee();
         Annual annual = annualRepository.findById(annualId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_ANNUAL));
@@ -99,6 +103,7 @@ public class WorkAttitudeAnnualCommandService {
         if (!annual.getApprover().getEmpId().equals(approver.getEmpId())) {
             throw new CustomException(ErrorCode.UNAUTHORIZED); // 권한 없음 예외 발생
         }
+
         annual.setAnnualStatus(Status.CONFIRMED);
         annual.setUpdateDatetime(LocalDateTime.now());
         annualRepository.save(annual);

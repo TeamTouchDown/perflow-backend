@@ -66,3 +66,27 @@ jobs:
           docker push $ECR_URI:latest
           docker push $ECR_URI:${GITHUB_SHA::8}
         working-directory: ./perflow-backend
+      # 9. GitOps Repository 업데이트
+      - name: Checkout ArgoCD GitOps Repository
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ secrets.ARGOCD_GITOPS_REPO }} # ArgoCD GitOps 리포지토리 URL
+          token: ${{ secrets.ARGOCD_GITOPS_TOKEN }} # Personal Access Token
+          ref: main # 변경할 브랜치
+
+      - name: Update Kubernetes Manifests
+        run: |
+          # 이미지 태그를 Kubernetes 리소스 파일에 업데이트
+          sed -i "s|image: .*|image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest|g" ./k8s/PerflowBackendDeployment.yaml
+
+      - name: Commit and Push Changes to GitOps Repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Update image tag to latest"
+          git push

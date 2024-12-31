@@ -36,6 +36,7 @@ out/
 ### VS Code ###
 .vscode/
 API-KEY.yml
+perflow-b402c-firebase-adminsdk-c25bc-7e1eb997a0.json
 
 ### 기타 설정 파일 ###
 .idea/

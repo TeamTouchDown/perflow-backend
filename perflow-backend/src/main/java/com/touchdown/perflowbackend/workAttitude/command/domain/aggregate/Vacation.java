@@ -44,7 +44,7 @@ public class Vacation extends BaseEntity {
 
     @Column(name = "vacation_status", nullable = false, length = 30)
     @Enumerated(EnumType.STRING)
-    private VacationStatus vacationStatus;
+    private VacationStatus vacationStatus = VacationStatus.PENDING;
 
     @Column(name = "vacation_reject_reason")
     private String vacationRejectReason;
@@ -84,6 +84,28 @@ public class Vacation extends BaseEntity {
         this.vacationEnd = end;
         this.vacationType = type;
     }
+    public void updateApprover(Employee approver) {
+        if (approver == null) {
+            throw new IllegalArgumentException("결재자는 null일 수 없습니다.");
+        }
+        this.approver = approver;
+    }
+    public void updateVacationStatus(VacationStatus status, String rejectReason) {
+        this.vacationStatus = status;
+        if (status == VacationStatus.REJECTED) {
+            this.vacationRejectReason = rejectReason;
+        } else {
+            this.vacationRejectReason = null; // 승인 시 반려 사유 초기화
+        }
+    }
+
+
+    // 상태 업데이트 메서드
+    public void updateStatus(VacationStatus status) {
+        this.vacationStatus = status;
+        this.setUpdateDatetime(LocalDateTime.now()); // 업데이트 시간 동기화
+    }
+
 
     // 휴가 반려 메서드
     public void rejectVacation(String reason) {

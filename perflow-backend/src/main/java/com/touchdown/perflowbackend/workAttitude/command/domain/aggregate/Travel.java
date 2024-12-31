@@ -5,10 +5,8 @@ import com.touchdown.perflowbackend.approval.command.domain.aggregate.ApproveSbj
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeTravelRequestDTO;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Getter
@@ -26,6 +24,7 @@ public class Travel extends BaseEntity {
     @JoinColumn(name = "emp_id", nullable = false)
     private Employee employee;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "approver_id", nullable = false)
     private Employee approver; // 결재자 ID
@@ -44,7 +43,7 @@ public class Travel extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "travel_status", nullable = false, length = 30)
-    private Status travelStatus;
+    private Status travelStatus = Status.PENDING;;
 
     @Column(name = "travel_reject_reason")
     private String travelRejectReason;
@@ -89,10 +88,10 @@ public class Travel extends BaseEntity {
         if (travelStart != null && travelEnd != null && travelEnd.isBefore(travelStart)) {
             throw new IllegalArgumentException("출장 종료일이 시작일보다 앞에 있을 수 없습니다.");
         }
-        if (travelReason != null) this.travelReason = travelReason;
-        if (travelStart != null) this.travelStart = travelStart;
-        if (travelEnd != null) this.travelEnd = travelEnd;
-        if (travelDivision != null) this.travelDivision = travelDivision;
+        this.travelReason = travelReason != null ? travelReason : this.travelReason;
+        this.travelStart = travelStart != null ? travelStart : this.travelStart;
+        this.travelEnd = travelEnd != null ? travelEnd : this.travelEnd;
+        this.travelDivision = travelDivision != null ? travelDivision : this.travelDivision;
     }
 
 
@@ -108,4 +107,13 @@ public class Travel extends BaseEntity {
     public void deleteTravel() {
         this.status = Status.DELETED;
     }
+
+    public void updateApprover(Employee approver) {
+        if (approver == null) {
+            throw new IllegalArgumentException("결재자를 반드시 입력해야 합니다.");
+        }
+        this.approver = approver;
+    }
+
+
 }
