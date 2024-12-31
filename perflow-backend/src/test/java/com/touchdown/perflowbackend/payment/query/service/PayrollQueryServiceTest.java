@@ -9,7 +9,6 @@ import com.touchdown.perflowbackend.payment.query.dto.PayrollDTO;
 import com.touchdown.perflowbackend.payment.query.dto.PayrollDetailResponseDTO;
 import com.touchdown.perflowbackend.payment.query.repository.PayrollQueryRepository;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,9 +27,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
-@Nested
 @ExtendWith(MockitoExtension.class)
-class PayrollQueryServiceTest {
+public class PayrollQueryServiceTest {
 
     @Mock
     private PayrollQueryRepository payrollQueryRepository;
