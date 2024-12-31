@@ -1,7 +1,5 @@
 package com.touchdown.perflowbackend.workAttitude.query.service;
 
-import com.touchdown.perflowbackend.common.exception.CustomException;
-import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeTravelResponseDTO;
 import com.touchdown.perflowbackend.workAttitude.query.repository.WorkAttitudeTravelQueryRepository;
@@ -12,15 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mockStatic;
 

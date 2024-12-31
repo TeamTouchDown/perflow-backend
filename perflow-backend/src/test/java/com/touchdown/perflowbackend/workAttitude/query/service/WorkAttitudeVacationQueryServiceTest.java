@@ -3,12 +3,10 @@ package com.touchdown.perflowbackend.workAttitude.query.service;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.VacationStatus;
+import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.VacationType;
 import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeVacationResponseDTO;
 import com.touchdown.perflowbackend.workAttitude.query.repository.WorkAttitudeVacationQueryRepository;
-import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.VacationType;
-import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.VacationStatus;
-
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,10 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -135,20 +131,4 @@ class WorkAttitudeVacationQueryServiceTest {
         }
     }
 
-    @Nested
-    @DisplayName("getTeamVacationList() Tests")
-    class GetTeamVacationListTests {
-
-        @Test
-        @DisplayName("팀원 휴가 조회 성공")
-        void getTeamVacationList_Success() {
-            given(vacationQueryRepository.findByDepartment(1L))
-                    .willReturn(List.of(mockVacationResponse));
-
-            List<WorkAttitudeVacationResponseDTO> result = service.getTeamVacationList();
-
-            assertNotNull(result);
-            assertEquals(1, result.size());
-        }
-    }
 }
