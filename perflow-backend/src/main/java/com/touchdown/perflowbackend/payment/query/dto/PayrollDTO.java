@@ -2,10 +2,12 @@ package com.touchdown.perflowbackend.payment.query.dto;
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.EmployeeStatus;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.Status;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
+@Builder
 @RequiredArgsConstructor
 public class PayrollDTO {
 
