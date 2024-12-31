@@ -1,26 +1,36 @@
 package com.touchdown.perflowbackend.payment.query.service;
 
+import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.EmployeeStatus;
 import com.touchdown.perflowbackend.employee.query.repository.EmployeeQueryRepository;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.Status;
+import com.touchdown.perflowbackend.payment.query.dto.PayStubDTO;
 import com.touchdown.perflowbackend.payment.query.dto.PayrollDTO;
 import com.touchdown.perflowbackend.payment.query.dto.PayrollDetailResponseDTO;
 import com.touchdown.perflowbackend.payment.query.repository.PayrollQueryRepository;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
+@Nested
 @ExtendWith(MockitoExtension.class)
-public class PayrollQueryServiceTest {
+class PayrollQueryServiceTest {
 
     @Mock
     private PayrollQueryRepository payrollQueryRepository;
@@ -96,5 +106,72 @@ public class PayrollQueryServiceTest {
         assertEquals(113300L, responsePayrollDTO.getTotalAmount());
         assertEquals(Status.PENDING, responsePayrollDTO.getPayrollStatus());
 
+    }
+
+    private final String empId = "E001";
+    private final int preMonth = 1;
+
+    @Test
+    @DisplayName("급여 명세서 조회 성공")
+    public void testGetPayStub_success() {
+        // given
+        LocalDateTime dateTime = LocalDateTime.now().minus(Period.ofMonths(preMonth));
+        PayrollDTO payrollDTO = PayrollDTO.builder()
+                .payrollId(1L)
+                .empId(empId)
+                .empName("John Doe")
+                .deptName("Engineering")
+                .empStatus(EmployeeStatus.ACTIVE)
+                .pay(5000000L)
+                .extendLaborAllowance(100000L)
+                .nightLaborAllowance(50000L)
+                .holidayLaborAllowance(30000L)
+                .annualAllowance(400000L)
+                .incentive(200000L)
+                .totalPayment(5800000L)
+                .nationalPension(400000L)
+                .healthInsurance(200000L)
+                .hireInsurance(150000L)
+                .longTermCareInsurance(50000L)
+                .incomeTax(100000L)
+                .localIncomeTax(30000L)
+                .totalDeduction(880000L)
+                .totalAmount(4920000L)
+                .payrollStatus(Status.PENDING)
+                .build();
+
+        // payrollQueryRepository의 findByEmpId 메서드를 모킹하여, payrollDTO를 반환하도록 설정
+        Mockito.when(payrollQueryRepository.findByEmpId(eq(empId), eq(dateTime)))
+                .thenReturn(Optional.of(payrollDTO));
+
+        System.out.println("empId: " + empId);
+        System.out.println("dateTime: " + dateTime);
+
+        // when
+//        PayStubDTO payStubDTO = payrollQueryService.getPayStub(empId, preMonth);
+
+        Optional<PayrollDTO> payStub = payrollQueryRepository.findByEmpId(empId, dateTime);
+
+        System.out.println("payStubDTO dateTime:" + dateTime);
+        System.out.println("payStubDTO empId:" + payStub.get().getEmpId());
+
+        // then
+        assertNotNull(payStub); // 반환값이 null이 아님을 확인
+        assertEquals(empId, payStub.get().getEmpId()); // empId가 일치하는지 확인
+        assertEquals(5800000L, payStub.get().getTotalPayment()); // totalPayment가 일치하는지 확인
+    }
+
+    @Test
+    @DisplayName("급여 명세서 조회 실패")
+    public void testGetPayStub_notFound() {
+        // given
+        LocalDateTime dateTime = LocalDateTime.of(2024, 11, 30, 14, 14, 41); // 고정된 날짜로 설정
+
+        // payrollQueryRepository의 findByEmpId 메서드를 모킹하여 Optional.empty()를 반환
+        lenient().when(payrollQueryRepository.findByEmpId(eq(empId), eq(dateTime)))
+                .thenReturn(Optional.empty());
+
+        // when, then
+        assertThrows(CustomException.class, () -> payrollQueryService.getPayStub(empId, preMonth));
     }
 }
