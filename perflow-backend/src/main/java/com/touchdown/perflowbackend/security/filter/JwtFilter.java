@@ -32,7 +32,7 @@ public class JwtFilter extends OncePerRequestFilter {
         log.warn(path + " " + method);
 
         // 헬스 체크 엔드포인트는 필터링 건너뛰기
-        if (pathMatcher.match("/actuator/health/**", path) || pathMatcher.match("/health/**", path)) {
+        if (pathMatcher.match("/actuator/health/**", path) || pathMatcher.match("/health/**", path) || path.equals("/")) {
             filterChain.doFilter(request, response);
             return;
         }
