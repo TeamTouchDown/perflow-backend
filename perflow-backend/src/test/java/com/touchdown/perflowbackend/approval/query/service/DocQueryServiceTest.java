@@ -1,10 +1,7 @@
 package com.touchdown.perflowbackend.approval.query.service;
 
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
-import com.touchdown.perflowbackend.approval.query.dto.InboxDocListResponseDTO;
-import com.touchdown.perflowbackend.approval.query.dto.OutboxDocListResponseDTO;
-import com.touchdown.perflowbackend.approval.query.dto.ProcessedDocListResponseDTO;
-import com.touchdown.perflowbackend.approval.query.dto.WaitingDocListResponseDTO;
+import com.touchdown.perflowbackend.approval.query.dto.*;
 import com.touchdown.perflowbackend.approval.query.repository.ApproveSbjQueryRepository;
 import com.touchdown.perflowbackend.approval.query.repository.DocQueryRepository;
 import com.touchdown.perflowbackend.employee.command.application.dto.EmployeeCreateDTO;
@@ -23,19 +20,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class) // Mockito 설정
 class DocQueryServiceTest {
@@ -113,6 +112,82 @@ class DocQueryServiceTest {
 
         // Verify
         Mockito.verify(docQueryRepository, Mockito.times(1)).findAll(Mockito.any(Specification.class), Mockito.eq(pageable));
+    }
+
+    @Test
+    @DisplayName("문서 상세 조회 테스트")
+    void testGetOneWaitingDoc() {
+
+        // Mock
+        Long docId = 1L;
+        Department department = createMockDepartment("재무부", "재무 관리 및 예산 책정");
+        Job job = createMockJob("재무부 팀장", "재무부 총괄 및 업무 조율", department);
+        Position position = createMockPosition("대리", 3);
+        Employee employee = createMockEmployee("23-FN002", "이재무", department, job, position);
+        Template template = createMockTemplate(4L, "지출결의서");
+        Doc doc = createMockDoc("2024_12_20 테스트1", employee, template);
+        ApproveLine approveLine = createMockApproveLine(doc, employee);
+        ApproveSbj approveSbj = createMockApproveSbj(approveLine, employee);
+        DocShareObj docShareObj = createMockDocShareObj(doc, employee);
+
+        // auto-increment pk 설정
+        ReflectionTestUtils.setField(approveLine, "approveLineId", 1L);
+        ReflectionTestUtils.setField(approveSbj, "approveSbjId", 100L);
+
+        approveSbj.updateStatus(Status.ACTIVATED);
+        approveSbj.updateComment(null);
+        approveLine.addApproveSbj(approveSbj);
+        doc.getApproveLines().add(approveLine);
+        doc.getShares().add(docShareObj);
+
+        Map<String, String> mockFields = Map.of(
+                "VENDOR1", "a마트",
+                "USAGE1", "야유회 준비",
+                "AMOUNT1", "72000"
+        );
+
+        mockFields.forEach((key, value) -> {
+            DocField docField = createMockDocField(doc, key, value);
+            doc.getDocFields().add(docField);
+        });
+
+        WaitingDocDetailResponseDTO responseDTO = WaitingDocDetailResponseDTO.builder()
+                .docId(doc.getDocId())
+                .title(doc.getTitle())
+                .createUserName(employee.getName())
+                .createUserDept(department.getName())
+                .createUserPosition(position.getName())
+                .createDatetime(doc.getCreateDatetime())
+                .fields(Collections.emptyMap())
+                .approveLines(List.of(createMockApproveLineDTO(approveLine, approveSbj)))
+                .shares(List.of(createMockShareDTO(docShareObj, employee)))
+                .build();
+
+        // Stub
+        doReturn(Optional.of(doc)).when(docQueryRepository).findById(docId);
+
+        WaitingDocDetailResponseDTO result = docQueryService.getOneWaitingDoc(docId);
+
+        assertNotNull(result);
+        assertEquals("2024_12_20 테스트1", result.getTitle());
+        assertEquals("이재무", result.getCreateUserName());
+        assertEquals("재무부", result.getCreateUserDept());
+        assertEquals("대리", result.getCreateUserPosition());
+
+        assertEquals(mockFields.size(), result.getFields().size());
+        mockFields.forEach((key, value) -> assertEquals(value, result.getFields().get(key)));
+
+        assertEquals(1, result.getApproveLines().size());
+        WaitingDocApproveLineDTO lineDTO = result.getApproveLines().get(0);
+        assertEquals(approveLine.getApproveLineId(), lineDTO.getApproveLineId());
+
+        WaitingDocShareDTO shareDTO = result.getShares().get(0);
+        assertEquals(docShareObj.getShareEmpDeptType(), shareDTO.getShareEmpDeptType());
+        assertEquals(employee.getEmpId(), shareDTO.getEmpIds().get(0));
+        assertEquals(employee.getName(), shareDTO.getEmpNames().get(0));
+
+
+        Mockito.verify(docQueryRepository, Mockito.times(1)).findById(docId);
     }
 
     @Test
@@ -250,7 +325,7 @@ class DocQueryServiceTest {
         String empId = "23-FN002";
         Long deptId = 2L;
         Integer positionLevel = 3;
-        Pageable pageable = PageRequest.of(0, 10);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("createDatetime").descending()); // 정렬 포함
 
         Department department = createMockDepartment("재무부", "재무 관리 및 예산 책정");
         Job job = createMockJob("재무부 팀장", "재무부 총괄 및 업무 조율", department);
@@ -265,9 +340,6 @@ class DocQueryServiceTest {
         approveSbj.updateComment("수고하셨습니다~");
         approveLine.addApproveSbj(approveSbj);
 
-        doc.getApproveLines().add(approveLine);
-        approveLine.getApproveSbjs().add(approveSbj);
-
         InboxDocListResponseDTO responseDTO = InboxDocListResponseDTO.builder()
                 .docId(doc.getDocId())
                 .templateId(template.getTemplateId())
@@ -280,16 +352,16 @@ class DocQueryServiceTest {
                 .approveSbjId(approveSbj.getApproveSbjId())
                 .build();
 
-        Page<InboxDocListResponseDTO> mockPage = new PageImpl<>(List.of(responseDTO));
+        Page<Doc> mockPage = new PageImpl<>(List.of(doc));
 
         // Stub
-        Mockito.when(docQueryRepository.findAll(Mockito.any(Specification.class), Mockito.eq(pageable)))
-                .thenReturn(mockPage);
+        doReturn(mockPage).when(docQueryRepository).findAll(Mockito.any(Specification.class), Mockito.eq(pageable));
 
         Page<InboxDocListResponseDTO> result = docQueryService.searchInboxDocList(
                 title, createUser, fromDate, toDate, pageable, empId, deptId, positionLevel
         );
 
+        // verify
         assertNotNull(result);
         assertEquals("테스트", result.getContent().get(0).getTitle());
         assertEquals("이재무", result.getContent().get(0).getCreateUserName());
@@ -297,7 +369,6 @@ class DocQueryServiceTest {
 
         Mockito.verify(docQueryRepository, Mockito.times(1))
                 .findAll(Mockito.any(Specification.class), Mockito.eq(pageable));
-
     }
 
     @Test
@@ -329,6 +400,57 @@ class DocQueryServiceTest {
 
         // verify
         Mockito.verify(docQueryRepository, Mockito.times(1)).findOutBoxDocs(pageable, empId);
+    }
+
+    @Test
+    @DisplayName("발신함 목록 검색 조회 테스트")
+    void testSearchOutboxDocList() {
+
+        // Mock
+        String title = "테스트";
+        String createUser = "이재무";
+        LocalDate fromDate = LocalDate.of(2024, 12, 1);
+        LocalDate toDate = LocalDate.of(2024, 12, 31);
+        String empId = "23-FN002";
+        Long deptId = 2L;
+        Integer positionLevel = 3;
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("createDatetime").descending()); // 정렬 포함
+
+        Department department = createMockDepartment("재무부", "재무 관리 및 예산 책정");
+        Job job = createMockJob("재무부 팀장", "재무부 총괄 및 업무 조율", department);
+        Position position = createMockPosition("대리", 3);
+        Employee employee = createMockEmployee(empId, createUser, department, job, position);
+        Template template = createMockTemplate(4L, "지출결의서");
+        Doc doc = createMockDoc(title, employee, template);
+
+        doc.updateStatus(Status.ACTIVATED);
+
+        OutboxDocListResponseDTO responseDTO = OutboxDocListResponseDTO.builder()
+                .docId(doc.getDocId())
+                .templateId(template.getTemplateId())
+                .title(doc.getTitle())
+                .createDatetime(doc.getCreateDatetime())
+                .status(doc.getStatus())
+                .build();
+
+        Page<Doc> mockPage = new PageImpl<>(List.of(doc));
+
+        // Stub
+        doReturn(mockPage).when(docQueryRepository).findAll(Mockito.any(Specification.class), Mockito.eq(pageable));
+
+        Page<OutboxDocListResponseDTO> result = docQueryService.searchOutboxDocList(
+                title, fromDate, toDate, pageable, empId
+        );
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals("테스트", result.getContent().get(0).getTitle());
+        assertEquals(Status.ACTIVATED, result.getContent().get(0).getStatus());
+        assertEquals(template.getTemplateId(), result.getContent().get(0).getTemplateId());
+
+        Mockito.verify(docQueryRepository, Mockito.times(1))
+                .findAll(Mockito.any(Specification.class), Mockito.eq(pageable));
+
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -432,4 +554,59 @@ class DocQueryServiceTest {
                 .name(name)
                 .build();
     }
+
+    // DocShareObj Mock 생성
+    private DocShareObj createMockDocShareObj(Doc doc, Employee employee) {
+
+        return DocShareObj.builder()
+                .doc(doc)
+                .shareAddUser(employee)
+                .shareEmpDeptType(EmpDeptType.EMPLOYEE)
+                .shareObjUser(employee)
+                .build();
+    }
+
+    private DocField createMockDocField(Doc doc, String fieldKey, String userValue) {
+
+        return DocField.builder()
+                .doc(doc)
+                .fieldKey(fieldKey)
+                .userValue(userValue)
+                .build();
+    }
+
+    // ---------------------------------------------------------------------------------------------
+    // DTO 생성 메소드
+
+    private WaitingDocApproveLineDTO createMockApproveLineDTO(ApproveLine approveLine, ApproveSbj approveSbj) {
+
+        System.out.println("ApproveLine ID: " + approveLine.getApproveLineId());
+
+        return WaitingDocApproveLineDTO.builder()
+                .approveLineId(approveLine.getApproveLineId())
+                .groupId(approveLine.getGroupId())
+                .approveType(approveLine.getApproveType())
+                .approveLineOrder(approveLine.getApproveLineOrder())
+                .approveSbjs(List.of(
+                        WaitingDocApproveSbjDTO.builder()
+                                .approveSbjId(approveSbj.getApproveSbjId())
+                                .empDeptType(approveSbj.getEmpDeptType())
+                                .empId(approveSbj.getSbjUser().getEmpId())
+                                .empName(approveSbj.getSbjUser().getName())
+                                .status(approveSbj.getStatus())
+                                .comment(approveSbj.getComment())
+                                .build()
+                ))
+                .build();
+    }
+
+    // ShareDTO 생성 메소드
+    private WaitingDocShareDTO createMockShareDTO(DocShareObj shareObj, Employee employee) {
+        return WaitingDocShareDTO.builder()
+                .shareEmpDeptType(shareObj.getShareEmpDeptType())
+                .empIds(List.of(employee.getEmpId()))
+                .empNames(List.of(employee.getName()))
+                .build();
+    }
+
 }
