@@ -1,5 +1,6 @@
 package com.touchdown.perflowbackend.approval.command.application.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.EmpDeptType;
 import com.touchdown.perflowbackend.approval.command.domain.aggregate.Status;
 import lombok.Builder;
