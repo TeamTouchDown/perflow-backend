@@ -67,6 +67,7 @@ public class WorkAttitudeAnnualCommandService {
 
         // 수정 요청 날짜 중복 검증 추가 (연차 + 휴가 일정 검증)
         validateDateOverlap(employee.getEmpId(), requestDTO.getAnnualStart(), requestDTO.getAnnualEnd());
+        annual.resetStausToPending();
 
 
 

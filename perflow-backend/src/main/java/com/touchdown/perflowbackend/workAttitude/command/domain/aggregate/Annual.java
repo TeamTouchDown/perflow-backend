@@ -122,4 +122,9 @@
             this.setUpdateDatetime(LocalDateTime.now());
         }
 
+        public void resetStausToPending() {
+            this.status = Status.PENDING;
+            this.annualRejectReason = null;
+            this.annualRetroactiveStatus = AnnualRetroactiveStatus.NOTRETROACTIVATED;
+        }
     }
