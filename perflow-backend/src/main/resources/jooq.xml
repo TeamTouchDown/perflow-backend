@@ -1,0 +1,15 @@
+<configuration>
+    <generator>
+        <database>
+            <name>org.jooq.meta.postgres.PostgresDatabase</name>
+            <inputSchema>public</inputSchema>
+        </database>
+        <generate>
+            <javaTimeTypes>true</javaTimeTypes>
+        </generate>
+        <target>
+            <packageName>com.touchdown.perflowbackend.jooq</packageName>
+            <directory>src/main/java</directory>
+        </target>
+    </generator>
+</configuration>

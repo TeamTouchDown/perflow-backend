@@ -1,0 +1,74 @@
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jooq:
+    sql-dialect: POSTGRES # 사용할 sql dialect
+  redis:
+    data:
+      host: redis-service.perflow.svc.cluster.local # Redis 서버 호스트
+      port: 6379      # Redis 포트
+  jpa:
+    properties:
+      hibernate:
+        ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+            required: true
+          auth: true
+
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 1000
+
+token:
+  secret: ${JWT_SECRET}
+  access_token_expiration_time: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
+  refresh_token_expiration_time: ${JWT_REFRESH_TOKEN_EXPIRATION_TIME}
+  email_token_expiration_time: ${JWT_EMAIL_TOKEN_EXPIRATION_TIME}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY}
+      secretKey: ${AWS_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+    s3:
+      bucket: perflow-bucket
+
+gemini:
+  api:
+    key: ${GEMINI_API_KEY}
+    url: ${GEMINI_API_URL}
+    model: ${GEMINI_MODEL_NAME}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  health:
+    mail:
+      enabled: false
+    diskspace:
+      enabled: false
+    db:
+      enabled: true
+    redis:
+      enabled: true
