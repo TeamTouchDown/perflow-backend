@@ -64,6 +64,36 @@ public class PayrollQueryServiceTest {
     }
 
     @Test
+    @DisplayName("3개월 데이터")
+    void testGetLastThreeMonthsPayrolls() {
+        // Given
+        PayrollChartDTO latestPayroll = new PayrollChartDTO(1L, 5000L, LocalDateTime.of(2024, 2, 1, 0, 0));
+        List<PayrollChartDTO> expectedPayrolls = List.of(
+                new PayrollChartDTO(1L, 5000L, LocalDateTime.of(2024, 2, 1, 0, 0)),
+                new PayrollChartDTO(2L, 4500L, LocalDateTime.of(2024, 1, 1, 0, 0)),
+                new PayrollChartDTO(3L, 4000L, LocalDateTime.of(2023, 12, 1, 0, 0))
+        );
+
+        Mockito.when(payrollQueryRepository.findLatestPayroll()).thenReturn(latestPayroll);
+        // 2023년으로 변경
+        Mockito.when(payrollQueryRepository.findPayrollsByMonths(12, 2, 2023)).thenReturn(expectedPayrolls);
+
+        // When
+        List<PayrollChartDTO> result = payrollQueryService.getLastThreeMonthsPayrolls();
+
+        // Then
+        assertEquals(3, result.size());
+        assertEquals(5000L, result.get(0).getTotalAmount());
+        assertEquals(4500L, result.get(1).getTotalAmount());
+        assertEquals(4000L, result.get(2).getTotalAmount());
+
+        Mockito.verify(payrollQueryRepository).findLatestPayroll();
+        Mockito.verify(payrollQueryRepository).findPayrollsByMonths(12, 2, 2023);
+    }
+
+    
+
+    @Test
     @DisplayName("급여대장 상세조회")
     public void testGetPayroll() {
         // Given: payrollId와 해당하는 PayrollDTO 목록을 준비
