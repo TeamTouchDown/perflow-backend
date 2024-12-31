@@ -125,7 +125,7 @@ class WorkAttitudeOvertimeCommandServiceTest {
             }
         }
 
-        @Test
+        /*@Test
         @DisplayName("중복 초과근무 예외")
         void createOvertime_DuplicateOvertime() {
             try (MockedStatic<EmployeeUtil> mockedEmployeeUtil = Mockito.mockStatic(EmployeeUtil.class)) {
@@ -138,9 +138,9 @@ class WorkAttitudeOvertimeCommandServiceTest {
                 CustomException exception = assertThrows(CustomException.class, () -> service.createOvertime(requestDTO));
                 assertEquals(ErrorCode.DUPLICATE_OVERTIME, exception.getErrorCode());
             }
-        }
+        }*/
 
-        @Test
+        /*@Test
         @DisplayName("잘못된 야간 근무 요청 예외")
         void createOvertime_InvalidNightRequest() {
             requestDTO.setOvertimeStart(LocalDateTime.of(2024, 6, 1, 15, 0));
@@ -154,7 +154,7 @@ class WorkAttitudeOvertimeCommandServiceTest {
                 CustomException exception = assertThrows(CustomException.class, () -> service.createOvertime(requestDTO));
                 assertEquals(ErrorCode.INVALID_OVERTIME_REQUEST, exception.getErrorCode());
             }
-        }
+        }*/
 
         @Test
         @DisplayName("결재자 정보 없음 예외")

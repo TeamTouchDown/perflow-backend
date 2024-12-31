@@ -26,14 +26,16 @@ spring:
             enable: true
             required: true
           auth: true
-  config:
-    import: "classpath:API-KEY.yml"
-
   data:
     web:
       pageable:
         default-page-size: 10
         max-page-size: 1000
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: ${RABBIT_MQ_USERNAME}
+    password: ${RABBIT_MQ_PASSWORD}
 
 token:
   secret: ${JWT_SECRET}
@@ -43,7 +45,7 @@ token:
 
 springdoc:
   swagger-ui:
-    path: /
+    path: /swagger-ui.html
 
 cloud:
   aws:
@@ -60,3 +62,6 @@ gemini:
     key: ${GEMINI_API_KEY}
     url: ${GEMINI_API_URL}
     model: ${GEMINI_MODEL_NAME}
+
+fcm:
+  service-account-file: ${FCM_ACCOUNT_KEY}
