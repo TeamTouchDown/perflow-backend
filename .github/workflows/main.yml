@@ -30,34 +30,12 @@ jobs:
         run: chmod +x gradlew
         working-directory: ./perflow-backend
 
-      # 4. FCM Config JSON 파일 생성
-      - name: Create FCM Config JSON file
-        run: |
-          echo "${{ secrets.FCM_CONFIG_JSON }}" > ./perflow-backend/src/main/resources/fcm-config.json
-      
-      # 파일 존재 확인 (디버그 단계)
-      - name: Verify FCM Config JSON file exists
-        run: |
-          if [ -f ./perflow-backend/src/main/resources/fcm-config.json ]; then
-            echo "fcm-config.json exists."
-          else
-            echo "fcm-config.json does not exist."
-            exit 1
-          fi
-      
-      # 5. Gradle 빌드
+      # 4. Gradle 빌드
       - name: Build with Gradle
         run: ./gradlew clean build
         working-directory: ./perflow-backend
-      
-      # JAR 파일 내 fcm-config.json 확인 (디버그 단계)
-      - name: Verify fcm-config.json in JAR
-        run: |
-          unzip -l ./perflow-backend/build/libs/perflow-backend-0.0.1-SNAPSHOT.jar | grep fcm-config.json
-          if [ $? -ne 0 ]; then
-            echo "fcm-config.json not found in JAR."
-            exit 1
-          fi
+        # Gradle wrapper가 없는 경우 아래 명령을 사용하세요:
+        # run: gradle clean build
 
       # 5. AWS 자격 증명 및 리전 설정
       - name: Configure AWS credentials

@@ -8,7 +8,7 @@ spring:
     sql-dialect: POSTGRES # 사용할 sql dialect
   redis:
     data:
-      host: localhost # Redis 서버 호스트
+      host: ${REDIS_HOST} # Redis 서버 호스트
       port: 6379      # Redis 포트
   jpa:
     properties:
@@ -34,11 +34,11 @@ spring:
         default-page-size: 10
         max-page-size: 1000
   rabbitmq:
-    host: localhost
+    host: ${RABBIT_MQ_HOST}
     port: 5672
     username: ${RABBIT_MQ_USERNAME}
     password: ${RABBIT_MQ_PASSWORD}
-
+    
 token:
   secret: ${JWT_SECRET}
   access_token_expiration_time: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
@@ -66,4 +66,15 @@ gemini:
     model: ${GEMINI_MODEL_NAME}
 
 fcm:
-  service-account-file: ${FCM_ACCOUNT_KEY}
+  service-account:
+    type: ${FCM_TYPE}
+    project_id: ${FCM_PROJECT_ID}
+    private_key_id: ${FCM_PRIVATE_KEY_ID}
+    private_key: ${FCM_PRIVATE_KEY}
+    client_email: ${FCM_CLIENT_EMAIL}
+    client_id: ${FCM_CLIENT_ID}
+    auth_uri: ${FCM_AUTH_URI}
+    token_uri: ${FCM_TOKEN_URI}
+    auth_provider_x509_cert_url: ${FCM_AUTH_PROVIDER_X509_CERT_URL}
+    client_x509_cert_url: ${FCM_CLIENT_X509_CERT_URL}
+    universe_domain: ${FCM_UNIVERSE_DOMAIN}

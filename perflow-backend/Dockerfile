@@ -33,9 +33,6 @@ RUN apk add --no-cache tzdata && \
     echo $TZ > /etc/timezone && \
     apk del tzdata
 
-# fcm-config.json 파일 복사
-COPY ./src/main/resources/fcm-config.json /secrets/fcm-config.json
-
 # 비루트 사용자 생성 및 권한 설정 (보안 강화)
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
