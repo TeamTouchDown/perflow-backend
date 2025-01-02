@@ -33,11 +33,11 @@ public class AnnouncementCommandService {
     private final FileService fileService;
 
     @Transactional
-    public void createAnnouncement(AnnouncementRequestDTO announcementRequestDTO, List<MultipartFile> files) {
+    public void createAnnouncement(String empId, AnnouncementRequestDTO announcementRequestDTO, List<MultipartFile> files) {
 
         Department foundDepartment = findDepartmentByDeptId(announcementRequestDTO.getDeptId());
 
-        Employee foundEmployee = findEmployeeByEmpId(announcementRequestDTO.getEmpId());
+        Employee foundEmployee = findEmployeeByEmpId(empId);
 
         if (!isSameDept(foundDepartment, foundEmployee)) {
             throw new CustomException(ErrorCode.NOT_MATCH_DEPARTMENT);
@@ -51,13 +51,13 @@ public class AnnouncementCommandService {
     }
 
     @Transactional
-    public void updateAnnouncement(Long annId, AnnouncementRequestDTO announcementRequestDTO, List<MultipartFile> addedFiles, List<Long> deletedFileIds) {
+    public void updateAnnouncement(Long annId, String empId, AnnouncementRequestDTO announcementRequestDTO, List<MultipartFile> addedFiles, List<Long> deletedFileIds) {
         Announcement foundAnnouncement = findAnnouncementByAnnId(annId);
 
         findDepartmentByDeptId(announcementRequestDTO.getDeptId());
-        findEmployeeByEmpId(announcementRequestDTO.getEmpId());
+        findEmployeeByEmpId(empId);
 
-        if (isSameWriter(foundAnnouncement.getEmp().getEmpId(), announcementRequestDTO.getEmpId())) {
+        if (isSameWriter(foundAnnouncement.getEmp().getEmpId(), empId)) {
             throw new CustomException(ErrorCode.NOT_MATCH_WRITER);
         }
 
