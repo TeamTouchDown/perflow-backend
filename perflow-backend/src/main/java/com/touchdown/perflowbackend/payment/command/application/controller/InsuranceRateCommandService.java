@@ -1,5 +1,7 @@
 package com.touchdown.perflowbackend.payment.command.application.controller;
 
+import com.touchdown.perflowbackend.common.exception.CustomException;
+import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.payment.command.application.dto.InsuranceRateRequestDTO;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.InsuranceRate;
 import com.touchdown.perflowbackend.payment.command.domain.repository.InsuranceRateRepository;
@@ -21,5 +23,19 @@ public class InsuranceRateCommandService {
 
         insuranceRateRepository.save(newInsuranceRate);
 
+    }
+
+    @Transactional
+    public void updateInsuranceRate(Long insuranceRateId, InsuranceRateRequestDTO request) {
+
+        InsuranceRate insuranceRate = insuranceRateRepository.findByInsuranceRateId(insuranceRateId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_INSURANCE_RATE));
+
+        insuranceRate.updateInsuranceRate(
+                request.getNationalPensionRate(),
+                request.getHealthInsuranceRate(),
+                request.getHireInsuranceRate(),
+                request.getLongTermCareInsuranceRate()
+        );
     }
 }

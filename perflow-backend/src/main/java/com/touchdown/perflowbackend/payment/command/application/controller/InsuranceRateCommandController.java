@@ -4,10 +4,7 @@ import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import com.touchdown.perflowbackend.payment.command.application.dto.InsuranceRateRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,5 +22,16 @@ public class InsuranceRateCommandController {
 
         return ResponseEntity.ok(SuccessCode.INSURANCE_RATE_SETTING_SUCCESS.getMessage());
 
+    }
+
+    @PutMapping("/insurance-rate/{insuranceRateId}")
+    public ResponseEntity<String> updateInsuranceRate(
+            @PathVariable Long insuranceRateId,
+            @RequestBody InsuranceRateRequestDTO request
+    ) {
+
+        insuranceRateCommandService.updateInsuranceRate(insuranceRateId, request);
+
+        return ResponseEntity.ok(SuccessCode.INSURANCE_RATE_UPDATE_SUCCESS.getMessage());
     }
 }

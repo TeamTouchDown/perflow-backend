@@ -40,4 +40,13 @@ public class InsuranceRate extends BaseEntity {
         this.longTermCareInsuranceRate = longTermCareInsuranceRate;
     }
 
+    public void updateInsuranceRate(double nationalPensionRate, double healthInsuranceRate,
+                                    double hireInsuranceRate, double longTermCareInsuranceRate) {
+
+        this.nationalPensionRate = nationalPensionRate;
+        this.healthInsuranceRate = healthInsuranceRate;
+        this.hireInsuranceRate = hireInsuranceRate;
+        this.longTermCareInsuranceRate = longTermCareInsuranceRate;
+    }
+
 }
