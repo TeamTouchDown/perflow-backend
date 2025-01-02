@@ -8,7 +8,7 @@ spring:
     sql-dialect: POSTGRES # 사용할 sql dialect
   redis:
     data:
-      host: localhost # Redis 서버 호스트
+      host: ${REDIS_HOST} # Redis 서버 호스트
       port: 6379      # Redis 포트
   jpa:
     properties:
@@ -38,7 +38,7 @@ spring:
     port: 5672
     username: ${RABBIT_MQ_USERNAME}
     password: ${RABBIT_MQ_PASSWORD}
-
+    
 token:
   secret: ${JWT_SECRET}
   access_token_expiration_time: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
