@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface InsuranceRateQueryRepository extends JpaRepository<InsuranceRate, Long> {
 
-    @Query("SELECT i FROM InsuranceRate i WHERE i.insuranceRateId = :insuranceRateId")
+    @Query("SELECT i FROM InsuranceRate i WHERE i.insuranceRateId = :insuranceRateId ORDER BY i.createDatetime DESC")
     Optional<InsuranceRate> findByInsuranceRateId(Long insuranceRateId);
 
 }
