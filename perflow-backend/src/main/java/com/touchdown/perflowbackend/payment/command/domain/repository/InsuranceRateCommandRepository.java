@@ -4,7 +4,7 @@ import com.touchdown.perflowbackend.payment.command.domain.aggregate.InsuranceRa
 
 import java.util.Optional;
 
-public interface InsuranceRateRepository {
+public interface InsuranceRateCommandRepository {
 
     InsuranceRate save(InsuranceRate newInsuranceRate);
 

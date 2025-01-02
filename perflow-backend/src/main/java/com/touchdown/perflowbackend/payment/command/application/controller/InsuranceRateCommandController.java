@@ -2,6 +2,7 @@ package com.touchdown.perflowbackend.payment.command.application.controller;
 
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import com.touchdown.perflowbackend.payment.command.application.dto.InsuranceRateRequestDTO;
+import com.touchdown.perflowbackend.payment.command.application.service.InsuranceRateCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
