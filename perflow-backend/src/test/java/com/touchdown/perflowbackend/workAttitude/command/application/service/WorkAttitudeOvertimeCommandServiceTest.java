@@ -85,7 +85,7 @@ class WorkAttitudeOvertimeCommandServiceTest {
                 .joinDate(LocalDate.of(2019, 1, 1))
                 .build();
 
-        mockEmployee = Employee.builder()
+        mockApprover = Employee.builder()
                 .registerDTO(approverDTO)
                 .position(mock(Position.class))
                 .job(mock(Job.class))
