@@ -8,7 +8,9 @@ import java.util.Optional;
 
 public interface InsuranceRateQueryRepository extends JpaRepository<InsuranceRate, Long> {
 
-    @Query("SELECT i FROM InsuranceRate i WHERE i.insuranceRateId = :insuranceRateId ORDER BY i.createDatetime DESC LIMIT 1")
+    @Query("SELECT i FROM InsuranceRate i WHERE i.insuranceRateId = :insuranceRateId")
     Optional<InsuranceRate> findByInsuranceRateId(Long insuranceRateId);
 
+    @Query("SELECT i FROM InsuranceRate i ORDER BY i.createDatetime DESC LIMIT 1")
+    Optional<InsuranceRate> findTopByOrderByCreatedDateDesc();
 }
