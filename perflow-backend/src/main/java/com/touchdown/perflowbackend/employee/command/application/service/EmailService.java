@@ -5,17 +5,25 @@ import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class EmailService {
 
     private final JavaMailSender mailSender;
-    private final String BASE_URL = "http://localhost:8080/api/v1/pwdRequest";
+    private final String BASE_URL;
+
+    public EmailService (
+            JavaMailSender mailSender,
+            @Value("${EMPLOYEE_REGISTER_BASE_URL}") String baseUrl
+    ) {
+        this.mailSender = mailSender;
+        this.BASE_URL = baseUrl;
+    }
 
     @Async
     public void sendStyledEmail(String toEmail, String employeeName, String token) {
