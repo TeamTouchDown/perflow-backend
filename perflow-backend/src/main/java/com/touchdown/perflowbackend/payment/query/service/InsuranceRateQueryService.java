@@ -26,7 +26,7 @@ public class InsuranceRateQueryService {
                 .hireInsuranceRate(insuranceRate.getHireInsuranceRate())
                 .longTermCareInsuranceRate(insuranceRate.getLongTermCareInsuranceRate())
                 .build();
-        
+
     }
 
 }
