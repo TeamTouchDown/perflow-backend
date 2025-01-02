@@ -38,9 +38,6 @@ spring:
     port: 5672
     username: ${RABBIT_MQ_USERNAME}
     password: ${RABBIT_MQ_PASSWORD}
-  config:
-    import: "classpath:API-KEY.yml"
-
 
 token:
   secret: ${JWT_SECRET}
