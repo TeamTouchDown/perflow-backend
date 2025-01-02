@@ -31,8 +31,8 @@ public class InsuranceRate extends BaseEntity {
     private double longTermCareInsuranceRate;
 
     @Builder
-    public InsuranceRate(Long nationalPensionRate, Long healthInsuranceRate,
-                         Long hireInsuranceRate, Long longTermCareInsuranceRate) {
+    public InsuranceRate(double nationalPensionRate, double healthInsuranceRate,
+                         double hireInsuranceRate, double longTermCareInsuranceRate) {
 
         this.nationalPensionRate = nationalPensionRate;
         this.healthInsuranceRate = healthInsuranceRate;

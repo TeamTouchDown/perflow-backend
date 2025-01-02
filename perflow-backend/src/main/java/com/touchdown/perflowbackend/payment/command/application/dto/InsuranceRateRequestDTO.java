@@ -11,12 +11,12 @@ public class InsuranceRateRequestDTO {
 
     private final Long insuranceId;
 
-    private final Long nationalPensionRate;
+    private final double nationalPensionRate;
 
-    private final Long healthInsuranceRate;
+    private final double healthInsuranceRate;
 
-    private final Long hireInsuranceRate;
+    private final double hireInsuranceRate;
 
-    private final Long longTermCareInsuranceRate;
+    private final double longTermCareInsuranceRate;
 
 }
