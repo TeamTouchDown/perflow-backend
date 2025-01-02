@@ -28,8 +28,6 @@ spring:
             enable: true
             required: true
           auth: true
-  config:
-    import: "classpath:API-KEY.yml"
   data:
     web:
       pageable:
