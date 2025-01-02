@@ -29,11 +29,13 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
         working-directory: ./perflow-backend
-      
+
       # 4. Gradle 빌드
       - name: Build with Gradle
         run: ./gradlew clean build
         working-directory: ./perflow-backend
+        # Gradle wrapper가 없는 경우 아래 명령을 사용하세요:
+        # run: gradle clean build
 
       # 5. AWS 자격 증명 및 리전 설정
       - name: Configure AWS credentials
