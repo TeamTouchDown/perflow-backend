@@ -53,7 +53,7 @@ public class Employee extends BaseEntity {
     @Column(name = "gender", nullable = false, length = 30)
     private String gender;
 
-    @Column(name = "rrn", nullable = false, length = 30)
+    @Column(name = "rrn", nullable = false, length = 255)
     private String rrn;
 
     @Column(name = "pay", nullable = false)
@@ -88,14 +88,14 @@ public class Employee extends BaseEntity {
     private Set<Authority> authorities = new LinkedHashSet<>();
 
     @Builder
-    public Employee(EmployeeCreateDTO registerDTO, Position position, Job job, Department department) {
+    public Employee(EmployeeCreateDTO registerDTO, Position position, Job job, Department department, String rrn) {
         this.empId = registerDTO.getEmpId();
         this.position = position;
         this.job = job;
         this.dept = department;
         this.name = registerDTO.getName();
         this.gender = registerDTO.getGender();
-        this.rrn = registerDTO.getRrn();
+        this.rrn = rrn;
         this.pay = registerDTO.getPay();
         this.address = registerDTO.getAddress();
         this.contact = registerDTO.getContact();

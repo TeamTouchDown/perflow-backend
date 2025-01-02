@@ -70,14 +70,25 @@ public class EmployeeCommandService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final EncryptionUtil encryptionUtil;
+
     @Transactional
-    public void createEmployee(EmployeeCreateDTO employeeCreateDTO) {
+    public void createEmployee(EmployeeCreateDTO employeeCreateDTO) throws Exception {
 
         Department department = departmentCommandRepository.findById(employeeCreateDTO.getDepartmentId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT));
         Position position = positionCommandRepository.findById(employeeCreateDTO.getPositionId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_POSITION));
         Job job = jobCommandRepository.findById(employeeCreateDTO.getJobId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_JOB));
 
-        Employee newEmployee = EmployeeMapper.toEntity(employeeCreateDTO, position, job, department);
+        String front = employeeCreateDTO.getRrn().substring(0, 6);
+        String back = employeeCreateDTO.getRrn().substring(6); // 뒷 7자리
+
+        // 뒷 7자리 암호화
+        String encryptedBack = encryptionUtil.encrypt(back);
+
+        // 암호화된 뒷자리와 앞자리를 결합
+        String encryptedRRN = front + encryptedBack;
+
+        Employee newEmployee = EmployeeMapper.toEntity(employeeCreateDTO, position, job, department ,encryptedRRN);
 
         entityManager.persist(newEmployee);
         employeeCommandRepository.save(newEmployee);
@@ -93,7 +104,7 @@ public class EmployeeCommandService {
     }
 
     @Transactional
-    public void createEmployeeList(MultipartFile empCSV) {
+    public void createEmployeeList(MultipartFile empCSV) throws Exception {
 
         String originalFilename = empCSV.getOriginalFilename();
         String extension = FileNameUtils.getExtension(originalFilename);
@@ -239,7 +250,7 @@ public class EmployeeCommandService {
     }
 
     // csv에서 추출한 데이터로 Employee 엔터티 리스트 생성하여 반환하는 메소드
-    private List<Employee> getEmpList(MultipartFile empCSV) {
+    private List<Employee> getEmpList(MultipartFile empCSV) throws Exception {
 
         List<Employee> empList = new ArrayList<>();
 
@@ -254,12 +265,21 @@ public class EmployeeCommandService {
 
                 EmployeeCreateDTO employeeCreateDTO = getEmployeeCreateDTO(row);
 
+                String front = employeeCreateDTO.getRrn().substring(0, 6);
+                String back = employeeCreateDTO.getRrn().substring(6); // 뒷 7자리
+
+                // 뒷 7자리 암호화
+                String encryptedBack = encryptionUtil.encrypt(back);
+
+                // 암호화된 뒷자리와 앞자리를 결합
+                String encryptedRRN = front + encryptedBack;
+
                 Department department = departmentCommandRepository.findById(employeeCreateDTO.getDepartmentId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT));
 
                 Position position = positionCommandRepository.findById(employeeCreateDTO.getPositionId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_POSITION));
                 Job job = jobCommandRepository.findById(employeeCreateDTO.getJobId()).orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_JOB));
 
-                Employee newEmployee = EmployeeMapper.toEntity(employeeCreateDTO, position, job, department);
+                Employee newEmployee = EmployeeMapper.toEntity(employeeCreateDTO, position, job, department, encryptedRRN);
 
                 empList.add(newEmployee);
             }

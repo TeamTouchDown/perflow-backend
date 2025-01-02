@@ -32,7 +32,7 @@ public class EmployeeCommandController {
 
     @PostMapping("/hr/employees")
     public ResponseEntity<SuccessCode> createEmployee(
-            @RequestBody EmployeeCreateDTO employeeCreateDTO) {
+            @RequestBody EmployeeCreateDTO employeeCreateDTO) throws Exception {
 
         employeeCommandService.createEmployee(employeeCreateDTO);
 
@@ -42,7 +42,7 @@ public class EmployeeCommandController {
     @PostMapping("/hr/employees/list")
     public ResponseEntity<SuccessCode> createEmployeeList(
             @RequestPart(value = "empCSV", required = false) MultipartFile empCSV
-    ) {
+    ) throws Exception {
 
         employeeCommandService.createEmployeeList(empCSV);
 

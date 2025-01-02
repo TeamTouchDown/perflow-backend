@@ -7,6 +7,7 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +17,7 @@ public class EmailService {
     private final JavaMailSender mailSender;
     private final String BASE_URL = "http://localhost:8080/api/v1/pwdRequest";
 
+    @Async
     public void sendStyledEmail(String toEmail, String employeeName, String token) {
         try {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
@@ -47,10 +49,10 @@ public class EmailService {
                     <head>
                         <style>
                             .email-container { font-family: Arial, sans-serif; line-height: 1.6; color: #333; padding: 20px; border: 1px solid #ddd; border-radius: 8px; width: 600px; margin: 0 auto; }
-                            .header { text-align: center; font-size: 20px; font-weight: bold; color: #007bff; }
+                            .header { text-align: center; font-size: 20px; font-weight: bold; color: #F37321; }
                             .content { margin-top: 20px; }
                             .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #777; }
-                            .button { display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+                            .button { display: inline-block; padding: 10px 20px; background-color: #F37321; color: white; text-decoration: none; border-radius: 5px; }
                         </style>
                     </head>
                     <body>
