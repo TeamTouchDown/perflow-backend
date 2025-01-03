@@ -28,7 +28,8 @@ public interface SeverancePayQueryRepository extends JpaRepository<SeverancePay,
             "(spd.extend_labor_allowance + spd.night_labor_allowance + spd.holiday_labor_allowance + spd.annual_allowance) AS threeMonthTotalAllowance, " +
             "DATEDIFF(e.resign_date, e.join_date) + 1 AS totalLaborDays, " +
             "spd.total_amount, " +
-            "spd.status " +
+            "spd.status, " +
+            "spd.create_datetime " +
             "FROM Severance_pay s " +
             "JOIN Severance_pay_detail spd ON s.severance_pay_id = spd.severance_pay_id " +
             "JOIN Employee e ON spd.emp_id = e.emp_id " +

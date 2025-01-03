@@ -182,7 +182,8 @@ public class SeverancePayQueryService {
                         toLong(result[9]),  // 수정
                         toLong(result[10]), // 수정
                         toLong(result[11]),
-                        Status.valueOf((String) result[12])
+                        Status.valueOf((String) result[12]),
+                        toLocalDate(result[13]).atStartOfDay()
 
                 ))
 
