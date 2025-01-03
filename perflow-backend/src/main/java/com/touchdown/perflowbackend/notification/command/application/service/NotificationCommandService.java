@@ -6,7 +6,6 @@ import com.touchdown.perflowbackend.config.RabbitMQConfig;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
 import com.touchdown.perflowbackend.notification.command.application.dto.NotificationMessageDTO;
-import com.touchdown.perflowbackend.notification.command.domain.aggregate.FcmToken;
 import com.touchdown.perflowbackend.notification.command.domain.aggregate.Notification;
 import com.touchdown.perflowbackend.notification.command.domain.aggregate.RefType;
 import com.touchdown.perflowbackend.notification.command.domain.repository.FcmTokenRepository;
@@ -14,8 +13,6 @@ import com.touchdown.perflowbackend.notification.command.domain.repository.Notif
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -69,12 +66,5 @@ public class NotificationCommandService {
                 RabbitMQConfig.ROUTING_KEY,
                 dto
         );
-
-        // 4. FCM 발송
-        List<String> fcmTokens = fcmTokenRepository.findByEmployeeEmpId(employee.getEmpId())
-                .stream().map(FcmToken::getFcmToken)
-                .toList();
-
-        fcmService.sendMessages(fcmTokens, dto);
     }
 }
