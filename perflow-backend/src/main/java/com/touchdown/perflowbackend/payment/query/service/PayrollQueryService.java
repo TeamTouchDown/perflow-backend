@@ -267,7 +267,8 @@ public class PayrollQueryService {
                 payrollDetail.getLocalIncomeTax(),
                 totalDeduction,
                 payrollDetail.getTotalAmount(),
-                payrollDetail.getStatus()
+                payrollDetail.getStatus(),
+                payrollDetail.getCreateDatetime()
 
         );
     }

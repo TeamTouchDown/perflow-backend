@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @RequiredArgsConstructor
@@ -54,5 +56,7 @@ public class PayrollDTO {
     private final Long totalAmount;
 
     private final Status payrollStatus;
+
+    private final LocalDateTime createDatetime;
 
 }

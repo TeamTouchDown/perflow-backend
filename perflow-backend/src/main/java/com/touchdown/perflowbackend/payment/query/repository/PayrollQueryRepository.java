@@ -23,7 +23,7 @@ public interface PayrollQueryRepository extends JpaRepository<Payroll, Long> {
             "(pd.emp.pay + pd.extendLaborAllowance + pd.nightLaborAllowance + pd.holidayLaborAllowance + pd.annualAllowance + pd.incentive) AS totalPayment," +
             "pd.nationalPension, pd.healthInsurance, pd.hireInsurance, pd.longTermCareInsurance, pd.incomeTax, pd.localIncomeTax, " +
             "(pd.nationalPension + pd.healthInsurance + pd.hireInsurance + pd.longTermCareInsurance + pd.incomeTax + pd.localIncomeTax) AS totalDeduction, " +
-            "pd.totalAmount, pd.status) " +
+            "pd.totalAmount, pd.status, pd.createDatetime) " +
             "FROM Payroll p " +
             "JOIN PayrollDetail pd ON pd.payroll.payrollId = p.payrollId " +
             "WHERE pd.emp.status = 'ACTIVE' AND p.payrollId = :payrollId")
@@ -77,7 +77,7 @@ public interface PayrollQueryRepository extends JpaRepository<Payroll, Long> {
             "(pd.emp.pay + pd.extendLaborAllowance + pd.nightLaborAllowance + pd.holidayLaborAllowance + pd.annualAllowance + pd.incentive) AS totalPayment," +
             "pd.nationalPension, pd.healthInsurance, pd.hireInsurance, pd.longTermCareInsurance, pd.incomeTax, pd.localIncomeTax, " +
             "(pd.nationalPension + pd.healthInsurance + pd.hireInsurance + pd.longTermCareInsurance + pd.incomeTax + pd.localIncomeTax) AS totalDeduction, " +
-            "pd.totalAmount, pd.status) " +
+            "pd.totalAmount, pd.status, pd.createDatetime) " +
             "FROM Payroll p " +
             "JOIN PayrollDetail pd ON pd.payroll.payrollId = p.payrollId " +
             "WHERE pd.emp.status = 'ACTIVE' AND pd.emp.empId = :empId " +
