@@ -13,7 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -109,7 +111,14 @@ public class SeverancePayQueryService {
     @Transactional(readOnly = true)
     public SeverancePayListResponseDTO getSeverancePays(Pageable pageable) {
 
-        Page<SeverancePay> page = severancePayQueryRepository.findAll(pageable);
+        // Pageable 객체에 정렬 조건 추가
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Sort.Direction.DESC, "createDatetime") // 최신순 정렬
+        );
+
+        Page<SeverancePay> page = severancePayQueryRepository.findAll(sortedPageable);
 
         List<SeverancePayResponseDTO> severancePays = page.getContent().stream()
                 .map(severancePay -> {
