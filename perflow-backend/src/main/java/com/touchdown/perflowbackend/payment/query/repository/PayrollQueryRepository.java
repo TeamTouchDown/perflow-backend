@@ -46,14 +46,21 @@ public interface PayrollQueryRepository extends JpaRepository<Payroll, Long> {
             "GROUP BY p.payrollId")
     List<PayrollChartDTO> findPayrollsByMonthAndYears(@Param("month") int month, @Param("startYear") int startYear, @Param("endYear") int endYear);
 
-    // 월 범위와 연도를 기준으로 급여 데이터를 조회 (3개월 데이터)
+    // 월 범위와 연도를 기준으로 급여 데이터를 조회 (1년간 데이터)
     @Query("SELECT new com.touchdown.perflowbackend.payment.query.dto.PayrollChartDTO(" +
             "p.payrollId, SUM(pd.totalAmount), p.createDatetime) " +
             "FROM Payroll p " +
             "JOIN PayrollDetail pd ON p.payrollId = pd.payroll.payrollId " +
-            "WHERE MONTH(p.createDatetime) BETWEEN :startMonth AND :latestMonth AND YEAR(p.createDatetime) = :year " +
-            "GROUP BY p.payrollId")
-    List<PayrollChartDTO> findPayrollsByMonths(@Param("startMonth") int startMonth, @Param("latestMonth") int latestMonth, @Param("year") int year);
+            "WHERE (YEAR(p.createDatetime) = :startYear AND MONTH(p.createDatetime) BETWEEN :startMonth AND 12) " +
+            "   OR (YEAR(p.createDatetime) = :latestYear AND MONTH(p.createDatetime) BETWEEN 1 AND :latestMonth) " +
+            "GROUP BY p.payrollId " +
+            "ORDER BY p.createDatetime ASC")
+    List<PayrollChartDTO> findPayrollsByMonths(
+            @Param("startMonth") int startMonth,
+            @Param("latestMonth") int latestMonth,
+            @Param("startYear") int startYear,
+            @Param("latestYear") int latestYear
+    );
 
     // 연도 범위에 해당하는 급여 데이터를 조회 (3년 데이터)
     @Query("SELECT new com.touchdown.perflowbackend.payment.query.dto.PayrollChartWithYearDTO(" +

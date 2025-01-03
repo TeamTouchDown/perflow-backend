@@ -100,11 +100,11 @@ public class PayrollQueryController {
 
     }
 
-    // 3개월간 급여 데이터 조회
+    // 1년간 급여 데이터 조회
     @GetMapping("/hr/payrolls/chart/last-three-months")
-    public ResponseEntity<List<PayrollChartDTO>> getLastThreeMonthsPayrolls() {
+    public ResponseEntity<List<PayrollChartDTO>> getLastMonthsPayrolls() {
 
-        List<PayrollChartDTO> payrolls = payrollQueryService.getLastThreeMonthsPayrolls();
+        List<PayrollChartDTO> payrolls = payrollQueryService.getLastMonthsPayrolls();
         return ResponseEntity.ok(payrolls);
 
     }

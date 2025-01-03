@@ -294,9 +294,9 @@ public class PayrollQueryService {
 
     }
 
-    // 가장 최근 급여의 월을 기준으로 3개월간 데이터를 조회하는 메서드
+    // 가장 최근 급여의 월을 기준으로 1년간 데이터를 조회하는 메서드
     @Transactional(readOnly = true)
-    public List<PayrollChartDTO> getLastThreeMonthsPayrolls() {
+    public List<PayrollChartDTO> getLastMonthsPayrolls() {
         // 가장 최근 급여 데이터 조회
         PayrollChartDTO latestPayroll = payrollQueryRepository.findLatestPayroll();
 
@@ -309,6 +309,7 @@ public class PayrollQueryService {
         int latestMonth = latestPayroll.getCreateDatetime().getMonthValue();
         int latestYear = latestPayroll.getCreateDatetime().getYear();
         int startMonth = latestMonth - 2;  // 3개월 범위 (현재 월에서 2개월 전까지)
+        int startYear = latestYear;
 
         if (startMonth <= 0) {
 
@@ -317,8 +318,8 @@ public class PayrollQueryService {
 
         }
 
-        // 3개월간 급여 데이터 조회
-        return payrollQueryRepository.findPayrollsByMonths(startMonth, latestMonth, latestYear);
+        // 1년간 급여 데이터 조회
+        return payrollQueryRepository.findPayrollsByMonths(startMonth, latestMonth, startYear, latestYear);
 
     }
 
