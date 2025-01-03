@@ -311,12 +311,12 @@ public class PayrollQueryService {
         int startMonth = latestMonth - 2;  // 3개월 범위 (현재 월에서 2개월 전까지)
         int startYear = latestYear;
 
-        if (startMonth <= 0) {
-
-            startMonth += 12; // 12월에서 1월로 넘어갈 경우 처리
-            latestYear -= 1;  // 작년으로 변경
-
-        }
+//        if (startMonth <= 0) {
+//
+//            startMonth += 12; // 12월에서 1월로 넘어갈 경우 처리
+//            latestYear -= 1;  // 작년으로 변경
+//
+//        }
 
         // 1년간 급여 데이터 조회
         return payrollQueryRepository.findPayrollsByMonths(startMonth, latestMonth, startYear, latestYear);
