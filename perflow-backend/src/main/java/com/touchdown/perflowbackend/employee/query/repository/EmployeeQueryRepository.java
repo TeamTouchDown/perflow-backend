@@ -19,7 +19,11 @@ public interface EmployeeQueryRepository extends JpaRepository<Employee, String>
     @Query("SELECT e FROM Employee e WHERE e.status = 'ACTIVE'")
     List<Employee> findActiveEmployees();
 
-    @Query("SELECT e FROM Employee e WHERE e.status = 'RESIGNED'")
+    @Query("SELECT e FROM Employee e " +
+            "JOIN SeverancePayDetail spd ON spd.emp.empId = e.empId " +
+            "WHERE e.status = 'RESIGNED' " +
+            "AND YEAR(spd.emp.resignDate) = YEAR(spd.createDatetime) " +
+            "AND MONTH(spd.emp.resignDate) = MONTH(spd.createDatetime)")
     List<Employee> findResignedEmployees();
 
     // 특정 부서에 속한 직원 조회
