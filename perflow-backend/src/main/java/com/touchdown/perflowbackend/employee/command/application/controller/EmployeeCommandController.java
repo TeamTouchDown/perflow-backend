@@ -9,6 +9,7 @@ import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,6 @@ import java.net.URISyntaxException;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/v1")
 public class EmployeeCommandController {
 
@@ -28,11 +28,19 @@ public class EmployeeCommandController {
     private static final String ACCESS_TOKEN_HEADER = "Authorization";
     private static final String REFRESH_TOKEN_HEADER = "refreshToken";
     private static final String BEARER_PREFIX = "Bearer ";
-    private static final String REDIRECT_URI = "http://localhost:5173/employees/pwd";
+    private final String REDIRECT_URI;
+
+    public EmployeeCommandController(
+            @Value("${PWD_REDIRECT_URI}") String REDIRECT_URI,
+            EmployeeCommandService employeeCommandService
+    ) {
+        this.REDIRECT_URI = REDIRECT_URI;
+        this.employeeCommandService = employeeCommandService;
+    }
 
     @PostMapping("/hr/employees")
     public ResponseEntity<SuccessCode> createEmployee(
-            @RequestBody EmployeeCreateDTO employeeCreateDTO) {
+            @RequestBody EmployeeCreateDTO employeeCreateDTO) throws Exception {
 
         employeeCommandService.createEmployee(employeeCreateDTO);
 
@@ -42,7 +50,7 @@ public class EmployeeCommandController {
     @PostMapping("/hr/employees/list")
     public ResponseEntity<SuccessCode> createEmployeeList(
             @RequestPart(value = "empCSV", required = false) MultipartFile empCSV
-    ) {
+    ) throws Exception {
 
         employeeCommandService.createEmployeeList(empCSV);
 
@@ -162,6 +170,8 @@ public class EmployeeCommandController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(new URI(REDIRECT_URI+"?token="+token));
+
+        log.warn(REDIRECT_URI+"?token="+token);
 
         return new ResponseEntity<>(headers, HttpStatus.PERMANENT_REDIRECT);
     }

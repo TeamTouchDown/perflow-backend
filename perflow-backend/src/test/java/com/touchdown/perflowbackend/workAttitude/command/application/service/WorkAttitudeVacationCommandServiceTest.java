@@ -61,12 +61,12 @@ class WorkAttitudeVacationCommandServiceTest {
                 .joinDate(LocalDate.of(2020, 1, 1))
                 .build();
 
-        mockEmployee = new Employee(
-                employeeDTO,
-                mock(Position.class),
-                mock(Job.class),
-                mock(Department.class)
-        );
+        mockEmployee = Employee.builder()
+                .registerDTO(employeeDTO)
+                .position(mock(Position.class))
+                .job(mock(Job.class))
+                .department(mock(Department.class))
+                .build();
 
         EmployeeCreateDTO approverDTO = EmployeeCreateDTO.builder()
                 .empId("EMP002")
@@ -80,12 +80,12 @@ class WorkAttitudeVacationCommandServiceTest {
                 .joinDate(LocalDate.of(2019, 1, 1))
                 .build();
 
-        mockApprover = new Employee(
-                approverDTO,
-                mock(Position.class),
-                mock(Job.class),
-                mock(Department.class)
-        );
+        mockApprover = Employee.builder()
+                .registerDTO(approverDTO)
+                .position(mock(Position.class))
+                .job(mock(Job.class))
+                .department(mock(Department.class))
+                .build();
 
         requestDTO = new WorkAttitudeVacationRequestDTO();
         requestDTO.setVacationStart(LocalDateTime.of(2024, 6, 1, 9, 0));

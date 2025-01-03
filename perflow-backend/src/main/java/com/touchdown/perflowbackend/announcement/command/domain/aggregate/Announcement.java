@@ -11,12 +11,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "announcement", schema = "perflow")
 @SQLDelete(sql = "UPDATE announcement SET status = 'DELETED' WHERE ann_id = ?")
+@Where(clause = "status != 'DELETED'")
 public class Announcement extends BaseEntity {
 
     @Id

@@ -36,6 +36,8 @@ public enum SuccessCode {
     SEVERANCE_PAY_UPLOAD_SUCCESS(HttpStatus.OK, "퇴직금 정보를 성공적으로 업로드 하였습니다."),
     PAYROLL_ADJUSTMENT_SUCCESS(HttpStatus.OK, "급여 정산을 완료하였습니다."),
     SEVERANCE_PAY_ADJUSTMENT_SUCCESS(HttpStatus.OK, "퇴직금 정산을 완료하였습니다."),
+    INSURANCE_RATE_SETTING_SUCCESS(HttpStatus.OK, "보험료율 설정을 성공하였습니다."),
+    INSURANCE_RATE_UPDATE_SUCCESS(HttpStatus.OK, "보험료율 수정을 성공하였습니다."),
 
     // 200 결재 관련 성공
     TEMPLATE_CREATE_SUCCESS(HttpStatus.CREATED, "서식 생성에 성공하였습니다"),

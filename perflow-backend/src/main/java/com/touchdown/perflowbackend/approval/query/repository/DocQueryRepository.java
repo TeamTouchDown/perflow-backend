@@ -50,25 +50,27 @@ public interface DocQueryRepository extends JpaRepository<Doc, Long>, JpaSpecifi
             "   CASE " +
             "       WHEN doc.status = com.touchdown.perflowbackend.approval.command.domain.aggregate.Status.APPROVED THEN '승인' " +
             "       WHEN doc.status = com.touchdown.perflowbackend.approval.command.domain.aggregate.Status.REJECTED THEN '반려' " +
-            "       ELSE '진행'\n" +
-            "   END," +
-            "   sbj.approveLine.approveLineId, " +
-            "   sbj.approveSbjId " +
+            "       ELSE '진행' " +
+            "   END, " +
+            "   MIN(sbj.approveLine.approveLineId), " +
+            "   MIN(sbj.approveSbjId) " +
             ") " +
             "FROM Doc doc " +
             "LEFT JOIN doc.approveLines line " +
             "LEFT JOIN line.approveSbjs sbj " +
             "LEFT JOIN doc.shares share " +
             "WHERE ( " +
-            "    sbj.sbjUser.empId = :empId " +    // 내가(로그인 한 사원이) 결재선에 포함된 경우
-            "    OR share.shareObjUser.empId = :empId " + // 내가 공유 대상에 포함된 경우
+            "    sbj.sbjUser.empId = :empId " + // 내가 결재선에 포함되는 경우
+            "    OR share.shareObjUser.empId = :empId " +   // 내가 공유 대상에 포함되는 경우
             "    OR ( " +
             "        sbj.sbjUser.dept.departmentId = :deptId " +    // 결재선에 포함된 사람의 부서가 나와 같고
-            "        AND sbj.sbjUser.position.positionLevel <= :positionLevel" +    // 결재선에 포함된 사람의 직위가 나보다 낮은 경우
+            "        AND sbj.sbjUser.position.positionLevel < :positionLevel" + // 결재선에 포함된 사람의 직위가 나보다 낮거나 같은 경우
             "    ) " +
             ") " +
+            "GROUP BY doc.docId, doc.template.templateId, doc.title, doc.createUser.name, doc.createDatetime, doc.status, doc.updateDatetime " +
             "ORDER BY doc.createDatetime DESC")
     Page<InboxDocListResponseDTO> findInboxDocs(Pageable pageable, String empId, Long deptId, Integer positionLevel);
+
 
     // 발신함 문서 목록 조회 시
     @Query("SELECT new com.touchdown.perflowbackend.approval.query.dto.OutboxDocListResponseDTO( " +
@@ -95,7 +97,9 @@ public interface DocQueryRepository extends JpaRepository<Doc, Long>, JpaSpecifi
             "   sbj.approveSbjId, " +
             "   doc.createDatetime, " +
             "   sbj.status, " +
-            "   sbj.updateDatetime " +
+            "   sbj.updateDatetime, " +
+            "   sbj.comment," +
+            "   doc.status " +
             ") " +
             "FROM ApproveSbj sbj " +
             "JOIN sbj.approveLine line " +
