@@ -66,4 +66,15 @@ gemini:
     model: ${GEMINI_MODEL_NAME}
 
 fcm:
-  service-account-file: ${FCM_ACCOUNT_KEY}
+  service-account:
+    type: ${FCM_TYPE}
+    project_id: ${FCM_PROJECT_ID}
+    private_key_id: ${FCM_PRIVATE_KEY_ID}
+    private_key: ${FCM_PRIVATE_KEY}
+    client_email: ${FCM_CLIENT_EMAIL}
+    client_id: ${FCM_CLIENT_ID}
+    auth_uri: ${FCM_AUTH_URI}
+    token_uri: ${FCM_TOKEN_URI}
+    auth_provider_x509_cert_url: ${FCM_AUTH_PROVIDER_X509_CERT_URL}
+    client_x509_cert_url: ${FCM_CLIENT_X509_CERT_URL}
+    universe_domain: ${FCM_UNIVERSE_DOMAIN}
