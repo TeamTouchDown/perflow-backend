@@ -5,13 +5,13 @@ import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.approval.command.domain.repository.*;
 import com.touchdown.perflowbackend.approval.command.mapper.DocMapper;
 import com.touchdown.perflowbackend.approval.query.dto.ApproveSbjDTO;
-import com.touchdown.perflowbackend.approval.query.dto.MyApproveLineResponseDTO;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
-import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.repository.DepartmentCommandRepository;
+import com.touchdown.perflowbackend.notification.command.application.service.NotificationCommandService;
+import com.touchdown.perflowbackend.notification.command.domain.aggregate.RefType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,6 +35,7 @@ public class DocCommandService {
     private final ApproveLineCommandRepository approveLineCommandRepository;
     private final DocFieldCommandRepository docFieldCommandRepository;
     private final DocShareObjCommandRepository docShareObjCommandRepository;
+    private final NotificationCommandService notificationCommandService;
 
     // 새 결재 문서 생성
     @Transactional
@@ -56,10 +57,12 @@ public class DocCommandService {
         createDocFields(request, doc);
 
         // 결재선 생성
-        createApproveLines(request, doc, createUser);
+        List<ApproveLine> approveLines = createApproveLines(request, doc, createUser);
 
         // 공유 설정
         createShare(request, doc, createUser);
+
+        sendNotificationsForApprovalLines(approveLines, doc);
     }
 
     // 나의 결재선 생성
@@ -217,13 +220,23 @@ public class DocCommandService {
     }
 
     // 결재선 리스트 추가
-    private void createApproveLines(DocCreateRequestDTO request, Doc doc, Employee createUser) {
+    private List<ApproveLine> createApproveLines(DocCreateRequestDTO request, Doc doc, Employee createUser) {
+
+//        for (ApproveLineRequestDTO lineDTO : request.getApproveLines()) {
+//
+//            ApproveLine approveLine = createApproveLine(lineDTO, doc, createUser);
+//            doc.getApproveLines().add(approveLine);
+//        }
+
+        List<ApproveLine> approveLines = new ArrayList<>();
 
         for (ApproveLineRequestDTO lineDTO : request.getApproveLines()) {
-
             ApproveLine approveLine = createApproveLine(lineDTO, doc, createUser);
+            approveLines.add(approveLine);
             doc.getApproveLines().add(approveLine);
         }
+
+        return approveLines;
     }
 
     // 결재선 추가
@@ -316,5 +329,25 @@ public class DocCommandService {
         log.info("findEmployeeByIds 실행");
         return employeeCommandRepository.findAllById(empIds).stream()
                 .collect(Collectors.toMap(Employee::getEmpId, Function.identity()));
+    }
+
+    private void sendNotificationsForApprovalLines(List<ApproveLine> approveLines, Doc doc) {
+        log.info("sendNotificationsForApprovalLines 실행");
+
+        // 각 결재선의 결재 주체에게 알림 발송
+        for (ApproveLine approveLine : approveLines) {
+            for (ApproveSbj approveSbj : approveLine.getApproveSbjs()) {
+                Employee sbjUser = approveSbj.getSbjUser();
+                if (sbjUser != null) {
+                    notificationCommandService.createAndPublishNotification(
+                            doc.getDocId(),
+                            String.valueOf(RefType.APPROVE_SBJ),
+                            sbjUser.getEmpId(),
+                            "새 결재 문서가 생성되었습니다.",
+                            "/approval/waiting"
+                    );
+                }
+            }
+        }
     }
 }
