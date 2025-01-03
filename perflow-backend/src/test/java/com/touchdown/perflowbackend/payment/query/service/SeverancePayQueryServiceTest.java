@@ -16,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
@@ -58,7 +59,8 @@ class SeverancePayQueryServiceTest {
                 15000L,                     // threeMonthTotalAllowance
                 900L,                       // totalLaborDays
                 1000000L,                   // totalSeverancePay
-                Status.PENDING              // severanceStatus
+                Status.PENDING,              // severanceStatus
+                java.sql.Date.valueOf("2023-01-01") // createDate
         };
 
         List<Object[]> mockResults = Arrays.asList(new Object[][]{resultRow1});
@@ -90,6 +92,7 @@ class SeverancePayQueryServiceTest {
         assertEquals(900L, severancePay.getTotalLaborDays());
         assertEquals(1000000L, severancePay.getTotalSeverancePay());
         assertEquals(Status.PENDING, severancePay.getSeveranceStatus());
+        assertEquals(LocalDateTime.of(2023, 1, 1, 0, 0), severancePay.getCreateDatetime());
 
     }
 
@@ -110,7 +113,8 @@ class SeverancePayQueryServiceTest {
                         toLong(result[9]),  // 수정
                         toLong(result[10]), // 수정
                         toLong(result[11]),
-                        (Status) result[12]
+                        (Status) result[12],
+                        toLocalDate(result[13]).atStartOfDay()
 
                 ))
 
