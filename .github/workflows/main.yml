@@ -30,12 +30,6 @@ jobs:
         run: chmod +x gradlew
         working-directory: ./perflow-backend
 
-      # 4. FCM Config JSON 파일 생성
-      - name: Create FCM Config JSON file
-        run: |
-          mkdir -p ./perflow-backend/src/main/resources/config
-          echo "${{ secrets.FCM_CONFIG_JSON }}" > ./perflow-backend/src/main/resources/fcm-config.json
-
       # 4. Gradle 빌드
       - name: Build with Gradle
         run: ./gradlew clean build
