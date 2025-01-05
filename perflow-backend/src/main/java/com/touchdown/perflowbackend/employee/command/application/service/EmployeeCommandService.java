@@ -35,7 +35,6 @@ import org.apache.commons.compress.utils.FileNameUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -118,7 +117,11 @@ public class EmployeeCommandService {
                 entityManager.persist(emp);
                 employeeCommandRepository.save(emp);
                 entityManager.flush();
+                Authority auth = authorityRepository.findByType(AuthType.EMPLOYEE);
 
+                AuthorityEmployee authorityEmployee = new AuthorityEmployee(auth, emp);
+
+                authorityEmployeeRepository.save(authorityEmployee);
                 sendInvitationEmail(emp);
             }
         }
