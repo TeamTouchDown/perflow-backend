@@ -50,16 +50,13 @@ public class NotificationListener {
                 .toList();
 
         if (tokens.isEmpty()) {
+            log.warn("알림 ID: {}에 대한 FCM 토큰이 없음. 상태를 WAITING으로 설정.", notification.getNotiId());
 
-            // 토큰 없음 → 어차피 지금은 보낼 수 없음
-            // "로그인 시점에" 다시 시도하도록 WAITING 상태 유지
             notification.updateStatus(NotificationStatus.WAITING);
-            // retryCount 증가(선택적): token이 없어도 1회 시도한 거로 칠 수 있으면 ++
-            notification.updateRetryCount(currentRetryCount + 1);
-
             notificationCommandRepository.save(notification);
 
-            throw new AmqpRejectAndDontRequeueException(ErrorCode.NOT_EXIST_FCM_TOKEN.getMessage());
+//            throw new AmqpRejectAndDontRequeueException(ErrorCode.NOT_EXIST_FCM_TOKEN.getMessage());
+            return;
         }
 
         try {
@@ -79,10 +76,8 @@ public class NotificationListener {
                 notification.updateStatus(NotificationStatus.FAILED);
                 notificationCommandRepository.save(notification);
                 log.warn("FCM 재시도 한계 초과 -> 영구 FAILED 처리: {}", notificationMessageDTO);
-                // 여기서 return or 그냥 ack 처리하면 MQ에서는 메시지가 사라짐.
-                // → throw 안 던지면 ACK 처리됨.
-                return;
 
+                return;
             } else {
                 // 아직 재시도 가능 횟수 남음 → 상태는 FAILED로 갱신
                 notification.updateStatus(NotificationStatus.FAILED);
