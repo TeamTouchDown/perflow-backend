@@ -60,9 +60,11 @@ public class DocCommandService {
         List<ApproveLine> approveLines = createApproveLines(request, doc, createUser);
 
         // 공유 설정
-        createShare(request, doc, createUser);
+        List<DocShareObj> docShareObjs = createShare(request, doc, createUser);
 
         sendNotificationsForApprovalLines(approveLines, doc);
+
+        sendNotificationsForShareObjs(docShareObjs, doc);
     }
 
     // 나의 결재선 생성
@@ -196,7 +198,7 @@ public class DocCommandService {
         return newApproveLine;
     }
 
-    private void createShare(DocCreateRequestDTO request, Doc doc, Employee createUser) {
+    private List<DocShareObj> createShare(DocCreateRequestDTO request, Doc doc, Employee createUser) {
 
         // 모든 empId와 departmentId 추출
         Set<String> empIds = request.getShares().stream()
@@ -217,16 +219,12 @@ public class DocCommandService {
         }
 
         docShareObjCommandRepository.saveAll(docShareObjs);
+
+        return docShareObjs;
     }
 
     // 결재선 리스트 추가
     private List<ApproveLine> createApproveLines(DocCreateRequestDTO request, Doc doc, Employee createUser) {
-
-//        for (ApproveLineRequestDTO lineDTO : request.getApproveLines()) {
-//
-//            ApproveLine approveLine = createApproveLine(lineDTO, doc, createUser);
-//            doc.getApproveLines().add(approveLine);
-//        }
 
         List<ApproveLine> approveLines = new ArrayList<>();
 
@@ -347,6 +345,23 @@ public class DocCommandService {
                             "/approval/waiting"
                     );
                 }
+            }
+        }
+    }
+
+    private void sendNotificationsForShareObjs(List<DocShareObj> docShareObjs, Doc doc) {
+        log.info("sendNotificationsForShareObjs 실행");
+
+        for (DocShareObj docShareObj : docShareObjs) {
+            Employee shareUser = docShareObj.getShareObjUser();
+            if (shareUser != null) {
+                notificationCommandService.createAndPublishNotification(
+                        doc.getDocId(),
+                        String.valueOf(RefType.APPROVE_SBJ),
+                        shareUser.getEmpId(),
+                        "새 문서가 공유되었습니다.",
+                        "/approval/inbox"
+                );
             }
         }
     }
