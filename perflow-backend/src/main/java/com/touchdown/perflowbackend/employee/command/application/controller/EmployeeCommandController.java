@@ -5,7 +5,6 @@ import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
 import com.touchdown.perflowbackend.employee.command.application.dto.*;
 import com.touchdown.perflowbackend.employee.command.application.service.EmployeeCommandService;
-import com.touchdown.perflowbackend.notification.command.application.service.NotificationResendService;
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +24,6 @@ import java.net.URISyntaxException;
 public class EmployeeCommandController {
 
     private final EmployeeCommandService employeeCommandService;
-    private final NotificationResendService notificationResendService;
     private static final String ACCESS_TOKEN_HEADER = "Authorization";
     private static final String REFRESH_TOKEN_HEADER = "refreshToken";
     private static final String BEARER_PREFIX = "Bearer ";
@@ -33,12 +31,10 @@ public class EmployeeCommandController {
 
     public EmployeeCommandController(
             @Value("${PWD_REDIRECT_URI}") String REDIRECT_URI,
-            EmployeeCommandService employeeCommandService,
-            NotificationResendService notificationResendService
+            EmployeeCommandService employeeCommandService
     ) {
         this.REDIRECT_URI = REDIRECT_URI;
         this.employeeCommandService = employeeCommandService;
-        this.notificationResendService = notificationResendService;
     }
 
     @PostMapping("/hr/employees")
@@ -103,8 +99,6 @@ public class EmployeeCommandController {
 
         headers.add(ACCESS_TOKEN_HEADER, BEARER_PREFIX + responseDTO.getAccessToken());
         headers.add(REFRESH_TOKEN_HEADER, BEARER_PREFIX + responseDTO.getRefreshToken());
-
-        notificationResendService.resendPendingNotifications(employeeLoginRequestDTO.getEmpId());
 
         return ResponseEntity.ok().headers(headers).body(SuccessCode.LOGIN_SUCCESS);
     }
