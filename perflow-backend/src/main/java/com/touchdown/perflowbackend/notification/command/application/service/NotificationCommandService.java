@@ -7,8 +7,8 @@ import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
 import com.touchdown.perflowbackend.notification.command.application.dto.NotificationMessageDTO;
 import com.touchdown.perflowbackend.notification.command.domain.aggregate.Notification;
+import com.touchdown.perflowbackend.notification.command.domain.aggregate.NotificationStatus;
 import com.touchdown.perflowbackend.notification.command.domain.aggregate.RefType;
-import com.touchdown.perflowbackend.notification.command.domain.repository.FcmTokenRepository;
 import com.touchdown.perflowbackend.notification.command.domain.repository.NotificationCommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -21,8 +21,6 @@ public class NotificationCommandService {
     private final NotificationCommandRepository notificationCommandRepository;
     private final RabbitTemplate rabbitTemplate;
     private final EmployeeCommandRepository employeeCommandRepository;
-    private final FcmTokenRepository fcmTokenRepository;
-    private final FcmService fcmService;
 
     /**
      * 도메인 이벤트 처리 & 알림 발행
@@ -45,6 +43,8 @@ public class NotificationCommandService {
                 .employee(employee)
                 .content(content)
                 .url(url)
+                .status(NotificationStatus.WAITING)
+                .retryCount(0)
                 .build();
 
         notificationCommandRepository.save(notification);

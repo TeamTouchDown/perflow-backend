@@ -13,6 +13,7 @@ public enum ErrorCode {
     SEND_EMAIL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "이메일 전송에 실패 했습니다."),
     FAIL_READ_FILE(HttpStatus.INTERNAL_SERVER_ERROR, "파일 읽기에 실패 했습니다."),
     FAIL_CREAT_FILE(HttpStatus.INTERNAL_SERVER_ERROR, "파일 생성에 실패 했습니다."),
+    NOTIFICATION_SEND_FAILED(HttpStatus.SERVICE_UNAVAILABLE, "알림 전송에 실패했습니다."),
 
     // 토큰 관련 에러
     NOT_VALID_REFRESH_TOKEN(HttpStatus.FORBIDDEN, "유효하지 않은 refresh token입니다."),
@@ -41,6 +42,7 @@ public enum ErrorCode {
     TOO_MANY_PROMOTION_STEPS(HttpStatus.BAD_REQUEST,"승진과 강등은 한번에 한 단계씩만 가능합니다."),
     DUPLICATE_DEPT_REQUEST(HttpStatus.BAD_REQUEST, "이미 소속된 부서입니다. 다른 부서를 선택해주세요."),
     INVALID_ANNUAL_REQUEST(HttpStatus.BAD_REQUEST, "유효하지 않은 연차 요청입니다."),
+    NOT_EXIST_FCM_TOKEN(HttpStatus.BAD_REQUEST, "FCM 토큰이 없어 알림 전송에 실패했습니다."),
 
 
     // 401 에러
@@ -73,6 +75,7 @@ public enum ErrorCode {
     NOT_FOUND_PERFOQUESTION(HttpStatus.NOT_FOUND,"문항 정보를 찾을 수 없습니다."),
     NOT_FOUND_PERFOQUESTION_ANSWER(HttpStatus.NOT_FOUND,"문항 답변을 찾을 수 없습니다."),
     NOT_FOUND_AI_RESPONSE(HttpStatus.NOT_FOUND,"AI로 부터 응답이 없습니다."),
+    NOT_FOUND_NOTI(HttpStatus.NOT_FOUND, "알림을 찾을 수 없습니다."),
 
     NOT_FOUND_APPROVE_SBJ(HttpStatus.NOT_FOUND, "결재 주체 정보를 찾을 수 없습니다."),
     INVALID_APPROVE_SBJ_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 결재 주체 ID입니다."),
