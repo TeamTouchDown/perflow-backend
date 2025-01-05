@@ -19,6 +19,7 @@ import com.touchdown.perflowbackend.hr.command.application.mapper.DepartmentMapp
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
+import com.touchdown.perflowbackend.notification.command.application.service.NotificationCommandService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,6 +51,8 @@ class DocCommandServiceTest {
     private DocFieldCommandRepository docFieldCommandRepository;
     @Mock
     private DocShareObjCommandRepository docShareObjCommandRepository;
+    @Mock
+    private NotificationCommandService notificationCommandService;
 
     @Test
     @DisplayName("결재 문서 생성 테스트")
