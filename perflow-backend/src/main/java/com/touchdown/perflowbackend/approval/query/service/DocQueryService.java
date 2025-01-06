@@ -288,6 +288,7 @@ public class DocQueryService {
                         .createDatetime(sbj.getApproveLine().getDoc().getCreateDatetime())
                         .approveSbjStatus(sbj.getStatus())
                         .processDatetime(sbj.getUpdateDatetime()) // 처리 시간
+                        .status(sbj.getApproveLine().getDoc().getStatus())
                         .build());
     }
 

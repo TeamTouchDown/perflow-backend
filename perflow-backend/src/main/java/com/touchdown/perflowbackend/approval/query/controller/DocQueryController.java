@@ -173,7 +173,13 @@ public class DocQueryController {
 
         String empId = EmployeeUtil.getEmpId();
 
-        return ResponseEntity.ok(docQueryService.searchProcessedDocList(title, createUser, fromDate, toDate, pageable, empId));
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                pageable.getSort().isSorted() ? pageable.getSort() : Sort.by(Sort.Direction.ASC, "createDatetime")
+        );
+
+        return ResponseEntity.ok(docQueryService.searchProcessedDocList(title, createUser, fromDate, toDate, sortedPageable, empId));
     }
 
     // 처리 문서 상세 조회

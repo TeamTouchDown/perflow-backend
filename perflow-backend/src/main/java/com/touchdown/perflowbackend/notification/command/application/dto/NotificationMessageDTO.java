@@ -1,5 +1,6 @@
 package com.touchdown.perflowbackend.notification.command.application.dto;
 
+import com.touchdown.perflowbackend.notification.command.domain.aggregate.NotificationStatus;
 import com.touchdown.perflowbackend.notification.command.domain.aggregate.RefType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,4 +28,8 @@ public class NotificationMessageDTO {
     private String url;
 
     private LocalDateTime createDatetime;
+
+    private NotificationStatus status;
+
+    private int retryCount;
 }

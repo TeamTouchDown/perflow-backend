@@ -1,5 +1,6 @@
 package com.touchdown.perflowbackend.workAttitude.query.controller;
 
+import com.touchdown.perflowbackend.workAttitude.query.dto.SimpleAttendanceSummaryResponseDTO;
 import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeAttendanceSummaryResponseDTO;
 import com.touchdown.perflowbackend.workAttitude.query.service.WorkAttitudeAttendanceQueryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -61,6 +62,13 @@ public class WorkAttitudeAttendanceQueryController {
     @GetMapping("/hr/attendance/summaries/monthly")
     public ResponseEntity<List<WorkAttitudeAttendanceSummaryResponseDTO>> getMonthlySummaryForAllEmployees() {
         return ResponseEntity.ok(attendanceQueryService.getMonthlySummaryForAllEmployees());
+    }
+
+    @Operation(summary = "인사팀 전체 월별 결근 및 지각 조회", description = "인사팀은 모든 사원의 월별 결근 및 지각 횟수를 조회합니다.")
+    @GetMapping("/hr/attendance/summaries/simple/monthly")
+    public ResponseEntity<List<SimpleAttendanceSummaryResponseDTO>> getSimpleMonthlySummaryForAllEmployees() {
+        List<SimpleAttendanceSummaryResponseDTO> summaries = attendanceQueryService.getSimpleMonthlySummaryForAllEmployees();
+        return ResponseEntity.ok(summaries);
     }
 
 }
