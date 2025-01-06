@@ -53,6 +53,6 @@ public interface WorkAttitudeOvertimeQueryRepository extends JpaRepository<Overt
             "ORDER BY month ASC", nativeQuery = true)
     List<Object[]> findMonthlyOvertimeSummary(@Param("empId") String empId);
 
-    @Query("SELECT o FROM Overtime o WHERE o.status = 'CONFIRMED'")
+    @Query("SELECT o FROM Overtime o WHERE o.overtimeStatus = 'CONFIRMED'")
     List<Overtime> findAllConfirmed();
 }
