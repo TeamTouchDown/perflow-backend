@@ -34,6 +34,9 @@ public class Notification {
     @JoinColumn(name = "emp_id", nullable = false)
     private Employee employee;
 
+    @Column(name = "title", nullable = false, length = 50)
+    private String title;
+
     @Column(name = "content", nullable = false, length = 50)
     private String content;
 
@@ -52,11 +55,12 @@ public class Notification {
     private int retryCount;
 
     @Builder
-    public Notification(Long notiId, Long refId, RefType refType, Employee employee, String content, String url, NotificationStatus status, int retryCount) {
+    public Notification(Long notiId, Long refId, RefType refType, Employee employee, String title, String content, String url, NotificationStatus status, int retryCount) {
         this.notiId = notiId;
         this.refId = refId;
         this.refType = refType;
         this.employee = employee;
+        this.title = title;
         this.content = content;
         this.url = url;
         this.status = status;

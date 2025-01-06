@@ -4,6 +4,8 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
+import com.touchdown.perflowbackend.notification.command.application.service.NotificationCommandService;
+import com.touchdown.perflowbackend.notification.command.domain.aggregate.RefType;
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeAnnualRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.*;
@@ -26,8 +28,10 @@ public class WorkAttitudeAnnualCommandService {
     private final WorkAttitudeAnnualCommandRepository annualRepository;
     private final EmployeeCommandRepository employeeRepository;
     private final WorkAttitudeVacationCommandRepository vacationRepository;
+    private final NotificationCommandService notificationCommandService;
 
-
+    private static final String NEW_ANNUAL = "새 연차 신청 도착!";
+    private static final String NEW_ANNUAL_URL = "/attitude/annualForLeader";
 
     // 현재 로그인한 사용자 조회
     private Employee getCurrentEmployee() {
@@ -51,6 +55,15 @@ public class WorkAttitudeAnnualCommandService {
 
         annualRepository.save(annual);
         log.info("연차 신청 완료: {}", annual);
+
+        notificationCommandService.createAndPublishNotification(
+                annual.getAnnualId(),
+                RefType.ANNUAL.toString(),
+                annual.getApprover().getEmpId(),
+                NEW_ANNUAL,
+                employee.getName() + employee.getPosition().getName(),
+                NEW_ANNUAL_URL
+        );
     }
 
     // 연차 수정

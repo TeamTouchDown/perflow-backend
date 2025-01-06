@@ -24,7 +24,7 @@ public class FcmService {
     public void sendMessages(List<String> targetTokens, NotificationMessageDTO notificationMessageDTO) {
         Notification notification = Notification
                 .builder()
-                .setTitle("알림 도착!")
+                .setTitle(notificationMessageDTO.getTitle())
                 .setBody(notificationMessageDTO.getContent())
                 .build();
 
