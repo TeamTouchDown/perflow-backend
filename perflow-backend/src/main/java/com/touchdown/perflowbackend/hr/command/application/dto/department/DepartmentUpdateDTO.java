@@ -2,11 +2,13 @@ package com.touchdown.perflowbackend.hr.command.application.dto.department;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class DepartmentUpdateDTO {
 
     private String name;

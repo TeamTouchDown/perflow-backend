@@ -44,13 +44,30 @@ public class Notification {
     @CreatedDate
     private LocalDateTime createDatetime;
 
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private NotificationStatus status;
+
+    @Column(name = "retry_count")
+    private int retryCount;
+
     @Builder
-    public Notification(Long notiId, Long refId, RefType refType, Employee employee, String content, String url) {
+    public Notification(Long notiId, Long refId, RefType refType, Employee employee, String content, String url, NotificationStatus status, int retryCount) {
         this.notiId = notiId;
         this.refId = refId;
         this.refType = refType;
         this.employee = employee;
         this.content = content;
         this.url = url;
+        this.status = status;
+        this.retryCount = retryCount;
+    }
+
+    public void updateStatus(NotificationStatus status) {
+        this.status = status;
+    }
+
+    public void updateRetryCount(int retryCount) {
+        this.retryCount = retryCount;
     }
 }

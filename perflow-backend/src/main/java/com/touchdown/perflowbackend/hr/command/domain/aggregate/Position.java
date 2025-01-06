@@ -7,9 +7,11 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "`position`", schema = "perflow")

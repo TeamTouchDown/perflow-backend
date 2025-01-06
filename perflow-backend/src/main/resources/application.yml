@@ -39,6 +39,7 @@ spring:
     username: ${RABBIT_MQ_USERNAME}
     password: ${RABBIT_MQ_PASSWORD}
 
+
 token:
   secret: ${JWT_SECRET}
   access_token_expiration_time: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
