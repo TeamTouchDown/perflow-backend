@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @RequiredArgsConstructor
@@ -35,5 +36,7 @@ public class SeverancePayDTO {
     private final Long totalSeverancePay;
 
     private final Status severanceStatus;
+
+    private final LocalDateTime createDatetime;
 
 }

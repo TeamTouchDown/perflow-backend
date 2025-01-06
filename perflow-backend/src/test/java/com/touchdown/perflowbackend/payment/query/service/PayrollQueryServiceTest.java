@@ -64,8 +64,8 @@ public class PayrollQueryServiceTest {
     }
 
     @Test
-    @DisplayName("3개월 데이터")
-    void testGetLastThreeMonthsPayrolls() {
+    @DisplayName("가장 최근 급여 데이터를 기준으로 1년간 데이터를 조회")
+    void testGetLastMonthsPayrolls() {
         // Given
         PayrollChartDTO latestPayroll = new PayrollChartDTO(1L, 5000L, LocalDateTime.of(2024, 2, 1, 0, 0));
         List<PayrollChartDTO> expectedPayrolls = List.of(
@@ -75,11 +75,19 @@ public class PayrollQueryServiceTest {
         );
 
         Mockito.when(payrollQueryRepository.findLatestPayroll()).thenReturn(latestPayroll);
-        // 2023년으로 변경
-        Mockito.when(payrollQueryRepository.findPayrollsByMonths(12, 2, 2023)).thenReturn(expectedPayrolls);
+
+        // startMonth와 startYear는 로직에 따라 계산
+        int latestMonth = latestPayroll.getCreateDatetime().getMonthValue(); // 2 (February)
+        int latestYear = latestPayroll.getCreateDatetime().getYear();       // 2024
+        int startMonth = latestMonth - 2; // 3개월 기준: 2 - 2 = 0
+        int startYear = latestYear;
+
+        // startMonth = 12 (2023년 12월), startYear = 2023
+        Mockito.when(payrollQueryRepository.findPayrollsByMonths(startMonth, latestMonth, startYear, latestYear))
+                .thenReturn(expectedPayrolls);
 
         // When
-        List<PayrollChartDTO> result = payrollQueryService.getLastThreeMonthsPayrolls();
+        List<PayrollChartDTO> result = payrollQueryService.getLastMonthsPayrolls();
 
         // Then
         assertEquals(3, result.size());
@@ -87,8 +95,9 @@ public class PayrollQueryServiceTest {
         assertEquals(4500L, result.get(1).getTotalAmount());
         assertEquals(4000L, result.get(2).getTotalAmount());
 
+        // Repository 호출 확인
         Mockito.verify(payrollQueryRepository).findLatestPayroll();
-        Mockito.verify(payrollQueryRepository).findPayrollsByMonths(12, 2, 2023);
+        Mockito.verify(payrollQueryRepository).findPayrollsByMonths(startMonth, latestMonth, startYear, latestYear);
     }
 
     @Test

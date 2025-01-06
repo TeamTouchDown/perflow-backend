@@ -43,7 +43,7 @@ public class SeveranceExcelTemplateQueryService {
         for (Employee employee : employees) {
 
             // 퇴사일 3개월 전 날짜 계산
-            LocalDate threeMonthsAgo = employee.getResignDate().minusMonths(3);
+            LocalDate threeMonthsAgo = employee.getResignDate().minusMonths(2);
 
             // 퇴사일 3개월 전까지 연장근무 시간 등을 가져오는 쿼리 호출
             List<ThreeMonthOvertimeDTO> overtimeSummaryList = workAttitudeOvertimeQueryRepository.findOvertimeSummaryForResignedEmployees(threeMonthsAgo);
@@ -151,11 +151,9 @@ public class SeveranceExcelTemplateQueryService {
         holidayAllowanceCell.setCellValue(holidayAllowance);
         holidayAllowanceCell.setCellStyle(numberCellStyle);
 
-        // 연차수당 (12월인 경우에만 계산)
+        // 연차수당
         Long annualAllowance = 0L;
-        if (LocalDate.now().getMonthValue() == 12) {
-            annualAllowance = calculateResignedAnnualAllowance(hourlyPay);
-        }
+        annualAllowance = calculateResignedAnnualAllowance(hourlyPay);
         Cell annualAllowanceCell = row.createCell(10);
         annualAllowanceCell.setCellValue(annualAllowance);
         annualAllowanceCell.setCellStyle(numberCellStyle);

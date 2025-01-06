@@ -36,7 +36,7 @@ public class WorkAttitudeOvertimeQueryService {
 
     @Transactional
     public List<WorkAttitudeOvertimeForTeamLeaderSummaryDTO> getOvertimeSummaryForAllEmployees() {
-        List<Overtime> overtimes = repository.findAllNotDeleted();
+        List<Overtime> overtimes = repository.findAllConfirmed();
 
         Map<String, List<Overtime>> groupedByEmployee = overtimes.stream()
                 .collect(Collectors.groupingBy(overtime -> overtime.getEmpId().getEmpId()));
