@@ -59,6 +59,32 @@ public class EvaQueryService {
         return evaAnswerList;
     }
 
+    // 동료 평가 정답 조회
+    @Transactional(readOnly = true)
+    public List<String> getEvaColAnswers(String perfoedempId, Long questionId, Long deptId) {
+
+        // 유저가 존재하는지 체크하기
+        Employee perfoedemp = findEmployeeByEmpId(perfoedempId);
+
+        // 현재 지정된 동료 평가의 답변 불러오기
+        List<String> evaAnswerList = evaQueryRepository.findQuestionByempId(deptId, PerfoType.valueOf("COL"), QuestionType.valueOf("SUBJECTIVE"), java.time.Year.now().getValue(), perfoedempId, questionId);
+
+        return evaAnswerList;
+    }
+
+    // 동료 평가 정답 조회
+    @Transactional(readOnly = true)
+    public List<String> getEvaDownAnswers(String perfoedempId, Long questionId, Long deptId) {
+
+        // 유저가 존재하는지 체크하기
+        Employee perfoedemp = findEmployeeByEmpId(perfoedempId);
+
+        // 현재 지정된 동료 평가의 답변 불러오기
+        List<String> evaAnswerList = evaQueryRepository.findQuestionByempId(deptId, PerfoType.valueOf("DOWN"), QuestionType.valueOf("SUBJECTIVE"), java.time.Year.now().getValue(), perfoedempId, questionId);
+
+        return evaAnswerList;
+    }
+
     // 평가 문제 리스트 조회
     @Transactional(readOnly = true)
     public List<EvaQuestionDetailResponseDTO> getEvaQuestionList(String empId, EvaQuestionRequestDTO evaQuestionRequestDTO){
@@ -109,6 +135,51 @@ public class EvaQueryService {
         return evaAnswerList;
     }
 
+    // 동료 평가 점수 조회
+    @Transactional(readOnly = true)
+    public Long getEvaColScore(String empId){
+
+        Employee emp = findEmployeeByEmpId(empId);
+
+        List<Long> scoreList = evaQueryRepository.findScoreByEmpId(empId, PerfoType.valueOf("COL"), java.time.Year.now().getValue());
+
+        // 점수 리스트가 비어있거나 null인 경우 평균은 0으로 설정
+        if (scoreList == null || scoreList.isEmpty()) {
+            return 0L;
+        }
+
+        // 점수의 평균 계산
+        double average = scoreList.stream()
+                .mapToLong(Long::longValue)
+                .average()
+                .orElse(0.0);
+
+        // 평균을 반올림하여 Long 타입으로 반환
+        return Math.round(average * 20);
+    }
+
+    // 동료 평가 점수 조회
+    @Transactional(readOnly = true)
+    public Long getEvaDownScore(String empId){
+
+        Employee emp = findEmployeeByEmpId(empId);
+
+        List<Long> scoreList = evaQueryRepository.findScoreByEmpId(empId, PerfoType.valueOf("DOWN"), java.time.Year.now().getValue());
+
+        // 점수 리스트가 비어있거나 null인 경우 평균은 0으로 설정
+        if (scoreList == null || scoreList.isEmpty()) {
+            return 0L;
+        }
+
+        // 점수의 평균 계산
+        double average = scoreList.stream()
+                .mapToLong(Long::longValue)
+                .average()
+                .orElse(0.0);
+
+        // 평균을 반올림하여 Long 타입으로 반환
+        return Math.round(average * 20);
+    }
     // 사번으로 사원 정보 찾기
     private Employee findEmployeeByEmpId(String empId) {
         return employeeCommandRepository.findById(empId)

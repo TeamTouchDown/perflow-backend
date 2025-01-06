@@ -6,12 +6,10 @@ import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.Kpi;
 import com.touchdown.perflowbackend.perfomance.command.domain.repository.KpiCommandRepository;
-import com.touchdown.perflowbackend.perfomance.query.dto.KPIDetailResponseDTO;
-import com.touchdown.perflowbackend.perfomance.query.dto.KPILimitResponseDTO;
-import com.touchdown.perflowbackend.perfomance.query.dto.KPIListResponseDTO;
-import com.touchdown.perflowbackend.perfomance.query.dto.KPIRejectReponseDTO;
+import com.touchdown.perflowbackend.perfomance.query.dto.*;
 import com.touchdown.perflowbackend.perfomance.query.repository.KPIQueryRepository;
 import com.touchdown.perflowbackend.perfomance.query.repository.KPIStatusQueryRepository;
+import com.touchdown.perflowbackend.perfomance.query.repository.KpiLimitQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +26,7 @@ public class KPIQueryService {
     private final EmployeeCommandRepository employeeCommandRepository;
     private final KpiCommandRepository kpiCommandRepository;
     private final KPIStatusQueryRepository kpiStatusQueryRepository;
+    private final KpiLimitQueryRepository kpiLimitQueryRepository;
 
     // 개인 KPI 리스트 조회
     @Transactional(readOnly = true)
@@ -306,6 +305,15 @@ public class KPIQueryService {
         KPIRejectReponseDTO rejectreason = kpiStatusQueryRepository.findrejectbyempIdandkpiId(empId, kpiId);
 
         return rejectreason;
+    }
+
+    // KPI 제한 조회
+    @Transactional(readOnly = true)
+    public KPILimitDTO getKPILimit(Long deptId){
+
+        KPILimitDTO kpilimit = kpiLimitQueryRepository.findkpilimitbydeptId(deptId);
+
+        return kpilimit;
     }
 
     // 받아온 EMP Id를 이용해 사원 정보 불러오기

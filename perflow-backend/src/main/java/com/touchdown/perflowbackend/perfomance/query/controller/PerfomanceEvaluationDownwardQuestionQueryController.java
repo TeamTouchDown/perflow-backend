@@ -20,7 +20,16 @@ public class PerfomanceEvaluationDownwardQuestionQueryController {
     @GetMapping("/{empId}")
     public ResponseEntity<List<EvaQuestionDetailResponseDTO>> getEvaColQuestionList(
             @PathVariable(name = "empId") String empId,
-            @RequestBody EvaQuestionRequestDTO evaQuestionRequestDTO){
+            @RequestParam(name = "deptId") Long deptId,
+            @RequestParam(name = "questionType") String questionType,
+            @RequestParam(name = "perfoType") String perfoType){
+
+        EvaQuestionRequestDTO evaQuestionRequestDTO = EvaQuestionRequestDTO.builder()
+                .deptId(deptId)
+                .questionType(questionType)
+                .perfoType(perfoType)
+                .build();
+
 
         List<EvaQuestionDetailResponseDTO> response = evaQueryService.getEvaQuestionList(empId, evaQuestionRequestDTO);
 

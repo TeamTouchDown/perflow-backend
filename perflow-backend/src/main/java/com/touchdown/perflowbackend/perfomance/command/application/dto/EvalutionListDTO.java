@@ -1,11 +1,13 @@
 package com.touchdown.perflowbackend.perfomance.command.application.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Getter
+@Builder
 @RequiredArgsConstructor
 public class EvalutionListDTO {
 

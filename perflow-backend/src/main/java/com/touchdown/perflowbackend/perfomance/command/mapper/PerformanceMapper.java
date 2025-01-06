@@ -6,6 +6,7 @@ import com.touchdown.perflowbackend.perfomance.command.application.dto.*;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.perfomance.command.domain.repository.PerfoQuestionCommandRepository;
 import com.touchdown.perflowbackend.perfomance.query.dto.KPIDetailResponseDTO;
+import com.touchdown.perflowbackend.perfomance.query.dto.KPILimitDTO;
 import com.touchdown.perflowbackend.perfomance.query.dto.KPILimitResponseDTO;
 import com.touchdown.perflowbackend.perfomance.query.dto.KPIListResponseDTO;
 
@@ -158,6 +159,19 @@ public class PerformanceMapper {
                 .kpi(kpi)
                 .passStatus(PassStatus.valueOf(createKpiPassDTO.getStatus()))
                 .passReason(createKpiPassDTO.getReason())
+                .build();
+    }
+
+    // KPI 제한
+    public static KpiLimit createKpiLimit(Employee emp, Department dept, KPILimitDTO kpiLimitDTO){
+
+        return KpiLimit.builder()
+                .emp(emp)
+                .department(dept)
+                .personalKpiMin(kpiLimitDTO.getPersonalminKpis())
+                .personalKpiMax(kpiLimitDTO.getPersonalmaxKpis())
+                .teamKpiMin(kpiLimitDTO.getTeamminKpis())
+                .teamKpiMax(kpiLimitDTO.getTeammaxKpis())
                 .build();
     }
 }

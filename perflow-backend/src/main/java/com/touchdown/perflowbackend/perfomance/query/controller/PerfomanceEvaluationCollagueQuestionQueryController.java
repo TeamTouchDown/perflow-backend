@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/hr/perfomances/col/perfo/question")
+@RequestMapping("/api/v1/perfomances/col/perfo/question")
 @RequiredArgsConstructor
 public class PerfomanceEvaluationCollagueQuestionQueryController {
 
@@ -20,7 +20,15 @@ public class PerfomanceEvaluationCollagueQuestionQueryController {
     @GetMapping("/{empId}")
     public ResponseEntity<List<EvaQuestionDetailResponseDTO>> getEvaColQuestionList(
             @PathVariable(name = "empId") String empId,
-            @RequestBody EvaQuestionRequestDTO evaQuestionRequestDTO){
+            @RequestParam(name = "deptId") Long deptId,
+            @RequestParam(name = "questionType") String questionType,
+            @RequestParam(name = "perfoType") String perfoType){
+
+        EvaQuestionRequestDTO evaQuestionRequestDTO = EvaQuestionRequestDTO.builder()
+                .deptId(deptId)
+                .questionType(questionType)
+                .perfoType(perfoType)
+                .build();
 
         List<EvaQuestionDetailResponseDTO> response = evaQueryService.getEvaQuestionList(empId, evaQuestionRequestDTO);
 

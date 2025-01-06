@@ -53,6 +53,24 @@ public interface EvaQueryRepository extends JpaRepository<Perfo, Long> {
     );
 
     // 부서 아이디, 문항의 타입 등을 이용해 동료 평가 문항 상세 조회
+    @Query("SELECT q.answer " +
+            "FROM Perfo q " +
+            "WHERE q.perfoQuestion.dept.departmentId = :deptId " +
+            "AND q.perfoQuestion.perfoType = :perfoType " +
+            "AND q.perfoQuestion.questionType = :questionType " +
+            "AND q.perfoedEmp.empId = : empId " +
+            "AND q.perfoQuestion.perfoQuestionId = :questionId " +
+            "AND FUNCTION('YEAR', q.createDatetime) = :currentYear")
+    List<String> findQuestionByempId(
+            @Param("deptId") Long deptId,
+            @Param("perfoType") PerfoType perfoType,
+            @Param("questionType") QuestionType questionType,
+            @Param("currentYear") int currentYear,
+            @Param("empId") String empId,
+            @Param("questionId") Long questionId
+    );
+
+    // 부서 아이디, 문항의 타입 등을 이용해 동료 평가 문항 상세 조회
     @Query("SELECT new com.touchdown.perflowbackend.perfomance.query.dto.EvaQuestionDetailResponseDTO( " +
             "q.perfoQuestionId, q.questionContent " +
             ") " +
@@ -65,6 +83,19 @@ public interface EvaQueryRepository extends JpaRepository<Perfo, Long> {
             @Param("deptId") Long deptId,
             @Param("perfoType") PerfoType perfoType,
             @Param("questionType") QuestionType questionType,
+            @Param("currentYear") int currentYear
+    );
+
+    // 평가자, 피평가자 사번, 현재 년도를 이용해 동료 평가 상세 정보 조회
+    @Query("SELECT p.answer " +
+            "FROM Perfo p " +
+            "WHERE p.perfoedEmp.empId = :empId " +
+            "AND p.perfoQuestion.perfoType = :perfoType " +
+            "AND p.perfoQuestion.questionType = 'MULTIPLE' " +
+            "AND FUNCTION('YEAR', p.createDatetime) = :currentYear ")
+    List<Long> findScoreByEmpId(
+            @Param("empId") String empId,
+            @Param("perfoType") PerfoType perfoType,
             @Param("currentYear") int currentYear
     );
 }

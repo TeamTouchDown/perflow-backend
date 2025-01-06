@@ -5,6 +5,7 @@ import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,4 +39,14 @@ public class KpiLimit extends BaseEntity {
 
     @Column(name = "team_kpi_max", nullable = false)
     private Long teamKpiMax;
+
+    @Builder
+    public KpiLimit(Department department, Employee emp, Long personalKpiMin, Long personalKpiMax, Long teamKpiMax, Long teamKpiMin){
+        this.department = department;
+        this.emp = emp;
+        this.personalKpiMin = personalKpiMin;
+        this.personalKpiMax = personalKpiMax;
+        this.teamKpiMin = teamKpiMin;
+        this.teamKpiMax = teamKpiMax;
+    }
 }

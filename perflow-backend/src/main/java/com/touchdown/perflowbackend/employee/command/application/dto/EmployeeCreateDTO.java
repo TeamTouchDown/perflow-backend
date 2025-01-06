@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Setter
 @ToString
 @Builder
+@AllArgsConstructor
 public class EmployeeCreateDTO {
 
     private String empId;
