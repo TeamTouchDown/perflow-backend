@@ -9,5 +9,6 @@ public enum RefType {
     ANNUAL,
     VACATION,
     TRAVEL,
-    PAYROLL_DETAIL
+    PAYROLL_DETAIL,
+    ANNOUNCEMENT
 }
