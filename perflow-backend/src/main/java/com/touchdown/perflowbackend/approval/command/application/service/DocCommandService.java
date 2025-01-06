@@ -37,6 +37,12 @@ public class DocCommandService {
     private final DocShareObjCommandRepository docShareObjCommandRepository;
     private final NotificationCommandService notificationCommandService;
 
+    private static final String NEW_DOC = "새 결재 문서가 생성되었습니다.";
+    private static final String NEW_DOC_URL = "/approval/waiting";
+    private static final String NEW_SHARED_DOC = "새 결재 문서가 공유되었습니다.";
+    private static final String NEW_SHARED_DOC_URL = "/approval/inbox";
+
+
     // 새 결재 문서 생성
     @Transactional
     public void createNewDoc(DocCreateRequestDTO request, String createUserId) {
@@ -341,8 +347,9 @@ public class DocCommandService {
                             doc.getDocId(),
                             String.valueOf(RefType.APPROVE_SBJ),
                             sbjUser.getEmpId(),
-                            "새 결재 문서가 생성되었습니다.",
-                            "/approval/waiting"
+                            NEW_DOC,
+                            doc.getTitle(),
+                            NEW_DOC_URL
                     );
                 }
             }
@@ -359,8 +366,9 @@ public class DocCommandService {
                         doc.getDocId(),
                         String.valueOf(RefType.APPROVE_SBJ),
                         shareUser.getEmpId(),
-                        "새 문서가 공유되었습니다.",
-                        "/approval/inbox"
+                        NEW_SHARED_DOC,
+                        doc.getTitle(),
+                        NEW_SHARED_DOC_URL
                 );
             }
         }
