@@ -4,6 +4,8 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
+import com.touchdown.perflowbackend.notification.command.application.service.NotificationCommandService;
+import com.touchdown.perflowbackend.notification.command.domain.aggregate.RefType;
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeTravelRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Status;
@@ -24,6 +26,10 @@ public class WorkAttitudeTravelCommandService {
 
     private final WorkAttitudeTravelCommandRepository travelRepository;
     private final EmployeeCommandRepository employeeRepository;
+    private final NotificationCommandService notificationCommandService;
+
+    private static final String NEW_TRAVEL = "새 출장 신청 도착!";
+    private static final String NEW_TRAVEL_URL = "/attitude/travelForLeader";
 
     private Employee getCurrentEmployee() {
         String currentEmpId = EmployeeUtil.getEmpId();
@@ -49,6 +55,15 @@ public class WorkAttitudeTravelCommandService {
         Travel travel = WorkAttitudeTravelMapper.toEntity(requestDTO, employee, approver);
         travelRepository.save(travel);
         log.info("출장 신청 완료: {}", travel);
+
+        notificationCommandService.createAndPublishNotification(
+                travel.getTravelId(),
+                RefType.TRAVEL.toString(),
+                travel.getApprover().getEmpId(),
+                NEW_TRAVEL,
+                employee.getName() + employee.getPosition().getName(),
+                NEW_TRAVEL_URL
+        );
     }
 
     @Transactional

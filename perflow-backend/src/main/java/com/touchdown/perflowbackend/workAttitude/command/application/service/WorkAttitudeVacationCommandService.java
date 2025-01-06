@@ -4,6 +4,8 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
+import com.touchdown.perflowbackend.notification.command.application.service.NotificationCommandService;
+import com.touchdown.perflowbackend.notification.command.domain.aggregate.RefType;
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeVacationRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.*;
@@ -25,7 +27,10 @@ public class WorkAttitudeVacationCommandService {
     private final WorkAttitudeVacationCommandRepository vacationRepository;
     private final EmployeeCommandRepository employeeRepository;
     private final WorkAttitudeAnnualCommandRepository annualRepository;
+    private final NotificationCommandService notificationCommandService;
 
+    private static final String NEW_VACATION = "새 휴가 신청 도착!";
+    private static final String NEW_VACATION_URL = "/attitude/vacationForLeader";
 
     // 현재 로그인한 사용자 조회
     private Employee getCurrentEmployee() {
@@ -50,6 +55,15 @@ public class WorkAttitudeVacationCommandService {
         Vacation vacation = WorkAttitudeVacationMapper.toEntity(requestDTO, employee, approver);
         vacationRepository.save(vacation);
         log.info("휴가 신청 완료: {}", vacation);
+
+        notificationCommandService.createAndPublishNotification(
+                vacation.getVacationId(),
+                RefType.VACATION.toString(),
+                vacation.getApprover().getEmpId(),
+                NEW_VACATION,
+                employee.getName() + employee.getPosition().getName(),
+                NEW_VACATION_URL
+        );
     }
 
     // 휴가 수정
