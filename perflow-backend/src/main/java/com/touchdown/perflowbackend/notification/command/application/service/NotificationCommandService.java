@@ -13,6 +13,7 @@ import com.touchdown.perflowbackend.notification.command.domain.repository.Notif
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -69,5 +70,16 @@ public class NotificationCommandService {
                 RabbitMQConfig.ROUTING_KEY,
                 dto
         );
+    }
+
+    @Transactional
+    public void deleteNotification(Long notiId, String empId) {
+
+        Notification notification = notificationCommandRepository.findById(notiId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_NOTI));
+
+        if (notification.getEmployee().getEmpId().equals(empId)) {
+            notificationCommandRepository.deleteById(notiId);
+        }
     }
 }
