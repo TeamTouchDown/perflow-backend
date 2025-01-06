@@ -12,6 +12,7 @@ public class NotificationMapper {
                 notification.getRefId(),
                 notification.getRefType().toString(),
                 notification.getEmployee().getEmpId(),
+                notification.getTitle(),
                 notification.getContent(),
                 notification.getUrl(),
                 notification.getCreateDatetime()
