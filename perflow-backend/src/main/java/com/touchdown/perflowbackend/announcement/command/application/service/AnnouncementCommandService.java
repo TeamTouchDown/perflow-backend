@@ -14,6 +14,8 @@ import com.touchdown.perflowbackend.file.command.domain.aggregate.File;
 import com.touchdown.perflowbackend.file.command.domain.aggregate.FileDirectory;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.repository.DepartmentCommandRepository;
+import com.touchdown.perflowbackend.notification.command.application.service.NotificationCommandService;
+import com.touchdown.perflowbackend.notification.command.domain.aggregate.RefType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,10 @@ public class AnnouncementCommandService {
     private final EmployeeCommandRepository employeeCommandRepository;
     private final DepartmentCommandRepository departmentCommandRepository;
     private final FileService fileService;
+    private final NotificationCommandService notificationCommandService;
+
+    private static final String NEW_ANN = "새 공지사항 도착!";
+    private static final String NEW_ANN_URL = "/announcements/";
 
     @Transactional
     public void createAnnouncement(String empId, AnnouncementRequestDTO announcementRequestDTO, List<MultipartFile> files) {
@@ -48,6 +54,8 @@ public class AnnouncementCommandService {
         announcementCommandRepository.save(newAnnouncement);
 
         fileUpload(files, newAnnouncement);
+
+        sendNotification(newAnnouncement);
     }
 
     @Transactional
@@ -124,6 +132,22 @@ public class AnnouncementCommandService {
 
             // 필요 시 업로드된 파일 정보를 출력하거나 추가 작업 수행 가능
             uploadedFiles.forEach(file -> log.info("Uploaded file: {}", file.getFileName()));
+        }
+    }
+
+    private void sendNotification(Announcement announcement) {
+
+        List<Employee> employeeList = employeeCommandRepository.findAll();
+
+        for (Employee employee : employeeList) {
+            notificationCommandService.createAndPublishNotification(
+                    announcement.getAnnId(),
+                    RefType.ANNOUNCEMENT.toString(),
+                    employee.getEmpId(),
+                    NEW_ANN,
+                    announcement.getTitle(),
+                    NEW_ANN_URL + announcement.getAnnId()
+            );
         }
     }
 }

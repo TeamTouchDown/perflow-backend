@@ -82,4 +82,9 @@ public class NotificationCommandService {
             notificationCommandRepository.deleteById(notiId);
         }
     }
+
+    @Transactional
+    public void deleteAllNotifications(String empId) {
+        notificationCommandRepository.deleteAllByEmployeeEmpId(empId);
+    }
 }

@@ -9,4 +9,6 @@ import java.util.List;
 public interface NotificationCommandRepository extends JpaRepository<Notification, Long> {
 
     List<Notification> findByEmployeeEmpIdAndStatusIn(String employeeEmpId, List<NotificationStatus> status);
+
+    void deleteAllByEmployeeEmpId(String employeeEmpId);
 }

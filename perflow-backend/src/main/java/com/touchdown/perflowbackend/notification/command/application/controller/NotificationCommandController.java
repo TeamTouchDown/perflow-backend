@@ -24,4 +24,11 @@ public class NotificationCommandController {
 
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<SuccessCode> deleteAllNotifications() {
+        notificationCommandService.deleteAllNotifications(EmployeeUtil.getEmpId());
+
+        return ResponseEntity.ok(SuccessCode.SUCCESS);
+    }
 }
