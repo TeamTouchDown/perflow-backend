@@ -106,7 +106,7 @@ public class DocQueryController {
         String empId = EmployeeUtil.getEmpId();
 
         // 정렬 주기
-        Pageable pageable = PageRequest.of(page, size, Sort.by("docId").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createDatetime").descending());
 
         return ResponseEntity.ok(docQueryService.searchOutboxDocList(title, fromDate, toDate, pageable, empId));
     }
