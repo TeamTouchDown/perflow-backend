@@ -18,6 +18,8 @@ public class NotificationResponseDTO {
 
     private String empId;
 
+    private String title;
+
     private String content;
 
     private String url;

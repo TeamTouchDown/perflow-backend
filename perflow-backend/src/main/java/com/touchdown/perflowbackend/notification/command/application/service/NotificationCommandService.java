@@ -29,6 +29,7 @@ public class NotificationCommandService {
             Long refId,
             String refType,
             String empId,
+            String title,
             String content,
             String url
     ) {
@@ -41,6 +42,7 @@ public class NotificationCommandService {
                 .refId(refId)
                 .refType(RefType.valueOf(refType))
                 .employee(employee)
+                .title(title)
                 .content(content)
                 .url(url)
                 .status(NotificationStatus.WAITING)
@@ -55,6 +57,7 @@ public class NotificationCommandService {
                 .refId(notification.getRefId())
                 .refType(notification.getRefType())
                 .empId(employee.getEmpId())
+                .title(notification.getTitle())
                 .content(notification.getContent())
                 .url(notification.getUrl())
                 .createDatetime(notification.getCreateDatetime())
