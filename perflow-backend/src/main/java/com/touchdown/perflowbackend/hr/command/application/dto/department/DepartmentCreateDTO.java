@@ -1,10 +1,12 @@
 package com.touchdown.perflowbackend.hr.command.application.dto.department;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class DepartmentCreateDTO {
 
     private Long departmentId;

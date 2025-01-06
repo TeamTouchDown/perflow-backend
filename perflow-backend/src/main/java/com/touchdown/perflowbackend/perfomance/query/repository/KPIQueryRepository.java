@@ -110,13 +110,20 @@ public interface KPIQueryRepository extends JpaRepository<Kpi, Long> {
             String quarter,
             String month);
 
-    // 사번을 통해 개인 KPI 제한 조회
+    // 사번을 통해 개인 KPI 제한 조회 (가장 최근 createdatetime 기준)
     @Query("SELECT new com.touchdown.perflowbackend.perfomance.query.dto.KPILimitResponseDTO(l.personalKpiMin, l.personalKpiMax) " +
             "FROM KpiLimit l " +
-            "JOIN l.department d " + // KpiLimit에서 Department 조인
-            "JOIN Employee e ON d.departmentId = e.dept.departmentId " + // Employee와 Department 조인
-            "WHERE e.empId = :empId") // userId 조건 추가
+            "JOIN l.department d " +
+            "JOIN Employee e ON d.departmentId = e.dept.departmentId " +
+            "WHERE e.empId = :empId AND l.createDatetime = (" +
+            "    SELECT MAX(l2.createDatetime) " +
+            "    FROM KpiLimit l2 " +
+            "    JOIN l2.department d2 " +
+            "    JOIN Employee e2 ON d2.departmentId = e2.dept.departmentId " +
+            "    WHERE e2.empId = :empId" +
+            ")")
     Optional<KPILimitResponseDTO> findPersonalKPILimitByEmpId(String empId);
+
 
     // 사번을 통해 팀 KPI 목록 조회
     @Query("SELECT new com.touchdown.perflowbackend.perfomance.query.dto.KPIDetailResponseDTO(r.kpiId, r.emp.empId, r.goal, r.goalValue,r.goalValueUnit,r.goalDetail, r.currentValue, r.status, r.personalType, r.period) " +

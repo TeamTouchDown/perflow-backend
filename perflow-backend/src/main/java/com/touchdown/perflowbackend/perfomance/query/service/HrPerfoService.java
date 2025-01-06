@@ -4,7 +4,10 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
+import com.touchdown.perflowbackend.perfomance.command.infrastructure.repository.HrPerfoHistoryRepository;
+import com.touchdown.perflowbackend.perfomance.query.dto.HrPerfoHistoryResponseDTO;
 import com.touchdown.perflowbackend.perfomance.query.dto.HrPerfoResponseDTO;
+import com.touchdown.perflowbackend.perfomance.query.repository.HrPerfoHistoryQueryRepository;
 import com.touchdown.perflowbackend.perfomance.query.repository.HrPerfoQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ public class HrPerfoService {
 
     private final EmployeeCommandRepository employeeCommandRepository;
     private final HrPerfoQueryRepository hrPerfoQueryRepository;
+    private final HrPerfoHistoryQueryRepository hrPerfoHistoryQueryRepository;
 
     // 인사 평가 조회
     @Transactional(readOnly = true)
@@ -30,6 +34,17 @@ public class HrPerfoService {
         List<HrPerfoResponseDTO> hrPerfoList = hrPerfoQueryRepository.findHrPerfoByEmpId(empId);
 
         return hrPerfoList;
+    }
+
+    @Transactional(readOnly = true)
+    public List<HrPerfoHistoryResponseDTO> findHrPerfoHistoryByEmpId(String empId){
+
+        // 사원이 존재하는지 조회하기
+        Employee emp = findEmployeeByEmpId(empId);
+
+        List<HrPerfoHistoryResponseDTO> hrPerfoHistoryList = hrPerfoHistoryQueryRepository.findHrPerfoHistoryByEmpId(empId,java.time.Year.now().getValue());
+
+        return hrPerfoHistoryList;
     }
 
     // 사번으로 사원 정보 찾기

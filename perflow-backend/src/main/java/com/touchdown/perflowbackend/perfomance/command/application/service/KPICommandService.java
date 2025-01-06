@@ -4,14 +4,18 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
+import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
+import com.touchdown.perflowbackend.hr.command.domain.repository.DepartmentCommandRepository;
 import com.touchdown.perflowbackend.perfomance.command.application.dto.CreateKpiPassDTO;
 import com.touchdown.perflowbackend.perfomance.command.application.dto.CreateKpiProgressDTO;
 import com.touchdown.perflowbackend.perfomance.command.application.dto.KPIDetailRequestDTO;
 import com.touchdown.perflowbackend.perfomance.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.perfomance.command.domain.repository.KpiCommandRepository;
+import com.touchdown.perflowbackend.perfomance.command.domain.repository.KpiLimitCommandRepository;
 import com.touchdown.perflowbackend.perfomance.command.domain.repository.KpiProgressCommandRepository;
 import com.touchdown.perflowbackend.perfomance.command.domain.repository.KpiStatusCommandRepository;
 import com.touchdown.perflowbackend.perfomance.command.mapper.PerformanceMapper;
+import com.touchdown.perflowbackend.perfomance.query.dto.KPILimitDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +28,8 @@ public class KPICommandService {
     private final EmployeeCommandRepository employeeCommandRepository;
     private final KpiProgressCommandRepository kpiProgressCommandRepository;
     private final KpiStatusCommandRepository kpiStatusCommandRepository;
+    private final KpiLimitCommandRepository kpiLimitCommandRepository;
+    private final DepartmentCommandRepository departmentCommandRepository;
 
     // 개인 KPI 생성
     @Transactional
@@ -159,6 +165,19 @@ public class KPICommandService {
         kpiCommandRepository.save(kpi);
     }
 
+    @Transactional
+    public void createKPILimit(Long deptId, String empId, KPILimitDTO kpilimitDTO){
+
+        // empId를 통해 사원 정보 가져오기
+        Employee emp = findEmployeeByEmpId(empId);
+
+        Department dept = findDepartmentByDeptId(deptId);
+
+        KpiLimit kpilimit = PerformanceMapper.createKpiLimit(emp,dept,kpilimitDTO);
+
+        kpiLimitCommandRepository.save(kpilimit);
+
+    }
 
     // KPI 작성자와 현재 유저가 일치하는지 확인
     private boolean isSameWriter(String kpiempId, String requestEmpId) {
@@ -175,5 +194,11 @@ public class KPICommandService {
     private Kpi findKpiByKpiId(Long kpiId) {
         return kpiCommandRepository.findByKpiId(kpiId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_KPI));
+    }
+
+    // 받아온 DEPT id를 이용해 DEP 정보 불러오기
+    private Department findDepartmentByDeptId(Long deptId) {
+        return departmentCommandRepository.findById(deptId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_DEPARTMENT));
     }
 }

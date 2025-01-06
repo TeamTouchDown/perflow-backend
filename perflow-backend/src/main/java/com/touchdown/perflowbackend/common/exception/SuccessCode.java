@@ -67,6 +67,9 @@ public enum SuccessCode {
     // KPI 처리
     KPI_PASS_UPLOAD_SUCCESS(HttpStatus.OK,"KPI를 성공적으로 처리하였습니다."),
 
+    // KPI 제한 처리
+    KPI_LIMIT_UPLOAD_SUCCESS(HttpStatus.OK,"KPI 제한을 성공적으로 처리하였습니다."),
+
     // 동료 평가
     EVALUTION_COL_UPLOAD_SUCCESS(HttpStatus.OK, "동료 평가가 성공적으로 작성되었습니다."),
     EVALUTION_COL_UPDATE_SUCCESS(HttpStatus.OK, "동료 평가가 성공적으로 수정되었습니다."),
