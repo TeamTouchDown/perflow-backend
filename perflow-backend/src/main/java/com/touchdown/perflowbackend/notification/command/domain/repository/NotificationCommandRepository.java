@@ -11,4 +11,6 @@ public interface NotificationCommandRepository extends JpaRepository<Notificatio
     List<Notification> findByEmployeeEmpIdAndStatusIn(String employeeEmpId, List<NotificationStatus> status);
 
     void deleteAllByEmployeeEmpId(String employeeEmpId);
+
+    List<Notification> findAllByEmployeeEmpId(String employeeEmpId);
 }
