@@ -5,7 +5,7 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASSWORD}
   jooq:
-    sql-dialect: POSTGRES # 사용할 sql dialect
+    sql-dialect: MARIADB # 사용할 sql dialect
   redis:
     data:
       host: ${REDIS_HOST} # Redis 서버 호스트
@@ -14,6 +14,7 @@ spring:
     properties:
       hibernate:
         ddl-auto: update
+        dialect: org.hibernate.dialect.MariaDBDialect # Dialect 명시 추가
         # show_sql: true
         # format_sql: true
   mail:
