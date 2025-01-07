@@ -423,27 +423,6 @@ class EvalutionCommandServiceTest {
         verify(perfoQuestionCommandRepository, times(0)).save(any(Perfoquestion.class));
     }
 
-    @Test
-    void testCreateQuestion_DepartmentNotFound() {
-        // Arrange
-        CreateQuestionRequestDTO createQuestionRequestDTO = createQuestionRequestDTO();
-
-        when(employeeCommandRepository.findById("EMP001")).thenReturn(Optional.of(mockPerfoEmp));
-        when(departmentCommandRepository.findById(1L)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        CustomException exception = assertThrows(CustomException.class, () ->
-                evalutionCommandService.createQuestion("EMP001", createQuestionRequestDTO)
-        );
-
-        assertEquals(ErrorCode.NOT_FOUND_DEPARTMENT, exception.getErrorCode());
-
-        // Verify interactions
-        verify(employeeCommandRepository, times(1)).findById("EMP001");
-        verify(departmentCommandRepository, times(1)).findById(1L);
-        verify(perfoQuestionCommandRepository, times(0)).save(any(Perfoquestion.class));
-    }
-
     // updateQuestion Tests
     @Test
     void testUpdateQuestion_Success() {

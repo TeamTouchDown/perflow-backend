@@ -4,6 +4,8 @@ spring:
     url: jdbc:mariadb://${DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
+  config:
+    import: "classpath:API-KEY.yml"
   jooq:
     sql-dialect: MARIADB # 사용할 sql dialect
   redis:
