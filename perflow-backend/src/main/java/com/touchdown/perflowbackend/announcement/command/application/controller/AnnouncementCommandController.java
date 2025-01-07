@@ -3,6 +3,7 @@ package com.touchdown.perflowbackend.announcement.command.application.controller
 import com.touchdown.perflowbackend.announcement.command.application.dto.AnnouncementRequestDTO;
 import com.touchdown.perflowbackend.announcement.command.application.service.AnnouncementCommandService;
 import com.touchdown.perflowbackend.common.exception.SuccessCode;
+import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -27,7 +28,7 @@ public class AnnouncementCommandController {
             @RequestPart(value = "announcementRequestDTO") AnnouncementRequestDTO announcementRequestDTO,
             @RequestPart(value = "files", required = false) List<MultipartFile> files) {
 
-        announcementCommandService.createAnnouncement(announcementRequestDTO, files);
+        announcementCommandService.createAnnouncement(EmployeeUtil.getEmpId(), announcementRequestDTO, files);
 
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
@@ -39,16 +40,15 @@ public class AnnouncementCommandController {
             @RequestPart(value = "addedFiles", required = false) List<MultipartFile> addedFiles,
             @RequestParam(value = "deletedFileIds", required = false) List<Long> deletedFileIds) {
 
-        announcementCommandService.updateAnnouncement(annId, announcementRequestDTO, addedFiles, deletedFileIds);
+        announcementCommandService.updateAnnouncement(annId, EmployeeUtil.getEmpId(), announcementRequestDTO, addedFiles, deletedFileIds);
 
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }
 
     @DeleteMapping("/{annId}")
-    public ResponseEntity<SuccessCode> deleteAnnouncement(@PathVariable Long annId, @RequestBody String empId) {
+    public ResponseEntity<SuccessCode> deleteAnnouncement(@PathVariable Long annId) {
 
-        // empId는 추후 인증된 사용자 정보를 기반으로 추출
-        announcementCommandService.deleteAnnouncement(annId, empId);
+        announcementCommandService.deleteAnnouncement(annId, EmployeeUtil.getEmpId());
 
         return ResponseEntity.ok(SuccessCode.SUCCESS);
     }

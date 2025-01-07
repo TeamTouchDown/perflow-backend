@@ -5,10 +5,7 @@ import com.touchdown.perflowbackend.perfomance.query.dto.EvaDetailResponseDTO;
 import com.touchdown.perflowbackend.perfomance.query.service.EvaQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,6 +34,28 @@ public class PerformanceEvaluationDownwardQueryController {
             @PathVariable(name = "perfoedempId") String perfoedempId ){
 
         List<EvaAnswerResponseDTO> response = evaQueryService.getEvaDownAnswer(perfoempId, perfoedempId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    //  하향 평가 점수 조회
+    @GetMapping("/score/{empId}")
+    public ResponseEntity<Long> getEvaDownScore(
+            @PathVariable(name = "empId") String empId){
+
+        Long response = evaQueryService.getEvaDownScore(empId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    // 하향 평가 답변 조회
+    @GetMapping("/answer/{empId}")
+    public ResponseEntity<List<String>> getEvaColAnswers(
+            @PathVariable(name = "empId") String empId,
+            @RequestParam(name = "questionId") Long questionId,
+            @RequestParam(name = "deptId") Long deptId){
+
+        List<String> response = evaQueryService.getEvaDownAnswers(empId, questionId, deptId);
 
         return ResponseEntity.ok(response);
     }

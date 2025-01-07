@@ -9,10 +9,7 @@ import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -22,6 +19,7 @@ import java.util.Set;
 
 @Slf4j
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -53,7 +51,7 @@ public class Employee extends BaseEntity {
     @Column(name = "gender", nullable = false, length = 30)
     private String gender;
 
-    @Column(name = "rrn", nullable = false, length = 30)
+    @Column(name = "rrn", nullable = false, length = 255)
     private String rrn;
 
     @Column(name = "pay", nullable = false)
@@ -88,14 +86,14 @@ public class Employee extends BaseEntity {
     private Set<Authority> authorities = new LinkedHashSet<>();
 
     @Builder
-    public Employee(EmployeeCreateDTO registerDTO, Position position, Job job, Department department) {
+    public Employee(EmployeeCreateDTO registerDTO, Position position, Job job, Department department, String rrn) {
         this.empId = registerDTO.getEmpId();
         this.position = position;
         this.job = job;
         this.dept = department;
         this.name = registerDTO.getName();
         this.gender = registerDTO.getGender();
-        this.rrn = registerDTO.getRrn();
+        this.rrn = rrn;
         this.pay = registerDTO.getPay();
         this.address = registerDTO.getAddress();
         this.contact = registerDTO.getContact();

@@ -19,7 +19,7 @@ public interface ApproveLineCommandRepository extends JpaRepository<ApproveLine,
             "WHERE line.doc.docId = :docId " +
             "AND line.approveLineOrder > :currentOrder " +
             "ORDER BY line.approveLineOrder ASC")
-    Optional<ApproveLine> findNextApproveLineAsc(@Param("docId") Long approveLineId, @Param("currentOrder") Long currentOrder);
+    List<ApproveLine> findNextApproveLineAsc(@Param("docId") Long approveLineId, @Param("currentOrder") Long currentOrder);
 
     @Query("SELECT line FROM ApproveLine line WHERE line.groupId = :groupId")
     Optional<List<ApproveLine>> findAllByGroupId(@Param("groupId") Long groupId);

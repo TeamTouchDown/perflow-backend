@@ -13,6 +13,8 @@ public class AnnouncementResponseDTO {
 
     private String deptName;
 
+    private String empId;
+
     private String empName;
 
     private String title;

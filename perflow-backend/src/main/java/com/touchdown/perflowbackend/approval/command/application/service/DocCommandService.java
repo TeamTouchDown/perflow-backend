@@ -5,13 +5,13 @@ import com.touchdown.perflowbackend.approval.command.domain.aggregate.*;
 import com.touchdown.perflowbackend.approval.command.domain.repository.*;
 import com.touchdown.perflowbackend.approval.command.mapper.DocMapper;
 import com.touchdown.perflowbackend.approval.query.dto.ApproveSbjDTO;
-import com.touchdown.perflowbackend.approval.query.dto.MyApproveLineResponseDTO;
 import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
-import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.repository.DepartmentCommandRepository;
+import com.touchdown.perflowbackend.notification.command.application.service.NotificationCommandService;
+import com.touchdown.perflowbackend.notification.command.domain.aggregate.RefType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,6 +35,13 @@ public class DocCommandService {
     private final ApproveLineCommandRepository approveLineCommandRepository;
     private final DocFieldCommandRepository docFieldCommandRepository;
     private final DocShareObjCommandRepository docShareObjCommandRepository;
+    private final NotificationCommandService notificationCommandService;
+
+    private static final String NEW_DOC = "새 결재 문서가 생성되었습니다.";
+    private static final String NEW_DOC_URL = "/approval/waiting";
+    private static final String NEW_SHARED_DOC = "새 결재 문서가 공유되었습니다.";
+    private static final String NEW_SHARED_DOC_URL = "/approval/inbox";
+
 
     // 새 결재 문서 생성
     @Transactional
@@ -56,10 +63,14 @@ public class DocCommandService {
         createDocFields(request, doc);
 
         // 결재선 생성
-        createApproveLines(request, doc, createUser);
+        List<ApproveLine> approveLines = createApproveLines(request, doc, createUser);
 
         // 공유 설정
-        createShare(request, doc, createUser);
+        List<DocShareObj> docShareObjs = createShare(request, doc, createUser);
+
+        sendNotificationsForApprovalLines(approveLines, doc);
+
+        sendNotificationsForShareObjs(docShareObjs, doc);
     }
 
     // 나의 결재선 생성
@@ -193,7 +204,7 @@ public class DocCommandService {
         return newApproveLine;
     }
 
-    private void createShare(DocCreateRequestDTO request, Doc doc, Employee createUser) {
+    private List<DocShareObj> createShare(DocCreateRequestDTO request, Doc doc, Employee createUser) {
 
         // 모든 empId와 departmentId 추출
         Set<String> empIds = request.getShares().stream()
@@ -214,16 +225,22 @@ public class DocCommandService {
         }
 
         docShareObjCommandRepository.saveAll(docShareObjs);
+
+        return docShareObjs;
     }
 
     // 결재선 리스트 추가
-    private void createApproveLines(DocCreateRequestDTO request, Doc doc, Employee createUser) {
+    private List<ApproveLine> createApproveLines(DocCreateRequestDTO request, Doc doc, Employee createUser) {
+
+        List<ApproveLine> approveLines = new ArrayList<>();
 
         for (ApproveLineRequestDTO lineDTO : request.getApproveLines()) {
-
             ApproveLine approveLine = createApproveLine(lineDTO, doc, createUser);
+            approveLines.add(approveLine);
             doc.getApproveLines().add(approveLine);
         }
+
+        return approveLines;
     }
 
     // 결재선 추가
@@ -316,5 +333,44 @@ public class DocCommandService {
         log.info("findEmployeeByIds 실행");
         return employeeCommandRepository.findAllById(empIds).stream()
                 .collect(Collectors.toMap(Employee::getEmpId, Function.identity()));
+    }
+
+    private void sendNotificationsForApprovalLines(List<ApproveLine> approveLines, Doc doc) {
+        log.info("sendNotificationsForApprovalLines 실행");
+
+        // 각 결재선의 결재 주체에게 알림 발송
+        for (ApproveLine approveLine : approveLines) {
+            for (ApproveSbj approveSbj : approveLine.getApproveSbjs()) {
+                Employee sbjUser = approveSbj.getSbjUser();
+                if (sbjUser != null) {
+                    notificationCommandService.createAndPublishNotification(
+                            doc.getDocId(),
+                            String.valueOf(RefType.APPROVE_SBJ),
+                            sbjUser.getEmpId(),
+                            NEW_DOC,
+                            doc.getTitle(),
+                            NEW_DOC_URL
+                    );
+                }
+            }
+        }
+    }
+
+    private void sendNotificationsForShareObjs(List<DocShareObj> docShareObjs, Doc doc) {
+        log.info("sendNotificationsForShareObjs 실행");
+
+        for (DocShareObj docShareObj : docShareObjs) {
+            Employee shareUser = docShareObj.getShareObjUser();
+            if (shareUser != null) {
+                notificationCommandService.createAndPublishNotification(
+                        doc.getDocId(),
+                        String.valueOf(RefType.APPROVE_SBJ),
+                        shareUser.getEmpId(),
+                        NEW_SHARED_DOC,
+                        doc.getTitle(),
+                        NEW_SHARED_DOC_URL
+                );
+            }
+        }
     }
 }

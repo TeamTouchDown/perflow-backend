@@ -88,7 +88,7 @@ public class EvalutionCommandService {
         Employee Emp = findEmployeeByEmpId(empId);
 
         // 문제 생성 부서 확인
-        Department Dep = findDepartmentByEmpId(Emp.getDept().getDepartmentId());
+        Department Dep = findDepartmentByEmpId(createQuestionRequestDTO.getDeptId());
 
         // 받아온 정보를 이용해 문제 생성
         Perfoquestion perfoquestion = PerformanceMapper.createQuestionRequestDTO(Emp, createQuestionRequestDTO, Dep);

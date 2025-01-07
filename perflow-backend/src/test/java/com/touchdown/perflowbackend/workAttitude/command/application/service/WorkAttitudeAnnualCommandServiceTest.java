@@ -7,6 +7,7 @@ import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeC
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
+import com.touchdown.perflowbackend.notification.command.application.service.NotificationCommandService;
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeAnnualRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.*;
@@ -39,6 +40,8 @@ class WorkAttitudeAnnualCommandServiceTest {
     private EmployeeCommandRepository employeeRepository;
     @Mock
     private WorkAttitudeVacationCommandRepository vacationRepository;
+    @Mock
+    private NotificationCommandService notificationCommandService;
 
     @InjectMocks
     private WorkAttitudeAnnualCommandService service;

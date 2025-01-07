@@ -66,7 +66,7 @@ public class AppointCommandService {
         appointCommandRepository.save(appoint);
     }
 
-    private String promotionEmployee(Employee employee, AppointCreateDTO appointCreateDTO) {
+    String promotionEmployee(Employee employee, AppointCreateDTO appointCreateDTO) {
 
         Position before = employee.getPosition();
         Position after = getAfterPosition(appointCreateDTO.getAfter());
@@ -99,7 +99,7 @@ public class AppointCommandService {
         return after.getName();
     }
 
-    private String transferEmployee(Employee employee, AppointCreateDTO appointCreateDTO) {
+    String transferEmployee(Employee employee, AppointCreateDTO appointCreateDTO) {
 
         Department before = employee.getDept();
         Department after = getAfterDepartment(appointCreateDTO.getAfter());

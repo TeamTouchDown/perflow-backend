@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
@@ -104,6 +106,22 @@ public class FileService {
     public File findFileById(Long fileId) {
         return fileRepository.findById(fileId)
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_FILE));
+    }
+
+    public byte[] downloadFromS3(File file) {
+        String s3Key = generateS3Key(file);
+
+        try {
+            // S3에서 파일 다운로드
+            return s3Client.getObject(GetObjectRequest.builder()
+                            .bucket(bucketName)
+                            .key(s3Key)
+                            .build(),
+                    ResponseTransformer.toBytes()).asByteArray();
+        } catch (Exception e) {
+            log.error("S3 파일 다운로드 실패: {}", s3Key, e);
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
     }
 
     private void deleteFileFromS3(File file) {

@@ -8,6 +8,7 @@ import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeC
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Department;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Job;
 import com.touchdown.perflowbackend.hr.command.domain.aggregate.Position;
+import com.touchdown.perflowbackend.notification.command.application.service.NotificationCommandService;
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeOvertimeRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Overtime;
@@ -37,6 +38,8 @@ class WorkAttitudeOvertimeCommandServiceTest {
     private WorkAttitudeOvertimeCommandRepository overtimeRepository;
     @Mock
     private EmployeeCommandRepository employeeRepository;
+    @Mock
+    private NotificationCommandService notificationCommandService;
 
     @InjectMocks
     private WorkAttitudeOvertimeCommandService service;
@@ -60,12 +63,18 @@ class WorkAttitudeOvertimeCommandServiceTest {
                 .joinDate(LocalDate.of(2020, 1, 1))
                 .build();
 
-        mockEmployee = new Employee(
-                employeeDTO,
-                mock(Position.class),
-                mock(Job.class),
-                mock(Department.class)
-        );
+//        mockEmployee = new Employee(
+//                employeeDTO,
+//                mock(Position.class),
+//                mock(Job.class),
+//                mock(Department.class)
+//        );
+        mockEmployee = Employee.builder()
+                .registerDTO(employeeDTO)
+                .position(mock(Position.class))
+                .job(mock(Job.class))
+                .department(mock(Department.class))
+                .build();
 
         EmployeeCreateDTO approverDTO = EmployeeCreateDTO.builder()
                 .empId("EMP002")
@@ -79,12 +88,12 @@ class WorkAttitudeOvertimeCommandServiceTest {
                 .joinDate(LocalDate.of(2019, 1, 1))
                 .build();
 
-        mockApprover = new Employee(
-                approverDTO,
-                mock(Position.class),
-                mock(Job.class),
-                mock(Department.class)
-        );
+        mockApprover = Employee.builder()
+                .registerDTO(approverDTO)
+                .position(mock(Position.class))
+                .job(mock(Job.class))
+                .department(mock(Department.class))
+                .build();
 
         requestDTO = new WorkAttitudeOvertimeRequestDTO();
         requestDTO.setOvertimeStart(LocalDateTime.of(2024, 6, 1, 18, 0));

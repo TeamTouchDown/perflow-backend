@@ -24,8 +24,8 @@ public interface WorkAttitudeOvertimeQueryRepository extends JpaRepository<Overt
             "SUM(CASE WHEN o.overtime_type = 'NIGHT' THEN TIMESTAMPDIFF(HOUR, o.overtime_start, o.overtime_end) ELSE 0 END) AS nightHours, " +
             "SUM(CASE WHEN o.overtime_type = 'HOLIDAY' THEN TIMESTAMPDIFF(HOUR, o.overtime_start, o.overtime_end) ELSE 0 END) AS holidayHours, " +
             "SUM(CASE WHEN o.overtime_type = 'EXTENDED' THEN TIMESTAMPDIFF(HOUR, o.overtime_start, o.overtime_end) ELSE 0 END) AS extendedHours " +
-            "FROM Overtime o " +
-            "JOIN Employee e ON e.emp_id = o.emp_id " +
+            "FROM overtime o " +
+            "JOIN employee e ON e.emp_id = o.emp_id " +
             "WHERE e.resign_date IS NOT NULL AND o.overtime_status = 'CONFIRMED' " +
             "AND DATE(o.update_datetime) BETWEEN :threeMonthsAgo AND e.resign_date " +
             "GROUP BY e.emp_id", nativeQuery = true)
@@ -53,5 +53,6 @@ public interface WorkAttitudeOvertimeQueryRepository extends JpaRepository<Overt
             "ORDER BY month ASC", nativeQuery = true)
     List<Object[]> findMonthlyOvertimeSummary(@Param("empId") String empId);
 
-
+    @Query("SELECT o FROM Overtime o WHERE o.overtimeStatus = 'CONFIRMED'")
+    List<Overtime> findAllConfirmed();
 }

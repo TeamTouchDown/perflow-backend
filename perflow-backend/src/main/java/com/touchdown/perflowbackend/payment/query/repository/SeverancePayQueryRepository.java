@@ -24,17 +24,20 @@ public interface SeverancePayQueryRepository extends JpaRepository<SeverancePay,
             "p.name, " +
             "d.name, " +
             "e.pay * 3 AS threeMonthTotalPay, " +
-            "DATEDIFF(e.resign_date, DATE_SUB(e.resign_date, INTERVAL 3 MONTH)) + 1 AS threeMonthTotalDays, " +
+            "DATEDIFF(e.resign_date, DATE_SUB(e.resign_date, INTERVAL 3 MONTH)) AS threeMonthTotalDays, " +
             "(spd.extend_labor_allowance + spd.night_labor_allowance + spd.holiday_labor_allowance + spd.annual_allowance) AS threeMonthTotalAllowance, " +
             "DATEDIFF(e.resign_date, e.join_date) + 1 AS totalLaborDays, " +
             "spd.total_amount, " +
-            "spd.status " +
-            "FROM Severance_pay s " +
-            "JOIN Severance_pay_detail spd ON s.severance_pay_id = spd.severance_pay_id " +
-            "JOIN Employee e ON spd.emp_id = e.emp_id " +
-            "JOIN Position p ON e.position_id = p.position_id " +
-            "JOIN Department d ON e.dept_id = d.dept_id " +
-            "WHERE e.status = 'RESIGNED' AND s.severance_pay_id = :severancePayId",
+            "spd.status, " +
+            "spd.create_datetime " +
+            "FROM severance_pay s " +
+            "JOIN severance_pay_detail spd ON s.severance_pay_id = spd.severance_pay_id " +
+            "JOIN employee e ON spd.emp_id = e.emp_id " +
+            "JOIN position p ON e.position_id = p.position_id " +
+            "JOIN department d ON e.dept_id = d.dept_id " +
+            "WHERE e.status = 'RESIGNED' AND s.severance_pay_id = :severancePayId " +
+            "AND YEAR(e.resign_date) = YEAR(s.create_datetime) " +
+            "AND MONTH(e.resign_date) = MONTH(s.create_datetime)",
             nativeQuery = true)
     List<Object[]> findSeverancePayDetails(Long severancePayId);
 
@@ -45,7 +48,7 @@ public interface SeverancePayQueryRepository extends JpaRepository<SeverancePay,
             "e.resign_date, " +
             "d.name, " +
             "p.name, " +
-            "DATEDIFF(e.resign_date, e.join_date) + 1 AS totalLaborDays, " +
+            "DATEDIFF(e.resign_date, e.join_date) AS totalLaborDays, " +
             "e.pay * 3, " +
             "(spd.extend_labor_allowance + spd.night_labor_allowance + spd.holiday_labor_allowance + spd.annual_allowance), " +
             "spd.annual_allowance, " +
@@ -54,12 +57,13 @@ public interface SeverancePayQueryRepository extends JpaRepository<SeverancePay,
             "spd.night_labor_allowance, " +
             "spd.holiday_labor_allowance, " +
             "spd.total_amount " +
-            "FROM Severance_pay s " +
-            "JOIN Severance_pay_detail spd ON s.severance_pay_id = spd.severance_pay_id " +
-            "JOIN Employee e ON spd.emp_id = e.emp_id " +
-            "JOIN Position p ON e.position_id = p.position_id " +
-            "JOIN Department d ON e.dept_id = d.dept_id " +
-            "WHERE e.status = 'RESIGNED' AND spd.emp_id = :empId",
+            "FROM severance_pay s " +
+            "JOIN severance_pay_detail spd ON s.severance_pay_id = spd.severance_pay_id " +
+            "JOIN employee e ON spd.emp_id = e.emp_id " +
+            "JOIN position p ON e.position_id = p.position_id " +
+            "JOIN department d ON e.dept_id = d.dept_id " +
+            "WHERE e.status = 'RESIGNED' AND spd.emp_id = :empId " +
+            "AND MONTH(e.resign_date) = MONTH(s.create_datetime)",
             nativeQuery = true)
     Object[] findByEmpId(String empId);
 }

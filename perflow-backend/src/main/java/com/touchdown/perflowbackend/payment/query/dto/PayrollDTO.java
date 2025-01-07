@@ -2,10 +2,14 @@ package com.touchdown.perflowbackend.payment.query.dto;
 
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.EmployeeStatus;
 import com.touchdown.perflowbackend.payment.command.domain.aggregate.Status;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
+@Builder
 @RequiredArgsConstructor
 public class PayrollDTO {
 
@@ -52,5 +56,7 @@ public class PayrollDTO {
     private final Long totalAmount;
 
     private final Status payrollStatus;
+
+    private final LocalDateTime createDatetime;
 
 }

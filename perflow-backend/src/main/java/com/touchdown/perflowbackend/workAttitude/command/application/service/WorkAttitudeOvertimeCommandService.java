@@ -4,6 +4,8 @@ import com.touchdown.perflowbackend.common.exception.CustomException;
 import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.command.domain.repository.EmployeeCommandRepository;
+import com.touchdown.perflowbackend.notification.command.application.service.NotificationCommandService;
+import com.touchdown.perflowbackend.notification.command.domain.aggregate.RefType;
 import com.touchdown.perflowbackend.security.util.EmployeeUtil;
 import com.touchdown.perflowbackend.workAttitude.command.application.dto.WorkAttitudeOvertimeRequestDTO;
 import com.touchdown.perflowbackend.workAttitude.command.domain.aggregate.Overtime;
@@ -26,6 +28,10 @@ public class WorkAttitudeOvertimeCommandService {
 
     private final WorkAttitudeOvertimeCommandRepository overtimeRepository;
     private final EmployeeCommandRepository employeeRepository;
+    private final NotificationCommandService notificationCommandService;
+
+    private static final String NEW_OVERTIME = "새 초과근무 신청 도착!";
+    private static final String NEW_OVERTIME_URL = "/attitude/overtimeForLeader";
 
     // 현재 로그인한 사원 정보 가져오기
     private Employee getCurrentEmployee() {
@@ -62,6 +68,15 @@ public class WorkAttitudeOvertimeCommandService {
         Overtime overtime = WorkAttitudeOvertimeMapper.toEntity(requestDTO, employee, approver);
         overtimeRepository.save(overtime);
         log.info("초과근무 신청 완료: {}", overtime);
+
+        notificationCommandService.createAndPublishNotification(
+                overtime.getOvertimeId(),
+                RefType.OVERTIME.toString(),
+                overtime.getApprover().getEmpId(),
+                NEW_OVERTIME,
+                employee.getName() + employee.getPosition().getName(),
+                NEW_OVERTIME_URL
+        );
     }
 
     private void validateNightOvertime(LocalDateTime start, LocalDateTime end) {

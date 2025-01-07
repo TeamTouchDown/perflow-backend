@@ -1,7 +1,11 @@
 package com.touchdown.perflowbackend.payment.query.service;
 
+import com.touchdown.perflowbackend.common.exception.CustomException;
+import com.touchdown.perflowbackend.common.exception.ErrorCode;
 import com.touchdown.perflowbackend.employee.command.domain.aggregate.Employee;
 import com.touchdown.perflowbackend.employee.query.repository.EmployeeQueryRepository;
+import com.touchdown.perflowbackend.payment.command.domain.aggregate.InsuranceRate;
+import com.touchdown.perflowbackend.payment.query.repository.InsuranceRateQueryRepository;
 import com.touchdown.perflowbackend.workAttitude.query.dto.WorkAttitudeOvertimeForTeamLeaderSummaryDTO;
 import com.touchdown.perflowbackend.workAttitude.query.service.WorkAttitudeAnnualQueryService;
 import com.touchdown.perflowbackend.workAttitude.query.service.WorkAttitudeOvertimeQueryService;
@@ -23,6 +27,7 @@ public class ExcelTemplateQueryService {
     private final EmployeeQueryRepository employeeQueryRepository;
     private final WorkAttitudeOvertimeQueryService workAttitudeOvertimeQueryService;
     private final WorkAttitudeAnnualQueryService workAttitudeAnnualQueryService;
+    private final InsuranceRateQueryRepository insuranceRateQueryRepository;
 
     // 급여대장 엑셀 템플릿 생성 메서드
     public byte[] generatePayrollTemplate() throws IOException {
@@ -43,12 +48,15 @@ public class ExcelTemplateQueryService {
         Map<String, WorkAttitudeOvertimeForTeamLeaderSummaryDTO> overtimeSummaryMap = overtimeSummaries.stream()
                 .collect(Collectors.toMap(WorkAttitudeOvertimeForTeamLeaderSummaryDTO::getEmpId, summary -> summary));
 
+        // 최신 보험 비율 가져오기
+        InsuranceRate latestRate = insuranceRateQueryRepository.findTopByOrderByCreatedDateDesc()
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_INSURANCE_RATE));
 
         // 데이터 행 작성
         int rowIndex = 1;
         for (Employee employee : employees) {
 
-            createEmployeeRow(sheet, rowIndex++, employee, overtimeSummaryMap); // overtimeSummaryMap 전달
+            createEmployeeRow(sheet, rowIndex++, employee, overtimeSummaryMap, latestRate); // overtimeSummaryMap 전달
 
         }
 
@@ -90,7 +98,8 @@ public class ExcelTemplateQueryService {
     }
 
     // 사원 데이터를 행으로 추가하는 메서드
-    private void createEmployeeRow(Sheet sheet, int rowIndex, Employee employee, Map<String, WorkAttitudeOvertimeForTeamLeaderSummaryDTO> overtimeSummaryMap) {
+    private void createEmployeeRow(Sheet sheet, int rowIndex, Employee employee,
+                                   Map<String, WorkAttitudeOvertimeForTeamLeaderSummaryDTO> overtimeSummaryMap, InsuranceRate latestRate) {
 
         Row row = sheet.createRow(rowIndex);
 
@@ -163,26 +172,34 @@ public class ExcelTemplateQueryService {
         totalPaymentCell.setCellValue(totalPayment);
         totalPaymentCell.setCellStyle(numberCellStyle);
 
+        double nationPensionRate = latestRate.getNationalPensionRate() * 0.01;
+
         // 국민 연금
-        long nationalPension = Math.round(employee.getPay() * 0.045);
+        long nationalPension = Math.round(employee.getPay() * nationPensionRate);
         Cell nationalPensionCell = row.createCell(12);
         nationalPensionCell.setCellValue(nationalPension);
         nationalPensionCell.setCellStyle(numberCellStyle);
 
+        double healthInsuranceRate = latestRate.getHealthInsuranceRate() * 0.01;
+
         // 건강 보험
-        long healthInsurance = Math.round(employee.getPay() * 0.03545);
+        long healthInsurance = Math.round(employee.getPay() * healthInsuranceRate);
         Cell healthInsuranceCell = row.createCell(13);
         healthInsuranceCell.setCellValue(healthInsurance);
         healthInsuranceCell.setCellStyle(numberCellStyle);
 
+        double hireInsuranceRate = latestRate.getHireInsuranceRate() * 0.01;
+
         // 고용 보험
-        long hireInsurance = Math.round(employee.getPay() * 0.009);
+        long hireInsurance = Math.round(employee.getPay() * hireInsuranceRate);
         Cell hireInsuranceCell = row.createCell(14);
         hireInsuranceCell.setCellValue(hireInsurance);
         hireInsuranceCell.setCellStyle(numberCellStyle);
 
+        double longTermCareInsuranceRate = latestRate.getLongTermCareInsuranceRate() * 0.01;
+
         // 장기 요양 보험
-        long longTermCareInsurance = Math.round(employee.getPay() * 0.004591);
+        long longTermCareInsurance = Math.round(employee.getPay() * longTermCareInsuranceRate);
         Cell longTermCareInsuranceCell = row.createCell(15);
         longTermCareInsuranceCell.setCellValue(longTermCareInsurance);
         longTermCareInsuranceCell.setCellStyle(numberCellStyle);

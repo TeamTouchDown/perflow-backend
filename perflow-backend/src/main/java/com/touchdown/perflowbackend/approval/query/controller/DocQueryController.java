@@ -57,6 +57,23 @@ public class DocQueryController {
     }
 
     // 수신함 문서 목록 검색
+    @GetMapping("/inbox/search")
+    public ResponseEntity<Page<InboxDocListResponseDTO>> searchInboxDocs(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String createUser,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate,
+            Pageable pageable
+    ) {
+        String empId = EmployeeUtil.getEmpId();
+        Long deptId = employeeQueryRepository.findDeptIdByEmpId(empId);
+        Integer positionLevel = positionQueryRepository.findPositionLevelByEmpId(empId);
+
+        return ResponseEntity.ok(
+                docQueryService.searchInboxDocList(title, createUser, fromDate, toDate, pageable, empId, deptId, positionLevel)
+        );
+    }
+
 
     // 수신함 문서 상세 조회
     @GetMapping("/inbox/{docId}")
@@ -89,7 +106,7 @@ public class DocQueryController {
         String empId = EmployeeUtil.getEmpId();
 
         // 정렬 주기
-        Pageable pageable = PageRequest.of(page, size, Sort.by("docId").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createDatetime").descending());
 
         return ResponseEntity.ok(docQueryService.searchOutboxDocList(title, fromDate, toDate, pageable, empId));
     }
@@ -156,7 +173,13 @@ public class DocQueryController {
 
         String empId = EmployeeUtil.getEmpId();
 
-        return ResponseEntity.ok(docQueryService.searchProcessedDocList(title, createUser, fromDate, toDate, pageable, empId));
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                pageable.getSort().isSorted() ? pageable.getSort() : Sort.by(Sort.Direction.ASC, "createDatetime")
+        );
+
+        return ResponseEntity.ok(docQueryService.searchProcessedDocList(title, createUser, fromDate, toDate, sortedPageable, empId));
     }
 
     // 처리 문서 상세 조회

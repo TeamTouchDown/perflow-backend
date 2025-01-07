@@ -22,6 +22,7 @@ public class AnnouncementMapper {
         return new AnnouncementResponseDTO(
                 announcement.getAnnId(),
                 announcement.getDept().getName(),
+                announcement.getEmp().getEmpId(),
                 announcement.getEmp().getName(),
                 announcement.getTitle(),
                 announcement.getContent(),
