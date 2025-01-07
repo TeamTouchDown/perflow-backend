@@ -15,6 +15,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class NotificationCommandService {
@@ -85,6 +87,11 @@ public class NotificationCommandService {
 
     @Transactional
     public void deleteAllNotifications(String empId) {
-        notificationCommandRepository.deleteAllByEmployeeEmpId(empId);
+
+        List<Notification> notifications = notificationCommandRepository.findAllByEmployeeEmpId(empId);
+
+        if (!notifications.isEmpty()) {
+            notificationCommandRepository.deleteAllByEmployeeEmpId(empId);
+        }
     }
 }
