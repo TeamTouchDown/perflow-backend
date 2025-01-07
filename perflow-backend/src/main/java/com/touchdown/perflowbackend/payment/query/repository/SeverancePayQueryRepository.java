@@ -12,9 +12,7 @@ public interface SeverancePayQueryRepository extends JpaRepository<SeverancePay,
     @Query("SELECT s " +
             "FROM SeverancePay s " +
             "JOIN SeverancePayDetail spd ON s.severancePayId = spd.severancePay.severancePayId " +
-            "WHERE s.severancePayId = :severancePayId AND spd.emp.status = 'RESIGNED' " +
-            "AND YEAR(spd.emp.resignDate) = YEAR(s.createDatetime) " +
-            "AND MONTH(spd.emp.resignDate) = MONTH(s.createDatetime)")
+            "WHERE s.severancePayId = :severancePayId AND spd.emp.status = 'RESIGNED'")
     Optional<SeverancePay> findBySeverancePaysId(Long severancePayId);
 
     @Query(value = "SELECT " +
@@ -32,11 +30,11 @@ public interface SeverancePayQueryRepository extends JpaRepository<SeverancePay,
             "spd.total_amount, " +
             "spd.status, " +
             "spd.create_datetime " +
-            "FROM Severance_pay s " +
-            "JOIN Severance_pay_detail spd ON s.severance_pay_id = spd.severance_pay_id " +
-            "JOIN Employee e ON spd.emp_id = e.emp_id " +
-            "JOIN Position p ON e.position_id = p.position_id " +
-            "JOIN Department d ON e.dept_id = d.dept_id " +
+            "FROM severance_pay s " +
+            "JOIN severance_pay_detail spd ON s.severance_pay_id = spd.severance_pay_id " +
+            "JOIN employee e ON spd.emp_id = e.emp_id " +
+            "JOIN position p ON e.position_id = p.position_id " +
+            "JOIN department d ON e.dept_id = d.dept_id " +
             "WHERE e.status = 'RESIGNED' AND s.severance_pay_id = :severancePayId " +
             "AND YEAR(e.resign_date) = YEAR(s.create_datetime) " +
             "AND MONTH(e.resign_date) = MONTH(s.create_datetime)",
@@ -59,11 +57,11 @@ public interface SeverancePayQueryRepository extends JpaRepository<SeverancePay,
             "spd.night_labor_allowance, " +
             "spd.holiday_labor_allowance, " +
             "spd.total_amount " +
-            "FROM Severance_pay s " +
-            "JOIN Severance_pay_detail spd ON s.severance_pay_id = spd.severance_pay_id " +
-            "JOIN Employee e ON spd.emp_id = e.emp_id " +
-            "JOIN Position p ON e.position_id = p.position_id " +
-            "JOIN Department d ON e.dept_id = d.dept_id " +
+            "FROM severance_pay s " +
+            "JOIN severance_pay_detail spd ON s.severance_pay_id = spd.severance_pay_id " +
+            "JOIN employee e ON spd.emp_id = e.emp_id " +
+            "JOIN position p ON e.position_id = p.position_id " +
+            "JOIN department d ON e.dept_id = d.dept_id " +
             "WHERE e.status = 'RESIGNED' AND spd.emp_id = :empId " +
             "AND MONTH(e.resign_date) = MONTH(s.create_datetime)",
             nativeQuery = true)
